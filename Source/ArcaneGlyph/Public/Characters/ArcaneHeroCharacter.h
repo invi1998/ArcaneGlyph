@@ -6,6 +6,9 @@
 #include "ArcaneCharacterBase.h"
 #include "ArcaneHeroCharacter.generated.h"
 
+class UCameraComponent;
+class USpringArmComponent;
+
 UCLASS()
 class ARCANEGLYPH_API AArcaneHeroCharacter : public AArcaneCharacterBase
 {
@@ -14,13 +17,20 @@ class ARCANEGLYPH_API AArcaneHeroCharacter : public AArcaneCharacterBase
 public:
 	AArcaneHeroCharacter();
 
-	virtual void Tick(float DeltaTime) override;
-
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
 	virtual void BeginPlay() override;
 
 private:
+#pragma region Components
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	USpringArmComponent* CameraBoom;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UCameraComponent* FollowCamera;
+	
+#pragma endregion 
 	
 };
