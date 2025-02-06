@@ -1,5 +1,4 @@
-// INVI_1998All Rights Reserved.
-
+// INVI_1998 All Rights Reserved.
 
 #include "Game/ArcaneGameModeBase.h"
 
