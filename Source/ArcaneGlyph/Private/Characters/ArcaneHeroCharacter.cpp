@@ -34,6 +34,8 @@ AArcaneHeroCharacter::AArcaneHeroCharacter()
 void AArcaneHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	
 }
 
 

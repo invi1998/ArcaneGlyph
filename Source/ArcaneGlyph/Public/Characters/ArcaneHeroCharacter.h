@@ -8,6 +8,7 @@
 
 class UCameraComponent;
 class USpringArmComponent;
+class UDadaAsset_InputConfig;
 
 UCLASS()
 class ARCANEGLYPH_API AArcaneHeroCharacter : public AArcaneCharacterBase
@@ -31,6 +32,9 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
 	
-#pragma endregion 
+#pragma endregion
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CharacterData", meta = (AllowPrivateAccess = "true"))
+	UDadaAsset_InputConfig* InputConfigDataAsset;
 	
 };
