@@ -36,7 +36,7 @@ public:
 	UInputMappingContext* DefaultMappingContext;
 
 	// TitleProperty 被用来指定在编辑器中显示的属性，这里指定了 InputAction / InputTag 属性作为显示的标题
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (TitleProperty = "InputAction"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (TitleProperty = "InputTag"))
 	TArray<FArcaneInputActionConfig> NativeInputActions;
 
 	UInputAction* GetNativeInputActionByTag(const FGameplayTag& InTag) const;
