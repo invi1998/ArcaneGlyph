@@ -33,8 +33,5 @@ private:
 	UCameraComponent* FollowCamera;
 	
 #pragma endregion
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CharacterData", meta = (AllowPrivateAccess = "true"))
-	UDadaAsset_InputConfig* InputConfigDataAsset;
 	
 };
