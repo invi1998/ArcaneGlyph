@@ -5,6 +5,7 @@
 
 #include "ArcaneGameplayTags.h"
 #include "EnhancedInputSubsystems.h"
+#include "AbilitySystem/ArcaneAbilitySystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Component/Input/ArcaneInputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -54,6 +55,13 @@ void AArcaneHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		EnhancedInputComponent->BindNativeInputAction(InputConfigDataAsset, ArcaneGameplayTags::InputTag_Look, ETriggerEvent::Triggered, this, &AArcaneHeroCharacter::Input_Look);
 		EnhancedInputComponent->BindNativeInputAction(InputConfigDataAsset, ArcaneGameplayTags::InputTag_Jump, ETriggerEvent::Triggered, this, &AArcaneHeroCharacter::Input_Jump);
 	}
+	
+}
+
+void AArcaneHeroCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
 	
 }
 
