@@ -6,6 +6,7 @@
 #include "ArcaneCharacterBase.h"
 #include "ArcaneHeroCharacter.generated.h"
 
+struct FInputActionValue;
 class UCameraComponent;
 class USpringArmComponent;
 class UDadaAsset_InputConfig;
@@ -32,6 +33,17 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
 	
+#pragma endregion
+
+#pragma region Input
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharacterData", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UDadaAsset_InputConfig> InputConfigDataAsset;
+
+	void Input_Move(const FInputActionValue& InputActionValue);
+	void Input_Look(const FInputActionValue& InputActionValue);
+	void Input_Jump();
+
 #pragma endregion
 	
 };

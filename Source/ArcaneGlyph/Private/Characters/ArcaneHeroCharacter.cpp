@@ -3,8 +3,10 @@
 
 #include "Characters/ArcaneHeroCharacter.h"
 
-#include "EnhancedInputComponent.h"
+#include "ArcaneGameplayTags.h"
+#include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
+#include "Component/Input/ArcaneInputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
@@ -35,6 +37,23 @@ AArcaneHeroCharacter::AArcaneHeroCharacter()
 void AArcaneHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	ULocalPlayer* LocalPlayer = GetController<APlayerController>()->GetLocalPlayer();
+	UEnhancedInputLocalPlayerSubsystem* EnhancedInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
+
+	if (EnhancedInputSubsystem)
+	{
+		EnhancedInputSubsystem->AddMappingContext(InputConfigDataAsset->DefaultMappingContext, 0);
+	}
+	
+
+	UArcaneInputComponent* EnhancedInputComponent = CastChecked<UArcaneInputComponent>(PlayerInputComponent);
+	if (EnhancedInputComponent)
+	{
+		EnhancedInputComponent->BindNativeInputAction(InputConfigDataAsset, ArcaneGameplayTags::InputTag_Move, ETriggerEvent::Triggered, this, &AArcaneHeroCharacter::Input_Move);
+		EnhancedInputComponent->BindNativeInputAction(InputConfigDataAsset, ArcaneGameplayTags::InputTag_Look, ETriggerEvent::Triggered, this, &AArcaneHeroCharacter::Input_Look);
+		EnhancedInputComponent->BindNativeInputAction(InputConfigDataAsset, ArcaneGameplayTags::InputTag_Jump, ETriggerEvent::Triggered, this, &AArcaneHeroCharacter::Input_Jump);
+	}
 	
 }
 
@@ -43,6 +62,44 @@ void AArcaneHeroCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void AArcaneHeroCharacter::Input_Move(const FInputActionValue& InputActionValue)
+{
+	const FVector2d AxisValue = InputActionValue.Get<FVector2d>();
+	const FRotator CurrentControlRotation = GetControlRotation();
+	const FRotator YawRotation(0.0f, CurrentControlRotation.Yaw, 0.0f);
+
+	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+	if (AxisValue.X != 0.0f)
+	{
+		AddMovementInput(RightDirection, AxisValue.X);
+	}
+	
+	if (AxisValue.Y != 0.0f)
+	{
+		AddMovementInput(ForwardDirection, AxisValue.Y);
+	}
+}
+
+void AArcaneHeroCharacter::Input_Look(const FInputActionValue& InputActionValue)
+{
+	const FVector2d AxisValue = InputActionValue.Get<FVector2d>();
+	if (AxisValue.X != 0.f)
+	{
+		AddControllerYawInput(AxisValue.X);
+	}
+	
+	if (AxisValue.Y != 0.f)
+	{
+		AddControllerPitchInput(AxisValue.Y);
+	}
+}
+
+void AArcaneHeroCharacter::Input_Jump()
+{
 }
 
 
