@@ -41,16 +41,16 @@ void AArcaneHeroController::BeginPlay()
 void AArcaneHeroController::Input_Move(const FInputActionValue& InputActionValue)
 {
 	const FVector2d AxisValue = InputActionValue.Get<FVector2d>();
-	const FRotator ControlRotation = GetControlRotation();
-	const FRotator YawRotation(0.0f, ControlRotation.Yaw, 0.0f);
+	const FRotator CurrentControlRotation = GetControlRotation();
+	const FRotator YawRotation(0.0f, CurrentControlRotation.Yaw, 0.0f);
 
 	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
 	if (APawn* ControlledPawn = GetPawn())
 	{
-		ControlledPawn->AddMovementInput(ForwardDirection, AxisValue.X);
-		ControlledPawn->AddMovementInput(RightDirection, AxisValue.Y);
+		ControlledPawn->AddMovementInput(ForwardDirection, AxisValue.Y);
+		ControlledPawn->AddMovementInput(RightDirection, AxisValue.X);
 	}
 }
 
