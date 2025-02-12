@@ -1,0 +1,35 @@
+﻿// INVI_1998 All Rights Reserved.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Abilities/GameplayAbility.h"
+#include "ArcaneGameplayAbility.generated.h"
+
+// 定义法术能力的激活策略
+UENUM()
+enum class EArcaneAbilityActivationPolicy : uint8
+{
+	OnTriggered,		// 当法术被触发时激活
+	OnGiven,			// 在给定的时间内激活
+};
+
+/**
+ * 
+ */
+UCLASS()
+class ARCANEGLYPH_API UArcaneGameplayAbility : public UGameplayAbility
+{
+	GENERATED_BODY()
+
+public:
+	// UGameplayAbility Interface
+	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+	virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
+	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
+	// ~UGameplayAbility Interface
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Arcane | Ability")
+	EArcaneAbilityActivationPolicy AbilityActivationPolicy = EArcaneAbilityActivationPolicy::OnTriggered;
+	
+};
