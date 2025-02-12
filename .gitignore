@@ -6,6 +6,7 @@ Build
 Plugins/Developer/RiderLink/
 Content/CyberpunkGirlV4/Characters/EvelynnV4/Textures
 Content/CyberpunkGirlV4/Demo/Characters
+Content/SwordAnimsetPro/Demo/Preview
 
 .idea/
 *.user
