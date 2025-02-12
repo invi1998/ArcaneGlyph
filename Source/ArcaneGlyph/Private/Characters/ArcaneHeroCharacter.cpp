@@ -8,6 +8,7 @@
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Component/Input/ArcaneInputComponent.h"
+#include "DataAssets/StartupData/UDataAsset_HeroStartupDada.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
@@ -62,6 +63,17 @@ void AArcaneHeroCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
+	// 对于TSoftObjectPtr类型的数据，需要先加载数据，然后再使用
+	// IsValid()函数用于判断TSoftObjectPtr是否有效, IsNull()函数用于判断TSoftObjectPtr是否为空
+	if (!CharacterStartupData.IsNull())
+	{
+		// 对于角色的初始化数据，我们需要在角色被控制器控制时加载数据，我希望这个过程是同步的，因此使用LoadSynchronous()函数
+		if (UDataAsset_StartupDadaBase* LoadedData = CharacterStartupData.LoadSynchronous())
+		{
+			// 这里可以使用加载到的数据进行初始化
+			LoadedData->GiveToAbilitySystemComponent(ArcaneAbilitySystemComponent.Get());
+		}
+	}
 	
 }
 

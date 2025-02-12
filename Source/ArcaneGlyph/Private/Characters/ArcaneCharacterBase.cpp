@@ -30,6 +30,10 @@ void AArcaneCharacterBase::PossessedBy(AController* NewController)
 	if (ArcaneAbilitySystemComponent)
 	{
 		ArcaneAbilitySystemComponent->InitAbilityActorInfo(this, this);
+
+		// 确保角色启动数据有效，ensure 会在 Debug 编译模式下检查条件是否为真，如果为假则会触发断言
+		// ensure(!CharacterStartupData.IsNull());
+		ensureMsgf(!CharacterStartupData.IsNull(), TEXT("%s CharacterStartupData is null!"), *GetName());
 	}
 }
 

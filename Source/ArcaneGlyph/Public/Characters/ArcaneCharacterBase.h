@@ -7,6 +7,7 @@
 #include "AbilitySystemInterface.h"
 #include "ArcaneCharacterBase.generated.h"
 
+class UDataAsset_StartupDadaBase;
 class UArcaneAttributeSet;
 class UArcaneAbilitySystemComponent;
 
@@ -31,11 +32,13 @@ protected:
 
 	// ~ End APawn Interface
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Arcane | Ability System")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AbilitySystem")
 	TObjectPtr<UArcaneAbilitySystemComponent> ArcaneAbilitySystemComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Arcane | Ability System")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AbilitySystem")
 	TObjectPtr<UArcaneAttributeSet> ArcaneAttributeSet;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharacterData")
+	TSoftObjectPtr<UDataAsset_StartupDadaBase> CharacterStartupData;
 	
 };
