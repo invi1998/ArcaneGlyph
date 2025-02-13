@@ -4,7 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "DataAsset_StartupDadaBase.h"
+#include "GameplayTagContainer.h"
 #include "UDataAsset_HeroStartupDada.generated.h"
+
+USTRUCT(BlueprintType)
+struct FArcaneHeroAbilitySet
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputTag")
+	FGameplayTag InputTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UArcaneGameplayAbility> AbilityToGrantClass;
+
+	bool IsValid() const;
+};
 
 /**
  * 
@@ -13,4 +28,13 @@ UCLASS()
 class ARCANEGLYPH_API UUDataAsset_HeroStartupDada : public UDataAsset_StartupDadaBase
 {
 	GENERATED_BODY()
+
+public:
+	virtual void GiveToAbilitySystemComponent(UArcaneAbilitySystemComponent* InArcaneASC, int32 InApplyLevel = 1) override;
+
+protected:
+
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "HeroStartupData", meta = (TitleProperty = "InputTag"))
+	TArray<FArcaneHeroAbilitySet> HeroStartupAbilitySets;		// 英雄启动能力集合
 };
