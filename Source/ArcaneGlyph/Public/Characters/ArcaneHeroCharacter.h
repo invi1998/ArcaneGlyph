@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "ArcaneCharacterBase.h"
+#include "GameplayTagContainer.h"
 #include "ArcaneHeroCharacter.generated.h"
 
 struct FInputActionValue;
@@ -52,6 +53,9 @@ private:
 	void Input_Move(const FInputActionValue& InputActionValue);
 	void Input_Look(const FInputActionValue& InputActionValue);
 	void Input_Jump();
+
+	void Input_AbilityPressed(FGameplayTag InInputTag);
+	void Input_AbilityReleased(FGameplayTag InInputTag);
 
 #pragma endregion
 	
