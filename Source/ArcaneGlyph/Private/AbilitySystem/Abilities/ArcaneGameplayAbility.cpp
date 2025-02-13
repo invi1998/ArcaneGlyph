@@ -4,6 +4,7 @@
 #include "AbilitySystem/Abilities/ArcaneGameplayAbility.h"
 
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
+#include "Component/Combat/PawnCombatComponent.h"
 
 void UArcaneGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
@@ -35,4 +36,9 @@ void UArcaneGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 			ActorInfo->AbilitySystemComponent->ClearAbility(Handle);
 		}
 	}
+}
+
+UPawnCombatComponent* UArcaneGameplayAbility::GetPawnCombatComponentFromActorInfo() const
+{
+	return GetAvatarActorFromActorInfo()->FindComponentByClass<UPawnCombatComponent>();
 }

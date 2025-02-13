@@ -6,6 +6,7 @@
 #include "Abilities/GameplayAbility.h"
 #include "ArcaneGameplayAbility.generated.h"
 
+class UPawnCombatComponent;
 // 定义法术能力的激活策略
 UENUM()
 enum class EArcaneAbilityActivationPolicy : uint8
@@ -28,8 +29,11 @@ public:
 	virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 	// ~UGameplayAbility Interface
+	
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Arcane | Ability")
 	EArcaneAbilityActivationPolicy AbilityActivationPolicy = EArcaneAbilityActivationPolicy::OnTriggered;
-	
+
+	UFUNCTION(BlueprintPure, Category = "Arcane | Ability")
+	UPawnCombatComponent* GetPawnCombatComponentFromActorInfo() const;
 };

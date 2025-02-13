@@ -4,33 +4,32 @@
 #include "Component/Combat/PawnCombatComponent.h"
 
 
-// Sets default values for this component's properties
-UPawnCombatComponent::UPawnCombatComponent()
+void UPawnCombatComponent::RegisterSpawnedWeapon(const FGameplayTag& InWeaponTag, AArcaneWeaponBase* InWeapon, bool bEquipped)
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+	checkf(!CharacterCarriedWeaponMap.Contains(InWeaponTag), TEXT("Weapon %s already exists in the map!"), *InWeaponTag.ToString());
+	check(InWeapon);
 
-	// ...
+	CharacterCarriedWeaponMap.Emplace(InWeaponTag, InWeapon);
+
+	if (bEquipped)
+	{
+		CurrentEquippedWeaponTag = InWeaponTag;
+	}
 }
 
-
-// Called when the game starts
-void UPawnCombatComponent::BeginPlay()
+AArcaneWeaponBase* UPawnCombatComponent::GetCharacterCarriedWeapon(const FGameplayTag& InWeaponTag) const
 {
-	Super::BeginPlay();
-
-	// ...
-	
+	if (CharacterCarriedWeaponMap.Contains(InWeaponTag))
+	{
+		if (AArcaneWeaponBase* Weapon = CharacterCarriedWeaponMap.FindRef(InWeaponTag))
+		{
+			return Weapon;
+		}
+	}
+	return nullptr;
 }
 
-
-// Called every frame
-void UPawnCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
-                                         FActorComponentTickFunction* ThisTickFunction)
+AArcaneWeaponBase* UPawnCombatComponent::GetCharacterCurrentEquippedWeapon() const
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
+	return CurrentEquippedWeaponTag.IsValid() ? GetCharacterCarriedWeapon(CurrentEquippedWeaponTag) : nullptr;
 }
-

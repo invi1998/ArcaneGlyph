@@ -3,9 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Component/PawnExtensionComponentBase.h"
 #include "PawnCombatComponent.generated.h"
 
+
+class AArcaneWeaponBase;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class ARCANEGLYPH_API UPawnCombatComponent : public UPawnExtensionComponentBase
@@ -13,14 +16,20 @@ class ARCANEGLYPH_API UPawnCombatComponent : public UPawnExtensionComponentBase
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this component's properties
-	UPawnCombatComponent();
+	UFUNCTION(BlueprintCallable, Category="Arcane|Combat")
+	void RegisterSpawnedWeapon(const FGameplayTag& InWeaponTag, AArcaneWeaponBase* InWeapon, bool bEquipped = false);
 
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
+	UFUNCTION(BlueprintCallable, Category="Arcane|Combat")
+	AArcaneWeaponBase* GetCharacterCarriedWeapon(const FGameplayTag& InWeaponTag) const;
 
-public:
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Arcane|Combat")
+	FGameplayTag CurrentEquippedWeaponTag;		// 当前装备的武器标签
+
+	UFUNCTION(BlueprintCallable, Category="Arcane|Combat")
+	AArcaneWeaponBase* GetCharacterCurrentEquippedWeapon() const;
+	
+private:
+	TMap<FGameplayTag, AArcaneWeaponBase*> CharacterCarriedWeaponMap;		// 角色携带的武器映射表
+
+	
 };
