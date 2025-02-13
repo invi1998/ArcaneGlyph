@@ -7,6 +7,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Component/Combat/HeroCombatComponent.h"
 #include "Component/Input/ArcaneInputComponent.h"
 #include "DataAssets/StartupData/UDataAsset_HeroStartupDada.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -34,6 +35,8 @@ AArcaneHeroCharacter::AArcaneHeroCharacter()
 	GetCharacterMovement()->MaxWalkSpeed = 400.0f;		// 角色移动速度
 	GetCharacterMovement()->BrakingDecelerationWalking = 2048.0f;		// 角色停止时的减速度
 	GetCharacterMovement()->JumpZVelocity = 600.0f;		// 角色跳跃高度
+
+	HeroCombatComponent = CreateDefaultSubobject<UHeroCombatComponent>(TEXT("HeroCombatComponent"));
 }
 
 void AArcaneHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

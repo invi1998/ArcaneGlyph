@@ -10,6 +10,7 @@ struct FInputActionValue;
 class UCameraComponent;
 class USpringArmComponent;
 class UDadaAsset_InputConfig;
+class UHeroCombatComponent;
 
 UCLASS()
 class ARCANEGLYPH_API AArcaneHeroCharacter : public AArcaneCharacterBase
@@ -24,17 +25,22 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 	// ~ End APawn Interface
 
+	FORCEINLINE UHeroCombatComponent* GetHeroCombatComponent() const { return HeroCombatComponent; }
+
 protected:
 	virtual void BeginPlay() override;
 
 private:
 #pragma region Components
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraBoom;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	UHeroCombatComponent* HeroCombatComponent;
 	
 #pragma endregion
 
