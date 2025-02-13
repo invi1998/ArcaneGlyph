@@ -20,7 +20,8 @@ AArcaneCharacterBase::AArcaneCharacterBase()
 
 UAbilitySystemComponent* AArcaneCharacterBase::GetAbilitySystemComponent() const
 {
-	return GetAbilitySystemComponent();
+	// return GetAbilitySystemComponent();
+	return GetArcaneAbilitySystemComponent();
 }
 
 void AArcaneCharacterBase::PossessedBy(AController* NewController)
