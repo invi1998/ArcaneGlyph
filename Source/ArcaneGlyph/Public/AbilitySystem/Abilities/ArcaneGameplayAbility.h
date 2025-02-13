@@ -6,6 +6,7 @@
 #include "Abilities/GameplayAbility.h"
 #include "ArcaneGameplayAbility.generated.h"
 
+class UArcaneAbilitySystemComponent;
 class UPawnCombatComponent;
 // 定义法术能力的激活策略
 UENUM()
@@ -36,4 +37,7 @@ protected:
 
 	UFUNCTION(BlueprintPure, Category = "Arcane | Ability")
 	UPawnCombatComponent* GetPawnCombatComponentFromActorInfo() const;
+
+	UFUNCTION(BlueprintPure, Category = "Arcane | Ability")
+	UArcaneAbilitySystemComponent* GetArcaneAbilitySystemComponentFromActorInfo() const;
 };

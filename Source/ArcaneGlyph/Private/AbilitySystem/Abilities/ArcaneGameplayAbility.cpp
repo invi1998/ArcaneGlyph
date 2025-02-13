@@ -42,3 +42,8 @@ UPawnCombatComponent* UArcaneGameplayAbility::GetPawnCombatComponentFromActorInf
 {
 	return GetAvatarActorFromActorInfo()->FindComponentByClass<UPawnCombatComponent>();
 }
+
+UArcaneAbilitySystemComponent* UArcaneGameplayAbility::GetArcaneAbilitySystemComponentFromActorInfo() const
+{
+	return Cast<UArcaneAbilitySystemComponent>(CurrentActorInfo->AbilitySystemComponent);
+}
