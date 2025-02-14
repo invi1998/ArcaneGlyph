@@ -7,9 +7,16 @@
 #include "HeroCombatComponent.generated.h"
 
 
+class AArcaneHeroWeapon;
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class ARCANEGLYPH_API UHeroCombatComponent : public UPawnCombatComponent
 {
 	GENERATED_BODY()
+
+public:
+	UFUNCTION(BlueprintCallable, Category="Arcane|Combat")
+	AArcaneHeroWeapon* GetHeroCarriedWeaponByTag(const FGameplayTag& InWeaponTag) const;
+
 	
 };
