@@ -23,7 +23,7 @@ public:
 	void AssignGrantedAbilitySpecHandles(const TArray<FGameplayAbilitySpecHandle>& InGrantedAbilitySpecHandles);
 
 	UFUNCTION(BlueprintPure)
-	const TArray<FGameplayAbilitySpecHandle>& GetGrantedAbilitySpecHandles() const { return GrantedAbilitySpecHandles; }
+	TArray<FGameplayAbilitySpecHandle>& GetGrantedAbilitySpecHandles() { return GrantedAbilitySpecHandles; }
 
 private:
 	TArray<FGameplayAbilitySpecHandle> GrantedAbilitySpecHandles;	// 赋予的能力规格句柄

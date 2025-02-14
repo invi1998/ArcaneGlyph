@@ -7,6 +7,7 @@
 #include "ArcaneTypes/ArcaneStructTypes.h"
 #include "ArcaneAbilitySystemComponent.generated.h"
 
+class AArcaneHeroWeapon;
 /**
  * 
  */
@@ -24,6 +25,6 @@ public:
 
 	// UPARAM(ref) 旨在告诉蓝图调用者，这个参数是一个输入参数，但是它是一个引用参数，这意味着它可以被修改, 但是不会被返回
 	UFUNCTION(BlueprintCallable, Category = "Arcane | AbilitySystem")
-	void RemoveGrantHeroWeaponAbilities(UPARAM(ref)TArray<FGameplayAbilitySpecHandle>& InAbilitySpecHandles);
+	void RemoveGrantHeroWeaponAbilities(AArcaneHeroWeapon* InWeapon);
 	
 };

@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
 #include "AbilitySystem/Abilities/ArcaneGameplayAbility.h"
+#include "Items/Weapons/ArcaneHeroWeapon.h"
 
 void UArcaneAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& InInputTag)
 {
@@ -48,17 +49,18 @@ void UArcaneAbilitySystemComponent::GrantHeroWeaponAbilities(const TArray<FArcan
 	}
 }
 
-void UArcaneAbilitySystemComponent::RemoveGrantHeroWeaponAbilities(TArray<FGameplayAbilitySpecHandle>& InAbilitySpecHandles)
+void UArcaneAbilitySystemComponent::RemoveGrantHeroWeaponAbilities(AArcaneHeroWeapon* InWeapon)
 {
-	if (InAbilitySpecHandles.Num() > 0)
+	if (InWeapon)
 	{
-		for (const FGameplayAbilitySpecHandle& AbilitySpecHandle : InAbilitySpecHandles)
+		TArray<FGameplayAbilitySpecHandle>& GrantedAbilitySpecHandles = InWeapon->GetGrantedAbilitySpecHandles();
+		for (const FGameplayAbilitySpecHandle& AbilitySpecHandle : GrantedAbilitySpecHandles)
 		{
 			// 移除能力
 			ClearAbility(AbilitySpecHandle);
 		}
-	}
 
-	InAbilitySpecHandles.Empty();
+		GrantedAbilitySpecHandles.Empty();
+	}
 }
 

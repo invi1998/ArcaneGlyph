@@ -36,9 +36,6 @@ void UArcaneGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 			ActorInfo->AbilitySystemComponent->ClearAbility(Handle);
 		}
 	}
-
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("UArcaneGameplayAbility::EndAbility"));
-	
 	
 }
 
