@@ -6,11 +6,6 @@
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
 #include "AbilitySystem/Abilities/ArcaneGameplayAbility.h"
 
-bool FArcaneHeroAbilitySet::IsValid() const
-{
-	return InputTag.IsValid() && AbilityToGrantClass;
-}
-
 void UUDataAsset_HeroStartupDada::GiveToAbilitySystemComponent(UArcaneAbilitySystemComponent* InArcaneASC, int32 InApplyLevel)
 {
 	Super::GiveToAbilitySystemComponent(InArcaneASC, InApplyLevel);

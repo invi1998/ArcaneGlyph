@@ -4,22 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "DataAsset_StartupDadaBase.h"
-#include "GameplayTagContainer.h"
+#include "ArcaneTypes/ArcaneStructTypes.h"
 #include "UDataAsset_HeroStartupDada.generated.h"
-
-USTRUCT(BlueprintType)
-struct FArcaneHeroAbilitySet
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputTag")
-	FGameplayTag InputTag;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSubclassOf<UArcaneGameplayAbility> AbilityToGrantClass;
-
-	bool IsValid() const;
-};
 
 /**
  * 
