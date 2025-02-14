@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "AnimInstances/ArcaneBaseAnimInstance.h"
-#include "UArcaneHeroLinkedAnimLayer.generated.h"
+#include "ArcaneHeroLinkedAnimLayer.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ARCANEGLYPH_API UUArcaneHeroLinkedAnimLayer : public UArcaneBaseAnimInstance
+class ARCANEGLYPH_API UArcaneHeroLinkedAnimLayer : public UArcaneBaseAnimInstance
 {
 	GENERATED_BODY()
 };
