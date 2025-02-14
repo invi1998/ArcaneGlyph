@@ -28,7 +28,7 @@ void UArcaneGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* Acto
 void UArcaneGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-
+	
 	if (AbilityActivationPolicy == EArcaneAbilityActivationPolicy::OnGiven)
 	{
 		if (ActorInfo)
@@ -36,6 +36,10 @@ void UArcaneGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 			ActorInfo->AbilitySystemComponent->ClearAbility(Handle);
 		}
 	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("UArcaneGameplayAbility::EndAbility"));
+	
+	
 }
 
 UPawnCombatComponent* UArcaneGameplayAbility::GetPawnCombatComponentFromActorInfo() const

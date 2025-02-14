@@ -47,3 +47,18 @@ void UArcaneAbilitySystemComponent::GrantHeroWeaponAbilities(const TArray<FArcan
 		}
 	}
 }
+
+void UArcaneAbilitySystemComponent::RemoveGrantHeroWeaponAbilities(TArray<FGameplayAbilitySpecHandle>& InAbilitySpecHandles)
+{
+	if (InAbilitySpecHandles.Num() > 0)
+	{
+		for (const FGameplayAbilitySpecHandle& AbilitySpecHandle : InAbilitySpecHandles)
+		{
+			// 移除能力
+			ClearAbility(AbilitySpecHandle);
+		}
+	}
+
+	InAbilitySpecHandles.Empty();
+}
+

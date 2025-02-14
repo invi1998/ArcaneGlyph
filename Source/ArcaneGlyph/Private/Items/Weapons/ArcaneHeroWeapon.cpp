@@ -5,11 +5,12 @@
 
 
 // Sets default values
-AArcaneHeroWeapon::AArcaneHeroWeapon()
+AArcaneHeroWeapon::AArcaneHeroWeapon(): HeroWeaponData()
 {
 	PrimaryActorTick.bCanEverTick = false;
 }
 
-
-
-
+void AArcaneHeroWeapon::AssignGrantedAbilitySpecHandles(const TArray<FGameplayAbilitySpecHandle>& InGrantedAbilitySpecHandles)
+{
+	GrantedAbilitySpecHandles = InGrantedAbilitySpecHandles;
+}
