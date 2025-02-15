@@ -5,6 +5,7 @@
 
 #include "ArcaneStructTypes.generated.h"
 
+class UArcaneHeroGameplayAbility;
 class UArcaneGameplayAbility;
 class UInputMappingContext;
 class UArcaneHeroLinkedAnimLayer;
@@ -18,7 +19,7 @@ struct FArcaneHeroAbilitySet
 	FGameplayTag InputTag;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSubclassOf<UArcaneGameplayAbility> AbilityToGrantClass;
+	TSubclassOf<UArcaneHeroGameplayAbility> AbilityToGrantClass;
 
 	bool IsValid() const;
 };

@@ -3,7 +3,7 @@
 
 #include "ArcaneTypes/ArcaneStructTypes.h"
 
-#include "AbilitySystem/Abilities/ArcaneGameplayAbility.h"
+#include "AbilitySystem/Abilities/ArcaneHeroGameplayAbility.h"
 
 bool FArcaneHeroAbilitySet::IsValid() const
 {
