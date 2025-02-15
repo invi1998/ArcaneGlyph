@@ -28,17 +28,17 @@ public:
 	static UArcaneAbilitySystemComponent* NativeGetArcaneASCFromActor(AActor* InActor);
 
 	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary")
-	static void AddGameplayTagToActorIfNotHas(AActor* InActor, const FGameplayTag& InTag);
+	static void AddGameplayTagToActorIfNotHas(AActor* InActor, FGameplayTag InTag);
 
 	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary")
-	static void RemoveGameplayTagFromActorIfHas(AActor* InActor, const FGameplayTag& InTag);
+	static void RemoveGameplayTagFromActorIfHas(AActor* InActor, FGameplayTag InTag);
 
-	static bool NativeDoesActorHasGameplayTag(AActor* InActor, const FGameplayTag& InTag);
+	static bool NativeDoesActorHasGameplayTag(AActor* InActor, FGameplayTag InTag);
 
 	// DisplayName这个元属性可以用来指定在蓝图中显示的函数名，ExpandEnumAsExecs这个元属性可以用来指定枚举类型作为执行枚举类型,这样在蓝图中就可以使用枚举类型作为执行枚举类型
 	// 换句话说，就是我们可以直接将结果枚举类型作为蓝图节点的执行后的分支引脚（就类似PlayMontageAndWaitForEvent节点里的那个动画事件枚举类型）
-	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary", meta=(DisplayName="Does Actor Has GameplayTag"), ExpandEnumAsExecs="ConfirmType")
-	static void BP_DoesActorHasGameplayTag(AActor* InActor, const FGameplayTag& InTag, EArcaneConfirmType& ConfirmType);
+	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary", meta=(DisplayName="Does Actor Has GameplayTag", ExpandEnumAsExecs="ConfirmType"))
+	static void BP_DoesActorHasGameplayTag(AActor* InActor, FGameplayTag InTag, EArcaneConfirmType& ConfirmType);
 };
 
 

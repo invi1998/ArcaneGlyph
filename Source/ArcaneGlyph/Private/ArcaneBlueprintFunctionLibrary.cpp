@@ -15,7 +15,7 @@ UArcaneAbilitySystemComponent* UArcaneBlueprintFunctionLibrary::NativeGetArcaneA
 	return CastChecked<UArcaneAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(InActor));
 }
 
-void UArcaneBlueprintFunctionLibrary::AddGameplayTagToActorIfNotHas(AActor* InActor, const FGameplayTag& InTag)
+void UArcaneBlueprintFunctionLibrary::AddGameplayTagToActorIfNotHas(AActor* InActor, FGameplayTag InTag)
 {
 	if (UArcaneAbilitySystemComponent* ArcaneASC = NativeGetArcaneASCFromActor(InActor))
 	{
@@ -26,7 +26,7 @@ void UArcaneBlueprintFunctionLibrary::AddGameplayTagToActorIfNotHas(AActor* InAc
 	}
 }
 
-void UArcaneBlueprintFunctionLibrary::RemoveGameplayTagFromActorIfHas(AActor* InActor, const FGameplayTag& InTag)
+void UArcaneBlueprintFunctionLibrary::RemoveGameplayTagFromActorIfHas(AActor* InActor, FGameplayTag InTag)
 {
 	if (UArcaneAbilitySystemComponent* ArcaneASC = NativeGetArcaneASCFromActor(InActor))
 	{
@@ -37,7 +37,7 @@ void UArcaneBlueprintFunctionLibrary::RemoveGameplayTagFromActorIfHas(AActor* In
 	}
 }
 
-bool UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(AActor* InActor, const FGameplayTag& InTag)
+bool UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(AActor* InActor, FGameplayTag InTag)
 {
 	if (UArcaneAbilitySystemComponent* ArcaneASC = NativeGetArcaneASCFromActor(InActor))
 	{
@@ -46,7 +46,7 @@ bool UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(AActor* InAc
 	return false;
 }
 
-void UArcaneBlueprintFunctionLibrary::BP_DoesActorHasGameplayTag(AActor* InActor, const FGameplayTag& InTag, EArcaneConfirmType& ConfirmType)
+void UArcaneBlueprintFunctionLibrary::BP_DoesActorHasGameplayTag(AActor* InActor, FGameplayTag InTag, EArcaneConfirmType& ConfirmType)
 {
 	// 通过调用原生函数来判断Actor是否拥有指定的GameplayTag,并将结果赋值给ConfirmType
 	ConfirmType = NativeDoesActorHasGameplayTag(InActor, InTag) ? EArcaneConfirmType::YES : EArcaneConfirmType::NO;
