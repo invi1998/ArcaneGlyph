@@ -1,12 +1,12 @@
 ﻿// INVI_1998 All Rights Reserved.
 
 
-#include "DataAssets/StartupData/UDataAsset_HeroStartupDada.h"
+#include "DataAssets/StartupData/DataAsset_HeroStartupDada.h"
 
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
-#include "AbilitySystem/Abilities/ArcaneGameplayAbility.h"
+#include "AbilitySystem/Abilities/ArcaneHeroGameplayAbility.h"
 
-void UUDataAsset_HeroStartupDada::GiveToAbilitySystemComponent(UArcaneAbilitySystemComponent* InArcaneASC, int32 InApplyLevel)
+void UDataAsset_HeroStartupDada::GiveToAbilitySystemComponent(UArcaneAbilitySystemComponent* InArcaneASC, int32 InApplyLevel)
 {
 	Super::GiveToAbilitySystemComponent(InArcaneASC, InApplyLevel);
 

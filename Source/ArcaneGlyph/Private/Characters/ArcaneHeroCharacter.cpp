@@ -9,7 +9,7 @@
 #include "Camera/CameraComponent.h"
 #include "Component/Combat/HeroCombatComponent.h"
 #include "Component/Input/ArcaneInputComponent.h"
-#include "DataAssets/StartupData/UDataAsset_HeroStartupDada.h"
+#include "DataAssets/StartupData/DataAsset_HeroStartupDada.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
