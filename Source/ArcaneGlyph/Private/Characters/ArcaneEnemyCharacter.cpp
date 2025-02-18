@@ -4,6 +4,8 @@
 #include "Characters/ArcaneEnemyCharacter.h"
 
 #include "Component/Combat/EnemyCombatComponent.h"
+#include "DataAssets/StartupData/DataAsset_EnemyStartupDada.h"
+#include "Engine/AssetManager.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 
@@ -30,4 +32,27 @@ void AArcaneEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void AArcaneEnemyCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	
+	InitEnemyStartupData();
+}
+
+void AArcaneEnemyCharacter::InitEnemyStartupData()
+{
+	// 对于TSoftObjectPtr类型的数据，需要先加载数据，然后再使用
+	// Enemy角色的生成，我们希望他是异步生成的
+	UAssetManager::GetStreamableManager().RequestAsyncLoad(
+		CharacterStartupData.ToSoftObjectPath(),
+		FStreamableDelegate::CreateLambda([this]()
+		{
+			if (UDataAsset_StartupDadaBase* LoadedData = CharacterStartupData.Get())
+			{
+				LoadedData->GiveToAbilitySystemComponent(ArcaneAbilitySystemComponent.Get());
+			}
+		})
+	);
 }
