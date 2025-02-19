@@ -26,5 +26,10 @@ AArcaneWeaponBase::AArcaneWeaponBase()
 	
 }
 
+void AArcaneWeaponBase::ToggleWeaponCollision_Implementation(bool bEnable)
+{
+	WeaponCollisionBox->SetCollisionEnabled(bEnable ? ECollisionEnabled::Type::QueryOnly : ECollisionEnabled::Type::NoCollision);
+}
+
 
 

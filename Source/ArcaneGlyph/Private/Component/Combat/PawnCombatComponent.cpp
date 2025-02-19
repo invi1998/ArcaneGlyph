@@ -3,6 +3,9 @@
 
 #include "Component/Combat/PawnCombatComponent.h"
 
+#include "Components/BoxComponent.h"
+#include "Items/Weapons/ArcaneWeaponBase.h"
+
 
 void UPawnCombatComponent::RegisterSpawnedWeapon(const FGameplayTag& InWeaponTag, AArcaneWeaponBase* InWeapon, bool bEquipped)
 {
@@ -32,4 +35,15 @@ AArcaneWeaponBase* UPawnCombatComponent::GetCharacterCarriedWeapon(const FGamepl
 AArcaneWeaponBase* UPawnCombatComponent::GetCharacterCurrentEquippedWeapon() const
 {
 	return CurrentEquippedWeaponTag.IsValid() ? GetCharacterCarriedWeapon(CurrentEquippedWeaponTag) : nullptr;
+}
+
+void UPawnCombatComponent::ToggleWeaponCollision(bool bEnable, EToggleDamageType InToggleDamageType)
+{
+	if (InToggleDamageType == EToggleDamageType::CurrentEquippedWeapon)
+	{
+		if (AArcaneWeaponBase* CurrentEquippedWeapon = GetCharacterCurrentEquippedWeapon())
+		{
+			CurrentEquippedWeapon->ToggleWeaponCollision(bEnable);
+		}
+	}
 }
