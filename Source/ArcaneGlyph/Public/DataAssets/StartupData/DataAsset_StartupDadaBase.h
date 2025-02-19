@@ -6,6 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "DataAsset_StartupDadaBase.generated.h"
 
+class UGameplayEffect;
 class UArcaneGameplayAbility;
 class UArcaneAbilitySystemComponent;
 /**
@@ -25,6 +26,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="StartupData")
 	TArray<TSubclassOf<UArcaneGameplayAbility>> ReactiveAbilityList;			// 反应能力列表(被动触发)
+
+	UPROPERTY(EditDefaultsOnly, Category="StartupData")
+	TArray<TSubclassOf<UGameplayEffect>> StartupGameplayEffects;				// 启动游戏效果列表
 
 	void GrantAbilities(const TArray<TSubclassOf<UArcaneGameplayAbility>>& InAbilityList, UArcaneAbilitySystemComponent* InArcaneASC, int32 InApplyLevel = 1);
 	

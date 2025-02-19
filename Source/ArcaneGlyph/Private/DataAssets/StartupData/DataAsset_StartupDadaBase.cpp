@@ -11,6 +11,20 @@ void UDataAsset_StartupDadaBase::GiveToAbilitySystemComponent(UArcaneAbilitySyst
 	check(InArcaneASC);
 	GrantAbilities(ActivateOnGivenAbilityList, InArcaneASC, InApplyLevel);
 	GrantAbilities(ReactiveAbilityList, InArcaneASC, InApplyLevel);
+
+	// 应用启动游戏效果
+	if (!StartupGameplayEffects.IsEmpty())
+    {
+        for (const TSubclassOf<UGameplayEffect>& GameplayEffectClass : StartupGameplayEffects)
+        {
+            if (GameplayEffectClass)
+            {
+                FGameplayEffectContextHandle EffectContext = InArcaneASC->MakeEffectContext();
+                EffectContext.AddSourceObject(InArcaneASC->GetAvatarActor());
+                InArcaneASC->ApplyGameplayEffectToSelf(GameplayEffectClass.GetDefaultObject(), InApplyLevel, EffectContext);
+            }
+        }
+    }
 }
 
 void UDataAsset_StartupDadaBase::GrantAbilities(const TArray<TSubclassOf<UArcaneGameplayAbility>>& InAbilityList, UArcaneAbilitySystemComponent* InArcaneASC, int32 InApplyLevel)
