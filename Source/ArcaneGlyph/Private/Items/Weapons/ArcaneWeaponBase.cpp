@@ -31,19 +31,29 @@ AArcaneWeaponBase::AArcaneWeaponBase()
 void AArcaneWeaponBase::OnWeaponCollisionBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	APawn* WeaponOwningPawn = GetInstigator<APawn>();
-	checkf(WeaponOwningPawn, TEXT("Weapon (%s) must have a instigator pawn!"), *GetName());
+	checkf(WeaponOwningPawn, TEXT("OnWeaponCollisionBoxBeginOverlap: Weapon (%s) must have a instigator pawn!"), *GetName());
 	if (APawn* HitPawn = Cast<APawn>(OtherActor))
 	{
 		if (HitPawn != WeaponOwningPawn)
 		{
 			// 通知武器拥有者
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Weapon (" + GetName() + ") hit pawn (" + OtherActor->GetName() + ")"));
+			OnWeaponHitTarget.ExecuteIfBound(HitPawn);
 		}
 	}
 }
 
 void AArcaneWeaponBase::OnWeaponCollisionBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+	APawn* WeaponOwningPawn = GetInstigator<APawn>();
+	checkf(WeaponOwningPawn, TEXT("OnWeaponCollisionBoxEndOverlap: Weapon (%s) must have a instigator pawn!"), *GetName());
+	if (APawn* HitPawn = Cast<APawn>(OtherActor))
+	{
+		if (HitPawn != WeaponOwningPawn)
+		{
+			// 通知武器拥有者
+			OnWeaponPulledTarget.ExecuteIfBound(HitPawn);
+		}
+	}
 }
 
 void AArcaneWeaponBase::ToggleWeaponCollision_Implementation(bool bEnable)

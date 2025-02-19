@@ -18,5 +18,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Arcane|Combat")
 	AArcaneHeroWeapon* GetHeroCarriedWeaponByTag(const FGameplayTag& InWeaponTag) const;
 
+	virtual void OnHitTargetActor(AActor* InHitActor) override;
+	virtual void OnWeaponPulledFromTargetActor(AActor* InHitActor) override;
 	
 };

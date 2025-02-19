@@ -10,3 +10,13 @@ AArcaneHeroWeapon* UHeroCombatComponent::GetHeroCarriedWeaponByTag(const FGamepl
 {
 	return Cast<AArcaneHeroWeapon>(GetCharacterCarriedWeapon(InWeaponTag));
 }
+
+void UHeroCombatComponent::OnHitTargetActor(AActor* InHitActor)
+{
+	Super::OnHitTargetActor(InHitActor);
+}
+
+void UHeroCombatComponent::OnWeaponPulledFromTargetActor(AActor* InHitActor)
+{
+	Super::OnWeaponPulledFromTargetActor(InHitActor);
+}

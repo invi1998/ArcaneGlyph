@@ -3,7 +3,6 @@
 
 #include "Component/Combat/PawnCombatComponent.h"
 
-#include "Components/BoxComponent.h"
 #include "Items/Weapons/ArcaneWeaponBase.h"
 
 
@@ -13,6 +12,10 @@ void UPawnCombatComponent::RegisterSpawnedWeapon(const FGameplayTag& InWeaponTag
 	check(InWeapon);
 
 	CharacterCarriedWeaponMap.Emplace(InWeaponTag, InWeapon);
+
+	// 因为我们的武器击中委托是原生多播委托，所以绑定的函数可以不必是UFUNCTION
+	InWeapon->OnWeaponHitTarget.BindUObject(this, &UPawnCombatComponent::OnHitTargetActor);
+	InWeapon->OnWeaponPulledTarget.BindUObject(this, &UPawnCombatComponent::OnWeaponPulledFromTargetActor);
 
 	if (bEquipped)
 	{
@@ -46,4 +49,12 @@ void UPawnCombatComponent::ToggleWeaponCollision(bool bEnable, EToggleDamageType
 			CurrentEquippedWeapon->ToggleWeaponCollision(bEnable);
 		}
 	}
+}
+
+void UPawnCombatComponent::OnHitTargetActor(AActor* InHitActor)
+{
+}
+
+void UPawnCombatComponent::OnWeaponPulledFromTargetActor(AActor* InHitActor)
+{
 }
