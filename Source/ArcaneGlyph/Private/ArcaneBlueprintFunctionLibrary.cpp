@@ -5,6 +5,7 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
+#include "Interfaces/PawnCombatInterface.h"
 
 
 UArcaneAbilitySystemComponent* UArcaneBlueprintFunctionLibrary::NativeGetArcaneASCFromActor(AActor* InActor)
@@ -50,4 +51,23 @@ void UArcaneBlueprintFunctionLibrary::BP_DoesActorHasGameplayTag(AActor* InActor
 {
 	// 通过调用原生函数来判断Actor是否拥有指定的GameplayTag,并将结果赋值给ConfirmType
 	ConfirmType = NativeDoesActorHasGameplayTag(InActor, InTag) ? EArcaneConfirmType::YES : EArcaneConfirmType::NO;
+}
+
+UPawnCombatComponent* UArcaneBlueprintFunctionLibrary::NativeGetPawnCombatComponentFromActor(AActor* InActor)
+{
+	check(InActor);
+
+	if (IPawnCombatInterface* PawnCombatInterface = Cast<IPawnCombatInterface>(InActor))
+	{
+		return PawnCombatInterface->GetPawnCombatComponent();
+	}
+	return nullptr;
+}
+
+UPawnCombatComponent* UArcaneBlueprintFunctionLibrary::BP_GetPawnCombatComponentFromActor(AActor* InActor, EArcaneValidType& ValidType)
+{
+	// 通过调用原生函数来获取Actor的PawnCombatComponent，并将结果赋值给ValidType
+	UPawnCombatComponent* PawnCombatComponent = NativeGetPawnCombatComponentFromActor(InActor);
+	ValidType = PawnCombatComponent ? EArcaneValidType::Valid : EArcaneValidType::InValid;
+	return PawnCombatComponent;
 }

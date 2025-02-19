@@ -82,6 +82,11 @@ void AArcaneHeroCharacter::PossessedBy(AController* NewController)
 	
 }
 
+UPawnCombatComponent* AArcaneHeroCharacter::GetPawnCombatComponent() const
+{
+	return HeroCombatComponent;
+}
+
 
 void AArcaneHeroCharacter::BeginPlay()
 {

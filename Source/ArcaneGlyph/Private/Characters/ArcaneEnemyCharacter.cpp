@@ -28,6 +28,11 @@ AArcaneEnemyCharacter::AArcaneEnemyCharacter()
 	EnemyCombatComponent = CreateDefaultSubobject<UEnemyCombatComponent>(TEXT("EnemyCombatComponent"));
 }
 
+UPawnCombatComponent* AArcaneEnemyCharacter::GetPawnCombatComponent() const
+{
+	return EnemyCombatComponent.Get();
+}
+
 void AArcaneEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();

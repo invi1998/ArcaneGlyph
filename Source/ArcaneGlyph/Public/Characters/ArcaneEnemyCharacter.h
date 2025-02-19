@@ -16,6 +16,10 @@ class ARCANEGLYPH_API AArcaneEnemyCharacter : public AArcaneCharacterBase
 public:
 	AArcaneEnemyCharacter();
 
+	// IPawnCombatInterface
+	virtual UPawnCombatComponent* GetPawnCombatComponent() const override;
+	// ~ IPawnCombatInterface
+
 	FORCEINLINE UEnemyCombatComponent* GetEnemyCombatComponent() const { return EnemyCombatComponent; }
 
 protected:

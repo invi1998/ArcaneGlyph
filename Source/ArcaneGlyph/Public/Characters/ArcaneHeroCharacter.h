@@ -26,6 +26,10 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 	// ~ End APawn Interface
 
+	// IPawnCombatInterface
+	virtual UPawnCombatComponent* GetPawnCombatComponent() const override;
+	// ~ IPawnCombatInterface
+
 	FORCEINLINE UHeroCombatComponent* GetHeroCombatComponent() const { return HeroCombatComponent; }
 
 protected:

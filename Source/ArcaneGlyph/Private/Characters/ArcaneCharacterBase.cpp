@@ -24,6 +24,11 @@ UAbilitySystemComponent* AArcaneCharacterBase::GetAbilitySystemComponent() const
 	return GetArcaneAbilitySystemComponent();
 }
 
+UPawnCombatComponent* AArcaneCharacterBase::GetPawnCombatComponent() const
+{
+	return nullptr;
+}
+
 void AArcaneCharacterBase::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
