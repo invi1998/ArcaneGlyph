@@ -42,6 +42,10 @@ public:
 
 	virtual void OnHitTargetActor(AActor* InHitActor);
 	virtual void OnWeaponPulledFromTargetActor(AActor* InHitActor);
+
+protected:
+	UPROPERTY()
+	TArray<AActor*> HitOverlappedActors;		// 击中的重叠的角色
 	
 private:
 	TMap<FGameplayTag, AArcaneWeaponBase*> CharacterCarriedWeaponMap;		// 角色携带的武器映射表

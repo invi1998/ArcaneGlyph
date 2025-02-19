@@ -48,6 +48,11 @@ void UPawnCombatComponent::ToggleWeaponCollision(bool bEnable, EToggleDamageType
 		{
 			CurrentEquippedWeapon->ToggleWeaponCollision(bEnable);
 		}
+
+		if (!bEnable)
+		{
+			HitOverlappedActors.Empty();
+		}
 	}
 }
 

@@ -38,5 +38,8 @@ namespace ArcaneGameplayTags
 
 	// Enemy Tags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Enemy_Weapon_VanterDual, "Enemy.Weapon.VanterDual", "敌人武器：双头戟");
+
+	// Shared Tags
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Event_MeleeAttack, "Shared.Event.MeleeAttack", "共享事件：近战攻击");
 	
 }

@@ -3,6 +3,8 @@
 
 #include "Component/Combat/HeroCombatComponent.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
+#include "ArcaneGameplayTags.h"
 #include "Items/Weapons/ArcaneHeroWeapon.h"
 
 
@@ -13,10 +15,20 @@ AArcaneHeroWeapon* UHeroCombatComponent::GetHeroCarriedWeaponByTag(const FGamepl
 
 void UHeroCombatComponent::OnHitTargetActor(AActor* InHitActor)
 {
-	Super::OnHitTargetActor(InHitActor);
+	if (HitOverlappedActors.Contains(InHitActor)) return;
+	HitOverlappedActors.AddUnique(InHitActor);
+
+	FGameplayEventData EventData;
+	EventData.Target = InHitActor;
+	EventData.Instigator = GetOwningPawn();
+
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+		GetOwningPawn(),
+		ArcaneGameplayTags::Shared_Event_MeleeAttack,
+		EventData
+	);
 }
 
 void UHeroCombatComponent::OnWeaponPulledFromTargetActor(AActor* InHitActor)
 {
-	Super::OnWeaponPulledFromTargetActor(InHitActor);
 }
