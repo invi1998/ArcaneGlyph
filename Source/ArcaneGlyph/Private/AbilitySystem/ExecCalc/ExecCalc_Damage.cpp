@@ -3,6 +3,8 @@
 
 #include "AbilitySystem/ExecCalc/ExecCalc_Damage.h"
 
+#include "ArcaneGameplayTags.h"
+
 UExecCalc_Damage::UExecCalc_Damage()
 {
 	// 捕获到伤害属性
@@ -24,5 +26,59 @@ UExecCalc_Damage::UExecCalc_Damage()
 	// 2: 更快的方式，通过属性标签来查找属性
 	RelevantAttributesToCapture.Add(GetArcaneDamageCaptureStatics().AttackPowerDef);	// 捕获攻击力属性
 	RelevantAttributesToCapture.Add(GetArcaneDamageCaptureStatics().DefensePowerDef);	// 捕获防御力属性
+	
+}
+
+void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
+{
+	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
+	/*
+	 * 这些都是我们可以从Spec中获取到的一些信息，是我们在创建GameplayEffectSpec时传入的一些参数
+	Spec.GetContext().GetSourceObject();
+	Spec.GetContext().GetAbility();
+	Spec.GetContext().GetEffectCauser();
+	Spec.GetContext().GetInstigator();
+	*/
+	
+	FAggregatorEvaluateParameters EvaluationParameters;
+	EvaluationParameters.SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
+	EvaluationParameters.TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
+
+	float SourceAttackPower = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
+		GetArcaneDamageCaptureStatics().AttackPowerDef,
+		EvaluationParameters,
+		SourceAttackPower);
+
+	float TargetDefensePower = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
+		GetArcaneDamageCaptureStatics().DefensePowerDef,
+		EvaluationParameters,
+		TargetDefensePower);
+
+	float WeaponBaseDamage = 0.f;
+	int32 LightComboCount = 0;
+	int32 HeavyComboCount = 0;
+	for (const TPair<FGameplayTag, float>& TagMagnitudes : Spec.SetByCallerTagMagnitudes)
+	{
+		// 这里可以获取到我们在创建GameplayEffectSpec时传入的动态标签
+		// 武器基础伤害
+		if (TagMagnitudes.Key.MatchesTagExact(ArcaneGameplayTags::Shared_SetByCaller_BaseDamage))
+		{
+			WeaponBaseDamage = TagMagnitudes.Value;
+		}
+
+		// 轻击连击次数
+		if (TagMagnitudes.Key.MatchesTagExact(ArcaneGameplayTags::Player_SetByCaller_AttackType_Light))
+		{
+			LightComboCount = TagMagnitudes.Value;
+		}
+
+		if (TagMagnitudes.Key.MatchesTagExact(ArcaneGameplayTags::Player_SetByCaller_AttackType_Heavy))
+		{
+			HeavyComboCount = TagMagnitudes.Value;
+		}
+		
+	}
 	
 }

@@ -38,6 +38,8 @@ class ARCANEGLYPH_API UExecCalc_Damage : public UGameplayEffectExecutionCalculat
 
 public:
 	UExecCalc_Damage();
-	
+
+	// 重写函数，用于计算伤害
+	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
 	
 };
