@@ -51,15 +51,11 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		EvaluationParameters,
 		SourceAttackPower);
 
-	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("SourceAttackPower: %f"), SourceAttackPower));
-
 	float TargetDefensePower = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
 		GetArcaneDamageCaptureStatics().DefensePowerDef,
 		EvaluationParameters,
 		TargetDefensePower);
-
-	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Green, FString::Printf(TEXT("TargetDefensePower: %f"), TargetDefensePower));
 
 	float BaseDamage = 0.f;
 	int32 LightComboCount = 0;
@@ -71,20 +67,17 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		if (TagMagnitudes.Key.MatchesTagExact(ArcaneGameplayTags::Shared_SetByCaller_BaseDamage))
 		{
 			BaseDamage = TagMagnitudes.Value;
-			GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Blue, FString::Printf(TEXT("BaseDamage: %f"), BaseDamage));
 		}
 
 		// 轻击连击次数
 		if (TagMagnitudes.Key.MatchesTagExact(ArcaneGameplayTags::Player_SetByCaller_AttackType_Light))
 		{
 			LightComboCount = TagMagnitudes.Value;
-			GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("LightComboCount: %d"), LightComboCount));
 		}
 
 		if (TagMagnitudes.Key.MatchesTagExact(ArcaneGameplayTags::Player_SetByCaller_AttackType_Heavy))
 		{
 			HeavyComboCount = TagMagnitudes.Value;
-			GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("HeavyComboCount: %d"), HeavyComboCount));
 		}
 		
 	}
@@ -103,8 +96,6 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	float FinalDamage = BaseDamage * SourceAttackPower / TargetDefensePower;
 	// 伤害向上取整，保留小数点后两位
 	FinalDamage = FMath::CeilToFloat(FinalDamage * 100.f) / 100.f;
-
-	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Purple, FString::Printf(TEXT("FinalDamage: %f"), FinalDamage));
 	
 	if (FinalDamage > 0.f)
 	{
