@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/Abilities/ArcaneGameplayAbility.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemGlobals.h"
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
 #include "Component/Combat/PawnCombatComponent.h"
@@ -133,4 +134,27 @@ UPawnCombatComponent* UArcaneGameplayAbility::GetPawnCombatComponentFromActorInf
 UArcaneAbilitySystemComponent* UArcaneGameplayAbility::GetArcaneAbilitySystemComponentFromActorInfo() const
 {
 	return Cast<UArcaneAbilitySystemComponent>(CurrentActorInfo->AbilitySystemComponent);
+}
+
+FActiveGameplayEffectHandle UArcaneGameplayAbility::NativeApplyGameplayEffectSpecToTarget(AActor* InTargetActor, const FGameplayEffectSpecHandle& InSpecHandle) const
+{
+	if (UArcaneAbilitySystemComponent* ArcaneASC = GetArcaneAbilitySystemComponentFromActorInfo())
+	{
+		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(InTargetActor);
+		if (!TargetASC) return FActiveGameplayEffectHandle();
+		
+		return ArcaneASC->ApplyGameplayEffectSpecToTarget(
+			*InSpecHandle.Data.Get(),
+			TargetASC
+		);
+	}
+	return FActiveGameplayEffectHandle();
+}
+
+FActiveGameplayEffectHandle UArcaneGameplayAbility::BP_ApplyGameplayEffectSpecToTarget(AActor* InTargetActor, const FGameplayEffectSpecHandle& InSpecHandle, EArcaneSuccessType& SuccessType)
+{
+	FActiveGameplayEffectHandle ActiveHandle = NativeApplyGameplayEffectSpecToTarget(InTargetActor, InSpecHandle);
+	// 根据激活句柄是否成功应用来设置成功类型
+	SuccessType = ActiveHandle.WasSuccessfullyApplied() ? EArcaneSuccessType::Success : EArcaneSuccessType::Fail;
+	return ActiveHandle;
 }

@@ -15,3 +15,10 @@ enum class EArcaneValidType : uint8
 	Valid,		// 有效
 	InValid		// 无效
 };
+
+UENUM()
+enum class EArcaneSuccessType : uint8
+{
+	Success,
+	Fail
+};

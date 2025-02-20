@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
+#include "ArcaneTypes/ArcaneEnumTypes.h"
 #include "ArcaneGameplayAbility.generated.h"
 
 class UArcaneAbilitySystemComponent;
@@ -41,4 +42,10 @@ protected:
 
 	UFUNCTION(BlueprintPure, Category = "Arcane | Ability")
 	UArcaneAbilitySystemComponent* GetArcaneAbilitySystemComponentFromActorInfo() const;
+
+	FActiveGameplayEffectHandle NativeApplyGameplayEffectSpecToTarget(AActor* InTargetActor, const FGameplayEffectSpecHandle& InSpecHandle) const;
+
+	UFUNCTION(BlueprintCallable, Category = "Arcane | Ability", meta = (DisplayName = "Apply GameplayEffect Spec Handle To Target", ExpandEnumAsExecs = "SuccessType"))
+	FActiveGameplayEffectHandle BP_ApplyGameplayEffectSpecToTarget(AActor* InTargetActor, const FGameplayEffectSpecHandle& InSpecHandle, EArcaneSuccessType& SuccessType);
+
 };
