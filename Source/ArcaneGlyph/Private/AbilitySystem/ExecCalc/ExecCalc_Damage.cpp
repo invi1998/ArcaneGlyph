@@ -91,17 +91,20 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	if (LightComboCount != 0)
 	{
-		const float DamageIncreasePercentLight = (LightComboCount-1) * 0.05f + 1.f;
+		const float DamageIncreasePercentLight = (LightComboCount-1) * 1.05f + 1.f;
 		BaseDamage += DamageIncreasePercentLight;
 	}
 	if (HeavyComboCount != 0)
 	{
-		const float DamageIncreasePercentHeavy = HeavyComboCount * 0.15f + 1.f;
+		const float DamageIncreasePercentHeavy = HeavyComboCount * 2.55f + 1.f;
 		BaseDamage += DamageIncreasePercentHeavy;
 	}
 
-	const float FinalDamage = BaseDamage * SourceAttackPower / TargetDefensePower;
+	float FinalDamage = BaseDamage * SourceAttackPower / TargetDefensePower;
 	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Purple, FString::Printf(TEXT("FinalDamage: %f"), FinalDamage));
+
+	// 伤害向上取整，保留小数点后两位
+	FinalDamage = FMath::CeilToFloat(FinalDamage * 100.f) / 100.f;
 	
 	if (FinalDamage > 0.f)
 	{
