@@ -24,6 +24,8 @@ class ARCANEGLYPH_API UArcaneAttributeSet : public UAttributeSet
 public:
 	UArcaneAttributeSet();
 
+	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
+
 	UPROPERTY(BlueprintReadOnly, Category = "Health")
 	FGameplayAttributeData CurrentHealth;
 	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, CurrentHealth);
