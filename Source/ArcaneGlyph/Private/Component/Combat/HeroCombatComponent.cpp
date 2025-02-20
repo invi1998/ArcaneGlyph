@@ -13,6 +13,21 @@ AArcaneHeroWeapon* UHeroCombatComponent::GetHeroCarriedWeaponByTag(const FGamepl
 	return Cast<AArcaneHeroWeapon>(GetCharacterCarriedWeapon(InWeaponTag));
 }
 
+AArcaneHeroWeapon* UHeroCombatComponent::GetHeroCurrentEquippedWeapon() const
+{
+	return Cast<AArcaneHeroWeapon>(GetCharacterCurrentEquippedWeapon());
+}
+
+float UHeroCombatComponent::GetHeroCurrenEquippedWeaponDamageAtLevel(float InLevel) const
+{
+	if (const AArcaneHeroWeapon* CurrentEquippedWeapon = GetHeroCurrentEquippedWeapon())
+	{
+		const FArcaneHeroWeaponData& WeaponData = CurrentEquippedWeapon->HeroWeaponData;
+		return WeaponData.WeaponBaseDamage.GetValueAtLevel(InLevel);
+	}
+	return 0.f;
+}
+
 void UHeroCombatComponent::OnHitTargetActor(AActor* InHitActor)
 {
 	if (HitOverlappedActors.Contains(InHitActor)) return;

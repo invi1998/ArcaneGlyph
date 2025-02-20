@@ -35,7 +35,7 @@ UHeroCombatComponent* UArcaneHeroGameplayAbility::GetHeroCombatComponentFromActo
 	return nullptr;
 }
 
-FGameplayEffectSpecHandle UArcaneHeroGameplayAbility::MakeHeroDamageEffectSpecHandle(TSubclassOf<UGameplayEffect> InGameplayEffectClass, FGameplayTag InCurrentAttackType, float InBaseDamageValue, int32 InCurrentComboCount)
+FGameplayEffectSpecHandle UArcaneHeroGameplayAbility::MakeHeroDamageEffectSpecHandle(TSubclassOf<UGameplayEffect> InGameplayEffectClass, FGameplayTag InCurrentAttackType, float InBaseDamageValue, int32 InUsedComboCount)
 {
 	check(InGameplayEffectClass);
 
@@ -64,7 +64,7 @@ FGameplayEffectSpecHandle UArcaneHeroGameplayAbility::MakeHeroDamageEffectSpecHa
 	// 设置当前攻击类型和连击数
 	if (InCurrentAttackType.IsValid())
 	{
-		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(InCurrentAttackType, InCurrentComboCount);
+		DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(InCurrentAttackType, InUsedComboCount);
 	}
 	
 	return DamageEffectSpecHandle;

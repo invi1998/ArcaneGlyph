@@ -2,6 +2,7 @@
 
 #pragma once
 #include "GameplayTagContainer.h"
+#include "ScalableFloat.h"
 
 #include "ArcaneStructTypes.generated.h"
 
@@ -38,5 +39,8 @@ struct FArcaneHeroWeaponData
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WeaponData")
 	UInputMappingContext* WeaponInputMappingContext;		// 武器输入映射上下文
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WeaponData")
+	FScalableFloat WeaponBaseDamage;		// 武器基础伤害
 	
 };

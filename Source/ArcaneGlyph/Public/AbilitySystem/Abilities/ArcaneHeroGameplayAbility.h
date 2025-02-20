@@ -27,8 +27,8 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Arcane | Ability")
 	UHeroCombatComponent* GetHeroCombatComponentFromActorInfo();
 
-	UFUNCTION(BlueprintCallable, Category = "Arcane | Ability")
-	FGameplayEffectSpecHandle MakeHeroDamageEffectSpecHandle(TSubclassOf<UGameplayEffect> InGameplayEffectClass, FGameplayTag InCurrentAttackType, float InBaseDamageValue, int32 InCurrentComboCount);
+	UFUNCTION(BlueprintPure, Category = "Arcane | Ability")
+	FGameplayEffectSpecHandle MakeHeroDamageEffectSpecHandle(TSubclassOf<UGameplayEffect> InGameplayEffectClass, FGameplayTag InCurrentAttackType, float InBaseDamageValue, int32 InUsedComboCount);
 
 private:
 	TWeakObjectPtr<AArcaneHeroCharacter> CachedArcaneHeroCharacter;		// 缓存的英雄角色
