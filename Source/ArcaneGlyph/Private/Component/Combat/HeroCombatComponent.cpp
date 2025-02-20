@@ -42,8 +42,20 @@ void UHeroCombatComponent::OnHitTargetActor(AActor* InHitActor)
 		ArcaneGameplayTags::Shared_Event_MeleeAttack,
 		EventData
 	);
+
+	// 发送受击暂停事件
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+		GetOwningPawn(),
+		ArcaneGameplayTags::Player_Event_HitPause,
+		FGameplayEventData()
+	);
 }
 
 void UHeroCombatComponent::OnWeaponPulledFromTargetActor(AActor* InHitActor)
 {
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+		GetOwningPawn(),
+		ArcaneGameplayTags::Player_Event_HitPause,
+		FGameplayEventData()
+	);
 }
