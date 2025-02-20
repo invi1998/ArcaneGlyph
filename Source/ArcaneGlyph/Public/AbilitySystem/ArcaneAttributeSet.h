@@ -48,6 +48,10 @@ public:
 	FGameplayAttributeData DefensePower;
 	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, DefensePower);
 
+	UPROPERTY(BlueprintReadOnly, Category = "Damage")
+	FGameplayAttributeData DamageTaken;
+	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, DamageTaken);		// 伤害承受
+
 protected:
 	
 };
