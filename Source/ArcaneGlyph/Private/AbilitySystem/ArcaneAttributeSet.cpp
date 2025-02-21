@@ -3,7 +3,9 @@
 
 #include "AbilitySystem/ArcaneAttributeSet.h"
 
+#include "ArcaneBlueprintFunctionLibrary.h"
 #include "GameplayEffectExtension.h"
+#include "ArcaneGameplayTags.h"
 
 UArcaneAttributeSet::UArcaneAttributeSet()
 {
@@ -37,6 +39,12 @@ void UArcaneAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 		SetCurrentHealth(FMath::Clamp(OldHealth - DamageDone, 0.f, GetMaxHealth()));
 
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("OldHealth: %f, DamageDone: %f, CurrentHealth: %f"), OldHealth, DamageDone, GetCurrentHealth()));
+
+		if (GetCurrentHealth() <= 0.f)
+		{
+			// 如果当前生命值小于等于0，则添加死亡标签
+			UArcaneBlueprintFunctionLibrary::AddGameplayTagToActorIfNotHas(Data.Target.GetAvatarActor(), ArcaneGameplayTags::Shared_Status_Dead);
+		}
 	}
 	
 }
