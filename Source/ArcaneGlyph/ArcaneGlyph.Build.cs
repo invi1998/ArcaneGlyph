@@ -17,6 +17,8 @@ public class ArcaneGlyph : ModuleRules
 			"EnhancedInput",
 			"GameplayTags",
 			"GameplayTasks",
+			"GameplayAbilities",
+			"UMG",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
