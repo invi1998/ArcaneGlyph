@@ -43,4 +43,7 @@ struct FArcaneHeroWeaponData
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WeaponData")
 	FScalableFloat WeaponBaseDamage;		// 武器基础伤害
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WeaponData")
+	TSoftObjectPtr<UTexture2D> WeaponIcon;		// 武器图标
+	
 };
