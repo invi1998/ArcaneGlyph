@@ -6,6 +6,17 @@
 #include "Component/UI/HeroUIComponent.h"
 #include "Interfaces/PawnUIInterface.h"
 
+void UArcaneWidgetBase::InitEnemyCreatedWidget(AActor* InEnemyActor)
+{
+	if (IPawnUIInterface* PawnUIInterface = Cast<IPawnUIInterface>(InEnemyActor))
+	{
+		if (UEnemyUIComponent* EnemyUIComponent = PawnUIInterface->GetEnemyUIComponent())
+		{
+			BP_OnEnemyCreatedWidgetInitialized(EnemyUIComponent);
+		}
+	}
+}
+
 void UArcaneWidgetBase::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
