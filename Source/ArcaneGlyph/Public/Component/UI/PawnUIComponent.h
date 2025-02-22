@@ -6,6 +6,8 @@
 #include "Component/PawnExtensionComponentBase.h"
 #include "PawnUIComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPercentChangedDelegate, float, NewPercent);
+
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class ARCANEGLYPH_API UPawnUIComponent : public UPawnExtensionComponentBase
@@ -13,14 +15,9 @@ class ARCANEGLYPH_API UPawnUIComponent : public UPawnExtensionComponentBase
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this component's properties
-	UPawnUIComponent();
 
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
+	UPROPERTY(BlueprintAssignable)
+	FOnPercentChangedDelegate OnCurrentHealthChanged;	// 当前生命值变化
 
-public:
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
 };

@@ -94,6 +94,11 @@ UPawnUIComponent* AArcaneHeroCharacter::GetPawnUIComponent() const
 	return HeroUIComponent;
 }
 
+UHeroUIComponent* AArcaneHeroCharacter::GetHeroUIComponent() const
+{
+	return HeroUIComponent;
+}
+
 
 void AArcaneHeroCharacter::BeginPlay()
 {

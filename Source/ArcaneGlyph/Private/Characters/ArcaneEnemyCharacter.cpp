@@ -40,6 +40,11 @@ UPawnUIComponent* AArcaneEnemyCharacter::GetPawnUIComponent() const
 	return EnemyUIComponent.Get();
 }
 
+UEnemyUIComponent* AArcaneEnemyCharacter::GetEnemyUIComponent() const
+{
+	return EnemyUIComponent.Get();
+}
+
 void AArcaneEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();

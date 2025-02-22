@@ -6,6 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
 #include "Interfaces/PawnCombatInterface.h"
+#include "Interfaces/PawnUIInterface.h"
 
 
 UArcaneAbilitySystemComponent* UArcaneBlueprintFunctionLibrary::NativeGetArcaneASCFromActor(AActor* InActor)
@@ -70,4 +71,15 @@ UPawnCombatComponent* UArcaneBlueprintFunctionLibrary::BP_GetPawnCombatComponent
 	UPawnCombatComponent* PawnCombatComponent = NativeGetPawnCombatComponentFromActor(InActor);
 	ValidType = PawnCombatComponent ? EArcaneValidType::Valid : EArcaneValidType::InValid;
 	return PawnCombatComponent;
+}
+
+UPawnUIComponent* UArcaneBlueprintFunctionLibrary::NativeGetPawnUIComponentFromActor(AActor* InActor)
+{
+	check(InActor);
+
+	if (IPawnUIInterface* PawnUIInterface = Cast<IPawnUIInterface>(InActor))
+	{
+		return PawnUIInterface->GetPawnUIComponent();
+	}
+	return nullptr;
 }

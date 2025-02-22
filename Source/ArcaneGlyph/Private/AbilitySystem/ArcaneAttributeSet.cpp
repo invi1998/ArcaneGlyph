@@ -6,6 +6,9 @@
 #include "ArcaneBlueprintFunctionLibrary.h"
 #include "GameplayEffectExtension.h"
 #include "ArcaneGameplayTags.h"
+#include "Component/UI/HeroUIComponent.h"
+#include "Component/UI/PawnUIComponent.h"
+#include "Interfaces/PawnUIInterface.h"
 
 UArcaneAttributeSet::UArcaneAttributeSet()
 {
@@ -21,15 +24,32 @@ void UArcaneAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 {
 	Super::PostGameplayEffectExecute(Data);
 
+	// 如果当前角色没有缓存的 UI 接口，则尝试获取
+	if (!CachedPawnUIInterface.IsValid())
+	{
+		// 如果当前角色实现了 IPawnUIInterface 接口，则缓存
+		CachedPawnUIInterface = TWeakInterfacePtr<IPawnUIInterface>(Data.Target.GetAvatarActor());
+	}
+	checkf(CachedPawnUIInterface.IsValid(), TEXT("%s: PawnUIInterface is not implemented in %s!"), *FString(__FUNCTION__), *Data.Target.GetAvatarActor()->GetName());
+	UPawnUIComponent* PawnUIComponent = CachedPawnUIInterface->GetPawnUIComponent();
+	UEnemyUIComponent* EnemyUIComponent = CachedPawnUIInterface->GetEnemyUIComponent();
+	checkf(PawnUIComponent, TEXT("%s: PawnUIComponent is null in %s!"), *FString(__FUNCTION__), *Data.Target.GetAvatarActor()->GetActorNameOrLabel());
+	
 	// 获取当前生命值和最大生命值
 	if (Data.EvaluatedData.Attribute == GetCurrentHealthAttribute())
 	{
 		SetCurrentHealth(FMath::Clamp(GetCurrentHealth(), 0.f, GetMaxHealth()));
+		PawnUIComponent->OnCurrentHealthChanged.Broadcast(GetCurrentHealth() / GetMaxHealth());
 	}
 	// 获取当前怒气值和最大怒气值
 	if (Data.EvaluatedData.Attribute == GetCurrentRageAttribute())
 	{
 		SetCurrentRage(FMath::Clamp(GetCurrentRage(), 0.f, GetMaxRage()));
+
+		if (UHeroUIComponent* HeroUIComponent = CachedPawnUIInterface->GetHeroUIComponent())
+		{
+			HeroUIComponent->OnCurrentRageChanged.Broadcast(GetCurrentRage() / GetMaxRage());
+		}
 	}
 
 	if (Data.EvaluatedData.Attribute == GetDamageTakenAttribute())
@@ -40,6 +60,8 @@ void UArcaneAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("OldHealth: %f, DamageDone: %f, CurrentHealth: %f"), OldHealth, DamageDone, GetCurrentHealth()));
 
+		PawnUIComponent->OnCurrentHealthChanged.Broadcast(GetCurrentHealth() / GetMaxHealth());
+		
 		if (GetCurrentHealth() <= 0.f)
 		{
 			// 如果当前生命值小于等于0，则添加死亡标签

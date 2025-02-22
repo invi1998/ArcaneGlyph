@@ -8,6 +8,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "ArcaneBlueprintFunctionLibrary.generated.h"
 
+class UPawnUIComponent;
 class UPawnCombatComponent;
 class UArcaneAbilitySystemComponent;
 
@@ -40,6 +41,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary", meta=(DisplayName="Get Pawn Combat Component From Actor", ExpandEnumAsExecs="ValidType"))
 	static UPawnCombatComponent* BP_GetPawnCombatComponentFromActor(AActor* InActor, EArcaneValidType& ValidType);
 
+	static UPawnUIComponent* NativeGetPawnUIComponentFromActor(AActor* InActor);
+	
 };
 
 

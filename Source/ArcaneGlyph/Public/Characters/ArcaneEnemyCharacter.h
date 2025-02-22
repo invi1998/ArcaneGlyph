@@ -23,6 +23,7 @@ public:
 
 	// IPawnUIInterface
 	virtual UPawnUIComponent* GetPawnUIComponent() const override;
+	virtual UEnemyUIComponent* GetEnemyUIComponent() const override;
 	// ~ IPawnUIInterface
 
 	FORCEINLINE UEnemyCombatComponent* GetEnemyCombatComponent() const { return EnemyCombatComponent; }

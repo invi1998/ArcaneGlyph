@@ -33,6 +33,7 @@ public:
 
 	// IPawnUIInterface
 	virtual UPawnUIComponent* GetPawnUIComponent() const override;
+	virtual UHeroUIComponent* GetHeroUIComponent() const override;
 	// ~ IPawnUIInterface
 
 	FORCEINLINE UHeroCombatComponent* GetHeroCombatComponent() const { return HeroCombatComponent; }
