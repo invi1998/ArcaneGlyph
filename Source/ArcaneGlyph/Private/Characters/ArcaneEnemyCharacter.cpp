@@ -5,9 +5,11 @@
 
 #include "Component/Combat/EnemyCombatComponent.h"
 #include "Component/UI/EnemyUIComponent.h"
+#include "Components/WidgetComponent.h"
 #include "DataAssets/StartupData/DataAsset_EnemyStartupDada.h"
 #include "Engine/AssetManager.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Widget/ArcaneWidgetBase.h"
 
 
 // Sets default values
@@ -28,6 +30,10 @@ AArcaneEnemyCharacter::AArcaneEnemyCharacter()
 
 	EnemyCombatComponent = CreateDefaultSubobject<UEnemyCombatComponent>(TEXT("EnemyCombatComponent"));
 	EnemyUIComponent = CreateDefaultSubobject<UEnemyUIComponent>(TEXT("EnemyUIComponent"));
+
+	EnemyHealthWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("EnemyHealthWidgetComponent"));
+	EnemyHealthWidgetComponent->SetupAttachment(GetMesh());
+	EnemyHealthWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 }
 
 UPawnCombatComponent* AArcaneEnemyCharacter::GetPawnCombatComponent() const
@@ -48,6 +54,11 @@ UEnemyUIComponent* AArcaneEnemyCharacter::GetEnemyUIComponent() const
 void AArcaneEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (UArcaneWidgetBase* HealthWidget = Cast<UArcaneWidgetBase>(EnemyHealthWidgetComponent->GetUserWidgetObject()))
+	{
+		HealthWidget->InitEnemyCreatedWidget(this);
+	}
 	
 }
 
