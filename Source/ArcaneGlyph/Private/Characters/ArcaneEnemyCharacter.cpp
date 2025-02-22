@@ -4,6 +4,7 @@
 #include "Characters/ArcaneEnemyCharacter.h"
 
 #include "Component/Combat/EnemyCombatComponent.h"
+#include "Component/UI/EnemyUIComponent.h"
 #include "DataAssets/StartupData/DataAsset_EnemyStartupDada.h"
 #include "Engine/AssetManager.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -26,11 +27,17 @@ AArcaneEnemyCharacter::AArcaneEnemyCharacter()
 	GetCharacterMovement()->BrakingDecelerationWalking = 1024.0f;		// 角色停止时的减速度
 
 	EnemyCombatComponent = CreateDefaultSubobject<UEnemyCombatComponent>(TEXT("EnemyCombatComponent"));
+	EnemyUIComponent = CreateDefaultSubobject<UEnemyUIComponent>(TEXT("EnemyUIComponent"));
 }
 
 UPawnCombatComponent* AArcaneEnemyCharacter::GetPawnCombatComponent() const
 {
 	return EnemyCombatComponent.Get();
+}
+
+UPawnUIComponent* AArcaneEnemyCharacter::GetPawnUIComponent() const
+{
+	return EnemyUIComponent.Get();
 }
 
 void AArcaneEnemyCharacter::BeginPlay()

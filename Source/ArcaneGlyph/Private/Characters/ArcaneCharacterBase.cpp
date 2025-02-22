@@ -29,6 +29,11 @@ UPawnCombatComponent* AArcaneCharacterBase::GetPawnCombatComponent() const
 	return nullptr;
 }
 
+UPawnUIComponent* AArcaneCharacterBase::GetPawnUIComponent() const
+{
+	return nullptr;
+}
+
 void AArcaneCharacterBase::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);

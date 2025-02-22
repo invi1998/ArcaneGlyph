@@ -7,6 +7,7 @@
 #include "GameplayTagContainer.h"
 #include "ArcaneHeroCharacter.generated.h"
 
+class UHeroUIComponent;
 struct FInputActionValue;
 class UCameraComponent;
 class USpringArmComponent;
@@ -30,6 +31,10 @@ public:
 	virtual UPawnCombatComponent* GetPawnCombatComponent() const override;
 	// ~ IPawnCombatInterface
 
+	// IPawnUIInterface
+	virtual UPawnUIComponent* GetPawnUIComponent() const override;
+	// ~ IPawnUIInterface
+
 	FORCEINLINE UHeroCombatComponent* GetHeroCombatComponent() const { return HeroCombatComponent; }
 
 protected:
@@ -46,6 +51,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 	UHeroCombatComponent* HeroCombatComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	UHeroUIComponent* HeroUIComponent;
 	
 #pragma endregion
 

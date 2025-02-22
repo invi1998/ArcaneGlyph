@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 #include "Interfaces/PawnCombatInterface.h"
+#include "Interfaces/PawnUIInterface.h"
 #include "ArcaneCharacterBase.generated.h"
 
 class UDataAsset_StartupDadaBase;
@@ -13,7 +14,7 @@ class UArcaneAttributeSet;
 class UArcaneAbilitySystemComponent;
 
 UCLASS()
-class ARCANEGLYPH_API AArcaneCharacterBase : public ACharacter, public IAbilitySystemInterface, public IPawnCombatInterface
+class ARCANEGLYPH_API AArcaneCharacterBase : public ACharacter, public IAbilitySystemInterface, public IPawnCombatInterface, public IPawnUIInterface
 {
 	GENERATED_BODY()
 
@@ -30,6 +31,10 @@ public:
 	// IPawnCombatInterface
 	virtual UPawnCombatComponent* GetPawnCombatComponent() const override;
 	// ~ IPawnCombatInterface
+
+	// IPawnUIInterface
+	virtual UPawnUIComponent* GetPawnUIComponent() const override;
+	// ~ IPawnUIInterface
 
 protected:
 	// ~ Begin APawn Interface

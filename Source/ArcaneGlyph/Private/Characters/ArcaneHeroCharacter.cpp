@@ -9,6 +9,7 @@
 #include "Camera/CameraComponent.h"
 #include "Component/Combat/HeroCombatComponent.h"
 #include "Component/Input/ArcaneInputComponent.h"
+#include "Component/UI/HeroUIComponent.h"
 #include "DataAssets/StartupData/DataAsset_HeroStartupDada.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -37,6 +38,7 @@ AArcaneHeroCharacter::AArcaneHeroCharacter()
 	GetCharacterMovement()->JumpZVelocity = 600.0f;		// 角色跳跃高度
 
 	HeroCombatComponent = CreateDefaultSubobject<UHeroCombatComponent>(TEXT("HeroCombatComponent"));
+	HeroUIComponent = CreateDefaultSubobject<UHeroUIComponent>(TEXT("HeroUIComponent"));
 }
 
 void AArcaneHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -85,6 +87,11 @@ void AArcaneHeroCharacter::PossessedBy(AController* NewController)
 UPawnCombatComponent* AArcaneHeroCharacter::GetPawnCombatComponent() const
 {
 	return HeroCombatComponent;
+}
+
+UPawnUIComponent* AArcaneHeroCharacter::GetPawnUIComponent() const
+{
+	return HeroUIComponent;
 }
 
 

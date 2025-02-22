@@ -6,6 +6,7 @@
 #include "ArcaneCharacterBase.h"
 #include "ArcaneEnemyCharacter.generated.h"
 
+class UEnemyUIComponent;
 class UEnemyCombatComponent;
 
 UCLASS()
@@ -20,6 +21,10 @@ public:
 	virtual UPawnCombatComponent* GetPawnCombatComponent() const override;
 	// ~ IPawnCombatInterface
 
+	// IPawnUIInterface
+	virtual UPawnUIComponent* GetPawnUIComponent() const override;
+	// ~ IPawnUIInterface
+
 	FORCEINLINE UEnemyCombatComponent* GetEnemyCombatComponent() const { return EnemyCombatComponent; }
 
 protected:
@@ -28,6 +33,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
 	TObjectPtr<UEnemyCombatComponent> EnemyCombatComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
+	TObjectPtr<UEnemyUIComponent> EnemyUIComponent;
 
 private:
 	void InitEnemyStartupData();
