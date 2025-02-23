@@ -261,3 +261,150 @@ void AArcaneAIController::OnEnemyPerceptionUpdated(AActor* Actor, FAIStimulus St
 ```
 
 ![image-20250223184357453](.\image-20250223184357453.png)
+
+
+
+# 通用团队ID（GenericTeam ID) 获取团队态度，用于判断敌人和友军
+
+为了使感知点正常工作，我需要使用通用名称ID来定义哪个骨骼是敌人，哪个骨骼是友方。
+
+在AIController的继承接口`IGenericTeamAgentInterface`源码里，`virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const`被用来获取团队对我们AI的态度，用以定义哪个团队ID，它是友方还是敌方单位。
+
+```c++
+UENUM(BlueprintType)
+namespace ETeamAttitude
+{
+	enum Type : int
+	{
+		Friendly,
+		Neutral,
+		Hostile,
+	};
+}
+
+
+class IGenericTeamAgentInterface
+{
+	GENERATED_IINTERFACE_BODY()
+
+	/** Assigns Team Agent to given TeamID */
+	virtual void SetGenericTeamId(const FGenericTeamId& TeamID) {}
+	
+	/** Retrieve team identifier in form of FGenericTeamId */
+	virtual FGenericTeamId GetGenericTeamId() const { return FGenericTeamId::NoTeam; }
+
+	/** Retrieved owner attitude toward given Other object */
+	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const
+	{ 
+		const IGenericTeamAgentInterface* OtherTeamAgent = Cast<const IGenericTeamAgentInterface>(&Other);
+		return OtherTeamAgent ? FGenericTeamId::GetAttitude(GetGenericTeamId(), OtherTeamAgent->GetGenericTeamId())
+			: ETeamAttitude::Neutral;
+	}
+};
+```
+
+
+
+## Enemy团队ID设置：
+
+所以，我们需要在子类AI控制类中重写该虚函数
+
+```c++
+	// IGenericTeamAgentInterface Begin
+	// 获取团队态度，用于判断敌人和友军
+	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
+
+	// ~IGenericTeamAgentInterface End
+```
+
+Cpp
+
+```c++
+ETeamAttitude::Type AArcaneAIController::GetTeamAttitudeTowards(const AActor& Other) const
+{
+	// 如果 Other 是一个 Pawn
+	if (const APawn* PawnToCheck = Cast<APawn>(&Other))
+	{
+		// 如果 PawnToCheck 有一个 IGenericTeamAgentInterface 接口
+		if (const IGenericTeamAgentInterface* TeamAgent = Cast<IGenericTeamAgentInterface>(PawnToCheck->GetController()))
+		{
+			// return Super::GetTeamAttitudeTowards(*PawnToCheck->GetController());
+
+			// 如果 PawnToCheck 的团队 ID 不等于当前控制器的团队 ID
+			if (TeamAgent->GetGenericTeamId() != GetGenericTeamId())
+			{
+				return ETeamAttitude::Hostile;
+			}
+		}
+	}
+
+	return ETeamAttitude::Friendly;
+}
+```
+
+然后设置好团队ID获取策略后，在构造函数里设置好当前AI控制器的团队ID，比如：目前我们在做的是Enemy的AI控制器，那么我把这个Enemy的团队ID设置为1，如下：
+
+```c++
+AIController::SetGenericTeamId(FGenericTeamId(1));	// 设置团队 ID: 1, 用于区分敌人和友军,团队 ID 为 0 表示友军，团队 ID 为 1 表示敌人
+```
+
+
+
+## 玩家控制器团队ID设置
+
+然后，我们需要给我们的玩家控制器也添加这个团队ID，所以需要玩家控制器也实现`IGenericTeamAgentInterface`接口
+
+```c++
+#include "CoreMinimal.h"
+#include "GenericTeamAgentInterface.h"
+#include "GameFramework/PlayerController.h"
+#include "ArcaneHeroController.generated.h"
+
+/**
+ * 
+ */
+UCLASS()
+class ARCANEGLYPH_API AArcaneHeroController : public APlayerController, public IGenericTeamAgentInterface
+{
+	GENERATED_BODY()
+
+public:
+	AArcaneHeroController();
+
+	// IGenericTeamAgentInterface Begin
+	// 获取团队 ID
+	virtual FGenericTeamId GetGenericTeamId() const override;
+	// ~IGenericTeamAgentInterface End
+
+protected:
+	virtual void BeginPlay() override;
+
+private:
+	FGenericTeamId HeroTeamID;	// 英雄团队 ID（玩家团队 ID）
+	
+};
+```
+
+
+
+```c++
+AArcaneHeroController::AArcaneHeroController()
+{
+	// IGenericTeamAgentInterface::SetGenericTeamId(0);
+	// 这里和AIController中的设置团队 ID 的方式不同，AIController中是通过 AAIController::SetGenericTeamId 来设置团队 ID
+	// 而因为我们这里没有继承自 AAIController，而 IGenericTeamAgentInterface::SetGenericTeamId 设置团队 ID 是一个空函数，所以这里设置团队 ID 是无效的
+	// 所以我们在玩家控制器里新增一个成员变量来保存团队 ID FGenericTeamId HeroTeamID;	// 英雄团队 ID（玩家团队 ID）
+	HeroTeamID = FGenericTeamId(0);
+}
+
+FGenericTeamId AArcaneHeroController::GetGenericTeamId() const
+{
+	return HeroTeamID;
+}
+```
+
+启动游戏，按下`'`撇号键，进入Debug面板，然后按数字键`5`，打开AI感知调试面板，就可以看到当前AIController对我们的感知态势了。（顺便一提：按下1：打开或者关闭AI调试，按下2，打开或者关闭行为树调试，按下3：打开或者关闭Abilities，按下4：打开或者关闭EQS（环境查询））
+
+![image-20250223193214859](.\image-20250223193214859.png)
+
+如图，敌人正在感知我们的玩家和远方的DarkNight，它身边的骷髅兵单位为友军单位，没有在它的感知策略里，因为当前我只给骷髅兵添加了AIController，远方的DarkNight并没有添加AI，所以，在骷髅兵的视角，我和那个DarkNight都是敌方单位，这也正符合我们代码里关于获取团队ID的逻辑。

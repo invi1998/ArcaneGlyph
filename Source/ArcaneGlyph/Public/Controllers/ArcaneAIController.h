@@ -17,6 +17,12 @@ class ARCANEGLYPH_API AArcaneAIController : public AAIController
 public:
 	AArcaneAIController(const FObjectInitializer& ObjectInitializer);
 
+	// IGenericTeamAgentInterface Begin
+	// 获取团队态度，用于判断敌人和友军
+	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
+
+	// ~IGenericTeamAgentInterface End
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UAIPerceptionComponent> EnemyAIPerceptionComponent;	// 敌人 AI 感知组件

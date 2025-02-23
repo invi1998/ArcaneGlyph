@@ -3,6 +3,7 @@
 
 #include "Controllers/ArcaneAIController.h"
 
+#include "ArcaneDebugHelper.h"
 #include "Navigation/CrowdFollowingComponent.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
@@ -31,10 +32,38 @@ AArcaneAIController::AArcaneAIController(const FObjectInitializer& ObjectInitial
 	EnemyAIPerceptionComponent->SetDominantSense(UAISenseConfig_Sight::StaticClass());	// 设置主要感知，这里设置为视觉感知
 	// 当感知更新时（检测到敌人），就会调用 OnEnemyPerceptionUpdated 这个回调函数
 	EnemyAIPerceptionComponent->OnTargetPerceptionUpdated.AddUniqueDynamic(this, &AArcaneAIController::OnEnemyPerceptionUpdated);	// 添加感知更新事件
+
+	AAIController::SetGenericTeamId(FGenericTeamId(1));	// 设置团队 ID: 1, 用于区分敌人和友军,团队 ID 为 0 表示友军，团队 ID 为 1 表示敌人
+
+}
+
+ETeamAttitude::Type AArcaneAIController::GetTeamAttitudeTowards(const AActor& Other) const
+{
+	// 如果 Other 是一个 Pawn
+	if (const APawn* PawnToCheck = Cast<APawn>(&Other))
+	{
+		// 如果 PawnToCheck 有一个 IGenericTeamAgentInterface 接口
+		if (const IGenericTeamAgentInterface* TeamAgent = Cast<IGenericTeamAgentInterface>(PawnToCheck->GetController()))
+		{
+			// return Super::GetTeamAttitudeTowards(*PawnToCheck->GetController());
+
+			// 如果 PawnToCheck 的团队 ID 不等于当前控制器的团队 ID
+			if (TeamAgent->GetGenericTeamId() != GetGenericTeamId())
+			{
+				return ETeamAttitude::Hostile;
+			}
+		}
+	}
+
+	return ETeamAttitude::Friendly;
 }
 
 void AArcaneAIController::OnEnemyPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
+	if (Stimulus.WasSuccessfullySensed() && Actor)
+	{
+		Debug::Print("Enemy Detected: " + Actor->GetActorNameOrLabel(), FColor::Green);
+	}
 }
 
 
