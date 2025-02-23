@@ -1,7 +1,7 @@
 ﻿// INVI_1998 All Rights Reserved.
 
 
-#include "Player/ArcaneHeroController.h"
+#include "ArcaneGlyph/Public/Controllers/ArcaneHeroController.h"
 
 
 AArcaneHeroController::AArcaneHeroController()

@@ -6,7 +6,7 @@
 #include "ArcaneGameplayTags.h"
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
 #include "Characters/ArcaneHeroCharacter.h"
-#include "Player/ArcaneHeroController.h"
+#include "ArcaneGlyph/Public/Controllers/ArcaneHeroController.h"
 
 AArcaneHeroCharacter* UArcaneHeroGameplayAbility::GetHeroCharacterFromActorInfo()
 {
