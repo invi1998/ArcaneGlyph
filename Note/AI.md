@@ -1022,3 +1022,124 @@ void UBTService_CheckPlayerVisibility::TickNode(UBehaviorTreeComponent& OwnerCom
 另外一个问题就是，如果距离小于等于600，我们是否希望AI立即开始侧移（绕着玩家攻击移动）。答案也是肯定的，所以当距离小于等于这个值时，AI应该开始侧身移动。
 
 所以，就是为什么这里我们需要选择Both。
+
+
+
+# 定位目标角色
+
+![image-20250223233114246](.\image-20250223233114246.png)
+
+如图，我们给射击范围内的行为分支新增了一个侧身移动的序列。对于这个侧身移动，我们首先要做的事情是将AI旋转面向玩家（目标角色）。我们需要他平滑旋转，这就意味着我们需要每帧都更新他的旋转，即我们需要在当前序列添加一个新的服务，因为该服务需要每帧进行，所以这里我们通过C++创建服务。
+
+![image-20250223233633095](.\image-20250223233633095.png)
+
+在创建C++类的时候，我们可以选择很多BTService基类，比如最基础BTService，选择这个，我们将从0开始，需要做很多事情，一个比较好的选择是选择BTService_BlackboardBase，但是这里需要注意，我们千万不能选择从BTService_BlueprintBase继承，因为这个类仅仅被用于蓝图资产子类化，这里，我们选择从最基础开始，选BTService创建我们的服务。
+
+1. 对于一个行为树服务，我们可以设置的第一件事就是这个节点的名称，该名称是属于该父节点类的一个变量（NodeName）
+2. 第二个就是服务节点的描述文本，即StaticDescription成员变量。通过设置该变量，我们可以自定义在蓝图服务中想要看到的描述文本。
+3. 接下来就是我们需要指定的黑板键，我希望能在服务节点的蓝图细节面板的下拉菜单中可以有供我们选择使用的黑板键。为了实现这点，我们需要在代码里创建`FBlackboardKeySelector`类型变量。
+
+```c++
+#pragma once
+
+#include "CoreMinimal.h"
+#include "BehaviorTree/BTService.h"
+#include "BTService_OrientToTargetActor.generated.h"
+
+/**
+ * 
+ */
+UCLASS()
+class ARCANEGLYPH_API UBTService_OrientToTargetActor : public UBTService
+{
+	GENERATED_BODY()
+
+	UBTService_OrientToTargetActor();
+
+	// UBTNode interface begin
+	virtual void InitializeFromAsset(UBehaviorTree& Asset) override;	// 从资产初始化
+	virtual FString GetStaticDescription() const override;				// 获取静态描述
+	// ~UBTNode interface end
+
+	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
+
+	UPROPERTY(EditAnywhere, Category="Target")
+	FBlackboardKeySelector InTargetActorKey;	// 目标角色键选择器
+
+	UPROPERTY(EditAnywhere, Category="Target")
+	float RotationInterpSpeed;	// 旋转插值速度
+
+public:
+	
+};
+```
+
+
+
+```c++
+// INVI_1998 All Rights Reserved.
+
+
+#include "AI/BTService_OrientToTargetActor.h"
+
+#include "AIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "BehaviorTree/BlackboardData.h"
+#include "Kismet/KismetMathLibrary.h"
+
+UBTService_OrientToTargetActor::UBTService_OrientToTargetActor()
+{
+	NodeName = TEXT("朝向目标旋转");	// 设置节点名称：本地旋转到目标角色
+
+	INIT_SERVICE_NODE_NOTIFY_FLAGS();	// 初始化服务节点通知标志
+
+	RotationInterpSpeed = 5.f;		// 旋转插值速度
+	Interval = 0.0f;				// 间隔：因为我们需要每帧都旋转，所以这里设置为0
+	RandomDeviation = 0.0f;			// 随机偏差：因为我们不需要随机偏差，所以这里设置为0
+
+	// 通过这个函数来添加一个对象过滤器，这个过滤器可以让我们在下拉菜单中保留我们需要的键的类型
+	// GET_MEMBER_NAME_CHECKED(ThisClass, InTargetActorKey), AActor::StaticClass() 这个函数的第一个参数是我们的类，第二个参数是我们需要过滤的键，第三个参数是我们需要过滤的类型
+	// 这里的意思是：我们需要过滤的是 AActor 类型的键，我们的类是 ThisClass，我们需要过滤的键是 InTargetActorKey
+	InTargetActorKey.AddObjectFilter(this, GET_MEMBER_NAME_CHECKED(ThisClass, InTargetActorKey), AActor::StaticClass());
+}
+
+void UBTService_OrientToTargetActor::InitializeFromAsset(UBehaviorTree& Asset)
+{
+	Super::InitializeFromAsset(Asset);
+
+	// 在这个函数中，我们需要手动解析我们的黑板键选择器
+	if (UBlackboardData* BBAsset = GetBlackboardAsset())
+	{
+		InTargetActorKey.ResolveSelectedKey(*BBAsset);	// 解析选择的键
+	}
+}
+
+FString UBTService_OrientToTargetActor::GetStaticDescription() const
+{
+	const FString KeyDescription = InTargetActorKey.SelectedKeyName.ToString();
+	return FString::Printf(TEXT("Orient rotation to %s key %s"), *KeyDescription, *GetStaticServiceDescription());
+}
+
+void UBTService_OrientToTargetActor::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+{
+	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
+
+	// 差值旋转
+	if (AActor* TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(InTargetActorKey.SelectedKeyName)))
+	{
+		if (APawn* ControlledPawn = OwnerComp.GetAIOwner()->GetPawn())
+		{
+			// FRotator TargetRotation = (TargetActor->GetActorLocation() - ControlledPawn->GetActorLocation()).Rotation();
+			// ControlledPawn->SetActorRotation(FMath::RInterpTo(ControlledPawn->GetActorRotation(), TargetRotation, DeltaSeconds, RotationInterpSpeed));
+
+			const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(ControlledPawn->GetActorLocation(), TargetActor->GetActorLocation());
+			ControlledPawn->SetActorRotation(FMath::RInterpTo(ControlledPawn->GetActorRotation(), LookAtRotation, DeltaSeconds, RotationInterpSpeed));
+		}
+	}
+}
+
+```
+
+然后回到蓝图，给我的行为树添加朝向目标旋转的服务
+
+![image-20250224002213827](.\image-20250224002213827.png)
