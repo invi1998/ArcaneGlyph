@@ -740,3 +740,249 @@ void AArcaneAIController::BeginPlay()
 
    ![image-20250223220307737](.\image-20250223220307737.png)
 
+
+
+# 行为树节点类型
+
+![image-20250223220549409](.\image-20250223220549409.png)
+
+目前，我们的EnemyAI只是简单让Enemy移动到玩家前面，我们需要将Enemy分散排布在玩家周围。要实现这样的效果，我们就需要添加更多行为树节点。
+
+#### **关键节点类型**
+
+| 节点类型      | 功能描述                                                     |
+| ------------- | ------------------------------------------------------------ |
+| **Root**      | 行为树的起点，所有逻辑从Root开始执行                         |
+| **Selector**  | 按顺序执行子节点，直到某个子节点成功（类似逻辑“或”）         |
+| **Sequence**  | 按顺序执行子节点，直到某个子节点失败（类似逻辑“与”）         |
+| **Task**      | 具体行为（如移动、攻击、等待）                               |
+| **Decorator** | 附加在节点上的条件判断（如“是否看到玩家？”），决定是否允许执行子节点 |
+| **Service**   | 后台持续运行的任务（如定期更新目标位置），不影响主流程但提供数据支持 |
+
+#### 
+
+在 Unreal Engine 5 的行为树中，**Selector**、**Sequence**、**Task**、**Service** 和 **Decorator** 是构建复杂 AI 逻辑的核心节点。它们各自有不同的功能和应用场景，以下是它们的详细解析：
+
+---
+
+### **1. Selector（选择器）**
+#### **功能**
+- **逻辑行为**：按顺序执行子节点，直到某个子节点返回 **`Success`**。
+- **核心思想**：实现“优先级选择”，类似于编程中的 **`if-else`** 或 **逻辑“或”**。
+
+#### **执行流程**
+1. 从左到右依次执行子节点。
+2. 如果某个子节点返回 `Success`，则 Selector 立即返回 `Success`，停止后续子节点的执行。
+3. 如果所有子节点均返回 `Failure`，则 Selector 返回 `Failure`。
+
+#### **典型应用场景**
+- **敌人行为决策**：  
+  ```text
+  [Selector]
+  ├─ [攻击玩家]（如果玩家在攻击范围内）
+  ├─ [追击玩家]（如果玩家可见）
+  └─ [巡逻]（默认行为）
+  ```
+- **状态优先级**：处理紧急事件（如“血量低时逃跑”优先于其他行为）。
+
+#### **示例代码（伪逻辑）**
+```cpp
+// 伪代码逻辑
+bool Execute() {
+    for (Child in Children) {
+        if (Child.Execute() == Success) {
+            return Success;
+        }
+    }
+    return Failure;
+}
+```
+
+---
+
+### **2. Sequence（序列）**
+#### **功能**
+- **逻辑行为**：按顺序执行子节点，直到某个子节点返回 **`Failure`**。
+- **核心思想**：实现“顺序执行所有步骤”，类似于编程中的 **`and`** 或 **逻辑“与”**。
+
+#### **执行流程**
+1. 从左到右依次执行子节点。
+2. 如果某个子节点返回 `Failure`，则 Sequence 立即返回 `Failure`，停止后续执行。
+3. 如果所有子节点均返回 `Success`，则 Sequence 返回 `Success`。
+
+#### **典型应用场景**
+- **多步骤任务**：  
+  ```text
+  [Sequence]
+  ├─ [移动到目标位置]
+  ├─ [播放开启动画]
+  └─ [激活机关]
+  ```
+- **依赖条件**：必须按顺序完成前置任务（如“开门”后才能“进入房间”）。
+
+#### **示例代码（伪逻辑）**
+```cpp
+bool Execute() {
+    for (Child in Children) {
+        if (Child.Execute() == Failure) {
+            return Failure;
+        }
+    }
+    return Success;
+}
+```
+
+---
+
+### **3. Task（任务）**
+#### **功能**
+- **具体行为**：执行一个具体的动作，如移动、攻击、播放动画等。
+- **执行状态**：返回 `Success`、`Failure` 或 `Running`（表示任务仍在执行中）。
+
+#### **常见内置任务**
+| 任务类型             | 功能描述                         |
+| -------------------- | -------------------------------- |
+| `Move To`            | 移动到 Blackboard 指定的目标位置 |
+| `Wait`               | 等待指定时间                     |
+| `Play Animation`     | 播放动画                         |
+| `Find Nearest Enemy` | 搜索最近的敌人并写入 Blackboard  |
+
+#### **自定义任务**
+可以通过继承 `BTTaskNode`（C++）或创建 `Blueprint Task` 实现自定义逻辑，例如：
+```cpp
+// C++ 示例：自定义攻击任务
+UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) {
+    AICharacter->Attack();
+    return EBTNodeResult::Succeeded;
+}
+```
+
+#### **执行状态说明**
+- **`Success`**：任务完成（如成功到达目标位置）。
+- **`Failure`**：任务失败（如路径被阻挡）。
+- **`Running`**：任务进行中（需持续更新，如移动中）。
+
+---
+
+### **4. Service（服务）**
+#### **功能**
+- **后台逻辑**：附加在 **Composite 节点**（如 Selector 或 Sequence）上，周期性执行。
+- **核心用途**：更新 Blackboard 数据或检测环境变化，不影响主逻辑流程。
+
+#### **执行特点**
+- **触发时机**：当父节点（如 Selector/Sequence）处于 `Running` 状态时，按设定的 `Interval` 周期执行。
+- **无直接返回值**：仅用于数据更新，不参与行为树的主决策流程。
+
+#### **典型应用场景**
+- **环境检测**：  
+  ```text
+  [Service] "检测玩家是否在视野内"（每0.5秒更新 `CanSeePlayer`）
+  ```
+- **数据更新**：  
+  ```text
+  [Service] "更新弹药数量"（每1秒读取背包数据到 `CurrentAmmo`）
+  ```
+
+#### **示例代码（伪逻辑）**
+```cpp
+// C++ 示例：检测玩家是否可见
+void UBTService_CheckPlayerVisibility::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) {
+    if (AICharacter->CanSeePlayer()) {
+        Blackboard->SetValueAsBool("CanSeePlayer", true);
+    } else {
+        Blackboard->SetValueAsBool("CanSeePlayer", false);
+    }
+}
+```
+
+---
+
+### **5. Decorator（装饰器）**
+#### **功能**
+- **条件判断**：附加在节点上，决定是否允许执行该节点或其子节点。
+- **核心用途**：实现条件分支（如“是否看到玩家？”或“血量是否低于30%？”）。
+
+#### **常见类型**
+| 装饰器类型              | 功能描述                         |
+| ----------------------- | -------------------------------- |
+| `Blackboard`            | 检查 Blackboard 键值是否符合条件 |
+| `Cooldown`              | 添加冷却时间，限制节点执行频率   |
+| `Loop`                  | 循环执行子节点                   |
+| `Force Success/Failure` | 强制返回成功或失败，用于调试     |
+
+#### **执行模式**
+- **`Observer Aborts`** 选项：  
+  - `None`：仅在节点启动时检查一次条件。  
+  - `Self`：如果条件变为不满足，中断当前节点。  
+  - `Lower Priority`：如果条件变为满足，中断低优先级分支。
+
+#### **典型应用场景**
+```text
+[Selector]
+├─ [Sequence]（攻击）
+│  └─ [Decorator] "HasAmmo == true"
+│     └─ [Task] "射击"
+└─ [Sequence]（装弹）
+   └─ [Task] "装弹动作"
+```
+
+---
+
+### **节点对比总结**
+| **节点类型**  | **角色**     | **返回值**              | **执行特点**                 | **典型场景**       |
+| ------------- | ------------ | ----------------------- | ---------------------------- | ------------------ |
+| **Selector**  | 决策分支     | Success/Failure         | 选择第一个成功的子节点       | 优先级行为选择     |
+| **Sequence**  | 顺序执行     | Success/Failure         | 要求所有子节点成功           | 多步骤任务链       |
+| **Task**      | 具体动作     | Success/Failure/Running | 执行实际行为（如移动、攻击） | 所有具体行为实现   |
+| **Service**   | 后台数据更新 | 无                      | 周期性运行，不阻塞主流程     | 环境检测、数据同步 |
+| **Decorator** | 条件门控     | 允许/禁止               | 控制节点是否可执行           | 条件判断、冷却限制 |
+
+---
+
+### **最佳实践与常见问题**
+#### **1. 避免过度嵌套**
+- 复杂逻辑可以拆分为 **子行为树（Subtree）**，提高可维护性。
+- 示例：将“战斗逻辑”和“巡逻逻辑”拆分为独立子树。
+
+#### **2. 合理使用 `Running` 状态**
+- 长时间 `Running` 的任务（如移动）需确保能被外部事件中断（如通过 Decorator）。
+
+#### **3. 性能优化**
+- **Service** 的 `Interval` 不宜过短（避免高频检测）。
+- 对非活跃 AI 禁用行为树（通过 `StopBehaviorTree`）。
+
+#### **4. 调试技巧**
+- 使用 `AI.Debug.BT.ShowDebug 1` 可视化行为树执行路径。
+- 通过 `Force Success/Failure` 装饰器快速测试分支逻辑。
+
+---
+
+### **实际案例：敌人AI巡逻与追击**
+```text
+[Selector]
+├─ [Sequence]（追击玩家）
+│  ├─ [Decorator] "CanSeePlayer == true"
+│  ├─ [Task] "移动到玩家位置"
+│  └─ [Task] "近战攻击"
+│       └─ [Service] "每0.2秒检测玩家距离"（更新 `IsInAttackRange`）
+└─ [Sequence]（巡逻）
+   ├─ [Task] "选择随机路径点"
+   └─ [Task] "移动到路径点"
+       └─ [Service] "每5秒重新选择路径点"
+```
+
+---
+
+掌握这些节点的用法后，你可以设计出从简单巡逻到复杂团队协作的各类 AI 行为。如果需要更深入的实现细节，建议参考 UE5 官方文档中的 **《Behavior Tree User Guide》** 或分析示例项目（如 **《Lyra Starter Game》**）中的 AI 实现。
+
+
+
+## Serverce GetDistToTarget （获取到目标点的距离）
+
+在蓝图里，我们创建一个新的服务，用于获取到目标点的距离。对于服务的创建，一些简单的服务类型我们直接在蓝图里创建，对于一些计算密集型需求，我们采用C++进行创建。
+
+![image-20250223222907039](.\image-20250223222907039.png)
+
+然后在服务中重写ReceiveTickAI事件，计算到目标点的距离，然后将结果设置到黑板中，以供后续行为树使用。
+
+![image-20250223223256792](.\image-20250223223256792.png)
