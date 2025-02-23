@@ -589,3 +589,114 @@ void AArcaneAIController::OnEnemyPerceptionUpdated(AActor* Actor, FAIStimulus St
 此外，因为Detour Crowd Avoidance（绕道人群避障）是需要基于导航网格运作的，所以我们也需要在地图场景里添加导航。添加好后按P可以查看导航网格工作范围（绿色）
 
 ![image-20250223201732234](.\image-20250223201732234.png)
+
+自此，我们就能实现简单的AI跟随了。
+
+
+
+# 配置AI避障（Configure AI Avoidance）
+
+现在我们的AI已经可以实现绕道避障了，为了看清楚算法正在做什么，我们可以在游戏启动后，通过控制台开启可视化调试：
+
+`ai.crowd.DebugSelectedActors 1`，在我们按下回车后，发现什么都没发生，这是因为我们需要在关卡选择一个代理才能显示调试信息，我们按下`F8`,然后鼠标点击你想查看的避障角色（选择一个骷髅兵）,就可以看到该单位的避障算法的绘制了。
+
+![image-20250223202804014](.\image-20250223202804014.png)
+
+再按一下`F8`就可以关闭选择，进行正常查看
+
+![image-20250223202926625](.\image-20250223202926625.png)
+
+![image-20250223203121468](.\image-20250223203121468.png)
+
+从调试图中我们可以看到算法如何对我们代理的角色周围的环境进行采样，以及路径如何生成。
+
+为了获得更好的导航效果，我们可以在AIController进行更多细致化的设置，比如设置是否启用人群避障，设置人群避让的质量，设置避让组，设置避让半径等。所以回到控制器基类中，我们可以添加这些设置项作为我们的成员变量进行控制。
+
+```c++
+private:
+	UPROPERTY(EditDefaultsOnly, Category="Detor Crowd Avoidance Config")
+	bool bEnableCrowdAvoidance = true;	// 是否启用人群避让
+
+	// meta = (EditCondition = "bEnableCrowdAvoidance")) 意味着只有当 bEnableCrowdAvoidance 为 true 时，才会显示这个属性（即只有在启用人群避让时，才会显示这个属性，才能进行该项设置）
+	// , UIMin = "1", UIMax = "4" 则是设置了该属性的最小值和最大值，让我能在编辑器中可以像滑动条一样调整这个整数值，进而控制人群避让的质量
+	UPROPERTY(EditDefaultsOnly, Category="Detor Crowd Avoidance Config", meta = (EditCondition = "bEnableCrowdAvoidance", UIMin = "1", UIMax = "4"))
+	int32 DetourCrowdAvoidanceQuality = 4;	// 人群避让质量
+
+	UPROPERTY(EditDefaultsOnly, Category="Detor Crowd Avoidance Config", meta = (EditCondition = "bEnableCrowdAvoidance"))
+	float CollisionQueryRange = 600.0f;		// 人群避让范围
+	
+```
+
+然后在BeginPlay中，获取路径跟随组件，进行路径跟随设置
+
+```C++
+void AArcaneAIController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (UCrowdFollowingComponent* CrowdFollowingComp = Cast<UCrowdFollowingComponent>(GetPathFollowingComponent()))
+	{
+		// 是否启用人群避让
+		CrowdFollowingComp->SetCrowdSimulationState(bEnableCrowdAvoidance ? ECrowdSimulationState::Enabled : ECrowdSimulationState::ObstacleOnly);
+
+		// 设置人群避让质量
+		switch (DetourCrowdAvoidanceQuality)
+		{
+		case 1:
+			CrowdFollowingComp->SetCrowdAvoidanceQuality(ECrowdAvoidanceQuality::Low);
+			break;
+		case 2:
+			CrowdFollowingComp->SetCrowdAvoidanceQuality(ECrowdAvoidanceQuality::Medium);
+			break;
+		case 3:
+			CrowdFollowingComp->SetCrowdAvoidanceQuality(ECrowdAvoidanceQuality::Good);
+			break;
+		case 4:
+			CrowdFollowingComp->SetCrowdAvoidanceQuality(ECrowdAvoidanceQuality::High);
+			break;
+		default: break;
+		}
+
+		// 设置避让组：1表示我们当前的AI应该对其他AI（EnemyAI，因为我们此前设置的团队ID 1 就是我们的EnemyTeam)进行避让
+		CrowdFollowingComp->SetAvoidanceGroup(1);				// 设置避让组
+		CrowdFollowingComp->SetGroupsToAvoid(1);		// 设置需要避让的组
+
+		// 设置人群避让半径
+		CrowdFollowingComp->SetCrowdCollisionQueryRange(CollisionQueryRange);
+		
+	}
+}
+```
+
+
+
+![image-20250223210037464](.\image-20250223210037464.png)
+
+在启用人群避让，避让质量设置为最高，避让半径600，避让效果如下
+
+![image-20250223210247493](.\image-20250223210247493.png)
+
+在关闭人群避让后
+
+![image-20250223210507614](.\image-20250223210507614.png)
+
+![image-20250223210547309](.\image-20250223210547309.png)
+
+可以看到我们规划避障路径用的权重点位就消失了，自然就失去了人群绕道功能。
+
+我们将避让质量改为最低，查看避让效果
+
+![image-20250223210748099](.\image-20250223210748099.png)
+
+![image-20250223210833008](.\image-20250223210833008.png)
+
+可以看到，避让质量控制的就是我们避障规划里检测点位的数量，数量越多，就能规划处更细致的路径点位。
+
+然后我们修改一下避让半径，改为100查看
+
+![image-20250223211036163](.\image-20250223211036163.png)
+
+![image-20250223211119201](.\image-20250223211119201.png)
+
+可以看到避让半径改为100后（红色调试圈）明显小于规划点位的辐射范围，自然就失去了人群避让的作用，哪怕你设置的避让质量为最高，因为在避让半径内，没有合适的规划点用于规划人群避让，所以该避让半径也是一个影响避让算法效果的重要因素。
+

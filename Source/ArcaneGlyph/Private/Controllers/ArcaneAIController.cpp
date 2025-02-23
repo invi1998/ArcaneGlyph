@@ -15,10 +15,6 @@
 AArcaneAIController::AArcaneAIController(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UCrowdFollowingComponent>("PathFollowingComponent"))
 {
-	if (UCrowdFollowingComponent* CrowdFollowingComp = Cast<UCrowdFollowingComponent>(GetPathFollowingComponent()))
-	{
-	}
-
 	AISenseConfig_Sight = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("AISenseConfig_Sight"));
 	AISenseConfig_Sight->DetectionByAffiliation.bDetectEnemies = true;		// 是否检测敌人：开启
 	AISenseConfig_Sight->DetectionByAffiliation.bDetectNeutrals = false;		// 检测中立单位：关闭
@@ -57,6 +53,43 @@ ETeamAttitude::Type AArcaneAIController::GetTeamAttitudeTowards(const AActor& Ot
 	}
 
 	return ETeamAttitude::Friendly;
+}
+
+void AArcaneAIController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (UCrowdFollowingComponent* CrowdFollowingComp = Cast<UCrowdFollowingComponent>(GetPathFollowingComponent()))
+	{
+		// 是否启用人群避让
+		CrowdFollowingComp->SetCrowdSimulationState(bEnableCrowdAvoidance ? ECrowdSimulationState::Enabled : ECrowdSimulationState::ObstacleOnly);
+
+		// 设置人群避让质量
+		switch (DetourCrowdAvoidanceQuality)
+		{
+		case 1:
+			CrowdFollowingComp->SetCrowdAvoidanceQuality(ECrowdAvoidanceQuality::Low);
+			break;
+		case 2:
+			CrowdFollowingComp->SetCrowdAvoidanceQuality(ECrowdAvoidanceQuality::Medium);
+			break;
+		case 3:
+			CrowdFollowingComp->SetCrowdAvoidanceQuality(ECrowdAvoidanceQuality::Good);
+			break;
+		case 4:
+			CrowdFollowingComp->SetCrowdAvoidanceQuality(ECrowdAvoidanceQuality::High);
+			break;
+		default: break;
+		}
+
+		// 设置避让组：1表示我们当前的AI应该对其他AI（EnemyAI，因为我们此前设置的团队ID 1 就是我们的EnemyTeam)进行避让
+		CrowdFollowingComp->SetAvoidanceGroup(1);				// 设置避让组
+		CrowdFollowingComp->SetGroupsToAvoid(1);		// 设置需要避让的组
+
+		// 设置人群避让半径
+		CrowdFollowingComp->SetCrowdCollisionQueryRange(CollisionQueryRange);
+		
+	}
 }
 
 void AArcaneAIController::OnEnemyPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
