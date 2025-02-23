@@ -44,8 +44,8 @@ ETeamAttitude::Type AArcaneAIController::GetTeamAttitudeTowards(const AActor& Ot
 		{
 			// return Super::GetTeamAttitudeTowards(*PawnToCheck->GetController());
 
-			// 如果 PawnToCheck 的团队 ID 不等于当前控制器的团队 ID
-			if (TeamAgent->GetGenericTeamId() != GetGenericTeamId())
+			// 如果 PawnToCheck 的团队 ID 小于当前控制器的团队 ID, 则返回敌对态度(因为只有玩家的团队 ID 为 0，而敌人的团队 ID 为 1，而其他未被设置团队 ID 的 Actor 的团队 ID 为 255)
+			if (TeamAgent->GetGenericTeamId() < GetGenericTeamId())
 			{
 				return ETeamAttitude::Hostile;
 			}
@@ -94,11 +94,14 @@ void AArcaneAIController::BeginPlay()
 
 void AArcaneAIController::OnEnemyPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
-	if (Stimulus.WasSuccessfullySensed() && Actor)
+	if (UBlackboardComponent* BlackboardComp = GetBlackboardComponent())
 	{
-		if (UBlackboardComponent* BlackboardComp = GetBlackboardComponent())
+		if (!BlackboardComp->GetValueAsObject(FName("TargetActor")))
 		{
-			BlackboardComp->SetValueAsObject(FName("TargetActor"), Actor);
+			if (Stimulus.WasSuccessfullySensed() && Actor)
+			{
+				BlackboardComp->SetValueAsObject(FName("TargetActor"), Actor);
+			}
 		}
 	}
 }
