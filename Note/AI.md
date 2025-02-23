@@ -408,3 +408,184 @@ FGenericTeamId AArcaneHeroController::GetGenericTeamId() const
 ![image-20250223193214859](.\image-20250223193214859.png)
 
 如图，敌人正在感知我们的玩家和远方的DarkNight，它身边的骷髅兵单位为友军单位，没有在它的感知策略里，因为当前我只给骷髅兵添加了AIController，远方的DarkNight并没有添加AI，所以，在骷髅兵的视角，我和那个DarkNight都是敌方单位，这也正符合我们代码里关于获取团队ID的逻辑。
+
+
+
+# 行为树（BehaviorTree）和黑板（BlackBoard）
+
+好的！在Unreal Engine 5（UE5）中，**Behavior Tree（行为树）**和**Blackboard（黑板）**是构建复杂AI逻辑的核心工具。它们共同协作，实现AI的决策制定和数据管理。以下是它们的详细解析：
+
+---
+
+### **1. Behavior Tree（行为树）**
+#### **基本概念**
+行为树是一种**树状逻辑结构**，用于定义AI的决策流程。它通过**节点**（Nodes）的组合实现条件判断、任务执行和流程控制，类似于流程图。
+
+#### **关键节点类型**
+| 节点类型      | 功能描述                                                     |
+| ------------- | ------------------------------------------------------------ |
+| **Root**      | 行为树的起点，所有逻辑从Root开始执行                         |
+| **Selector**  | 按顺序执行子节点，直到某个子节点成功（类似逻辑“或”）         |
+| **Sequence**  | 按顺序执行子节点，直到某个子节点失败（类似逻辑“与”）         |
+| **Task**      | 具体行为（如移动、攻击、等待）                               |
+| **Decorator** | 附加在节点上的条件判断（如“是否看到玩家？”），决定是否允许执行子节点 |
+| **Service**   | 后台持续运行的任务（如定期更新目标位置），不影响主流程但提供数据支持 |
+
+#### **典型应用场景**
+- **敌人AI**：巡逻 → 发现玩家 → 追击 → 攻击 → 返回巡逻
+- **NPC交互**：对话 → 移动至目标 → 播放动画 → 结束任务
+- **复杂决策**：根据血量选择逃跑或战斗，优先攻击最近目标
+
+#### **UE5中的实现**
+1. **创建行为树**：右键点击内容浏览器 → **AI** → **Behavior Tree**
+2. **节点连接**：拖拽节点并连线，设置参数（如移动目标的Blackboard键）
+3. **绑定到AI控制器**：在AI控制器的`RunBehaviorTree`函数中指定行为树资源
+
+---
+
+### **2. Blackboard（黑板）**
+#### **基本概念**
+黑板是一个**键值对存储系统**，用于在行为树节点之间共享数据（如目标位置、敌人引用、状态标志）。它与行为树解耦，可被多个AI复用。
+
+#### **核心功能**
+- **数据类型**：支持`Vector`、`Object`、`Bool`、`Float`等基础类型
+- **动态更新**：通过Task节点或外部代码（如蓝图/C++）修改值
+- **作用域**：每个AI实例拥有独立的Blackboard副本
+
+#### **常见键值示例**
+| 键名             | 类型   | 用途               |
+| ---------------- | ------ | ------------------ |
+| `TargetActor`    | Object | 当前追击的玩家对象 |
+| `MoveToLocation` | Vector | 移动目标的坐标     |
+| `IsAlerted`      | Bool   | 是否处于警戒状态   |
+| `CurrentAmmo`    | Int    | 剩余弹药数量       |
+
+#### **UE5中的实现**
+1. **创建黑板**：右键点击内容浏览器 → **AI** → **Blackboard**
+2. **定义键值**：点击`New Key`，设置名称和类型
+3. **绑定到行为树**：在行为树的`Blackboard Asset`属性中选择黑板资源
+
+---
+
+### **Behavior Tree与Blackboard协作流程**
+```cpp
+// 示例：AI追击玩家的逻辑链
+1. [Decorator] "HasTarget?" → 检查Blackboard的`TargetActor`是否为有效对象
+   ↓ 如果为真
+2. [Sequence]
+   ├─ [Task] "MoveTo Target" → 使用`TargetActor`位置更新移动
+   ├─ [Service] "Check Distance" → 每0.5秒更新Blackboard的`DistanceToTarget`
+   └─ [Task] "Shoot" → 当距离小于5米时触发攻击
+```
+
+---
+
+### **高级技巧与优化**
+#### **1. 分层行为树**
+- 使用`Subtree`节点复用通用逻辑（如“战斗模式”、“逃跑模式”）
+- 通过`Behavior Tree Component`动态切换子树
+
+#### **2. 异步任务**
+- 使用`BTTask_BlueprintBase`创建非阻塞任务（如播放动画时并行检测伤害）
+
+#### **3. 调试工具**
+- 在游戏运行时按 **“'”**（反引号键）打开控制台，输入：
+  - `AI.Debug.BT.ShowDebug 1` → 显示行为树当前执行路径
+  - `AI.Debug.Blackboard 1` → 显示所有Blackboard键值
+
+#### **4. 性能优化**
+- 避免高频更新键值（如用`Service`的`Interval`参数限制检测频率）
+- 对非必要AI禁用行为树（通过`StopBehaviorTree`）
+
+---
+
+### **对比传统状态机**
+| **特性**    | **行为树**                          | **状态机**                     |
+| ----------- | ----------------------------------- | ------------------------------ |
+| **复杂度**  | 适合中大型逻辑（模块化扩展）        | 适合简单逻辑（易陷入状态爆炸） |
+| **可读性**  | 树状结构直观，支持注释              | 状态转移图可能混乱             |
+| **调试**    | 实时可视化执行路径                  | 需手动打印状态日志             |
+| **UE5集成** | 原生支持Decorator/Service等高级特性 | 需自定义实现                   |
+
+---
+
+### **实际案例：潜行敌人AI**
+1. **Blackboard键值**：
+   - `CanSeePlayer`（Bool）
+   - `LastKnownPosition`（Vector）
+2. **行为树逻辑**：
+   ```
+   [Selector]
+   ├─ [Sequence] (追击)
+   │  ├─ [Decorator] "CanSeePlayer == True"
+   │  ├─ [Task] "移动到玩家位置"
+   │  └─ [Task] "近战攻击"
+   └─ [Sequence] (巡逻)
+      ├─ [Task] "选择随机路径点"
+      └─ [Task] "移动至路径点"
+   ```
+3. **动态响应**：当玩家进入视野时，`CanSeePlayer`被设为True，触发追击分支。
+
+---
+
+### **常见问题解决**
+- **Q：Blackboard数据不同步？**
+  - 确保键名拼写一致，检查数据更新时机（如使用`Event Tick`可能引发性能问题）
+
+- **Q：Decorator条件不触发？**
+  - 开启调试工具，确认Blackboard值是否符合预期
+  - 检查Decorator的`Observer Aborts`设置（是否允许中断当前行为）
+
+- **Q：行为树卡死？**
+  - 避免无限循环（如总返回`Running`的Task）
+  - 使用`Force Instanced`模式确保节点状态独立
+
+---
+
+行为树和黑板是UE5 AI系统的灵魂组件，熟练掌握后可以实现从简单NPC到BOSS级复杂AI的所有需求。建议结合官方示例项目（如《Lyra》或《Action RPG》）深入实践！
+
+
+
+## 工程实践
+
+### 添加黑板和行为树
+
+这里我们在蓝图里新建一个黑板蓝图，在骷髅兵文件夹下新建一个骷髅兵行为树。
+
+在黑板里我们新增一个目标变量
+
+![image-20250223195852344](.\image-20250223195852344.png)
+
+然后行为树我们添加一个简单的移动行为，让他向着我们的目标移动，移动接受范围设置150
+
+![image-20250223200032820](.\image-20250223200032820.png)
+
+### 在AI控制器中运行行为树
+
+行为树和黑板设置完毕后，现在就需要让我们的骷髅兵执行该行为。回到骷髅兵的AI控制器，我们需要重写`OnPossess`函数。通过`RunBehaviorTree`节点运行行为树。
+
+![image-20250223200446275](.\image-20250223200446275.png)
+
+### 设置黑板键的值
+
+然后下一步就是设置我们的移动目标`TargetActor`黑板键。这里我们就用AI控制器里视觉感知目标作为我们的行为树移动目标
+
+```c++
+void AArcaneAIController::OnEnemyPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
+{
+	if (Stimulus.WasSuccessfullySensed() && Actor)
+	{
+		if (UBlackboardComponent* BlackboardComp = GetBlackboardComponent())
+		{
+			BlackboardComp->SetValueAsObject(FName("TargetActor"), Actor);
+		}
+	}
+}
+
+```
+
+### 添加导航网格
+
+此外，因为Detour Crowd Avoidance（绕道人群避障）是需要基于导航网格运作的，所以我们也需要在地图场景里添加导航。添加好后按P可以查看导航网格工作范围（绿色）
+
+![image-20250223201732234](.\image-20250223201732234.png)

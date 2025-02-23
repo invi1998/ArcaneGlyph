@@ -4,6 +4,7 @@
 #include "Controllers/ArcaneAIController.h"
 
 #include "ArcaneDebugHelper.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Navigation/CrowdFollowingComponent.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
@@ -62,7 +63,10 @@ void AArcaneAIController::OnEnemyPerceptionUpdated(AActor* Actor, FAIStimulus St
 {
 	if (Stimulus.WasSuccessfullySensed() && Actor)
 	{
-		Debug::Print("Enemy Detected: " + Actor->GetActorNameOrLabel(), FColor::Green);
+		if (UBlackboardComponent* BlackboardComp = GetBlackboardComponent())
+		{
+			BlackboardComp->SetValueAsObject(FName("TargetActor"), Actor);
+		}
 	}
 }
 
