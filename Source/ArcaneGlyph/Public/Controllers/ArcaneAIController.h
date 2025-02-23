@@ -6,6 +6,9 @@
 #include "Runtime/AIModule/Classes/AIController.h"
 #include "ArcaneAIController.generated.h"
 
+class UAIPerceptionComponent;
+class UAISenseConfig_Sight;
+
 UCLASS()
 class ARCANEGLYPH_API AArcaneAIController : public AAIController
 {
@@ -13,5 +16,15 @@ class ARCANEGLYPH_API AArcaneAIController : public AAIController
 
 public:
 	AArcaneAIController(const FObjectInitializer& ObjectInitializer);
+
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UAIPerceptionComponent> EnemyAIPerceptionComponent;	// 敌人 AI 感知组件
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UAISenseConfig_Sight> AISenseConfig_Sight;					// AI 感知配置：视觉
+
+	UFUNCTION()
+	virtual void OnEnemyPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
 
 };
