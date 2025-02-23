@@ -1165,7 +1165,7 @@ void UBTService_OrientToTargetActor::TickNode(UBehaviorTreeComponent& OwnerComp,
 | **EQS Query** | 定义环境查询的逻辑，包含生成器（Generators）和测试（Tests）的组合 |
 | **Generator** | 生成待评估的候选位置或对象（如导航网格点、特定Actor周围的随机点） |
 | **Test**      | 对每个候选点进行评分（如距离、安全性、视线遮挡）             |
-| **Context**   | 提供查询所需的上下文数据（如AI自身位置、目标Actor引用）      |
+| **Context**   | 提供查询所需的上下文数据（如AI自身位置、目标Actor引用），为我们的生成器提供参考点 |
 
 ---
 
