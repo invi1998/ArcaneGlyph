@@ -3,34 +3,14 @@
 
 #include "Component/Combat/EnemyCombatComponent.h"
 
+#include "ArcaneDebugHelper.h"
 
-// Sets default values for this component's properties
-UEnemyCombatComponent::UEnemyCombatComponent()
+
+void UEnemyCombatComponent::OnHitTargetActor(AActor* InHitActor)
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
-}
-
-
-// Called when the game starts
-void UEnemyCombatComponent::BeginPlay()
-{
-	Super::BeginPlay();
-
-	// ...
+	if (InHitActor)
+	{
+		Debug::Print(TEXT("EnemyCombatComponent::OnHitTargetActor: Hit Actor: " + InHitActor->GetName()));
+	}
 	
 }
-
-
-// Called every frame
-void UEnemyCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
-                                          FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
-}
-

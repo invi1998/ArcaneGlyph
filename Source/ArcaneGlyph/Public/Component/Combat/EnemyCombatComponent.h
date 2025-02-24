@@ -13,15 +13,5 @@ class ARCANEGLYPH_API UEnemyCombatComponent : public UPawnCombatComponent
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this component's properties
-	UEnemyCombatComponent();
-
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
-
-public:
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
-	                           FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void OnHitTargetActor(AActor* InHitActor) override;		// 当击中目标Actor时调用
 };

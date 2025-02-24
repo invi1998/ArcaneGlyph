@@ -4,7 +4,7 @@
 
 namespace Debug
 {
-	static void Print(const FString& Msg, const FColor& Color = FColor::White, int32 Key = -1)
+	static void Print(const FString& Msg, const FColor& Color = FColor::MakeRandomColor(), int32 Key = -1)
 	{
 		if (GEngine)
 		{

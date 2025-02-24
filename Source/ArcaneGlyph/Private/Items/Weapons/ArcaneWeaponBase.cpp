@@ -3,6 +3,8 @@
 
 #include "Items/Weapons/ArcaneWeaponBase.h"
 
+#include "ArcaneBlueprintFunctionLibrary.h"
+#include "ArcaneDebugHelper.h"
 #include "Components/BoxComponent.h"
 
 
@@ -32,13 +34,16 @@ void AArcaneWeaponBase::OnWeaponCollisionBoxBeginOverlap(UPrimitiveComponent* Ov
 {
 	APawn* WeaponOwningPawn = GetInstigator<APawn>();
 	checkf(WeaponOwningPawn, TEXT("OnWeaponCollisionBoxBeginOverlap: Weapon (%s) must have a instigator pawn!"), *GetName());
+	
 	if (APawn* HitPawn = Cast<APawn>(OtherActor))
 	{
-		if (HitPawn != WeaponOwningPawn)
+		// 如果目标是敌对的
+		if (UArcaneBlueprintFunctionLibrary::IsTargetPawnHostile(WeaponOwningPawn, HitPawn))
 		{
 			// 通知武器拥有者
 			OnWeaponHitTarget.ExecuteIfBound(HitPawn);
 		}
+		
 	}
 }
 
@@ -48,7 +53,8 @@ void AArcaneWeaponBase::OnWeaponCollisionBoxEndOverlap(UPrimitiveComponent* Over
 	checkf(WeaponOwningPawn, TEXT("OnWeaponCollisionBoxEndOverlap: Weapon (%s) must have a instigator pawn!"), *GetName());
 	if (APawn* HitPawn = Cast<APawn>(OtherActor))
 	{
-		if (HitPawn != WeaponOwningPawn)
+		// 如果目标是敌对的
+		if (UArcaneBlueprintFunctionLibrary::IsTargetPawnHostile(WeaponOwningPawn, HitPawn))
 		{
 			// 通知武器拥有者
 			OnWeaponPulledTarget.ExecuteIfBound(HitPawn);

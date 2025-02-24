@@ -42,6 +42,10 @@ public:
 	static UPawnCombatComponent* BP_GetPawnCombatComponentFromActor(AActor* InActor, EArcaneValidType& ValidType);
 
 	static UPawnUIComponent* NativeGetPawnUIComponentFromActor(AActor* InActor);
+
+	// 查询目标是否为敌对
+	UFUNCTION(BlueprintPure, Category = "Arcane | FunctionLibrary")
+	static bool IsTargetPawnHostile(APawn* InQueryPawn, APawn* InTargetPawn);
 	
 };
 

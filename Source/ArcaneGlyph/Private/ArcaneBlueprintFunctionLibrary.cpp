@@ -4,6 +4,8 @@
 #include "ArcaneBlueprintFunctionLibrary.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "ArcaneDebugHelper.h"
+#include "GenericTeamAgentInterface.h"
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
 #include "Interfaces/PawnCombatInterface.h"
 #include "Interfaces/PawnUIInterface.h"
@@ -82,4 +84,19 @@ UPawnUIComponent* UArcaneBlueprintFunctionLibrary::NativeGetPawnUIComponentFromA
 		return PawnUIInterface->GetPawnUIComponent();
 	}
 	return nullptr;
+}
+
+bool UArcaneBlueprintFunctionLibrary::IsTargetPawnHostile(APawn* InQueryPawn, APawn* InTargetPawn)
+{
+	check(InQueryPawn && InTargetPawn);
+
+	IGenericTeamAgentInterface* QueryTeamAgent = Cast<IGenericTeamAgentInterface>(InQueryPawn->GetController());
+	IGenericTeamAgentInterface* TargetTeamAgent = Cast<IGenericTeamAgentInterface>(InTargetPawn->GetController());
+
+	if (QueryTeamAgent && TargetTeamAgent)
+	{
+		return QueryTeamAgent->GetGenericTeamId() != TargetTeamAgent->GetGenericTeamId();
+	}
+
+	return false;
 }
