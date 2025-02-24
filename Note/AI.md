@@ -1697,3 +1697,5 @@ float Direction = UKismetAnimationLibrary::CalculateDirection(
 
 
 ![image-20250224124413828](.\image-20250224124413828.png)
+
+![image-20250224132334480](.\image-20250224132334480.png)
