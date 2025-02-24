@@ -2,7 +2,7 @@
 
 
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
-#include "AbilitySystem/Abilities/ArcaneGameplayAbility.h"
+#include "AbilitySystem/Abilities/ArcaneHeroGameplayAbility.h"
 #include "Items/Weapons/ArcaneHeroWeapon.h"
 
 void UArcaneAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& InInputTag)
@@ -62,5 +62,26 @@ void UArcaneAbilitySystemComponent::RemoveGrantHeroWeaponAbilities(AArcaneHeroWe
 
 		GrantedAbilitySpecHandles.Empty();
 	}
+}
+
+bool UArcaneAbilitySystemComponent::TryActivateAbilityByTag(FGameplayTag InAbilityTag)
+{
+	check(InAbilityTag.IsValid());
+
+	TArray<FGameplayAbilitySpec*> MatchingAbilitySpecs;
+	GetActivatableGameplayAbilitySpecsByAllMatchingTags(InAbilityTag.GetSingleTagContainer(), MatchingAbilitySpecs);
+
+	if (!MatchingAbilitySpecs.IsEmpty())
+	{
+		const int32 RandomAbilityIndex = FMath::RandRange(0, MatchingAbilitySpecs.Num() - 1);
+		FGameplayAbilitySpec* AbilitySpecChoose = MatchingAbilitySpecs[RandomAbilityIndex];
+		check(AbilitySpecChoose);
+		if (!AbilitySpecChoose->IsActive())
+		{
+			return TryActivateAbility(AbilitySpecChoose->Handle);
+		}
+	}
+
+	return false;
 }
 

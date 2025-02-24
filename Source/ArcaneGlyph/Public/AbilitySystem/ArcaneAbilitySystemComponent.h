@@ -26,5 +26,8 @@ public:
 	// UPARAM(ref) 旨在告诉蓝图调用者，这个参数是一个输入参数，但是它是一个引用参数，这意味着它可以被修改, 但是不会被返回
 	UFUNCTION(BlueprintCallable, Category = "Arcane | AbilitySystem")
 	void RemoveGrantHeroWeaponAbilities(AArcaneHeroWeapon* InWeapon);
+
+	UFUNCTION(BlueprintCallable, Category = "Arcane | AbilitySystem")
+	bool TryActivateAbilityByTag(FGameplayTag InAbilityTag);
 	
 };
