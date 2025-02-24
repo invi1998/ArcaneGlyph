@@ -1360,6 +1360,8 @@ EQS 是UE5中实现智能环境响应的核心工具，尤其适合需要动态�
 
 # BehaviorTree Task
 
+## 切换侧移状态
+
 上述过程我们已经实现了AI查找并移动到侧身移动的点位，现在，是时候实现侧身移动了。这里就需要我们通过Task实现。
 
 我们先创建一个Enemy基类Task蓝图。
@@ -1415,3 +1417,283 @@ EQS 是UE5中实现智能环境响应的核心工具，尤其适合需要动态�
 然后就是将该任务添加到行为树执行流程中。
 
 ![image-20250224121907353](.\image-20250224121907353.png)
+
+
+
+## 计算侧身移动方向
+
+现在我们可以改变它的侧身行走速度，并在状态启用时为其添加一个游戏标签。
+
+因为要实现角色的侧身移动，我们的混合空间就不再是1维驱动了，除了基础的行走速度，还应该加入行走方向，所以该混合空间应该是一个2D的混合空间。所以我们需要在基类里添加这个行走方向的计算。
+
+```c++
+UCLASS()
+class ARCANEGLYPH_API UArcaneCharacterAnimInstance : public UArcaneBaseAnimInstance
+{
+	GENERATED_BODY()
+
+public:
+	virtual void NativeInitializeAnimation() override;
+
+	// 该动画实例的更新函数是线程安全的，运行在独立的工作线程中，而非游戏线程中，因此可以在该函数中进行一些计算密集型的操作
+	// 这意味着使用这个函数可以提高动画的性能，使用该函数来计算我们需要的动画数据是一个很大的优化项
+	// 但是需要注意的是，该函数中不能访问任何非线程安全的数据，比如 Actor 的成员变量等
+	virtual void NativeThreadSafeUpdateAnimation(float DeltaSeconds) override;
+
+protected:
+	UPROPERTY()
+	TObjectPtr<AArcaneCharacterBase> OwnerCharacter;
+
+	UPROPERTY()
+	TObjectPtr<UCharacterMovementComponent> OwnerCharacterMovementComponent;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
+	float GroundSpeed;	// 地面速度
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
+	bool bHasAcceleration;	// 是否有加速度
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
+	float LocomotionDirection;	// 角色运动方向与面朝方向之间的水平平面角度差
+
+private:
+	
+};
+```
+
+然后，计算该角度差，我们可以使用UE自己的函数库UKismetAnimationLibrary，记得需要添加模块`AnimGraphRuntime`。同时对于动画里这种牵扯到计算的，我们一般都放入到单独的线程函数里计算，以提高性能。
+
+```c++
+void UArcaneCharacterAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
+{
+	Super::NativeThreadSafeUpdateAnimation(DeltaSeconds);
+
+	if (!IsValid(OwnerCharacter) || !IsValid(OwnerCharacterMovementComponent))
+	{
+		return;
+	}
+
+	GroundSpeed = OwnerCharacterMovementComponent->Velocity.Size2D();
+	bHasAcceleration = OwnerCharacterMovementComponent->GetCurrentAcceleration().SizeSquared2D() > 0.0f;
+
+	// 计算当前移动的方向
+	LocomotionDirection = UKismetAnimationLibrary::CalculateDirection(OwnerCharacter->GetVelocity(), OwnerCharacter->GetActorRotation());
+}
+```
+
+下面是代码里用到的`UKismetAnimationLibrary::CalculateDirection`函数原型和实现。
+
+```C++
+	/** 
+	 * Returns degree of the angle between Velocity and Rotation forward vector
+	 * The range of return will be from [-180, 180]. Useful for feeding directional blendspaces.
+	 * @param	Velocity		The velocity to use as direction relative to BaseRotation
+	 * @param	BaseRotation	The base rotation, e.g. of a pawn
+	 */
+	UFUNCTION(BlueprintPure, Category="Animation|Utilities")
+	static ANIMGRAPHRUNTIME_API float CalculateDirection(const FVector& Velocity, const FRotator& BaseRotation);
+```
+
+函数实现
+
+```c++
+float UKismetAnimationLibrary::CalculateDirection(const FVector& Velocity, const FRotator& BaseRotation)
+{
+	if (!Velocity.IsNearlyZero())
+	{
+		const FMatrix RotMatrix = FRotationMatrix(BaseRotation);
+		const FVector ForwardVector = RotMatrix.GetScaledAxis(EAxis::X);
+		const FVector RightVector = RotMatrix.GetScaledAxis(EAxis::Y);
+		const FVector NormalizedVel = Velocity.GetSafeNormal2D();
+
+		// get a cos(alpha) of forward vector vs velocity
+		const float ForwardCosAngle = static_cast<float>(FVector::DotProduct(ForwardVector, NormalizedVel));
+		// now get the alpha and convert to degree
+		float ForwardDeltaDegree = FMath::RadiansToDegrees(FMath::Acos(ForwardCosAngle));
+
+		// depending on where right vector is, flip it
+		const float RightCosAngle = static_cast<float>(FVector::DotProduct(RightVector, NormalizedVel));
+		if (RightCosAngle < 0.f)
+		{
+			ForwardDeltaDegree *= -1.f;
+		}
+
+		return ForwardDeltaDegree;
+	}
+
+	return 0.f;
+}
+```
+
+
+
+在 Unreal Engine 中，`UKismetAnimationLibrary::CalculateDirection` 函数用于计算角色运动方向与面朝方向之间的水平平面角度差。该函数在动画系统中非常关键，常用于驱动角色的移动混合空间（Blend Space），实现不同方向动画的平滑过渡。以下是对该函数的详细解析：
+
+---
+
+### **函数功能**
+#### **输入参数**
+- **`Velocity`**：角色的速度向量（世界坐标系），表示当前移动方向。
+- **`BaseRotation`**：角色的旋转（如Pawn的朝向），用于确定“前向”基准方向。
+
+#### **返回值**
+- **角度范围**：`[-180°, 180°]`，表示速度方向与角色面朝方向的水平偏差角。
+  - **正角度**：速度方向在角色右侧（右转）。
+  - **负角度**：速度方向在角色左侧（左转）。
+  - **0°**：速度方向与面朝方向一致。
+
+#### **核心用途**
+- **动画混合**：将角度值输入到Blend Space，根据方向切换行走、奔跑、转身动画。
+- **AI行为**：判断移动方向是否需要调整角色朝向（如追击目标时修正路径）。
+
+---
+
+### **实现步骤解析**
+```cpp
+float UKismetAnimationLibrary::CalculateDirection(
+    const FVector& Velocity, 
+    const FRotator& BaseRotation
+) {
+    // 1. 若速度接近零，直接返回0（无需计算）
+    if (!Velocity.IsNearlyZero()) {
+        // 2. 将BaseRotation转换为旋转矩阵，提取前向和右向向量
+        const FMatrix RotMatrix = FRotationMatrix(BaseRotation);
+        const FVector ForwardVector = RotMatrix.GetScaledAxis(EAxis::X); // 前向（X轴）
+        const FVector RightVector = RotMatrix.GetScaledAxis(EAxis::Y);   // 右向（Y轴）
+
+        // 3. 归一化速度向量，并投影到水平平面（忽略Z轴）
+        const FVector NormalizedVel = Velocity.GetSafeNormal2D();
+
+        // 4. 计算前向向量与速度的夹角（余弦值）
+        const float ForwardCosAngle = FVector::DotProduct(ForwardVector, NormalizedVel);
+        float ForwardDeltaDegree = FMath::RadiansToDegrees(FMath::Acos(ForwardCosAngle));
+
+        // 5. 通过右向向量判断方向正负
+        const float RightCosAngle = FVector::DotProduct(RightVector, NormalizedVel);
+        if (RightCosAngle < 0.f) {
+            ForwardDeltaDegree *= -1.f; // 速度在左侧时角度为负
+        }
+
+        return ForwardDeltaDegree;
+    }
+    return 0.f; // 无速度时返回0
+}
+```
+
+---
+
+### **关键步骤详解**
+#### **1. 速度为零的快捷处理**
+- **逻辑**：若速度接近零（`Velocity.IsNearlyZero()`），直接返回0°，避免无意义计算。
+- **意义**：角色静止时，默认方向与面朝方向一致。
+
+#### **2. 旋转矩阵与轴向提取**
+- **`FRotationMatrix(BaseRotation)`**：将角色的旋转转换为旋转矩阵。
+- **`GetScaledAxis`**：提取矩阵的X轴（前向）和Y轴（右向）单位向量。
+  - 例如，若角色面朝正北，则：
+    - `ForwardVector = (1, 0, 0)`（假设X轴为前）
+    - `RightVector = (0, 1, 0)`（Y轴为右）
+
+#### **3. 速度归一化与投影**
+- **`GetSafeNormal2D()`**：将速度向量归一化，并投影到水平平面（忽略Z轴高度）。
+  - 避免垂直方向（如跳跃、坠落）影响水平方向判断。
+
+#### **4. 计算前向夹角**
+- **点积公式**：  
+  $$
+  \cos(\theta) = \frac{\text{ForwardVector} \cdot \text{NormalizedVel}}{|\text{ForwardVector}| \cdot |\text{NormalizedVel}|}
+  $$
+  
+  - 由于向量已归一化，点积直接为余弦值。
+- **反余弦转换**：通过`FMath::Acos`得到弧度值，再转为角度。
+
+#### **5. 方向正负判断**
+- **右向点积**：计算速度向量与右向向量的点积（`RightCosAngle`）。
+  - **`RightCosAngle < 0`**：表示速度方向在角色左侧（相对于前向和右向构成的平面）。
+  - 此时将角度设为负值，确保最终范围为`[-180°, 180°]`。
+
+---
+
+### **几何示意图**
+```
+                ForwardVector (X轴)
+                   ↑
+                   | θ
+          Left     |     Right
+(-θ) <------------o------------> (+θ)
+                   | 
+                   | 
+        RightVector (Y轴)
+```
+
+- **θ**：通过前向向量与速度向量计算得到的基础角度（0°~180°）。
+- **正负号**：由右向向量点积决定，左侧为负，右侧为正。
+
+---
+
+### **实际应用示例**
+#### **场景1：角色向前移动**
+- **速度向量**：`(100, 0, 0)`（与前向一致）
+- **计算过程**：
+  - `ForwardCosAngle = 1.0` → `θ = 0°`
+  - `RightCosAngle = 0.0` → 不调整符号
+- **返回值**：`0°`
+
+#### **场景2：角色向右移动**
+- **速度向量**：`(0, 100, 0)`（与右向一致）
+- **计算过程**：
+  - `ForwardCosAngle = 0.0` → `θ = 90°`
+  - `RightCosAngle = 1.0` → 符号不变
+- **返回值**：`90°`
+
+#### **场景3：角色向左后方移动**
+- **速度向量**：`(-50, -50, 0)`（标准化后`(-0.707, -0.707, 0)`）
+- **计算过程**：
+  - `ForwardCosAngle = -0.707` → `θ = 135°`
+  - `RightCosAngle = -0.707 < 0` → 角度设为`-135°`
+- **返回值**：`-135°`
+
+---
+
+### **常见问题与优化**
+#### **1. 为什么忽略Z轴？**
+- **目的**：角色移动动画通常仅关注水平方向（如行走、奔跑），垂直运动（跳跃、坠落）由其他动画状态处理。
+
+#### **2. 如何处理速度向量为零？**
+- **设计**：直接返回0°，避免因零向量归一化导致的除零错误（`GetSafeNormal2D`已隐含保护）。
+
+#### **3. 性能优化**
+- **计算轻量**：仅涉及向量运算和一次反三角函数，适合每帧调用。
+- **替代方案**：若需更高性能，可预计算旋转矩阵或缓存方向向量。
+
+#### **4. 扩展三维方向**
+若需包含垂直方向的角度计算，可修改`GetSafeNormal2D()`为`GetSafeNormal()`，并调整投影逻辑。
+
+---
+
+### **在动画蓝图中的应用**
+#### **Blend Space 配置**
+1. 在动画蓝图中调用`CalculateDirection`，传入角色的速度和旋转。
+2. 将返回值连接到Blend Space的横轴（如`Direction`）。
+3. 根据角度值混合不同方向的动画（如前进、后退、左右转身）。
+
+```cpp
+// 示例：在动画蓝图中获取方向角度
+float Direction = UKismetAnimationLibrary::CalculateDirection(
+    GetVelocity(), 
+    GetActorRotation()
+);
+```
+
+#### **调试技巧**
+- **可视化调试**：在角色身上绘制速度向量（蓝色）和前向向量（绿色），直观观察角度关系。
+- **控制台命令**：`showdebug animation` 查看实时角度值。
+
+---
+
+### **总结**
+`CalculateDirection` 函数通过向量运算和几何分析，将复杂的运动方向关系转化为直观的角度值，是UE动画系统中实现动态方向响应的核心工具。理解其实现细节后，开发者可以更灵活地定制角色移动动画，或将其逻辑扩展至AI决策、物理交互等场景。
+
+
+
+![image-20250224124413828](.\image-20250224124413828.png)

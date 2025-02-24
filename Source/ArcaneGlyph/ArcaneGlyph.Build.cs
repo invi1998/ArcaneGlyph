@@ -20,6 +20,7 @@ public class ArcaneGlyph : ModuleRules
 			"GameplayAbilities",
 			"UMG",
 			"AIModule",
+			"AnimGraphRuntime",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
