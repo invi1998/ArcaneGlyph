@@ -2213,3 +2213,7 @@ bool UBTTask_RotateToFaceTarget::HasReachedAnglePrecision(...) const {
 
 
 
+如此，我们就能通过提前旋转补偿，优化MotionWarping扭曲幅度过大的问题。
+
+![image-20250225150422561](.\image-20250225150422561.png)
+
