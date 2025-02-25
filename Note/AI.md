@@ -1752,7 +1752,7 @@ float Direction = UKismetAnimationLibrary::CalculateDirection(
 
 此时测试我们会发现，因为MotionWarping是在攻击动画蒙太奇中做的，这就意味着，我们的AI是一边攻击一边旋转，对于攻击有前摇的动画，我们可以缩短这个MotionWarping状态条，缓解这个问题，但是，对于一些前摇没那么长的动画，这个攻击效果就不会很好，有什么解决办法？
 
-我们可以在攻击行为之前，就让AI面向我们的玩家，这样就能解决AI后续的扭曲幅度过大的问题。在行为树中，有这样一个原生任务节点`Rotate to face BB entry`，顾名思义，它可以让我们的行为树拥有者(AI)面向我们指定的对象。我们在攻击任务前添加这个任务：
+我们可以在攻击行为之前，就让AI面向我们的玩家，或者至少先旋转一定角度，提前补偿，这样就能解决AI后续的**扭曲幅度过大的问题**。在行为树中，有这样一个原生任务节点`Rotate to face BB entry`，顾名思义，它可以让我们的行为树拥有者(AI)面向我们指定的对象。我们在攻击任务前添加这个任务：
 
 ![image-20250225124257759](.\image-20250225124257759.png)
 
@@ -1809,6 +1809,407 @@ GetCharacterMovement()->bUseControllerDesiredRotation = true;      // 使用控�
 ## 构建原生 BT 任务
 
 为了解决上述问题，这里我们可以基于最基础的Task节点`UBTTaskNode`，建立我们的自定义任务类。
+
+```c++
+UCLASS()
+class ARCANEGLYPH_API UBTTask_RotateToFaceTarget : public UBTTaskNode
+{
+	GENERATED_BODY()
+
+	UBTTask_RotateToFaceTarget();
+
+	virtual void InitializeFromAsset(UBehaviorTree& Asset) override;		// 从行为树资产初始化
+
+	UPROPERTY(EditAnywhere, Category="Face Target")
+	float AnglePrecision = 10.f;	// 角度精度
+
+	UPROPERTY(EditAnywhere, Category="Face Target")
+	float RotationInterpSpeed = 5.f;	// 旋转插值速度
+
+	UPROPERTY(EditAnywhere, Category="Face Target")
+	FBlackboardKeySelector TargetToFaceKey;	// 需要面向的目标
+};
+```
+
+```c++
+#include "AI/BTTask_RotateToFaceTarget.h"
+
+#include "BehaviorTree/BlackboardData.h"
+
+UBTTask_RotateToFaceTarget::UBTTask_RotateToFaceTarget()
+{
+	NodeName = TEXT("旋转面向目标（Native）");
+
+	bNotifyTick = true;		// 通知Tick
+	bNotifyTaskFinished = true;		// 通知任务完成
+
+	// 该变量是用于控制是否创建节点实例
+	// 如果设置，则 Node 将被实例化，而不是使用与所有其他 BT 组件共享的内存块和模板
+	bCreateNodeInstance = false;		// 不创建节点实例
+}
+
+void UBTTask_RotateToFaceTarget::InitializeFromAsset(UBehaviorTree& Asset)
+{
+	Super::InitializeFromAsset(Asset);
+
+	if (UBlackboardData* BBAsset = GetBlackboardAsset())
+	{
+		// 从黑板资产中解析选择的键
+		TargetToFaceKey.ResolveSelectedKey(*BBAsset);
+	}
+}
+```
+
+在我们创建该任务节点时，我们注意到，有这样一个设置项，`bCreateNodeInstance = false;`，这是BTNode默认值，此前我们在创建自定义行为树服务节点的时候提到过`在自定义C++行为树中任务重，变量的值无法保存`，这话其实有点绝对了，如果我们需要重复使用某些变量的值，在C++里确实是可以做到的。
+
+我们可以通过
+
+- **`GetInstanceMemorySize`**：返回`sizeof(FRotateToFaceTargetTaskMemory)`，告知行为树系统为每个任务实例分配独立内存。
+- **`bCreateNodeInstance = false`**：
+  - **含义**：节点本身不创建实例（即多个AI共享同一节点对象），但每个任务执行时会分配独立的 **任务实例内存**（通过`NodeMemory`指针访问）。
+  - **变量隔离**：不同AI的任务实例通过不同的`NodeMemory`块隔离数据，避免竞争。
+
+#### **2. 内存生命周期**
+
+- **初始化**：在`ExecuteTask`中通过`CastInstanceNodeMemory`获取内存指针并初始化。
+- **重置**：在任务成功或失败时调用`MyMemory->Reset()`清空弱引用。
+- **释放**：任务结束后，行为树系统自动释放为该实例分配的内存。
+
+
+
+完整代码：
+
+```C++
+// INVI_1998 All Rights Reserved.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "BehaviorTree/BTTaskNode.h"
+#include "BTTask_RotateToFaceTarget.generated.h"
+
+struct FRotateToFaceTargetTaskMemory
+{
+	TWeakObjectPtr<APawn> OwningPawn;	// 拥有者
+	TWeakObjectPtr<AActor> TargetActor;	// 需要面向的目标
+
+	bool IsValid() const
+	{
+		return OwningPawn.IsValid() && TargetActor.IsValid();
+	}
+
+	void Reset()
+	{
+		OwningPawn.Reset();		// 重置拥有者
+		TargetActor.Reset();	// 重置目标
+	}
+};
+
+/**
+ * 
+ */
+UCLASS()
+class ARCANEGLYPH_API UBTTask_RotateToFaceTarget : public UBTTaskNode
+{
+	GENERATED_BODY()
+
+	UBTTask_RotateToFaceTarget();
+
+	// UBTTaskNode interface Begin
+	virtual void InitializeFromAsset(UBehaviorTree& Asset) override;		// 从行为树资产初始化
+	virtual uint16 GetInstanceMemorySize() const override;	// 获取实例内存大小
+	virtual FString GetStaticDescription() const override;	// 获取静态描述
+	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;	// 执行任务
+	virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;	// Tick任务
+	// ~UBTTaskNode interface End
+
+	bool HasReachedAnglePrecision(APawn* QueryPawn, AActor* TargetActor) const;	// 是否达到角度精度
+
+	UPROPERTY(EditAnywhere, Category="Face Target")
+	float AnglePrecision = 10.f;	// 角度精度
+
+	UPROPERTY(EditAnywhere, Category="Face Target")
+	float RotationInterpSpeed = 5.f;	// 旋转插值速度
+
+	UPROPERTY(EditAnywhere, Category="Face Target")
+	FBlackboardKeySelector TargetToFaceKey;	// 需要面向的目标
+};
+
+```
+
+实现
+
+```c++
+// INVI_1998 All Rights Reserved.
+
+
+#include "AI/BTTask_RotateToFaceTarget.h"
+
+#include "AIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "BehaviorTree/BlackboardData.h"
+#include "Kismet/KismetMathLibrary.h"
+
+UBTTask_RotateToFaceTarget::UBTTask_RotateToFaceTarget()
+{
+	NodeName = TEXT("旋转面向目标（Native）");
+
+	bNotifyTick = true;		// 通知Tick
+	bNotifyTaskFinished = true;		// 通知任务完成
+
+	// 该变量是用于控制是否创建节点实例
+	// 如果设置，则 Node 将被实例化，而不是使用与所有其他 BT 组件共享的内存块和模板
+	bCreateNodeInstance = false;		// 不创建节点实例
+
+	INIT_TASK_NODE_NOTIFY_FLAGS();	// 初始化任务节点通知标志
+
+	TargetToFaceKey.AddObjectFilter(this, GET_MEMBER_NAME_CHECKED(UBTTask_RotateToFaceTarget, TargetToFaceKey), AActor::StaticClass());
+}
+
+void UBTTask_RotateToFaceTarget::InitializeFromAsset(UBehaviorTree& Asset)
+{
+	Super::InitializeFromAsset(Asset);
+
+	if (UBlackboardData* BBAsset = GetBlackboardAsset())
+	{
+		// 从黑板资产中解析选择的键
+		TargetToFaceKey.ResolveSelectedKey(*BBAsset);
+	}
+}
+
+uint16 UBTTask_RotateToFaceTarget::GetInstanceMemorySize() const
+{
+	// 因为我们需要存储FRotateToFaceTargetTaskMemory数据，所以需要返回这个数据的大小
+	return sizeof(FRotateToFaceTargetTaskMemory);
+}
+
+FString UBTTask_RotateToFaceTarget::GetStaticDescription() const
+{
+	const FString KeyDesc = TargetToFaceKey.SelectedKeyName.IsNone() ? TEXT("none") : TargetToFaceKey.SelectedKeyName.ToString();
+	return FString::Printf(TEXT("旋转面向目标: %s 直到旋转角度到达 %.1f 为止"), *KeyDesc, AnglePrecision);
+}
+
+EBTNodeResult::Type UBTTask_RotateToFaceTarget::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+{
+	// CastInstanceNodeMemory 用于获取节点内存，其做的事情就是等效于 reinterpret_cast<T*>(NodeMemory);
+	// 只不过它会断言检查 T 的大小是否小于等于 GetInstanceMemorySize() 返回的大小
+	FRotateToFaceTargetTaskMemory* MyMemory = CastInstanceNodeMemory<FRotateToFaceTargetTaskMemory>(NodeMemory);
+	check(MyMemory);
+
+	// 获取拥有者
+	MyMemory->OwningPawn = OwnerComp.GetAIOwner()->GetPawn();
+	// 获取目标
+	MyMemory->TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(TargetToFaceKey.SelectedKeyName));
+	if (!MyMemory->IsValid())
+	{
+		return EBTNodeResult::Failed;
+	}
+
+	if (HasReachedAnglePrecision(MyMemory->OwningPawn.Get(), MyMemory->TargetActor.Get()))
+	{
+		MyMemory->Reset();
+		return EBTNodeResult::Succeeded;
+	}
+
+	return EBTNodeResult::InProgress;
+}
+
+void UBTTask_RotateToFaceTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+{
+	FRotateToFaceTargetTaskMemory* MyMemory = CastInstanceNodeMemory<FRotateToFaceTargetTaskMemory>(NodeMemory);
+	if (!MyMemory->IsValid())
+	{
+		// 如果数据无效，则任务失败
+		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+		return;
+	}
+
+	if (HasReachedAnglePrecision(MyMemory->OwningPawn.Get(), MyMemory->TargetActor.Get()))
+	{
+		// 如果已经达到角度精度，则任务成功
+		MyMemory->Reset();
+		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		return;
+	}
+
+	// 获取从拥有者到目标的旋转角度
+	const FRotator LookAtRot = UKismetMathLibrary::FindLookAtRotation(MyMemory->OwningPawn->GetActorLocation(), MyMemory->TargetActor->GetActorLocation());
+
+	// 差值旋转
+	const FRotator NewRot = FMath::RInterpTo(MyMemory->OwningPawn->GetActorRotation(), LookAtRot, DeltaSeconds, RotationInterpSpeed);
+	MyMemory->OwningPawn->SetActorRotation(NewRot);
+}
+
+bool UBTTask_RotateToFaceTarget::HasReachedAnglePrecision(APawn* QueryPawn, AActor* TargetActor) const
+{
+	const FVector OwnerForward = QueryPawn->GetActorForwardVector();
+	const FVector OwnerToTargetNormalized = (TargetActor->GetActorLocation() - QueryPawn->GetActorLocation()).GetSafeNormal();
+	const float DotResult = FVector::DotProduct(OwnerForward, OwnerToTargetNormalized);
+	// const float Angle = FMath::Acos(DotResult) * (180.f / PI);
+	// 等同于 用于将弧度转换为角度
+	const float Angle = UKismetMathLibrary::DegAcos(DotResult);
+	return Angle <= AnglePrecision;
+}
+
+```
+
+
+
+以下是该自定义行为树任务节点 `UBTTask_RotateToFaceTarget` 的详细分析，重点关注 **变量保存机制** 和 **实现细节优化**：
+
+---
+
+### **一、核心功能与设计目标**
+该任务节点的目的是让AI角色（`APawn`）平滑旋转至面向指定目标（通过黑板键`TargetToFaceKey`选择），并在达到预设角度精度（`AnglePrecision`）时完成任务。其核心特点包括：
+- **持续旋转**：通过`TickTask`逐帧插值更新旋转。
+- **状态持久化**：通过自定义内存结构`FRotateToFaceTargetTaskMemory`保存任务执行期间的临时数据（如目标对象、拥有者Pawn）。
+- **与行为树集成**：支持黑板键动态选择目标，适配复杂AI逻辑。
+
+---
+
+### **二、关键代码解析**
+#### **1. 内存管理：`FRotateToFaceTargetTaskMemory`**
+```cpp
+struct FRotateToFaceTargetTaskMemory {
+    TWeakObjectPtr<APawn> OwningPawn;    // 拥有者Pawn的弱引用
+    TWeakObjectPtr<AActor> TargetActor;  // 目标Actor的弱引用
+
+    bool IsValid() const { return OwningPawn.IsValid() && TargetActor.IsValid(); }
+    void Reset() { OwningPawn.Reset(); TargetActor.Reset(); }
+};
+```
+- **作用**：保存任务执行期间需要持久化的数据。
+- **弱引用（`TWeakObjectPtr`）**：避免阻止目标对象被垃圾回收，同时需在每次访问前检查有效性。
+- **内存分配**：通过 `GetInstanceMemorySize()` 返回结构体大小，UE行为树系统自动为每个任务实例分配独立内存块。
+
+#### **2. 任务节点配置**
+```cpp
+UPROPERTY(EditAnywhere, Category="Face Target")
+float AnglePrecision = 10.f;        // 角度精度（容差）
+
+UPROPERTY(EditAnywhere, Category="Face Target")
+float RotationInterpSpeed = 5.f;    // 旋转插值速度
+
+UPROPERTY(EditAnywhere, Category="Face Target")
+FBlackboardKeySelector TargetToFaceKey;  // 黑板键选择目标Actor
+```
+- **可配置性**：通过`EditAnywhere`暴露给编辑器，便于设计师调整参数。
+- **黑板键绑定**：`TargetToFaceKey` 允许动态选择目标（如玩家、资源点）。
+
+#### **3. 任务执行流程**
+##### **(1) `ExecuteTask`**
+```cpp
+EBTNodeResult::Type UBTTask_RotateToFaceTarget::ExecuteTask(...) {
+    FRotateToFaceTargetTaskMemory* MyMemory = CastInstanceNodeMemory<...>(NodeMemory);
+    MyMemory->OwningPawn = OwnerComp.GetAIOwner()->GetPawn();
+    MyMemory->TargetActor = Cast<AActor>(...);
+    
+    if (HasReachedAnglePrecision(...)) {
+        MyMemory->Reset();
+        return Succeeded;
+    }
+    return InProgress; // 触发TickTask
+}
+```
+- **初始化内存**：从AIController和黑板获取Pawn和目标Actor。
+- **即时检查**：若初始角度已满足条件，直接返回成功，避免无意义旋转。
+
+##### **(2) `TickTask`**
+```cpp
+void UBTTask_RotateToFaceTarget::TickTask(...) {
+    if (!MyMemory->IsValid()) {
+        FinishLatentTask(..., Failed);
+        return;
+    }
+
+    if (HasReachedAnglePrecision(...)) {
+        FinishLatentTask(..., Succeeded);
+        return;
+    }
+
+    // 插值旋转更新
+    FRotator LookAtRot = UKismetMathLibrary::FindLookAtRotation(...);
+    FRotator NewRot = FMath::RInterpTo(...);
+    MyMemory->OwningPawn->SetActorRotation(NewRot);
+}
+```
+- **有效性检查**：确保Pawn和目标未被销毁。
+- **旋转插值**：通过`RInterpTo`平滑过渡到目标朝向。
+- **逐帧更新**：直到角度满足精度要求或任务失败。
+
+##### **(3) `HasReachedAnglePrecision`**
+```cpp
+bool UBTTask_RotateToFaceTarget::HasReachedAnglePrecision(...) const {
+    FVector OwnerForward = QueryPawn->GetActorForwardVector();
+    FVector OwnerToTarget = (TargetActor->GetLocation() - QueryPawn->GetLocation()).GetSafeNormal();
+    float Dot = FVector::DotProduct(OwnerForward, OwnerToTarget);
+    float Angle = UKismetMathLibrary::DegAcos(Dot);
+    return Angle <= AnglePrecision;
+}
+```
+- **角度计算**：使用点积和反余弦计算当前朝向与目标方向的水平偏差角。
+- **容差处理**：允许一定误差（`AnglePrecision`），避免抖动。
+
+---
+
+### **三、变量保存机制深度分析**
+#### **1. 实例内存分配**
+- **`GetInstanceMemorySize`**：返回`sizeof(FRotateToFaceTargetTaskMemory)`，告知行为树系统为每个任务实例分配独立内存。
+- **`bCreateNodeInstance = false`**：  
+  - **含义**：节点本身不创建实例（即多个AI共享同一节点对象），但每个任务执行时会分配独立的 **任务实例内存**（通过`NodeMemory`指针访问）。
+  - **变量隔离**：不同AI的任务实例通过不同的`NodeMemory`块隔离数据，避免竞争。
+
+#### **2. 内存生命周期**
+- **初始化**：在`ExecuteTask`中通过`CastInstanceNodeMemory`获取内存指针并初始化。
+- **重置**：在任务成功或失败时调用`MyMemory->Reset()`清空弱引用。
+- **释放**：任务结束后，行为树系统自动释放为该实例分配的内存。
+
+#### **3. 弱引用的安全性**
+- **`TWeakObjectPtr`**：存储对Pawn和Actor的弱引用，避免阻止GC回收。
+- **有效性检查**：在`TickTask`中通过`IsValid()`确保对象未被销毁，若失效则任务失败。
+
+#### **4. 潜在问题与解决方案**
+| **问题**             | **解决方案**                                  |
+| -------------------- | --------------------------------------------- |
+| 任务中断后内存未重置 | 在`FinishLatentTask`前调用`MyMemory->Reset()` |
+| 多线程访问冲突       | UE行为树单线程执行，无需额外同步              |
+| 弱引用失效导致崩溃   | 每次访问前检查`IsValid()`                     |
+
+---
+
+### **四、优化建议**
+#### **1. 性能优化**
+- **避免频繁计算**：在`TickTask`中可将`GetActorLocation`结果缓存，减少每帧调用次数。
+- **限制Tick频率**：若旋转速度较慢，可通过计数器限制每N帧更新一次。
+
+#### **2. 功能扩展**
+- **三维旋转支持**：修改`HasReachedAnglePrecision`，考虑垂直方向角度（如飞行AI）。
+- **动态参数**：通过黑板键控制`AnglePrecision`或`RotationInterpSpeed`，实现运行时调整。
+
+#### **3. 代码健壮性**
+- **空指针保护**：在`HasReachedAnglePrecision`中添加`if (!QueryPawn || !TargetActor) return false;`。
+- **日志输出**：在失败分支添加`UE_LOG`提示具体原因（如目标无效、Pawn丢失）。
+
+#### **4. 调试支持**
+- **可视化调试**：在`TickTask`中绘制Debug箭头，显示当前朝向与目标方向。
+- **控制台命令**：通过`AI.Debug.BT <BehaviorTreeName>`实时监控任务状态。
+
+---
+
+### **五、与其他系统的协作**
+| **系统**                | **协作方式**                                                 |
+| ----------------------- | ------------------------------------------------------------ |
+| **导航系统（NavMesh）** | 若目标在不可达区域，可结合`UBTTask_MoveTo`先移动至附近再旋转。 |
+| **动画系统**            | 旋转完成后触发动画通知（如播放攻击动画）。                   |
+| **AI感知系统**          | 根据感知数据（如视觉、听觉）动态更新`TargetToFaceKey`。      |
+
+---
+
+### **六、总结**
+该 `UBTTask_RotateToFaceTarget` 是一个高效且安全的自定义行为树任务节点，通过合理使用 **实例内存** 和 **弱引用**，确保了变量在任务执行期间的独立性和安全性。其核心优势包括：
+- **模块化设计**：通过黑板键动态绑定目标，适配不同场景。
+- **平滑旋转**：插值运算避免突变，提升动画表现。
+- **资源友好**：弱引用和内存管理减少GC压力。
 
 
 
