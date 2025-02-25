@@ -1760,7 +1760,35 @@ float Direction = UKismetAnimationLibrary::CalculateDirection(
 
 ![image-20250225124503787](.\image-20250225124503787.png)
 
-这是因为`Rotate to face BB entry`节点它实际调整拥有的Pawn的旋转是通过调整该Pawn的控制器的旋转进行控制的，而就是这一点，导致在我们目前的案例里正好冲突。我们的AI角色，因为需要实现侧身移动效果，所以在其角色基类中，我们对其的旋转控制如下：
+这是因为`Rotate to face BB entry`节点它实际调整拥有的Pawn的旋转是通过调整该Pawn的控制器的旋转进行控制的：
+
+```c++
+EBTNodeResult::Type UBTTask_RotateToFaceBBEntry::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+{
+	AAIController* AIController = OwnerComp.GetAIOwner();
+
+	if (AIController == NULL || AIController->GetPawn() == NULL)
+	{
+		return EBTNodeResult::Failed;
+	}
+
+	...
+				AIController->SetFocus(ActorValue, EAIFocusPriority::Gameplay);
+	...
+				AIController->SetFocalPoint(KeyValue, EAIFocusPriority::Gameplay);
+	...
+				const FVector FocalPoint = PawnLocation + DirectionVector * 10000.0f;
+				// set focal somewhere far in the indicated direction
+				AIController->SetFocalPoint(FocalPoint, EAIFocusPriority::Gameplay);
+...
+
+	return Result;
+}
+```
+
+
+
+而就是这一点，导致在我们目前的案例里正好冲突。我们的AI角色，因为需要实现侧身移动效果，所以在其角色基类中，我们对其的旋转控制如下：
 
 ```c++
 GetCharacterMovement()->bOrientRotationToMovement = true;		// 角色面向移动方向
@@ -1775,3 +1803,12 @@ GetCharacterMovement()->bUseControllerDesiredRotation = true;      // 使用控�
 ```
 
 可是这样直接修改之后，又会影响到我们的侧身移动，所以，我们不能简单的直接使用该节点，而需要做些自定义的修改。
+
+
+
+## 构建原生 BT 任务
+
+
+
+
+
