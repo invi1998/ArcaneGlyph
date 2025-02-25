@@ -2246,3 +2246,17 @@ bool UBTTask_RotateToFaceTarget::HasReachedAnglePrecision(...) const {
 ![image-20250225205458282](.\image-20250225205458282.png)
 
 ![image-20250225210457914](.\image-20250225210457914.png)
+
+
+
+## 持续时间游戏效果（GE_Enemy_UnderAttack）
+
+进入防御状态后，如果一段时间内没有受到伤害，那么，AI应该继续恢复流程。如何实现这个效果呢？在AbilitySystem里，有这样一个GamaplayEffect，就是，我们可以给Actor添加一定时效的标签，到时间就会自然剥离该标签Tag。这样一个GE就正好符合我们当前的语境。
+
+![image-20250225211730964](.\image-20250225211730964.png)
+
+如上，我们指定该GE为时效性GE，持续时间5s（后续可以使用曲线进行扩展），然后添加一个 `赋予标签的组件 TargetTagsGameplayEffectComponent` ，然后指定我们需要赋予的标签，然后添加效果堆叠方式，我们只将效果堆叠一次。（即就不可能一直让AI处于受击硬控状态）
+
+![image-20250225212548684](.\image-20250225212548684.png)
+
+我们可以在Enemy的受击反馈的GA里使用该节点去应用GE。
