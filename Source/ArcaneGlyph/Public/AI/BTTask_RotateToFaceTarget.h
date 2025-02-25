@@ -18,8 +18,8 @@ struct FRotateToFaceTargetTaskMemory
 
 	void Reset()
 	{
-		OwningPawn.Reset();
-		TargetActor.Reset();
+		OwningPawn.Reset();		// 重置拥有者
+		TargetActor.Reset();	// 重置目标
 	}
 };
 
@@ -37,7 +37,11 @@ class ARCANEGLYPH_API UBTTask_RotateToFaceTarget : public UBTTaskNode
 	virtual void InitializeFromAsset(UBehaviorTree& Asset) override;		// 从行为树资产初始化
 	virtual uint16 GetInstanceMemorySize() const override;	// 获取实例内存大小
 	virtual FString GetStaticDescription() const override;	// 获取静态描述
+	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;	// 执行任务
+	virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;	// Tick任务
 	// ~UBTTaskNode interface End
+
+	bool HasReachedAnglePrecision(APawn* QueryPawn, AActor* TargetActor) const;	// 是否达到角度精度
 
 	UPROPERTY(EditAnywhere, Category="Face Target")
 	float AnglePrecision = 10.f;	// 角度精度
