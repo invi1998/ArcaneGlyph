@@ -46,6 +46,10 @@ public:
 	// 查询目标是否为敌对
 	UFUNCTION(BlueprintPure, Category = "Arcane | FunctionLibrary")
 	static bool IsTargetPawnHostile(APawn* InQueryPawn, APawn* InTargetPawn);
+
+	// 向Actor的UI组件广播GameplayTag改变事件
+	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary")
+	static void BroadcastGameplayTagChangedToUIComponent(AActor* InActor, FGameplayTag InTag, bool bAddTag);
 	
 };
 

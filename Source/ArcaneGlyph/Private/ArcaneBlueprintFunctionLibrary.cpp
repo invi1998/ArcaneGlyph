@@ -5,8 +5,10 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "ArcaneDebugHelper.h"
+#include "ArcaneGameplayTags.h"
 #include "GenericTeamAgentInterface.h"
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
+#include "Component/UI/PawnUIComponent.h"
 #include "Interfaces/PawnCombatInterface.h"
 #include "Interfaces/PawnUIInterface.h"
 
@@ -100,3 +102,18 @@ bool UArcaneBlueprintFunctionLibrary::IsTargetPawnHostile(APawn* InQueryPawn, AP
 
 	return false;
 }
+
+void UArcaneBlueprintFunctionLibrary::BroadcastGameplayTagChangedToUIComponent(AActor* InActor, FGameplayTag InTag, bool bAddTag)
+{
+	check(InActor);
+
+	if (UPawnUIComponent* PawnUIComponent = NativeGetPawnUIComponentFromActor(InActor))
+	{
+		if (InTag.MatchesTagExact(ArcaneGameplayTags::Enemy_Ability_Melee) || InTag.MatchesTagExact(ArcaneGameplayTags::Enemy_Ability_Range))
+		{
+			PawnUIComponent->OnHaveAttackGameplayTag.Broadcast(InTag);
+		}
+	}
+}
+
+
