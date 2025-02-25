@@ -1808,7 +1808,7 @@ GetCharacterMovement()->bUseControllerDesiredRotation = true;      // 使用控�
 
 ## 构建原生 BT 任务
 
-
+为了解决上述问题，这里我们可以基于最基础的Task节点`UBTTaskNode`，建立我们的自定义任务类。
 
 
 
