@@ -1733,3 +1733,45 @@ float Direction = UKismetAnimationLibrary::CalculateDirection(
 同时，我们这里测试模式（点积计算）不必使用3D向量进行计算，因为我们只需要考虑XY平面下的角度即可。
 
 ![image-20250224200704993](.\image-20250224200704993.png)
+
+
+
+# MotionWarping
+
+在我们实现了AI的攻击逻辑后，我们已经可以让AI进行基础挥砍攻击了，为了让攻击逻辑更加合理，我们添加了MotionWarping，让AI能在攻击的时候向我们的玩家，从而不至于对着空气挥砍。
+
+![image-20250225122725616](.\image-20250225122725616.png)
+
+因为玩家会在游戏过程中一直移动，仅仅在动画蒙太奇中指定扭曲动画提供者是不行的，所以MotionWarping的运作需要程序员指定面朝的对象，但是同时我们也不应该每帧都更新攻击目标，因为这也不是必要的，所以我们选择在行为树中添加行为树服务来做这个事情。
+
+![image-20250225123429052](.\image-20250225123429052.png)
+
+然后，将其添加到行为树中。
+
+![image-20250225123547465](.\image-20250225123547465.png)
+
+此时测试我们会发现，因为MotionWarping是在攻击动画蒙太奇中做的，这就意味着，我们的AI是一边攻击一边旋转，对于攻击有前摇的动画，我们可以缩短这个MotionWarping状态条，缓解这个问题，但是，对于一些前摇没那么长的动画，这个攻击效果就不会很好，有什么解决办法？
+
+我们可以在攻击行为之前，就让AI面向我们的玩家，这样就能解决AI后续的扭曲幅度过大的问题。在行为树中，有这样一个原生任务节点`Rotate to face BB entry`，顾名思义，它可以让我们的行为树拥有者(AI)面向我们指定的对象。我们在攻击任务前添加这个任务：
+
+![image-20250225124257759](.\image-20250225124257759.png)
+
+但是，测试的时候，我们发现，在需要他转向的时候，行为树会卡在这个任务节点上
+
+![image-20250225124503787](.\image-20250225124503787.png)
+
+这是因为`Rotate to face BB entry`节点它实际调整拥有的Pawn的旋转是通过调整该Pawn的控制器的旋转进行控制的，而就是这一点，导致在我们目前的案例里正好冲突。我们的AI角色，因为需要实现侧身移动效果，所以在其角色基类中，我们对其的旋转控制如下：
+
+```c++
+GetCharacterMovement()->bOrientRotationToMovement = true;		// 角色面向移动方向
+GetCharacterMovement()->bUseControllerDesiredRotation = false;		// 不使用控制器期望旋转
+```
+
+该节点只有在Pawn设置为了使用控制器期望的旋转时，它才能正常工作。即如下：
+
+```c++
+GetCharacterMovement()->bOrientRotationToMovement = false;       // 角色面向移动方向
+GetCharacterMovement()->bUseControllerDesiredRotation = true;      // 使用控制器期望旋转
+```
+
+可是这样直接修改之后，又会影响到我们的侧身移动，所以，我们不能简单的直接使用该节点，而需要做些自定义的修改。
