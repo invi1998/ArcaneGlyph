@@ -12,6 +12,7 @@
 class UDataAsset_StartupDadaBase;
 class UArcaneAttributeSet;
 class UArcaneAbilitySystemComponent;
+class UMotionWarpingComponent;
 
 UCLASS()
 class ARCANEGLYPH_API AArcaneCharacterBase : public ACharacter, public IAbilitySystemInterface, public IPawnCombatInterface, public IPawnUIInterface
@@ -50,5 +51,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharacterData")
 	TSoftObjectPtr<UDataAsset_StartupDadaBase> CharacterStartupData;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MotionWarping")
+	TObjectPtr<UMotionWarpingComponent> MotionWarpingComponent;
 	
 };

@@ -5,6 +5,7 @@
 
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
 #include "AbilitySystem/ArcaneAttributeSet.h"
+#include "MotionWarpingComponent.h"
 
 AArcaneCharacterBase::AArcaneCharacterBase()
 {
@@ -15,6 +16,8 @@ AArcaneCharacterBase::AArcaneCharacterBase()
 
 	ArcaneAbilitySystemComponent = CreateDefaultSubobject<UArcaneAbilitySystemComponent>(TEXT("ArcaneAbilitySystemComponent"));
 	ArcaneAttributeSet = CreateDefaultSubobject<UArcaneAttributeSet>(TEXT("ArcaneAttributeSet"));
+
+	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
 	
 }
 

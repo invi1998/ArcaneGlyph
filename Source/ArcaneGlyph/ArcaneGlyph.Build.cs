@@ -21,6 +21,7 @@ public class ArcaneGlyph : ModuleRules
 			"UMG",
 			"AIModule",
 			"AnimGraphRuntime",
+			"MotionWarping",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
