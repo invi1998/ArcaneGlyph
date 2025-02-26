@@ -62,6 +62,10 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_SetByCaller_BaseDamage);		// 共享：基础伤害
 
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Status_Dead);				// 共享状态：死亡
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Status_HitReact_Front);		// 共享状态：受击反应-前
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Status_HitReact_Left);		// 共享状态：受击反应-左
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Status_HitReact_Right);		// 共享状态：受击反应-右
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Status_HitReact_Back);		// 共享状态：受击反应-后
 	
 }
 

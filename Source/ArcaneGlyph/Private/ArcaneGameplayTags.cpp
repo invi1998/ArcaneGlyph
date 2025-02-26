@@ -61,5 +61,9 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_SetByCaller_BaseDamage, "Shared.SetByCaller.BaseDamage", "共享：基础伤害");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Status_Dead, "Shared.Status.Dead", "共享状态：死亡");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Status_HitReact_Front, "Shared.Status.HitReact.Front", "共享状态：受击反应-前");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Status_HitReact_Left, "Shared.Status.HitReact.Left", "共享状态：受击反应-左");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Status_HitReact_Right, "Shared.Status.HitReact.Right", "共享状态：受击反应-右");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Status_HitReact_Back, "Shared.Status.HitReact.Back", "共享状态：受击反应-后");
 	
 }

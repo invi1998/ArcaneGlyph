@@ -140,16 +140,29 @@ FGameplayTag UArcaneBlueprintFunctionLibrary::ComputeHitReactDirectionTag(AActor
 
 	const FVector CrossResult = FVector::CrossProduct(VictimForward, AttackerToVictim);
 
-	if (CrossResult.Z > 0.f)
+	// 如果叉积的Z值大于0，则说明攻击者在受害者的左侧，否则在右侧
+	if (CrossResult.Z < 0.f)
 	{
-		return ArcaneGameplayTags::Enemy_HitReact_Left;
+		OutAndleDifference *= -1.f;
 	}
-	else if (CrossResult.Z < 0.f)
+	
+	if (OutAndleDifference >= -45.f && OutAndleDifference <= 45.f)
 	{
-		return ArcaneGameplayTags::Enemy_HitReact_Right;
+		return ArcaneGameplayTags::Shared_Status_HitReact_Front;
+	}
+	else if (OutAndleDifference > 45.f && OutAndleDifference <= 135.f)
+	{
+		return ArcaneGameplayTags::Shared_Status_HitReact_Right;
+	}
+	else if (OutAndleDifference < -45.f && OutAndleDifference >= -135.f)
+	{
+		return ArcaneGameplayTags::Shared_Status_HitReact_Left;
+	}
+	else
+	{
+		return ArcaneGameplayTags::Shared_Status_HitReact_Back;
 	}
 
-	return FGameplayTag();
 }
 
 
