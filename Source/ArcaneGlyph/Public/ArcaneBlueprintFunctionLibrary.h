@@ -8,6 +8,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "ArcaneBlueprintFunctionLibrary.generated.h"
 
+struct FScalableFloat;
 class UPawnUIComponent;
 class UPawnCombatComponent;
 class UArcaneAbilitySystemComponent;
@@ -50,7 +51,10 @@ public:
 	// 向Actor的UI组件广播GameplayTag改变事件
 	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary")
 	static void BroadcastGameplayTagChangedToUIComponent(AActor* InActor, FGameplayTag InTag, bool bAddTag);
-	
+
+	// 获取指定等级的属性值
+	UFUNCTION(BlueprintPure, Category = "Arcane | FunctionLibrary", meta=(CompactNodeTitle="Get Value At Level"))
+	static float GetScalableFloatValueAtLevel(const FScalableFloat& InScalableFloat, int32 InLevel);
 };
 
 

@@ -116,4 +116,9 @@ void UArcaneBlueprintFunctionLibrary::BroadcastGameplayTagChangedToUIComponent(A
 	}
 }
 
+float UArcaneBlueprintFunctionLibrary::GetScalableFloatValueAtLevel(const FScalableFloat& InScalableFloat, int32 InLevel)
+{
+	return InScalableFloat.GetValueAtLevel(InLevel);
+}
+
 
