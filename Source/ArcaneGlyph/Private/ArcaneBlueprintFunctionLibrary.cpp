@@ -7,10 +7,12 @@
 #include "ArcaneDebugHelper.h"
 #include "ArcaneGameplayTags.h"
 #include "GenericTeamAgentInterface.h"
+#include "KismetAnimationLibrary.h"
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
 #include "Component/UI/PawnUIComponent.h"
 #include "Interfaces/PawnCombatInterface.h"
 #include "Interfaces/PawnUIInterface.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 UArcaneAbilitySystemComponent* UArcaneBlueprintFunctionLibrary::NativeGetArcaneASCFromActor(AActor* InActor)
@@ -119,6 +121,35 @@ void UArcaneBlueprintFunctionLibrary::BroadcastGameplayTagChangedToUIComponent(A
 float UArcaneBlueprintFunctionLibrary::GetScalableFloatValueAtLevel(const FScalableFloat& InScalableFloat, int32 InLevel)
 {
 	return InScalableFloat.GetValueAtLevel(InLevel);
+}
+
+FGameplayTag UArcaneBlueprintFunctionLibrary::ComputeHitReactDirectionTag(AActor* InAttacker, AActor* InVictim, float& OutAndleDifference)
+{
+	check(InAttacker && InVictim);
+
+	// 获取受害者的前向向量
+	const FVector VictimForward = InVictim->GetActorForwardVector();
+	// 获取攻击者到受害者的单位向量
+	const FVector AttackerToVictim = (InVictim->GetActorLocation() - InAttacker->GetActorLocation()).GetSafeNormal();
+
+	// 计算两个向量的点积（cos值）
+	const float DotResult = FVector::DotProduct(VictimForward, AttackerToVictim);
+	// 计算两个向量的夹角 cos值的反余弦值
+	// const float Angle = FMath::Acos(DotResult) * (180.f / PI);
+	OutAndleDifference = UKismetMathLibrary::DegAcos(DotResult);
+
+	const FVector CrossResult = FVector::CrossProduct(VictimForward, AttackerToVictim);
+
+	if (CrossResult.Z > 0.f)
+	{
+		return ArcaneGameplayTags::Enemy_HitReact_Left;
+	}
+	else if (CrossResult.Z < 0.f)
+	{
+		return ArcaneGameplayTags::Enemy_HitReact_Right;
+	}
+
+	return FGameplayTag();
 }
 
 

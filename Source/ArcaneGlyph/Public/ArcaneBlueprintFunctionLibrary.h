@@ -55,6 +55,10 @@ public:
 	// 获取指定等级的属性值
 	UFUNCTION(BlueprintPure, Category = "Arcane | FunctionLibrary", meta=(CompactNodeTitle="Get Value At Level"))
 	static float GetScalableFloatValueAtLevel(const FScalableFloat& InScalableFloat, int32 InLevel);
+
+	// 计算击中反应方向标签
+	UFUNCTION(BlueprintPure, Category = "Arcane | FunctionLibrary")
+	static FGameplayTag ComputeHitReactDirectionTag(AActor* InAttacker, AActor* InVictim, float& OutAndleDifference);
 };
 
 
