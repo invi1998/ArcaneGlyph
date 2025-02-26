@@ -2,6 +2,8 @@
 
 
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
+
+#include "ArcaneGameplayTags.h"
 #include "AbilitySystem/Abilities/ArcaneHeroGameplayAbility.h"
 #include "Items/Weapons/ArcaneHeroWeapon.h"
 
@@ -23,6 +25,20 @@ void UArcaneAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& In
 
 void UArcaneAbilitySystemComponent::OnAbilityInputReleased(const FGameplayTag& InInputTag)
 {
+	if (!InInputTag.IsValid() || !InInputTag.MatchesTag(ArcaneGameplayTags::InputTag_MustBeHeld))
+	{
+		return;
+	}
+
+	// 能走到下面的，就是那些持续按住的输入标签
+	for (const FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
+	{
+		if (AbilitySpec.GetDynamicSpecSourceTags().HasTagExact(InInputTag) && AbilitySpec.IsActive())
+		{
+			// 如果当前输入指向的技能是出于激活状态，就取消激活
+			CancelAbilityHandle(AbilitySpec.Handle);
+		}
+	}
 	
 }
 
