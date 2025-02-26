@@ -59,6 +59,10 @@ public:
 	// 计算击中反应方向标签
 	UFUNCTION(BlueprintPure, Category = "Arcane | FunctionLibrary")
 	static FGameplayTag ComputeHitReactDirectionTag(AActor* InAttacker, AActor* InVictim, float& OutAndleDifference);
+
+	// 获取角色是否装备了武器
+	UFUNCTION(BlueprintPure, Category = "Arcane | FunctionLibrary")
+	static bool IsCharacterEquippedWeapon(AActor* InActor);
 };
 
 

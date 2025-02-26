@@ -9,6 +9,7 @@
 #include "GenericTeamAgentInterface.h"
 #include "KismetAnimationLibrary.h"
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
+#include "Component/Combat/PawnCombatComponent.h"
 #include "Component/UI/PawnUIComponent.h"
 #include "Interfaces/PawnCombatInterface.h"
 #include "Interfaces/PawnUIInterface.h"
@@ -163,6 +164,16 @@ FGameplayTag UArcaneBlueprintFunctionLibrary::ComputeHitReactDirectionTag(AActor
 		return ArcaneGameplayTags::Shared_Status_HitReact_Back;
 	}
 
+}
+
+bool UArcaneBlueprintFunctionLibrary::IsCharacterEquippedWeapon(AActor* InActor)
+{
+	check(InActor);
+	if (UPawnCombatComponent* PawnCombatComponent = NativeGetPawnCombatComponentFromActor(InActor))
+	{
+		return PawnCombatComponent->CurrentEquippedWeaponTag.IsValid();
+	}
+	return false;
 }
 
 
