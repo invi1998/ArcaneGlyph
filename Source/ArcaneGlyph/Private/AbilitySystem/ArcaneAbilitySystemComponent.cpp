@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
 
+#include "ArcaneDebugHelper.h"
 #include "ArcaneGameplayTags.h"
 #include "AbilitySystem/Abilities/ArcaneHeroGameplayAbility.h"
 #include "Items/Weapons/ArcaneHeroWeapon.h"
@@ -58,6 +59,8 @@ void UArcaneAbilitySystemComponent::GrantHeroWeaponAbilities(const TArray<FArcan
 
 				// 给予能力
 				GiveAbility(NewAbilitySpec);
+
+				Debug::Print(FString::Printf(TEXT("Grant Ability: %s"), *AbilitySet.AbilityToGrantClass->GetName()));
 
 				OutGrantedAbilitySpecHandles.AddUnique(NewAbilitySpec.Handle);
 			}
