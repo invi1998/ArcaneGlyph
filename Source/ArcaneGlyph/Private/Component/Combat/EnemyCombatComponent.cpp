@@ -37,10 +37,16 @@ void UEnemyCombatComponent::OnHitTargetActor(AActor* InHitActor)
 
 	if (bIsValidBlock)
 	{
-		// TODO: 格挡成功
+		// 格挡成功，告知格挡者
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+			InHitActor,
+			ArcaneGameplayTags::Player_Event_BlockSuccess,
+			EventData
+			);
 	}
 	else
 	{
+		// 未被格挡，告知攻击者
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
 			GetOwningPawn(),
 			ArcaneGameplayTags::Shared_Event_MeleeAttack,

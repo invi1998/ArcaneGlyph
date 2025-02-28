@@ -39,6 +39,7 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_BeginRotateSlot);		// 玩家事件：开始旋转槽
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_EndRotateSlot);			// 玩家事件：结束旋转槽
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_HitPause);				// 玩家事件：受击暂停
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_BlockSuccess);			// 玩家事件：格挡成功
 
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_Equip_Sword);			// 玩家技能：装备剑
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_UnEquip_Sword);		// 玩家技能：卸下剑
