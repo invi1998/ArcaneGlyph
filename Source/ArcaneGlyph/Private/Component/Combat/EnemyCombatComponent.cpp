@@ -12,7 +12,8 @@
 void UEnemyCombatComponent::OnHitTargetActor(AActor* InHitActor)
 {
 	if (!InHitActor) return;
-	
+
+	/*
 	if (HitOverlappedActors.Contains(InHitActor))
 	{
 		// 说明已经击中过了
@@ -20,6 +21,8 @@ void UEnemyCombatComponent::OnHitTargetActor(AActor* InHitActor)
 	}
 
 	HitOverlappedActors.AddUnique(InHitActor);
+	*/
+	HitOverlappedActors.Add(InHitActor);
 
 	bool bIsValidBlock = false;
 	
