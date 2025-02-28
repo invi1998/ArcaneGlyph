@@ -59,9 +59,7 @@ void UArcaneAbilitySystemComponent::GrantHeroWeaponAbilities(const TArray<FArcan
 
 				// 给予能力
 				GiveAbility(NewAbilitySpec);
-
-				Debug::Print(FString::Printf(TEXT("Grant Ability: %s"), *AbilitySet.AbilityToGrantClass->GetName()));
-
+				
 				OutGrantedAbilitySpecHandles.AddUnique(NewAbilitySpec.Handle);
 			}
 		}

@@ -31,12 +31,7 @@ void UArcaneInputComponent::BindNativeInputAction(const UDadaAsset_InputConfig* 
 	checkf(InInputConfig, TEXT("InputConfig is nullptr, cannot bind native input action"));
 	if (UInputAction* InputAction = InInputConfig->GetNativeInputActionByTag(InTag))
 	{
-		Debug::Print("BindNativeInputAction Binding native input action: " + InTag.ToString());
 		BindAction(InputAction, InEvent, InContextObject, InCallbackFunction);
-	}
-	else
-	{
-		Debug::Print(" no BindNativeInputAction Binding native input action: " + InTag.ToString());
 	}
 }
 
@@ -48,13 +43,8 @@ void UArcaneInputComponent::BindAbilityInputAction(const UDadaAsset_InputConfig*
 	{
 		if (ActionConfig.IsValid())
 		{
-			Debug::Print("Binding ability input action: " + ActionConfig.InputTag.ToString());
 			BindAction(ActionConfig.InputAction, ETriggerEvent::Started, InContextObject, InputPressedCallback, ActionConfig.InputTag);
 			BindAction(ActionConfig.InputAction, ETriggerEvent::Completed, InContextObject, InputReleasedCallback, ActionConfig.InputTag);
-		}
-		else
-		{
-			Debug::Print(" no Binding ability input action: " + ActionConfig.InputTag.ToString());
 		}
 	}
 }
