@@ -197,4 +197,18 @@ float UArcaneBlueprintFunctionLibrary::GetCharacterMaxWalkSpeed(AActor* InActor)
 	return 0.f;
 }
 
+bool UArcaneBlueprintFunctionLibrary::IsCurrentBlockValid(AActor* InAttacker, AActor* InDefender)
+{
+	check(InAttacker && InDefender);
+
+	FVector AttackerForward = InAttacker->GetActorForwardVector();
+	FVector DefenderForward = InDefender->GetActorForwardVector();
+	// 获取攻击者和防御者的前向向量的点积（cos值）
+	const float DotResult = FVector::DotProduct(AttackerForward, DefenderForward);
+
+	// 如果cos值大于0.，则说明攻击者和在防御者前方，此时防御者的格挡是有效的
+	return DotResult < -0.1f;
+	
+}
+
 

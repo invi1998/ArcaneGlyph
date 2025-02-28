@@ -4,6 +4,7 @@
 #include "Component/Combat/EnemyCombatComponent.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "ArcaneBlueprintFunctionLibrary.h"
 #include "ArcaneDebugHelper.h"
 #include "ArcaneGameplayTags.h"
 
@@ -20,16 +21,14 @@ void UEnemyCombatComponent::OnHitTargetActor(AActor* InHitActor)
 
 	HitOverlappedActors.AddUnique(InHitActor);
 
-	// TODO: 格挡机制后续实现
-	const bool bIsValidBlock = false;	// 是否有效的格挡
-	const bool bIsPlayerBlocking = false;	// 玩家是否正在格挡
-	const bool bIsMyAttackUnblockable = false;	// 我的攻击是否无法格挡
+	bool bIsValidBlock = false;
+	
+	const bool bIsPlayerBlocking = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(InHitActor, ArcaneGameplayTags::Player_Status_Blocking);
+	const bool bIsMyAttackUnblockable = false;
 
 	if (bIsPlayerBlocking && !bIsMyAttackUnblockable)
 	{
-		// TODO：判定格挡是否成功
-		
-		
+		bIsValidBlock = UArcaneBlueprintFunctionLibrary::IsCurrentBlockValid(GetOwningPawn(), InHitActor);
 	}
 
 	FGameplayEventData EventData;

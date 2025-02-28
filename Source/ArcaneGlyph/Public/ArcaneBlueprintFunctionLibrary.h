@@ -71,6 +71,10 @@ public:
 	// 获取角色最大步行速度
 	UFUNCTION(BlueprintPure, Category = "Arcane | FunctionLibrary")
 	static float GetCharacterMaxWalkSpeed(AActor* InActor);
+
+	// 判定当前格挡是否是有效的
+	UFUNCTION(BlueprintPure, Category = "Arcane | FunctionLibrary")
+	static bool IsCurrentBlockValid(AActor* InAttacker, AActor* InDefender);
 };
 
 

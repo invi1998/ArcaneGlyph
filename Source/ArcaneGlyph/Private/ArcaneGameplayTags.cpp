@@ -54,8 +54,8 @@ namespace ArcaneGameplayTags
 	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_JumpToFinish, "Player.Status.JumpToFinish", "玩家状态：连招跳转到结束");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_Rolling, "Player.Status.Rolling", "玩家状态：翻滚中");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Blocking, "Player.Status.Blocking", "玩家状态：格挡中");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Shifting, "Player.Status.Shifting", "玩家状态：冲刺中");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_Blocking, "Player.Status.Blocking", "玩家状态：格挡中");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_Shifting, "Player.Status.Shifting", "玩家状态：冲刺中");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_SetByCaller_AttackType_Light, "Player.SetByCaller.AttackType.Light", "玩家设置：攻击类型-轻");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_SetByCaller_AttackType_Heavy, "Player.SetByCaller.AttackType.Heavy", "玩家设置：攻击类型-重");
