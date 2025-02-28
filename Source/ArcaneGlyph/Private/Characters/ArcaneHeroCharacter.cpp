@@ -23,7 +23,7 @@ AArcaneHeroCharacter::AArcaneHeroCharacter()
 	
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 250.0f;
+	CameraBoom->TargetArmLength = 350.0f;
 	CameraBoom->SocketOffset = FVector(0.0f, 55.0f, 65.0f);
 	CameraBoom->bUsePawnControlRotation = true;
 
@@ -33,7 +33,7 @@ AArcaneHeroCharacter::AArcaneHeroCharacter()
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;		// 角色面向移动方向
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f);		// 角色旋转速度
-	GetCharacterMovement()->MaxWalkSpeed = 400.0f;		// 角色移动速度
+	GetCharacterMovement()->MaxWalkSpeed = 450.0f;		// 角色移动速度
 	GetCharacterMovement()->BrakingDecelerationWalking = 2048.0f;		// 角色停止时的减速度
 	GetCharacterMovement()->JumpZVelocity = 600.0f;		// 角色跳跃高度
 
