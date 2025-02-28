@@ -63,6 +63,14 @@ public:
 	// 获取角色是否装备了武器
 	UFUNCTION(BlueprintPure, Category = "Arcane | FunctionLibrary")
 	static bool IsCharacterEquippedWeapon(AActor* InActor);
+
+	// 设置角色最大步行速度
+	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary")
+	static void SetCharacterMaxWalkSpeed(AActor* InActor, float InMaxWalkSpeed);
+
+	// 获取角色最大步行速度
+	UFUNCTION(BlueprintPure, Category = "Arcane | FunctionLibrary")
+	static float GetCharacterMaxWalkSpeed(AActor* InActor);
 };
 
 

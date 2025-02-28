@@ -11,6 +11,8 @@
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
 #include "Component/Combat/PawnCombatComponent.h"
 #include "Component/UI/PawnUIComponent.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Interfaces/PawnCombatInterface.h"
 #include "Interfaces/PawnUIInterface.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -174,6 +176,25 @@ bool UArcaneBlueprintFunctionLibrary::IsCharacterEquippedWeapon(AActor* InActor)
 		return PawnCombatComponent->CurrentEquippedWeaponTag.IsValid();
 	}
 	return false;
+}
+
+void UArcaneBlueprintFunctionLibrary::SetCharacterMaxWalkSpeed(AActor* InActor, float InMaxWalkSpeed)
+{
+	check(InActor);
+	if (ACharacter* Character = Cast<ACharacter>(InActor))
+	{
+		Character->GetCharacterMovement()->MaxWalkSpeed = InMaxWalkSpeed;
+	}
+}
+
+float UArcaneBlueprintFunctionLibrary::GetCharacterMaxWalkSpeed(AActor* InActor)
+{
+	check(InActor);
+	if (ACharacter* Character = Cast<ACharacter>(InActor))
+	{
+		return Character->GetCharacterMovement()->MaxWalkSpeed;
+	}
+	return 0.f;
 }
 
 
