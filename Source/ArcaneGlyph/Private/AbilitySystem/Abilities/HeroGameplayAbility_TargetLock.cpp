@@ -3,11 +3,17 @@
 
 #include "AbilitySystem/Abilities/HeroGameplayAbility_TargetLock.h"
 
+#include "ArcaneDebugHelper.h"
+#include "Characters/ArcaneHeroCharacter.h"
+#include "Kismet/KismetSystemLibrary.h"
+
 
 void UHeroGameplayAbility_TargetLock::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
-	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
-	const FGameplayEventData* TriggerEventData)
+                                                      const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
+                                                      const FGameplayEventData* TriggerEventData)
 {
+	TryLockTargetLock();
+	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
@@ -16,4 +22,43 @@ void UHeroGameplayAbility_TargetLock::EndAbility(const FGameplayAbilitySpecHandl
 	bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+}
+
+void UHeroGameplayAbility_TargetLock::TryLockTargetLock()
+{
+	GetAvalableTargetToLock();
+}
+
+void UHeroGameplayAbility_TargetLock::GetAvalableTargetToLock()
+{
+
+	TArray<FHitResult> BoxTraceHitResults;
+	
+	UKismetSystemLibrary::BoxTraceMultiForObjects(
+		GetHeroCharacterFromActorInfo(),		// 从ActorInfo获取英雄角色
+		GetHeroCharacterFromActorInfo()->GetActorLocation(),		// 从英雄角色获取位置
+		GetHeroCharacterFromActorInfo()->GetActorLocation() + GetHeroCharacterFromActorInfo()->GetActorForwardVector() * LockDistance,		// 从英雄角色获取前方1000米的位置
+		TraceBoxSize * 0.5f,		// 射线盒大小
+		GetHeroCharacterFromActorInfo()->GetActorForwardVector().ToOrientationRotator(),		// 从英雄角色获取前方向量
+		TargetLockObjectTypes,		// 指定检测目标的对象类型
+		false,		// 是否检测复杂碰撞
+		{},		// 忽略的Actor
+		bShowDebugTrace ? EDrawDebugTrace::Persistent : EDrawDebugTrace::None,		// 是否显示调试射线
+		BoxTraceHitResults,		// 射线命中结果
+		true		// 是否忽略自身
+		);
+
+	// 遍历射线命中结果
+	for (const FHitResult& HitResult : BoxTraceHitResults)
+	{
+		if (AActor* HitActor = HitResult.GetActor())
+		{
+			if (HitActor != GetHeroCharacterFromActorInfo())
+			{
+				AvailableTargetToLock.AddUnique(HitActor);
+
+				Debug::Print("AvailableTargetToLock: " + HitActor->GetName());
+			}
+		}
+	}
 }
