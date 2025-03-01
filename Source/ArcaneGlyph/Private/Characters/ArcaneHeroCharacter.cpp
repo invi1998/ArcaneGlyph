@@ -3,6 +3,7 @@
 
 #include "Characters/ArcaneHeroCharacter.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "ArcaneGameplayTags.h"
 #include "EnhancedInputSubsystems.h"
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
@@ -148,10 +149,20 @@ void AArcaneHeroCharacter::Input_Jump()
 
 void AArcaneHeroCharacter::Input_SwitchTargetTriggered(const FInputActionValue& InputActionValue)
 {
+	// 保存该输入信息，以便在输入动作（鼠标移动动作）完成后进行事件判定
+	SwitchDirection = InputActionValue.Get<FVector2d>();
 }
 
 void AArcaneHeroCharacter::Input_SwitchTargetCompleted(const FInputActionValue& InputActionValue)
 {
+	FGameplayEventData EventData;
+
+	// 如果鼠标输入的X轴大于0，说明鼠标右移动，所以发送向右切换锁定事件，同理，左边。
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+		this,
+		SwitchDirection.X > 0.f ? ArcaneGameplayTags::Player_Event_SwitchLockTarget_Right : ArcaneGameplayTags::Player_Event_SwitchLockTarget_Left,
+		EventData
+	);
 }
 
 void AArcaneHeroCharacter::Input_AbilityPressed(FGameplayTag InInputTag)
