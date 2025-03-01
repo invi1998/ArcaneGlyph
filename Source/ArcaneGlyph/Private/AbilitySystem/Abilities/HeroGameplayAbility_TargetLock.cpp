@@ -14,6 +14,7 @@
 #include "Widget/ArcaneWidgetBase.h"
 #include "Controllers/ArcaneHeroController.h"
 #include "ArcaneGameplayTags.h"
+#include "EnhancedInputSubsystems.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -25,6 +26,8 @@ void UHeroGameplayAbility_TargetLock::ActivateAbility(const FGameplayAbilitySpec
 	InitTargetLockMovement();
 	
 	TryLockTargetLock();
+
+	InitTargetLockInputMappingContext();
 	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
@@ -35,6 +38,7 @@ void UHeroGameplayAbility_TargetLock::EndAbility(const FGameplayAbilitySpecHandl
 {
 	ResetTargetLockMovement();
 	Cleanup();
+	ResetTargetLockInputMappingContext();
 	
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
@@ -195,6 +199,25 @@ void UHeroGameplayAbility_TargetLock::ResetTargetLockMovement()
     {
         GetHeroCharacterFromActorInfo()->GetCharacterMovement()->MaxWalkSpeed = CachedDefaultMaxWalkSpeed;
     }
+}
+
+void UHeroGameplayAbility_TargetLock::InitTargetLockInputMappingContext()
+{
+	const ULocalPlayer* OwningLocalPlayer = GetHeroControllerFromActorInfo()->GetLocalPlayer();
+	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(OwningLocalPlayer);
+	check(Subsystem);
+
+	Subsystem->AddMappingContext(TargetLockInputMappingContext, 3);
+	
+}
+
+void UHeroGameplayAbility_TargetLock::ResetTargetLockInputMappingContext()
+{
+	const ULocalPlayer* OwningLocalPlayer = GetHeroControllerFromActorInfo()->GetLocalPlayer();
+	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(OwningLocalPlayer);
+	check(Subsystem);
+
+	Subsystem->RemoveMappingContext(TargetLockInputMappingContext);
 }
 
 void UHeroGameplayAbility_TargetLock::CancelTargetLockAbility()

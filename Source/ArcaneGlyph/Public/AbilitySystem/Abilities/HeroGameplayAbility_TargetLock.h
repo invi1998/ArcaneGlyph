@@ -6,6 +6,7 @@
 #include "ArcaneHeroGameplayAbility.h"
 #include "HeroGameplayAbility_TargetLock.generated.h"
 
+class UInputMappingContext;
 class UArcaneWidgetBase;
 /**
  * 
@@ -35,6 +36,8 @@ private:
 	void SetTargetLockWidgetPosition();	// 设置目标锁定小部件位置
 	void InitTargetLockMovement();	// 初始化目标锁定移动
 	void ResetTargetLockMovement();	// 重置目标锁定移动
+	void InitTargetLockInputMappingContext();	// 初始化目标锁定输入映射上下文
+	void ResetTargetLockInputMappingContext();	// 重置目标锁定输入映射上下文
 
 	void CancelTargetLockAbility();	// 取消目标锁定能力
 	void Cleanup();
@@ -74,6 +77,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "TargetLock")
 	float TargetLockMaxWalkSpeed = 200.f;	// 目标锁定时的最大步行速度
+
+	UPROPERTY(EditDefaultsOnly, Category = "TargetLock")
+	TObjectPtr<UInputMappingContext> TargetLockInputMappingContext;
 	
 };
 
