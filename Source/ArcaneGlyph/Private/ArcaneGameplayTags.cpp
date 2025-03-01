@@ -10,6 +10,7 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_Look, "InputTag.Look", "角色观察");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_Jump, "InputTag.Jump", "角色跳跃");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_Roll, "InputTag.Roll", "角色翻滚");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_SwitchTarget, "InputTag.SwitchTarget", "切换目标");
 	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_EquipSword, "InputTag.EquipSword", "装备剑");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_EquipTwinblades, "InputTag.EquipTwinblades", "装备双刃剑");
