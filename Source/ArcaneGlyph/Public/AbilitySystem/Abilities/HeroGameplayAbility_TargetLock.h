@@ -28,7 +28,7 @@ private:
 	void GetAvalableTargetToLock();	// 获取可锁定的目标
 
 	UPROPERTY(EditDefaultsOnly, Category = "TargetLock")
-	float LockDistance = 1000.f;	// 锁定距离
+	float LockDistance = 5000.f;	// 锁定距离
 
 	UPROPERTY(EditDefaultsOnly, Category = "TargetLock")
 	FVector TraceBoxSize = FVector(2000.f, 2000.f, 2000.f);		// 射线盒大小

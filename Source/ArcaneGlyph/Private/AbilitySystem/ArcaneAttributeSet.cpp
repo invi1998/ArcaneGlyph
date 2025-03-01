@@ -57,9 +57,7 @@ void UArcaneAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 		const float OldHealth = GetCurrentHealth();
 		const float DamageDone = GetDamageTaken();
 		SetCurrentHealth(FMath::Clamp(OldHealth - DamageDone, 0.f, GetMaxHealth()));
-
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("OldHealth: %f, DamageDone: %f, CurrentHealth: %f"), OldHealth, DamageDone, GetCurrentHealth()));
-
+		
 		PawnUIComponent->OnCurrentHealthChanged.Broadcast(GetCurrentHealth() / GetMaxHealth());
 		
 		if (GetCurrentHealth() <= 0.f)
