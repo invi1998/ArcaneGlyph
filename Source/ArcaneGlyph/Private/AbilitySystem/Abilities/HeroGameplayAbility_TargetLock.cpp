@@ -7,6 +7,8 @@
 #include "Characters/ArcaneHeroCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Widget/ArcaneWidgetBase.h"
+#include "Controllers/ArcaneHeroController.h"
 
 
 void UHeroGameplayAbility_TargetLock::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
@@ -40,25 +42,13 @@ void UHeroGameplayAbility_TargetLock::TryLockTargetLock()
 	CurrentLockedActor = GetNearestTargetFromAvailable(AvailableTargetToLock);
 	if (CurrentLockedActor)
 	{
-		// Do something
+		DrawTargetLockWidget();
 	}
 	else
 	{
 		CancelTargetLockAbility();
 	}
 	
-}
-
-void UHeroGameplayAbility_TargetLock::CancelTargetLockAbility()
-{
-	CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true);
-}
-
-void UHeroGameplayAbility_TargetLock::Cleanup()
-{
-	AvailableTargetToLock.Empty();
-
-	CurrentLockedActor = nullptr;
 }
 
 void UHeroGameplayAbility_TargetLock::GetAvailableTargetToLock()
@@ -101,4 +91,34 @@ AActor* UHeroGameplayAbility_TargetLock::GetNearestTargetFromAvailable(const TAr
 	// 使用GameplayStatics的FindNearestActor函数来查找最近的Actor，该函数会返回最近的Actor和距离
 	return UGameplayStatics::FindNearestActor(GetHeroCharacterFromActorInfo()->GetActorLocation(), InAvailableActors, ClosestDistance);
 	
+}
+
+void UHeroGameplayAbility_TargetLock::DrawTargetLockWidget()
+{
+	if (!IsValid(TargetLockWidget))
+	{
+		checkf(TargetLockWidgetClass, TEXT("TargetLockWidgetClass is not set in %s!"), *GetName());
+
+		TargetLockWidget = CreateWidget<UArcaneWidgetBase>(GetHeroControllerFromActorInfo(), TargetLockWidgetClass);
+
+		check(TargetLockWidget);
+	}
+	
+	TargetLockWidget->AddToViewport();
+}
+
+void UHeroGameplayAbility_TargetLock::CancelTargetLockAbility()
+{
+	CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true);
+}
+
+void UHeroGameplayAbility_TargetLock::Cleanup()
+{
+	AvailableTargetToLock.Empty();
+	CurrentLockedActor = nullptr;
+
+	if (IsValid(TargetLockWidget))
+	{
+		TargetLockWidget->RemoveFromParent();
+	}
 }

@@ -6,6 +6,7 @@
 #include "ArcaneHeroGameplayAbility.h"
 #include "HeroGameplayAbility_TargetLock.generated.h"
 
+class UArcaneWidgetBase;
 /**
  * 
  */
@@ -27,6 +28,7 @@ private:
 	void TryLockTargetLock();	// 尝试锁定目标
 	void GetAvailableTargetToLock();	// 获取可锁定的目标
 	AActor* GetNearestTargetFromAvailable(const TArray<AActor*> InAvailableActors);	// 从可用目标中获取最近的目标
+	void DrawTargetLockWidget();	// 绘制目标锁定小部件
 
 	void CancelTargetLockAbility();	// 取消目标锁定能力
 	void Cleanup();
@@ -43,6 +45,12 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "TargetLock")
 	bool bShowDebugTrace = false;	// 是否显示调试射线
 
+	UPROPERTY(EditDefaultsOnly, Category = "TargetLock")
+	TSubclassOf<UArcaneWidgetBase> TargetLockWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UArcaneWidgetBase> TargetLockWidget;
+
 	UPROPERTY()
 	TArray<AActor*> AvailableTargetToLock;	// 可锁定的目标
 
@@ -50,3 +58,4 @@ private:
 	AActor* CurrentLockedActor = nullptr;	// 锁定的目标
 	
 };
+
