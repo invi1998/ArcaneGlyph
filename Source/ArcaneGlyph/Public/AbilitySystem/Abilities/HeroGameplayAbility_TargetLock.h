@@ -33,10 +33,12 @@ private:
 	AActor* GetNearestTargetFromAvailable(const TArray<AActor*> InAvailableActors);	// 从可用目标中获取最近的目标
 	void DrawTargetLockWidget();	// 绘制目标锁定小部件
 	void SetTargetLockWidgetPosition();	// 设置目标锁定小部件位置
+	void InitTargetLockMovement();	// 初始化目标锁定移动
+	void ResetTargetLockMovement();	// 重置目标锁定移动
 
 	void CancelTargetLockAbility();	// 取消目标锁定能力
 	void Cleanup();
-
+	
 	UPROPERTY(EditDefaultsOnly, Category = "TargetLock")
 	float LockDistance = 5000.f;	// 锁定距离
 
@@ -66,6 +68,12 @@ private:
 
 	UPROPERTY()
 	AActor* CurrentLockedActor = nullptr;	// 锁定的目标
+
+	UPROPERTY()
+	float CachedDefaultMaxWalkSpeed = 0.f;	// 缓存的默认最大步行速度
+
+	UPROPERTY(EditDefaultsOnly, Category = "TargetLock")
+	float TargetLockMaxWalkSpeed = 200.f;	// 目标锁定时的最大步行速度
 	
 };
 

@@ -14,6 +14,7 @@
 #include "Widget/ArcaneWidgetBase.h"
 #include "Controllers/ArcaneHeroController.h"
 #include "ArcaneGameplayTags.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
 
@@ -21,6 +22,8 @@ void UHeroGameplayAbility_TargetLock::ActivateAbility(const FGameplayAbilitySpec
                                                       const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
                                                       const FGameplayEventData* TriggerEventData)
 {
+	InitTargetLockMovement();
+	
 	TryLockTargetLock();
 	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
@@ -30,6 +33,7 @@ void UHeroGameplayAbility_TargetLock::EndAbility(const FGameplayAbilitySpecHandl
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	bool bReplicateEndAbility, bool bWasCancelled)
 {
+	ResetTargetLockMovement();
 	Cleanup();
 	
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
@@ -177,6 +181,20 @@ void UHeroGameplayAbility_TargetLock::SetTargetLockWidgetPosition()
 		// 设置小部件的屏幕位置，第二个参数为false表示移除DPIScale，因为我们已经在之前计算投影位置时考虑了DPIScale
 		TargetLockWidget->SetPositionInViewport(ScreenPosition, false);
 	}
+}
+
+void UHeroGameplayAbility_TargetLock::InitTargetLockMovement()
+{
+	CachedDefaultMaxWalkSpeed = GetHeroCharacterFromActorInfo()->GetCharacterMovement()->MaxWalkSpeed;
+	GetHeroCharacterFromActorInfo()->GetCharacterMovement()->MaxWalkSpeed = TargetLockMaxWalkSpeed;
+}
+
+void UHeroGameplayAbility_TargetLock::ResetTargetLockMovement()
+{
+	if (CachedDefaultMaxWalkSpeed > 0.f)
+    {
+        GetHeroCharacterFromActorInfo()->GetCharacterMovement()->MaxWalkSpeed = CachedDefaultMaxWalkSpeed;
+    }
 }
 
 void UHeroGameplayAbility_TargetLock::CancelTargetLockAbility()
