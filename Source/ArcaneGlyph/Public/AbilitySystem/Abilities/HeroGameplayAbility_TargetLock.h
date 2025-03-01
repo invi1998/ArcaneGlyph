@@ -29,6 +29,7 @@ private:
 	void GetAvailableTargetToLock();	// 获取可锁定的目标
 	AActor* GetNearestTargetFromAvailable(const TArray<AActor*> InAvailableActors);	// 从可用目标中获取最近的目标
 	void DrawTargetLockWidget();	// 绘制目标锁定小部件
+	void SetTargetLockWidgetPosition();	// 设置目标锁定小部件位置
 
 	void CancelTargetLockAbility();	// 取消目标锁定能力
 	void Cleanup();
@@ -47,6 +48,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "TargetLock")
 	TSubclassOf<UArcaneWidgetBase> TargetLockWidgetClass;
+
+	UPROPERTY()
+	FVector2D TargetLockWidgetSize = FVector2D::ZeroVector;
 
 	UPROPERTY()
 	TObjectPtr<UArcaneWidgetBase> TargetLockWidget;

@@ -4,7 +4,10 @@
 #include "AbilitySystem/Abilities/HeroGameplayAbility_TargetLock.h"
 
 #include "ArcaneDebugHelper.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
+#include "Blueprint/WidgetTree.h"
 #include "Characters/ArcaneHeroCharacter.h"
+#include "Components/SizeBox.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Widget/ArcaneWidgetBase.h"
@@ -43,6 +46,8 @@ void UHeroGameplayAbility_TargetLock::TryLockTargetLock()
 	if (CurrentLockedActor)
 	{
 		DrawTargetLockWidget();
+
+		SetTargetLockWidgetPosition();
 	}
 	else
 	{
@@ -102,9 +107,43 @@ void UHeroGameplayAbility_TargetLock::DrawTargetLockWidget()
 		TargetLockWidget = CreateWidget<UArcaneWidgetBase>(GetHeroControllerFromActorInfo(), TargetLockWidgetClass);
 
 		check(TargetLockWidget);
+
 	}
 	
 	TargetLockWidget->AddToViewport();
+}
+
+void UHeroGameplayAbility_TargetLock::SetTargetLockWidgetPosition()
+{
+	if (IsValid(TargetLockWidget) && CurrentLockedActor)
+	{
+		FVector2D ScreenPosition;
+
+		// 将世界位置投影到屏幕位置
+		UWidgetLayoutLibrary::ProjectWorldLocationToWidgetPosition(
+			GetHeroControllerFromActorInfo(),
+			CurrentLockedActor->GetActorLocation(),
+			ScreenPosition,
+			true		// 是否考虑DPIScale
+		);
+
+		if (TargetLockWidgetSize.IsZero())
+		{
+			TargetLockWidget->WidgetTree->ForEachWidget([this](UWidget* Widget)
+			{
+				if (USizeBox* SizeBox = Cast<USizeBox>(Widget))
+				{
+					TargetLockWidgetSize.X = SizeBox->GetWidthOverride();
+					TargetLockWidgetSize.Y = SizeBox->GetHeightOverride();
+				}
+			});
+		}
+
+		ScreenPosition -= TargetLockWidgetSize * 0.5f;
+		
+		// 设置小部件的屏幕位置，第二个参数为false表示移除DPIScale，因为我们已经在之前计算投影位置时考虑了DPIScale
+		TargetLockWidget->SetPositionInViewport(ScreenPosition, false);
+	}
 }
 
 void UHeroGameplayAbility_TargetLock::CancelTargetLockAbility()
