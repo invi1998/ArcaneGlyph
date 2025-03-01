@@ -64,6 +64,8 @@ void UHeroGameplayAbility_TargetLock::OnTargetLockTick(float DeltaTime)
 		FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetHeroCharacterFromActorInfo()->GetActorLocation(), CurrentLockedActor->GetActorLocation());
 		// 差值旋转，使角色平滑旋转
 		// 同时，在目标锁定期间，角色的摄像机也应该朝向目标
+		LookAtRotation -= FRotator(TargetLockCameraOffsetDistance, 0.f, 0.f);
+		
 		const FRotator CurrentControllerRotation = GetHeroControllerFromActorInfo()->GetControlRotation();
 		const FRotator TargetRot = FMath::RInterpTo(CurrentControllerRotation, LookAtRotation, DeltaTime, TargetLockRotationInterpSpeed);
 
