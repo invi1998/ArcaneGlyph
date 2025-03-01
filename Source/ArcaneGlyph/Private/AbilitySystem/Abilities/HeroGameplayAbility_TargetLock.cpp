@@ -213,7 +213,10 @@ void UHeroGameplayAbility_TargetLock::InitTargetLockInputMappingContext()
 
 void UHeroGameplayAbility_TargetLock::ResetTargetLockInputMappingContext()
 {
+	if (!GetHeroControllerFromActorInfo()) return;
+	
 	const ULocalPlayer* OwningLocalPlayer = GetHeroControllerFromActorInfo()->GetLocalPlayer();
+	
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(OwningLocalPlayer);
 	check(Subsystem);
 
