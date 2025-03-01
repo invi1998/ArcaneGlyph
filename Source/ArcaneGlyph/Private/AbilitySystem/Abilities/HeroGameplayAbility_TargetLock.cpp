@@ -92,7 +92,7 @@ void UHeroGameplayAbility_TargetLock::SwitchLockTarget(const FGameplayTag& InSwi
 	else if (InSwitchDirectionTag.MatchesTagExact(ArcaneGameplayTags::Player_Event_SwitchLockTarget_Right))
 	{
 		// 向右切换锁定
-		NewLockTarget = GetNearestTargetFromAvailable(AvailableLeftActors);
+		NewLockTarget = GetNearestTargetFromAvailable(AvailableRightActors);
 	}
 
 	if (NewLockTarget != nullptr)
@@ -262,7 +262,7 @@ void UHeroGameplayAbility_TargetLock::GetAvailableActorsAroundTarget(TArray<AAct
 
 	const FVector PlayerLocation = GetHeroCharacterFromActorInfo()->GetActorLocation();
 	const FVector CurrentLockedTargetLocation = CurrentLockedActor->GetActorLocation();
-	const FVector PlayerToCurrentNormalized = (CurrentLockedActor->GetActorLocation() - PlayerLocation).GetSafeNormal();
+	const FVector PlayerToCurrentNormalized = (CurrentLockedTargetLocation - PlayerLocation).GetSafeNormal();
 
 	// 然后遍历AvailableTargetToLock，将他们和玩家所在位置的连线 和 玩家到当前锁定目标的位置的连线 做叉乘（得到角度信息，根据角度信息判段左右）
 	for (AActor* ActorToCheck : AvailableTargetToLock)
@@ -276,11 +276,11 @@ void UHeroGameplayAbility_TargetLock::GetAvailableActorsAroundTarget(TArray<AAct
 
 		if (CrossVector.Z > 0.f)
 		{
-			OutActorOnRight.Add(ActorToCheck);
+			OutActorOnRight.AddUnique(ActorToCheck);
 		}
 		else
 		{
-			OutActorOnLeft.Add(ActorToCheck);
+			OutActorOnLeft.AddUnique(ActorToCheck);
 		}
 		
 	}
