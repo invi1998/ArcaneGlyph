@@ -17,8 +17,25 @@ void UArcaneAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& In
 		{
 			if (AbilitySpec.GetDynamicSpecSourceTags().HasTagExact(InInputTag))
 			{
-				// 说明这个技能是通过这个输入标签激活的
-				TryActivateAbility(AbilitySpec.Handle);
+				if (InInputTag.MatchesTag(ArcaneGameplayTags::InputTag_Toggleable))
+				{
+					// 说明这个技能是可切换的
+					if (AbilitySpec.IsActive())
+					{
+						// 如果当前技能是激活状态，就取消激活
+						CancelAbilityHandle(AbilitySpec.Handle);
+					}
+					else
+					{
+						// 如果当前技能是未激活状态，就激活
+						TryActivateAbility(AbilitySpec.Handle);
+					}
+				}
+				else
+				{
+					// 说明这个技能是通过这个输入标签激活的
+					TryActivateAbility(AbilitySpec.Handle);
+				}
 			}
 		}
 	}
