@@ -73,6 +73,35 @@ void UHeroGameplayAbility_TargetLock::OnTargetLockTick(float DeltaTime)
 	}
 }
 
+void UHeroGameplayAbility_TargetLock::SwitchLockTarget(const FGameplayTag& InSwitchDirectionTag)
+{
+	// 先刷新一次场景里的可锁定角色信息
+	GetAvailableTargetToLock();
+
+	TArray<AActor*> AvailableLeftActors{};
+	TArray<AActor*> AvailableRightActors{};
+	AActor* NewLockTarget = nullptr;
+
+	GetAvailableActorsAroundTarget(AvailableLeftActors, AvailableRightActors);
+
+	if (InSwitchDirectionTag.MatchesTagExact(ArcaneGameplayTags::Player_Event_SwitchLockTarget_Left))
+	{
+		// 向左切换锁定
+		NewLockTarget = GetNearestTargetFromAvailable(AvailableLeftActors);
+	}
+	else if (InSwitchDirectionTag.MatchesTagExact(ArcaneGameplayTags::Player_Event_SwitchLockTarget_Right))
+	{
+		// 向右切换锁定
+		NewLockTarget = GetNearestTargetFromAvailable(AvailableLeftActors);
+	}
+
+	if (NewLockTarget != nullptr)
+	{
+		CurrentLockedActor = NewLockTarget;
+	}
+	
+}
+
 void UHeroGameplayAbility_TargetLock::TryLockTargetLock()
 {
 	GetAvailableTargetToLock();
@@ -99,7 +128,7 @@ void UHeroGameplayAbility_TargetLock::TryLockTargetLock()
 
 void UHeroGameplayAbility_TargetLock::GetAvailableTargetToLock()
 {
-
+	AvailableTargetToLock.Empty();
 	TArray<FHitResult> BoxTraceHitResults;
 	
 	UKismetSystemLibrary::BoxTraceMultiForObjects(
@@ -221,6 +250,42 @@ void UHeroGameplayAbility_TargetLock::ResetTargetLockInputMappingContext()
 	check(Subsystem);
 
 	Subsystem->RemoveMappingContext(TargetLockInputMappingContext);
+}
+
+void UHeroGameplayAbility_TargetLock::GetAvailableActorsAroundTarget(TArray<AActor*>& OutActorOnLeft, TArray<AActor*>& OutActorOnRight)
+{
+	if (!IsValid(CurrentLockedActor) || AvailableTargetToLock.IsEmpty())
+	{
+		CancelTargetLockAbility();
+		return;
+	}
+
+	const FVector PlayerLocation = GetHeroCharacterFromActorInfo()->GetActorLocation();
+	const FVector CurrentLockedTargetLocation = CurrentLockedActor->GetActorLocation();
+	const FVector PlayerToCurrentNormalized = (CurrentLockedActor->GetActorLocation() - PlayerLocation).GetSafeNormal();
+
+	// 然后遍历AvailableTargetToLock，将他们和玩家所在位置的连线 和 玩家到当前锁定目标的位置的连线 做叉乘（得到角度信息，根据角度信息判段左右）
+	for (AActor* ActorToCheck : AvailableTargetToLock)
+	{
+		if (!ActorToCheck || ActorToCheck == CurrentLockedActor) continue;
+
+		const FVector PlayerToCheckNormalized = (ActorToCheck->GetActorLocation() - PlayerLocation).GetSafeNormal();
+
+		// 获取叉积
+		const FVector CrossVector = FVector::CrossProduct(PlayerToCurrentNormalized, PlayerToCheckNormalized);
+
+		if (CrossVector.Z > 0.f)
+		{
+			OutActorOnRight.Add(ActorToCheck);
+		}
+		else
+		{
+			OutActorOnLeft.Add(ActorToCheck);
+		}
+		
+	}
+
+	
 }
 
 void UHeroGameplayAbility_TargetLock::CancelTargetLockAbility()

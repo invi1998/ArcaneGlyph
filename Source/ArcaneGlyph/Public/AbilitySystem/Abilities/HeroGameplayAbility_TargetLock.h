@@ -27,6 +27,9 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void OnTargetLockTick(float DeltaTime);
 
+	UFUNCTION(BlueprintCallable)
+	void SwitchLockTarget(const FGameplayTag& InSwitchDirectionTag);
+
 private:
 
 	void TryLockTargetLock();	// 尝试锁定目标
@@ -38,6 +41,9 @@ private:
 	void ResetTargetLockMovement();	// 重置目标锁定移动
 	void InitTargetLockInputMappingContext();	// 初始化目标锁定输入映射上下文
 	void ResetTargetLockInputMappingContext();	// 重置目标锁定输入映射上下文
+
+	// 获取当前锁定目标左右两侧的角色列表
+	void GetAvailableActorsAroundTarget(TArray<AActor*>& OutActorOnLeft, TArray<AActor*>& OutActorOnRight);
 
 	void CancelTargetLockAbility();	// 取消目标锁定能力
 	void Cleanup();
