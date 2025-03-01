@@ -26,7 +26,7 @@ public:
 	// UAbilityTask interface
 	virtual void TickTask(float DeltaTime) override;
 	// ~UAbilityTask interface
-
+	
 	UPROPERTY(BlueprintAssignable, Category = "Arcane | AbilityTasks")
 	FOnAbilityTaskDelegate OnAbilityTaskTick;		// 每帧执行的委托
 	

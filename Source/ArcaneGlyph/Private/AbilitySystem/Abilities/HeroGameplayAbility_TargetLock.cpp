@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/Abilities/HeroGameplayAbility_TargetLock.h"
 
+#include "ArcaneBlueprintFunctionLibrary.h"
 #include "ArcaneDebugHelper.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Blueprint/WidgetTree.h"
@@ -12,6 +13,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Widget/ArcaneWidgetBase.h"
 #include "Controllers/ArcaneHeroController.h"
+#include "ArcaneGameplayTags.h"
 
 
 void UHeroGameplayAbility_TargetLock::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
@@ -30,6 +32,19 @@ void UHeroGameplayAbility_TargetLock::EndAbility(const FGameplayAbilitySpecHandl
 	Cleanup();
 	
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+}
+
+void UHeroGameplayAbility_TargetLock::OnTargetLockTick(float DeltaTime)
+{
+	if (!CurrentLockedActor ||
+		UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(CurrentLockedActor, ArcaneGameplayTags::Shared_Status_Dead) ||
+		UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(GetHeroCharacterFromActorInfo(), ArcaneGameplayTags::Shared_Status_Dead))
+	{
+		CancelTargetLockAbility();
+		return;
+	}
+
+	SetTargetLockWidgetPosition();
 }
 
 void UHeroGameplayAbility_TargetLock::TryLockTargetLock()
@@ -159,5 +174,9 @@ void UHeroGameplayAbility_TargetLock::Cleanup()
 	if (IsValid(TargetLockWidget))
 	{
 		TargetLockWidget->RemoveFromParent();
+		TargetLockWidget = nullptr;
 	}
+
+	TargetLockWidgetSize = FVector2D::ZeroVector;
+	
 }
