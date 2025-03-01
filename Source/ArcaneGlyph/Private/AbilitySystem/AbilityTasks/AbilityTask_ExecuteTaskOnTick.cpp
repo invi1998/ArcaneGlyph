@@ -19,7 +19,8 @@ void UAbilityTask_ExecuteTaskOnTick::TickTask(float DeltaTime)
 {
 	Super::TickTask(DeltaTime);
 
-	// 如果应该广播任务委托，该函数的作用是检查任务委托是否已经被广播，如果没有被广播，就广播出去
+	// - **作用**：检查任务是否仍处于活跃状态（未被手动结束或外部终止）。
+	// **必要性**：防止在任务结束后仍广播委托，导致访问无效内存或逻辑错误。
 	if (ShouldBroadcastAbilityTaskDelegates())
 	{
 		OnAbilityTaskTick.Broadcast(DeltaTime);

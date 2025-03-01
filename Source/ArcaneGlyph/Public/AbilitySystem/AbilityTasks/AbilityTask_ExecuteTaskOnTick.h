@@ -19,7 +19,7 @@ class ARCANEGLYPH_API UAbilityTask_ExecuteTaskOnTick : public UAbilityTask
 public:
 	UAbilityTask_ExecuteTaskOnTick();
 	
-	// HidePin：隐藏指定的引脚，DefaultToSelf：默认自己，BlueprintInternalUseOnly：蓝图内部使用
+	// HidePin：隐藏指定的引脚，DefaultToSelf：默认自己，在蓝图中调用时，无需手动连接 `OwningAbility` 引脚，自动绑定当前 Ability。，BlueprintInternalUseOnly：蓝图内部使用，只能在事件图中使用
 	UFUNCTION(BlueprintCallable, Category = "Arcane | AbilityTasks", meta = (HidePin="OwningAbility", DefaultToSelf="OwningAbility", BlueprintInternalUseOnly = "true"))
 	static UAbilityTask_ExecuteTaskOnTick* ExecuteTaskOnTick(UGameplayAbility* OwningAbility);
 
