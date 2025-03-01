@@ -8,6 +8,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "ArcaneBlueprintFunctionLibrary.generated.h"
 
+class AArcaneHeroCharacter;
 struct FScalableFloat;
 class UPawnUIComponent;
 class UPawnCombatComponent;
@@ -75,6 +76,10 @@ public:
 	// 判定当前格挡是否是有效的
 	UFUNCTION(BlueprintPure, Category = "Arcane | FunctionLibrary")
 	static bool IsCurrentBlockValid(AActor* InAttacker, AActor* InDefender);
+
+	// 设置玩家是否是左手正持有武器
+	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary")
+	static void SetPlayerIsLeftHandUsingWeapon(AActor* InActor, bool bIsLeftHandUsingWeapon);
 };
 
 

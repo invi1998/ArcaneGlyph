@@ -9,6 +9,7 @@
 #include "GenericTeamAgentInterface.h"
 #include "KismetAnimationLibrary.h"
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
+#include "Characters/ArcaneHeroCharacter.h"
 #include "Component/Combat/PawnCombatComponent.h"
 #include "Component/UI/PawnUIComponent.h"
 #include "GameFramework/Character.h"
@@ -209,6 +210,15 @@ bool UArcaneBlueprintFunctionLibrary::IsCurrentBlockValid(AActor* InAttacker, AA
 	// 如果cos值大于0.，则说明攻击者和在防御者前方，此时防御者的格挡是有效的
 	return DotResult < -0.1f;
 	
+}
+
+void UArcaneBlueprintFunctionLibrary::SetPlayerIsLeftHandUsingWeapon(AActor* InActor, bool bIsLeftHandUsingWeapon)
+{
+	check(InActor);
+	if (AArcaneHeroCharacter* InHeroCharacter = Cast<AArcaneHeroCharacter>(InActor))
+	{
+		InHeroCharacter->bIsLeftHandUsingWeapon = bIsLeftHandUsingWeapon;
+	}
 }
 
 

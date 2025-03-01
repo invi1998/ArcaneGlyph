@@ -8,7 +8,7 @@
 
 class UBoxComponent;
 
-DECLARE_DELEGATE_OneParam(FOnTargetInteractedDelegate, AActor*);		// 目标交互委托
+DECLARE_DELEGATE_TwoParams(FOnTargetInteractedDelegate, AActor*, int32);
 
 UCLASS()
 class ARCANEGLYPH_API AArcaneWeaponBase : public AActor
@@ -19,7 +19,6 @@ public:
 	AArcaneWeaponBase();
 
 	FORCEINLINE UStaticMeshComponent* GetWeaponMesh() const { return WeaponMesh.Get(); }
-	FORCEINLINE UBoxComponent* GetWeaponCollisionBox() const { return WeaponCollisionBox.Get(); }
 
 	// 这里添加一个蓝图原生事件，用于某些特殊武器在蓝图里面实现特殊的逻辑（比如双头武器，有两个碰撞盒，但是另一个碰撞盒子是在蓝图里添加的，C++无法直接获取，所以需要蓝图实现）
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Weapon")
@@ -33,7 +32,13 @@ protected:
 	TObjectPtr<UStaticMeshComponent> WeaponMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
-	TObjectPtr<UBoxComponent> WeaponCollisionBox;
+	TObjectPtr<UBoxComponent> WeaponCollisionBox1;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Weapon")
+	bool bShouldUseTwoCollisionBoxes = false;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
+	TObjectPtr<UBoxComponent> WeaponCollisionBox2;
 
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void OnWeaponCollisionBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

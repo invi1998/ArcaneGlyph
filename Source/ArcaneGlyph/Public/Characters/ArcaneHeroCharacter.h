@@ -38,6 +38,10 @@ public:
 
 	FORCEINLINE UHeroCombatComponent* GetHeroCombatComponent() const { return HeroCombatComponent; }
 
+	// 是否是左手正持有武器
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	bool bIsLeftHandUsingWeapon = false;
+
 protected:
 	virtual void BeginPlay() override;
 

@@ -40,8 +40,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Arcane|Combat")
 	void ToggleWeaponCollision(bool bEnable, EToggleDamageType InToggleDamageType = EToggleDamageType::CurrentEquippedWeapon);
 
-	virtual void OnHitTargetActor(AActor* InHitActor);
-	virtual void OnWeaponPulledFromTargetActor(AActor* InHitActor);
+	virtual void OnHitTargetActor(AActor* InHitActor, int32 InCollisionBoxIndex);
+	virtual void OnWeaponPulledFromTargetActor(AActor* InHitActor, int32 InCollisionBoxIndex);
 
 protected:
 	UPROPERTY()

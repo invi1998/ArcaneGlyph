@@ -56,11 +56,11 @@ void UPawnCombatComponent::ToggleWeaponCollision(bool bEnable, EToggleDamageType
 	}
 }
 
-void UPawnCombatComponent::OnHitTargetActor(AActor* InHitActor)
+void UPawnCombatComponent::OnHitTargetActor(AActor* InHitActor, int32 InCollisionBoxIndex)
 {
 }
 
-void UPawnCombatComponent::OnWeaponPulledFromTargetActor(AActor* InHitActor)
+void UPawnCombatComponent::OnWeaponPulledFromTargetActor(AActor* InHitActor, int32 InCollisionBoxIndex)
 {
 }
 

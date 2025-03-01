@@ -24,7 +24,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Arcane|Combat")
 	float GetHeroCurrenEquippedWeaponDamageAtLevel(float InLevel) const;
 
-	virtual void OnHitTargetActor(AActor* InHitActor) override;
-	virtual void OnWeaponPulledFromTargetActor(AActor* InHitActor) override;
+	virtual void OnHitTargetActor(AActor* InHitActor, int32 InCollisionBoxIndex) override;
+	virtual void OnWeaponPulledFromTargetActor(AActor* InHitActor, int32 InCollisionBoxIndex) override;
 	
 };

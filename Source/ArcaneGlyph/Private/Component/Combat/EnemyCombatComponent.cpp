@@ -5,11 +5,10 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "ArcaneBlueprintFunctionLibrary.h"
-#include "ArcaneDebugHelper.h"
 #include "ArcaneGameplayTags.h"
 
 
-void UEnemyCombatComponent::OnHitTargetActor(AActor* InHitActor)
+void UEnemyCombatComponent::OnHitTargetActor(AActor* InHitActor, int32 InCollisionBoxIndex)
 {
 	if (!InHitActor) return;
 
@@ -50,11 +49,22 @@ void UEnemyCombatComponent::OnHitTargetActor(AActor* InHitActor)
 	else
 	{
 		// 未被格挡，告知攻击者
-		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
-			GetOwningPawn(),
-			ArcaneGameplayTags::Shared_Event_MeleeAttack,
-			EventData
+		if (InCollisionBoxIndex == 1)
+		{
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+				GetOwningPawn(),
+				ArcaneGameplayTags::Shared_Event_MeleeAttack_1,
+				EventData
 			);
+		}
+		else
+		{
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+				GetOwningPawn(),
+				ArcaneGameplayTags::Shared_Event_MeleeAttack_2,
+				EventData
+			);
+		}
 	}
 	
 	
