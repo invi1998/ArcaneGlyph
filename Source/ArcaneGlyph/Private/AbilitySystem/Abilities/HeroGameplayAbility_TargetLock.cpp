@@ -14,6 +14,7 @@
 #include "Widget/ArcaneWidgetBase.h"
 #include "Controllers/ArcaneHeroController.h"
 #include "ArcaneGameplayTags.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 void UHeroGameplayAbility_TargetLock::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
@@ -45,6 +46,23 @@ void UHeroGameplayAbility_TargetLock::OnTargetLockTick(float DeltaTime)
 	}
 
 	SetTargetLockWidgetPosition();
+
+	// 如果当前角色正在翻滚或者正在格挡，就不要旋转角色
+	const bool bShouldOverrideRotation = !UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(GetHeroCharacterFromActorInfo(), ArcaneGameplayTags::Player_Status_Rolling)
+										&& !UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(GetHeroCharacterFromActorInfo(), ArcaneGameplayTags::Player_Status_Blocking);
+
+	if (bShouldOverrideRotation)
+	{
+		FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetHeroCharacterFromActorInfo()->GetActorLocation(), CurrentLockedActor->GetActorLocation());
+		// 差值旋转，使角色平滑旋转
+		// 同时，在目标锁定期间，角色的摄像机也应该朝向目标
+		const FRotator CurrentControllerRotation = GetHeroControllerFromActorInfo()->GetControlRotation();
+		const FRotator TargetRot = FMath::RInterpTo(CurrentControllerRotation, LookAtRotation, DeltaTime, TargetLockRotationInterpSpeed);
+
+		GetHeroControllerFromActorInfo()->SetControlRotation(FRotator(TargetRot.Pitch, TargetRot.Yaw, 0.f));
+		// 设置了控制器的旋转，角色的旋转也会跟着改变
+		GetHeroCharacterFromActorInfo()->SetActorRotation(FRotator(0.f, TargetRot.Yaw, 0.f));
+	}
 }
 
 void UHeroGameplayAbility_TargetLock::TryLockTargetLock()

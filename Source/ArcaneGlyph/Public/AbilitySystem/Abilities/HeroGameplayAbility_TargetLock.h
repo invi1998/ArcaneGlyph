@@ -52,6 +52,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "TargetLock")
 	TSubclassOf<UArcaneWidgetBase> TargetLockWidgetClass;
 
+	UPROPERTY(EditDefaultsOnly, Category = "TargetLock")
+	float TargetLockRotationInterpSpeed = 10.f;	// 目标锁定旋转插值速度
+
 	UPROPERTY()
 	FVector2D TargetLockWidgetSize = FVector2D::ZeroVector;
 
