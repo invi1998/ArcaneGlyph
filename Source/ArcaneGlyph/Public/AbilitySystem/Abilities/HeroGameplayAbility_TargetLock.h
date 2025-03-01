@@ -66,6 +66,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "TargetLock")
 	float TargetLockRotationInterpSpeed = 5.f;	// 目标锁定旋转插值速度
 
+	UPROPERTY(EditDefaultsOnly, Category = "TargetLock")
+	float TargetLockCameraOffsetDistance = 20.f;	// 目标锁定时的摄像机偏移距离
+
 	UPROPERTY()
 	FVector2D TargetLockWidgetSize = FVector2D::ZeroVector;
 
