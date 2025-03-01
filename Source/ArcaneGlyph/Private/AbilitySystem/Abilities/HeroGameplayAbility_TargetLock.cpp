@@ -5,6 +5,7 @@
 
 #include "ArcaneDebugHelper.h"
 #include "Characters/ArcaneHeroCharacter.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 
@@ -21,15 +22,46 @@ void UHeroGameplayAbility_TargetLock::EndAbility(const FGameplayAbilitySpecHandl
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	bool bReplicateEndAbility, bool bWasCancelled)
 {
+	Cleanup();
+	
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
 void UHeroGameplayAbility_TargetLock::TryLockTargetLock()
 {
-	GetAvalableTargetToLock();
+	GetAvailableTargetToLock();
+
+	if (AvailableTargetToLock.IsEmpty())
+	{
+		CancelTargetLockAbility();
+		return;
+	}
+
+	CurrentLockedActor = GetNearestTargetFromAvailable(AvailableTargetToLock);
+	if (CurrentLockedActor)
+	{
+		// Do something
+	}
+	else
+	{
+		CancelTargetLockAbility();
+	}
+	
 }
 
-void UHeroGameplayAbility_TargetLock::GetAvalableTargetToLock()
+void UHeroGameplayAbility_TargetLock::CancelTargetLockAbility()
+{
+	CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true);
+}
+
+void UHeroGameplayAbility_TargetLock::Cleanup()
+{
+	AvailableTargetToLock.Empty();
+
+	CurrentLockedActor = nullptr;
+}
+
+void UHeroGameplayAbility_TargetLock::GetAvailableTargetToLock()
 {
 
 	TArray<FHitResult> BoxTraceHitResults;
@@ -60,4 +92,13 @@ void UHeroGameplayAbility_TargetLock::GetAvalableTargetToLock()
 			}
 		}
 	}
+}
+
+AActor* UHeroGameplayAbility_TargetLock::GetNearestTargetFromAvailable(const TArray<AActor*> InAvailableActors)
+{
+	float ClosestDistance = TNumericLimits<float>::Max();
+
+	// 使用GameplayStatics的FindNearestActor函数来查找最近的Actor，该函数会返回最近的Actor和距离
+	return UGameplayStatics::FindNearestActor(GetHeroCharacterFromActorInfo()->GetActorLocation(), InAvailableActors, ClosestDistance);
+	
 }

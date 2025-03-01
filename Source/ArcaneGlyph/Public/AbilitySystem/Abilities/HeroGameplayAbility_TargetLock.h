@@ -25,7 +25,11 @@ protected:
 private:
 
 	void TryLockTargetLock();	// 尝试锁定目标
-	void GetAvalableTargetToLock();	// 获取可锁定的目标
+	void GetAvailableTargetToLock();	// 获取可锁定的目标
+	AActor* GetNearestTargetFromAvailable(const TArray<AActor*> InAvailableActors);	// 从可用目标中获取最近的目标
+
+	void CancelTargetLockAbility();	// 取消目标锁定能力
+	void Cleanup();
 
 	UPROPERTY(EditDefaultsOnly, Category = "TargetLock")
 	float LockDistance = 5000.f;	// 锁定距离
@@ -41,5 +45,8 @@ private:
 
 	UPROPERTY()
 	TArray<AActor*> AvailableTargetToLock;	// 可锁定的目标
+
+	UPROPERTY()
+	AActor* CurrentLockedActor = nullptr;	// 锁定的目标
 	
 };
