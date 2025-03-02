@@ -81,6 +81,7 @@ namespace ArcaneGameplayTags
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Enemy_Status_Strafing, "Enemy.Status.Strafing", "敌人状态：侧身环绕移动");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Enemy_Status_UnderAttack, "Enemy.Status.UnderAttack", "敌人状态：受到攻击");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Enemy_Status_Unblockable, "Enemy.Status.Unblockable", "敌人状态：无法格挡");
 
 	// Shared Tags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Event_MeleeAttack_1, "Shared.Event.MeleeAttack.1", "共享事件：近战攻击");

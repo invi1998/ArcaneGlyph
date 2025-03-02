@@ -26,7 +26,7 @@ void UEnemyCombatComponent::OnHitTargetActor(AActor* InHitActor, int32 InCollisi
 	bool bIsValidBlock = false;
 	
 	const bool bIsPlayerBlocking = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(InHitActor, ArcaneGameplayTags::Player_Status_Blocking);
-	const bool bIsMyAttackUnblockable = false;
+	const bool bIsMyAttackUnblockable = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(GetOwningPawn(), ArcaneGameplayTags::Enemy_Status_Unblockable);
 
 	if (bIsPlayerBlocking && !bIsMyAttackUnblockable)
 	{
