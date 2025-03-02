@@ -21,6 +21,10 @@ AArcaneProjectileBase::AArcaneProjectileBase()
 	ProjectileCollisionBox->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Block);
 	ProjectileCollisionBox->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
 
+	// 添加碰撞盒子的碰撞事件
+	ProjectileCollisionBox->OnComponentHit.AddUniqueDynamic(this, &AArcaneProjectileBase::OnProjectileHit);
+	ProjectileCollisionBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &AArcaneProjectileBase::OnProjectileBeginOverlap);
+
 	ProjectileNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("ProjectileNiagaraComponent"));
 	ProjectileNiagaraComponent->SetupAttachment(GetRootComponent());
 	ProjectileNiagaraComponent->SetAutoActivate(false);
@@ -38,7 +42,21 @@ AArcaneProjectileBase::AArcaneProjectileBase()
 void AArcaneProjectileBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (ProjectileDamagePolicy == EProjectileDamagePolicy::OnOverlap)
+	{
+		ProjectileCollisionBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	}
 	
 }
+
+void AArcaneProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+}
+
+void AArcaneProjectileBase::OnProjectileBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+}
+
 
 
