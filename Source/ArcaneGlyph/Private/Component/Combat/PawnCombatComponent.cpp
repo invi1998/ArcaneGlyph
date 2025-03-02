@@ -6,7 +6,7 @@
 #include "Items/Weapons/ArcaneWeaponBase.h"
 
 
-void UPawnCombatComponent::RegisterSpawnedWeapon(const FGameplayTag& InWeaponTag, AArcaneWeaponBase* InWeapon, bool bEquipped)
+void UPawnCombatComponent::RegisterSpawnedWeapon(const FGameplayTag& InWeaponTag, AArcaneWeaponBase* InWeapon, bool bEquipped, bool bLeftHand)
 {
 	checkf(!CharacterCarriedWeaponMap.Contains(InWeaponTag), TEXT("Weapon %s already exists in the map!"), *InWeaponTag.ToString());
 	check(InWeapon);
@@ -19,7 +19,14 @@ void UPawnCombatComponent::RegisterSpawnedWeapon(const FGameplayTag& InWeaponTag
 
 	if (bEquipped)
 	{
-		CurrentEquippedWeaponTag = InWeaponTag;
+		if (bLeftHand)
+		{
+			CurrentEquippedLeftHandWeaponTag = InWeaponTag;
+		}
+		else
+		{
+			CurrentEquippedRightHandWeaponTag = InWeaponTag;
+		}
 	}
 }
 
@@ -35,9 +42,21 @@ AArcaneWeaponBase* UPawnCombatComponent::GetCharacterCarriedWeapon(const FGamepl
 	return nullptr;
 }
 
-AArcaneWeaponBase* UPawnCombatComponent::GetCharacterCurrentEquippedWeapon() const
+AArcaneWeaponBase* UPawnCombatComponent::GetCharacterCurrentEquippedWeapon(bool bLeftHand) const
 {
-	return CurrentEquippedWeaponTag.IsValid() ? GetCharacterCarriedWeapon(CurrentEquippedWeaponTag) : nullptr;
+	if (bLeftHand)
+	{
+		return CurrentEquippedLeftHandWeaponTag.IsValid() ? GetCharacterCarriedWeapon(CurrentEquippedLeftHandWeaponTag) : nullptr;
+	}
+	else
+	{
+		return CurrentEquippedRightHandWeaponTag.IsValid() ? GetCharacterCarriedWeapon(CurrentEquippedRightHandWeaponTag) : nullptr;
+	}
+}
+
+bool UPawnCombatComponent::IsCharacterEquippedWeapon() const
+{
+	return CurrentEquippedRightHandWeaponTag.IsValid() || CurrentEquippedLeftHandWeaponTag.IsValid();
 }
 
 void UPawnCombatComponent::ToggleWeaponCollision(bool bEnable, EToggleDamageType InToggleDamageType)

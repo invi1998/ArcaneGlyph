@@ -174,7 +174,7 @@ bool UArcaneBlueprintFunctionLibrary::IsCharacterEquippedWeapon(AActor* InActor)
 	check(InActor);
 	if (UPawnCombatComponent* PawnCombatComponent = NativeGetPawnCombatComponentFromActor(InActor))
 	{
-		return PawnCombatComponent->CurrentEquippedWeaponTag.IsValid();
+		return PawnCombatComponent->CurrentEquippedRightHandWeaponTag.IsValid() || PawnCombatComponent->CurrentEquippedLeftHandWeaponTag.IsValid();
 	}
 	return false;
 }
