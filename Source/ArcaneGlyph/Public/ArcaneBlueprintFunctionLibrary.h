@@ -8,6 +8,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "ArcaneBlueprintFunctionLibrary.generated.h"
 
+struct FGameplayEffectSpecHandle;
 class AArcaneHeroCharacter;
 struct FScalableFloat;
 class UPawnUIComponent;
@@ -80,6 +81,10 @@ public:
 	// 设置玩家是否是左手正持有武器
 	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary")
 	static void SetPlayerIsLeftHandUsingWeapon(AActor* InActor, bool bIsLeftHandUsingWeapon);
+
+	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary")
+	static bool ApplyGameplayEffectSpecHandleToTarget(AActor* InInstigator, AActor* InTarget, const FGameplayEffectSpecHandle& InEffectSpecHandle);
+	
 };
 
 

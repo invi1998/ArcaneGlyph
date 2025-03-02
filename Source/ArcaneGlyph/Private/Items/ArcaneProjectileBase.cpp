@@ -89,6 +89,7 @@ void AArcaneProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent, A
 	else
 	{
 		// apply damage
+		HandelApplyProjectileDamage(HitPawn, EventData);
 	}
 
 	Destroy();
@@ -98,6 +99,26 @@ void AArcaneProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent, A
 void AArcaneProjectileBase::OnProjectileBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 }
+
+void AArcaneProjectileBase::HandelApplyProjectileDamage(APawn* HitPawn, const FGameplayEventData& EventData)
+{
+	checkf(ProjectileSpecHandle.IsValid(), TEXT("Forget to assign a valid ProjectileSpecHandle in %s!"), *GetName());
+	const bool bWasApply = UArcaneBlueprintFunctionLibrary::ApplyGameplayEffectSpecHandleToTarget(
+		GetInstigator<APawn>(),
+		HitPawn,
+		ProjectileSpecHandle
+	);
+	if (bWasApply)
+	{
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+			HitPawn,
+			ArcaneGameplayTags::Shared_Event_HitReact,
+			EventData
+		);
+	}
+}
+
+
 
 
 

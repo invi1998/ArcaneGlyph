@@ -221,4 +221,19 @@ void UArcaneBlueprintFunctionLibrary::SetPlayerIsLeftHandUsingWeapon(AActor* InA
 	}
 }
 
+bool UArcaneBlueprintFunctionLibrary::ApplyGameplayEffectSpecHandleToTarget(AActor* InInstigator, AActor* InTarget, const FGameplayEffectSpecHandle& InEffectSpecHandle)
+{
+	UArcaneAbilitySystemComponent* InstigatorASC = NativeGetArcaneASCFromActor(InInstigator);
+	UArcaneAbilitySystemComponent* TargetASC = NativeGetArcaneASCFromActor(InTarget);
+
+	if (InstigatorASC && TargetASC)
+	{
+		FActiveGameplayEffectHandle ActiveGameplayEffectHandle = InstigatorASC->ApplyGameplayEffectSpecToTarget(*InEffectSpecHandle.Data.Get(), TargetASC);
+
+		return ActiveGameplayEffectHandle.WasSuccessfullyApplied();
+	}
+
+	return false;
+}
+
 
