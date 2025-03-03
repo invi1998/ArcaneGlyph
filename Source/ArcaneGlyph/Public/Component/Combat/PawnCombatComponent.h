@@ -16,7 +16,9 @@ enum class EToggleDamageType : uint8
 	CurrentEquippedWeapon,
 	LeftHand,
 	RightHand,
-	Head
+	Head,
+	LeftHandWeapon,
+	RightHandWeapon
 };
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -54,7 +56,7 @@ protected:
 	UPROPERTY()
 	TArray<AActor*> HitOverlappedActors;		// 击中的重叠的角色
 
-	virtual void ToggleCurrentEquippedWeaponCollision(bool bEnable);
+	virtual void ToggleCurrentEquippedWeaponCollision(bool bEnable, bool bLeftHandWeapon = false);
 	virtual void ToggleBodyCollisionBoxCollision(bool bEnable, EToggleDamageType InToggleDamageType);
 	
 private:

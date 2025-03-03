@@ -65,6 +65,14 @@ void UPawnCombatComponent::ToggleWeaponCollision(bool bEnable, EToggleDamageType
 	{
 		ToggleCurrentEquippedWeaponCollision(bEnable);
 	}
+	else if (InToggleDamageType == EToggleDamageType::LeftHandWeapon)
+	{
+		ToggleCurrentEquippedWeaponCollision(bEnable, true);
+	}
+	else if (InToggleDamageType == EToggleDamageType::RightHandWeapon)
+	{
+		ToggleCurrentEquippedWeaponCollision(bEnable, false);
+	}
 	else
 	{
 		ToggleBodyCollisionBoxCollision(bEnable, InToggleDamageType);
@@ -79,9 +87,9 @@ void UPawnCombatComponent::OnWeaponPulledFromTargetActor(AActor* InHitActor, int
 {
 }
 
-void UPawnCombatComponent::ToggleCurrentEquippedWeaponCollision(bool bEnable)
+void UPawnCombatComponent::ToggleCurrentEquippedWeaponCollision(bool bEnable, bool bLeftHandWeapon)
 {
-	if (AArcaneWeaponBase* CurrentEquippedWeapon = GetCharacterCurrentEquippedWeapon())
+	if (AArcaneWeaponBase* CurrentEquippedWeapon = GetCharacterCurrentEquippedWeapon(bLeftHandWeapon))
 	{
 		CurrentEquippedWeapon->ToggleWeaponCollision(bEnable);
 	}
