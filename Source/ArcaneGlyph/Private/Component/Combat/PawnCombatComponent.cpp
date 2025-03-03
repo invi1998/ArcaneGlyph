@@ -63,15 +63,11 @@ void UPawnCombatComponent::ToggleWeaponCollision(bool bEnable, EToggleDamageType
 {
 	if (InToggleDamageType == EToggleDamageType::CurrentEquippedWeapon)
 	{
-		if (AArcaneWeaponBase* CurrentEquippedWeapon = GetCharacterCurrentEquippedWeapon())
-		{
-			CurrentEquippedWeapon->ToggleWeaponCollision(bEnable);
-		}
-
-		if (!bEnable)
-		{
-			HitOverlappedActors.Empty();
-		}
+		ToggleCurrentEquippedWeaponCollision(bEnable);
+	}
+	else
+	{
+		ToggleBodyCollisionBoxCollision(bEnable, InToggleDamageType);
 	}
 }
 
@@ -80,6 +76,23 @@ void UPawnCombatComponent::OnHitTargetActor(AActor* InHitActor, int32 InCollisio
 }
 
 void UPawnCombatComponent::OnWeaponPulledFromTargetActor(AActor* InHitActor, int32 InCollisionBoxIndex)
+{
+}
+
+void UPawnCombatComponent::ToggleCurrentEquippedWeaponCollision(bool bEnable)
+{
+	if (AArcaneWeaponBase* CurrentEquippedWeapon = GetCharacterCurrentEquippedWeapon())
+	{
+		CurrentEquippedWeapon->ToggleWeaponCollision(bEnable);
+	}
+
+	if (!bEnable)
+	{
+		HitOverlappedActors.Empty();
+	}
+}
+
+void UPawnCombatComponent::ToggleBodyCollisionBoxCollision(bool bEnable, EToggleDamageType InToggleDamageType)
 {
 }
 

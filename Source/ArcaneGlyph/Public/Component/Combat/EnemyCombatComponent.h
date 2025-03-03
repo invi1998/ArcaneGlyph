@@ -14,4 +14,8 @@ class ARCANEGLYPH_API UEnemyCombatComponent : public UPawnCombatComponent
 
 public:
 	virtual void OnHitTargetActor(AActor* InHitActor, int32 InCollisionBoxIndex) override;		// 当击中目标Actor时调用
+
+protected:
+	virtual void ToggleBodyCollisionBoxCollision(bool bEnable, EToggleDamageType InToggleDamageType);
+	
 };

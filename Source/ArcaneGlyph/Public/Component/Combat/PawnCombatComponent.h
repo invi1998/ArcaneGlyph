@@ -14,8 +14,9 @@ UENUM(BlueprintType)
 enum class EToggleDamageType : uint8
 {
 	CurrentEquippedWeapon,
-	LeftHandWeapon,
-	RightHandWeapon,
+	LeftHand,
+	RightHand,
+	Head
 };
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -52,10 +53,14 @@ public:
 protected:
 	UPROPERTY()
 	TArray<AActor*> HitOverlappedActors;		// 击中的重叠的角色
+
+	virtual void ToggleCurrentEquippedWeaponCollision(bool bEnable);
+	virtual void ToggleBodyCollisionBoxCollision(bool bEnable, EToggleDamageType InToggleDamageType);
 	
 private:
 	TMap<FGameplayTag, AArcaneWeaponBase*> CharacterCarriedWeaponMap;		// 角色携带的武器映射表
 
 	
 };
+
 

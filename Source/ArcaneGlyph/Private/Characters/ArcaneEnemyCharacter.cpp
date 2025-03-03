@@ -3,6 +3,8 @@
 
 #include "Characters/ArcaneEnemyCharacter.h"
 
+#include "ArcaneBlueprintFunctionLibrary.h"
+#include "ArcaneDebugHelper.h"
 #include "Component/Combat/EnemyCombatComponent.h"
 #include "Component/UI/EnemyUIComponent.h"
 #include "Components/BoxComponent.h"
@@ -39,19 +41,19 @@ AArcaneEnemyCharacter::AArcaneEnemyCharacter()
 	LeftHandCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("LeftHandCollisionBox"));
 	LeftHandCollisionBox->SetupAttachment(GetMesh());
 	LeftHandCollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	LeftHandCollisionBox->SetCollisionResponseToAllChannels(ECR_Ignore);
+	LeftHandCollisionBox->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	LeftHandCollisionBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &AArcaneEnemyCharacter::OnBodyCollisionBoxBeginOverlap);
 
 	RightHandCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("RightHandCollisionBox"));
 	RightHandCollisionBox->SetupAttachment(GetMesh());
 	RightHandCollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	RightHandCollisionBox->SetCollisionResponseToAllChannels(ECR_Ignore);
+	LeftHandCollisionBox->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	RightHandCollisionBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &AArcaneEnemyCharacter::OnBodyCollisionBoxBeginOverlap);
 
 	HeadCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("HeadCollisionBox"));
 	HeadCollisionBox->SetupAttachment(GetMesh());
 	HeadCollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	HeadCollisionBox->SetCollisionResponseToAllChannels(ECR_Ignore);
+	LeftHandCollisionBox->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	HeadCollisionBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &AArcaneEnemyCharacter::OnBodyCollisionBoxBeginOverlap);
 }
 
@@ -113,6 +115,14 @@ void AArcaneEnemyCharacter::PostEditChangeProperty(struct FPropertyChangedEvent&
 
 void AArcaneEnemyCharacter::OnBodyCollisionBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (APawn* HitPawn = Cast<APawn>(OtherActor))
+	{
+		// 如果目标是敌对的
+		if (UArcaneBlueprintFunctionLibrary::IsTargetPawnHostile(this, HitPawn))
+		{
+			EnemyCombatComponent->OnHitTargetActor(HitPawn, 1);
+		}
+	}
 }
 
 void AArcaneEnemyCharacter::InitEnemyStartupData()
