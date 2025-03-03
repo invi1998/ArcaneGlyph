@@ -7,11 +7,22 @@
 #include "EnemyUIComponent.generated.h"
 
 
+class UArcaneWidgetBase;
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class ARCANEGLYPH_API UEnemyUIComponent : public UPawnUIComponent
 {
 	GENERATED_BODY()
 
 public:
+	UFUNCTION(BlueprintCallable)
+	void RegisterEnemyDrawnWidget(UArcaneWidgetBase* InEnemyDrawnWidget);
+
+	UFUNCTION(BlueprintCallable)
+	void RemoveAllEnemyDrawnWidget();
+
+private:
+	UPROPERTY()
+	TArray<UArcaneWidgetBase*> EnemyDrawnWidgets;		// 绘制的敌人小部件
 	
 };
