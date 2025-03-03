@@ -5,6 +5,7 @@
 
 #include "Component/Combat/EnemyCombatComponent.h"
 #include "Component/UI/EnemyUIComponent.h"
+#include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
 #include "DataAssets/StartupData/DataAsset_EnemyStartupDada.h"
 #include "Engine/AssetManager.h"
@@ -34,6 +35,24 @@ AArcaneEnemyCharacter::AArcaneEnemyCharacter()
 	EnemyHealthWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("EnemyHealthWidgetComponent"));
 	EnemyHealthWidgetComponent->SetupAttachment(GetMesh());
 	EnemyHealthWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+
+	LeftHandCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("LeftHandCollisionBox"));
+	LeftHandCollisionBox->SetupAttachment(GetMesh());
+	LeftHandCollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	LeftHandCollisionBox->SetCollisionResponseToAllChannels(ECR_Ignore);
+	LeftHandCollisionBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &AArcaneEnemyCharacter::OnBodyCollisionBoxBeginOverlap);
+
+	RightHandCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("RightHandCollisionBox"));
+	RightHandCollisionBox->SetupAttachment(GetMesh());
+	RightHandCollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	RightHandCollisionBox->SetCollisionResponseToAllChannels(ECR_Ignore);
+	RightHandCollisionBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &AArcaneEnemyCharacter::OnBodyCollisionBoxBeginOverlap);
+
+	HeadCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("HeadCollisionBox"));
+	HeadCollisionBox->SetupAttachment(GetMesh());
+	HeadCollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	HeadCollisionBox->SetCollisionResponseToAllChannels(ECR_Ignore);
+	HeadCollisionBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &AArcaneEnemyCharacter::OnBodyCollisionBoxBeginOverlap);
 }
 
 UPawnCombatComponent* AArcaneEnemyCharacter::GetPawnCombatComponent() const
@@ -67,6 +86,10 @@ void AArcaneEnemyCharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 	
 	InitEnemyStartupData();
+}
+
+void AArcaneEnemyCharacter::OnBodyCollisionBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
 }
 
 void AArcaneEnemyCharacter::InitEnemyStartupData()
