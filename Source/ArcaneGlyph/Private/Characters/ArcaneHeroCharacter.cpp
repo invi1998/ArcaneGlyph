@@ -24,7 +24,7 @@ AArcaneHeroCharacter::AArcaneHeroCharacter()
 	
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 350.0f;
+	CameraBoom->TargetArmLength = 550.0f;
 	CameraBoom->SocketOffset = FVector(0.0f, 55.0f, 65.0f);
 	CameraBoom->bUsePawnControlRotation = true;
 
