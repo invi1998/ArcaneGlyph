@@ -37,7 +37,7 @@ public:
 		);
 
 	UPROPERTY(BlueprintAssignable)
-	FWaitSpawnEnemeisDelegate OnEnemiesSpawned;		// 敌人生成委托
+	FWaitSpawnEnemeisDelegate OnEnemiesSpawnedSuccess;		// 敌人生成成功委托
 
 	UPROPERTY(BlueprintAssignable)
 	FWaitSpawnEnemeisDelegate OnEnemiesSpawnedFailed;		// 敌人生成失败委托
@@ -60,5 +60,6 @@ private:
 	FRotator CachedSpawnRotation;
 
 	FDelegateHandle OnEnemiesSpawnedDelegateHandle;
+	void OnEnemyClassLoaded();
 	void OnGameplayEventReceived(const FGameplayEventData* GameplayEventData);
 };
