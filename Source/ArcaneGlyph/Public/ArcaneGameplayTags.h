@@ -82,6 +82,9 @@ namespace ArcaneGameplayTags
 	
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Enemy_Ability_Melee);		// 敌人技能：近战攻击
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Enemy_Ability_Range);		// 敌人技能：远程攻击
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Enemy_Ability_SummonEnemy);		// 敌人技能：召唤敌人
+
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Enemy_Event_SummonEnemy);		// 敌人事件：召唤敌人
 
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Enemy_Status_Strafing);		// 敌人状态：侧身环绕移动
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Enemy_Status_UnderAttack);		// 敌人状态：受到攻击
