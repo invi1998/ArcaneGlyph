@@ -32,8 +32,7 @@ public:
 		TSoftClassPtr<AArcaneEnemyCharacter> SoftEnemyClassToSpawn,
 		int32 SpawnCount,
 		const FVector& SpawnOrigin,
-		float SpawnRadius,
-		const FRotator& SpawnRotation
+		float SpawnRadius
 		);
 
 	UPROPERTY(BlueprintAssignable)
@@ -57,7 +56,6 @@ private:
 	int32 CachedSpawnCount;
 	FVector CachedSpawnOrigin;
 	float CachedSpawnRadius;
-	FRotator CachedSpawnRotation;
 
 	FDelegateHandle OnEnemiesSpawnedDelegateHandle;
 	void OnEnemyClassLoaded();
