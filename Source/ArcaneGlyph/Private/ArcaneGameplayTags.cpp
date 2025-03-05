@@ -45,7 +45,7 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_BlockSuccess, "Player.Event.BlockSuccess", "玩家事件：格挡成功");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_SwitchLockTarget_Left, "Player.Event.SwitchLockTarget.Left", "玩家事件：切换锁定目标-向左切换");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_SwitchLockTarget_Right, "Player.Event.SwitchLockTarget.Right", "玩家事件：切换锁定目标-向右切换");
-	
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_RollSuccess, "Player.Event.RollSuccess", "玩家事件：翻滚成功");
 	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Equip_Sword, "Player.Ability.Equip.Sword", "玩家技能：装备剑");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_UnEquip_Sword, "Player.Ability.UnEquip.Sword", "玩家技能：卸下剑");
@@ -66,6 +66,7 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_Blocking, "Player.Status.Blocking", "玩家状态：格挡中");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_Shifting, "Player.Status.Shifting", "玩家状态：冲刺中");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_TargetLocking, "Player.Status.TargetLocking", "玩家状态：目标锁定中");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_Invincibility, "Player.Status.Invincibility", "玩家状态：无敌状态");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_SetByCaller_AttackType_Light, "Player.SetByCaller.AttackType.Light", "玩家设置：攻击类型-轻");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_SetByCaller_AttackType_Heavy, "Player.SetByCaller.AttackType.Heavy", "玩家设置：攻击类型-重");

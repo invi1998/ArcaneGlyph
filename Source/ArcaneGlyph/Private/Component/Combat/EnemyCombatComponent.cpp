@@ -27,51 +27,64 @@ void UEnemyCombatComponent::OnHitTargetActor(AActor* InHitActor, int32 InCollisi
 	*/
 	HitOverlappedActors.Add(InHitActor);
 
-	bool bIsValidBlock = false;
-	
-	const bool bIsPlayerBlocking = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(InHitActor, ArcaneGameplayTags::Player_Status_Blocking);
-	const bool bIsMyAttackUnblockable = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(GetOwningPawn(), ArcaneGameplayTags::Enemy_Status_Unblockable);
-
-	if (bIsPlayerBlocking && !bIsMyAttackUnblockable)
-	{
-		bIsValidBlock = UArcaneBlueprintFunctionLibrary::IsCurrentBlockValid(GetOwningPawn(), InHitActor);
-	}
-
 	FGameplayEventData EventData;
 	EventData.Target = InHitActor;
 	EventData.Instigator = GetOwningPawn();
 
-	if (bIsValidBlock)
+	bool bIsRolling = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(InHitActor, ArcaneGameplayTags::Player_Status_Rolling);
+
+	if (bIsRolling)
 	{
-		// 格挡成功，告知格挡者
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
-			InHitActor,
-			ArcaneGameplayTags::Player_Event_BlockSuccess,
-			EventData
-			);
+				InHitActor,
+				ArcaneGameplayTags::Player_Event_RollSuccess,
+				EventData
+				);
 	}
 	else
 	{
-		// 未被格挡，告知攻击者
-		if (InCollisionBoxIndex == 1)
+		bool bIsValidBlock = false;
+	
+		const bool bIsPlayerBlocking = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(InHitActor, ArcaneGameplayTags::Player_Status_Blocking);
+		const bool bIsMyAttackUnblockable = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(GetOwningPawn(), ArcaneGameplayTags::Enemy_Status_Unblockable);
+
+		if (bIsPlayerBlocking && !bIsMyAttackUnblockable)
 		{
+			bIsValidBlock = UArcaneBlueprintFunctionLibrary::IsCurrentBlockValid(GetOwningPawn(), InHitActor);
+		}
+
+		
+
+		if (bIsValidBlock)
+		{
+			// 格挡成功，告知格挡者
 			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
-				GetOwningPawn(),
-				ArcaneGameplayTags::Shared_Event_MeleeAttack_1,
+				InHitActor,
+				ArcaneGameplayTags::Player_Event_BlockSuccess,
 				EventData
-			);
+				);
 		}
 		else
 		{
-			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
-				GetOwningPawn(),
-				ArcaneGameplayTags::Shared_Event_MeleeAttack_2,
-				EventData
-			);
+			// 未被格挡，告知攻击者
+			if (InCollisionBoxIndex == 1)
+			{
+				UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+					GetOwningPawn(),
+					ArcaneGameplayTags::Shared_Event_MeleeAttack_1,
+					EventData
+				);
+			}
+			else
+			{
+				UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+					GetOwningPawn(),
+					ArcaneGameplayTags::Shared_Event_MeleeAttack_2,
+					EventData
+				);
+			}
 		}
 	}
-	
-	
 }
 
 void UEnemyCombatComponent::ToggleBodyCollisionBoxCollision(bool bEnable, EToggleDamageType InToggleDamageType)
