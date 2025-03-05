@@ -66,32 +66,61 @@ void AArcaneProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent, A
 		return;
 	}
 
-	bool bIsValidBlock = false;
-	const bool bIsPlayerBlocking = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(HitPawn, ArcaneGameplayTags::Player_Status_Blocking);
-
-	if (bIsPlayerBlocking)
-	{
-		bIsValidBlock = UArcaneBlueprintFunctionLibrary::IsCurrentBlockValid(GetInstigator<APawn>(), HitPawn);
-	}
-
 	FGameplayEventData EventData;
 	EventData.Target = HitPawn;
 	EventData.Instigator = this;
 
-	if (bIsValidBlock)
+	bool IsInvincibility = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(HitPawn, ArcaneGameplayTags::Player_Status_Invincibility);
+
+	if (IsInvincibility)
 	{
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
-			HitPawn,
-			ArcaneGameplayTags::Player_Event_BlockSuccess,
-			EventData
-		);
+					HitPawn,
+					ArcaneGameplayTags::Player_Event_Invincibility,
+					EventData
+					);
 	}
 	else
 	{
-		// apply damage
-		HandelApplyProjectileDamage(HitPawn, EventData);
+		bool bIsRolling = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(HitPawn, ArcaneGameplayTags::Player_Status_Rolling);
+
+		if (bIsRolling)
+		{
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+					HitPawn,
+					ArcaneGameplayTags::Player_Event_RollSuccess,
+					EventData
+					);
+		}
+		else
+		{
+			bool bIsValidBlock = false;
+			const bool bIsPlayerBlocking = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(HitPawn, ArcaneGameplayTags::Player_Status_Blocking);
+
+			if (bIsPlayerBlocking)
+			{
+				bIsValidBlock = UArcaneBlueprintFunctionLibrary::IsCurrentBlockValid(GetInstigator<APawn>(), HitPawn);
+			}
+			
+			if (bIsValidBlock)
+			{
+				UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+					HitPawn,
+					ArcaneGameplayTags::Player_Event_BlockSuccess,
+					EventData
+				);
+			}
+			else
+			{
+				// apply damage
+				HandelApplyProjectileDamage(HitPawn, EventData);
+			}
+		}
+		
+		
 	}
 
+	
 	Destroy();
 	
 }
