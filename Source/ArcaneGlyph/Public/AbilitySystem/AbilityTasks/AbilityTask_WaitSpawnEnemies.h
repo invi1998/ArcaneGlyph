@@ -42,6 +42,14 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FWaitSpawnEnemeisDelegate OnEnemiesSpawnedFailed;		// 敌人生成失败委托
 
+protected:
+	
+	
+	// UGameplayTask interface
+	virtual void Activate() override;
+	virtual void OnDestroy(bool bInOwnerFinished) override;
+	// ~UGameplayTask interface
+
 
 private:
 	FGameplayTag CachedEventTag;
@@ -50,5 +58,7 @@ private:
 	FVector CachedSpawnOrigin;
 	float CachedSpawnRadius;
 	FRotator CachedSpawnRotation;
-	
+
+	FDelegateHandle OnEnemiesSpawnedDelegateHandle;
+	void OnGameplayEventReceived(const FGameplayEventData* GameplayEventData);
 };
