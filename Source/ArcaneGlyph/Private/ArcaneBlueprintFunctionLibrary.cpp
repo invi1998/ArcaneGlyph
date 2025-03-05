@@ -64,6 +64,11 @@ void UArcaneBlueprintFunctionLibrary::BP_DoesActorHasGameplayTag(AActor* InActor
 	ConfirmType = NativeDoesActorHasGameplayTag(InActor, InTag) ? EArcaneConfirmType::YES : EArcaneConfirmType::NO;
 }
 
+bool UArcaneBlueprintFunctionLibrary::DoseActorHasGameplayTag(AActor* InActor, FGameplayTag InTag)
+{
+	return NativeDoesActorHasGameplayTag(InActor, InTag);
+}
+
 UPawnCombatComponent* UArcaneBlueprintFunctionLibrary::NativeGetPawnCombatComponentFromActor(AActor* InActor)
 {
 	check(InActor);
@@ -234,6 +239,57 @@ bool UArcaneBlueprintFunctionLibrary::ApplyGameplayEffectSpecHandleToTarget(AAct
 	}
 
 	return false;
+}
+
+EArcaneMoveDirection UArcaneBlueprintFunctionLibrary::GetMoveDirection(EArcaneMovementDirectionMethod Method, const FVector& InputVector, float DeadZone)
+{
+	const FVector SafeInput = InputVector.GetSafeNormal2D();
+    if (SafeInput.IsNearlyZero(DeadZone)) return EArcaneMoveDirection::None;
+
+    switch (Method)
+    {
+    case EArcaneMovementDirectionMethod::AxisDominant:
+        // 基于分量绝对值比较的4方向判定
+        return (FMath::Abs(SafeInput.X) > FMath::Abs(SafeInput.Y)) ?
+            ((SafeInput.X > 0) ? EArcaneMoveDirection::Backward : EArcaneMoveDirection::Forward) :
+            ((SafeInput.Y > 0) ? EArcaneMoveDirection::Left : EArcaneMoveDirection::Right);
+
+    case EArcaneMovementDirectionMethod::AngleThreshold4:
+        // 基于角度阈值分割的4方向判定
+        {
+            const float Angle = FMath::RadiansToDegrees(FMath::Atan2(SafeInput.Y, SafeInput.X));
+            const float WrappedAngle = (Angle < 0) ? Angle + 360 : Angle;
+
+            if (WrappedAngle >= 315 || WrappedAngle < 45)    return EArcaneMoveDirection::Backward;
+            if (WrappedAngle >= 45 && WrappedAngle < 135)    return EArcaneMoveDirection::Left;
+            if (WrappedAngle >= 135 && WrappedAngle < 225)   return EArcaneMoveDirection::Forward;
+            return EArcaneMoveDirection::Right;
+        }
+
+    case EArcaneMovementDirectionMethod::AngleThreshold8:
+        // 精确的8方向判定
+        {
+            constexpr float SectorSize = 45.0f; // 每个方向45度范围
+            const float Angle = FMath::RadiansToDegrees(FMath::Atan2(SafeInput.Y, SafeInput.X));
+            const float NormalizedAngle = FMath::Fmod(Angle + 360 + 22.5f, 360); // 偏移22.5度对齐中心
+
+            const int32 SectorIndex = FMath::FloorToInt(NormalizedAngle / SectorSize);
+            switch (SectorIndex)
+            {
+                case 0:  return EArcaneMoveDirection::Backward;
+                case 1:  return EArcaneMoveDirection::BackwardLeft;
+                case 2:  return EArcaneMoveDirection::Left;
+                case 3:  return EArcaneMoveDirection::ForwardLeft;
+                case 4:  return EArcaneMoveDirection::Forward;
+                case 5:  return EArcaneMoveDirection::ForwardRight;
+                case 6:  return EArcaneMoveDirection::Right;
+                case 7:  return EArcaneMoveDirection::BackwardRight;
+                default: return EArcaneMoveDirection::None;
+            }
+        }
+	default: break;
+    }
+    return EArcaneMoveDirection::None;
 }
 
 

@@ -38,6 +38,9 @@ public:
 	// 换句话说，就是我们可以直接将结果枚举类型作为蓝图节点的执行后的分支引脚（就类似PlayMontageAndWaitForEvent节点里的那个动画事件枚举类型）
 	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary", meta=(DisplayName="Does Actor Has GameplayTag", ExpandEnumAsExecs="ConfirmType"))
 	static void BP_DoesActorHasGameplayTag(AActor* InActor, FGameplayTag InTag, EArcaneConfirmType& ConfirmType);
+
+	UFUNCTION(BlueprintPure, Category = "Arcane | FunctionLibrary")
+	static bool DoseActorHasGameplayTag(AActor* InActor, FGameplayTag InTag);
 	
 	static UPawnCombatComponent* NativeGetPawnCombatComponentFromActor(AActor* InActor);
 
@@ -84,6 +87,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary")
 	static bool ApplyGameplayEffectSpecHandleToTarget(AActor* InInstigator, AActor* InTarget, const FGameplayEffectSpecHandle& InEffectSpecHandle);
+
+	// 输入移动向量，获取移动方向
+	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary")
+	static EArcaneMoveDirection GetMoveDirection(EArcaneMovementDirectionMethod Method, const FVector& InputVector, float DeadZone = 0.1f);
 	
 };
 
