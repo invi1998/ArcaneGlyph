@@ -23,7 +23,7 @@ public:
 		meta = (DisplayName = "Wait Gameplay Event And Spawn Enemies",
 				HidePin="OwningAbility",
 				DefaultToSelf="OwningAbility",
-				BlueprintInternalUseOnly = "TRUE",
+				BlueprintInternalUseOnly = "true",
 				SpawnCount = "1",
 				SpawnRadius = "300.f"))
 	static UAbilityTask_WaitSpawnEnemies* WaitSpawnEnemies(
