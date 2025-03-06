@@ -2260,3 +2260,6 @@ bool UBTTask_RotateToFaceTarget::HasReachedAnglePrecision(...) const {
 ![image-20250225212548684](.\image-20250225212548684.png)
 
 我们可以在Enemy的受击反馈的GA里使用该节点去应用GE。
+
+
+
