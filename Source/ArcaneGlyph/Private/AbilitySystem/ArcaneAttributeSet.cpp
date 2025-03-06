@@ -46,6 +46,20 @@ void UArcaneAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 	{
 		SetCurrentRage(FMath::Clamp(GetCurrentRage(), 0.f, GetMaxRage()));
 
+		if (GetCurrentRage() >= GetMaxRage())
+		{
+			UArcaneBlueprintFunctionLibrary::AddGameplayTagToActorIfNotHas(Data.Target.GetAvatarActor(), ArcaneGameplayTags::Player_Status_Rage_Full);
+		}
+		else if (GetCurrentRage() <= 0.f)
+		{
+			UArcaneBlueprintFunctionLibrary::AddGameplayTagToActorIfNotHas(Data.Target.GetAvatarActor(), ArcaneGameplayTags::Player_Status_Rage_None);
+		}
+		else
+		{
+			UArcaneBlueprintFunctionLibrary::RemoveGameplayTagFromActorIfHas(Data.Target.GetAvatarActor(), ArcaneGameplayTags::Player_Status_Rage_Full);
+			UArcaneBlueprintFunctionLibrary::RemoveGameplayTagFromActorIfHas(Data.Target.GetAvatarActor(), ArcaneGameplayTags::Player_Status_Rage_None);
+		}
+
 		if (UHeroUIComponent* HeroUIComponent = CachedPawnUIInterface->GetHeroUIComponent())
 		{
 			HeroUIComponent->OnCurrentRageChanged.Broadcast(GetCurrentRage() / GetMaxRage());
