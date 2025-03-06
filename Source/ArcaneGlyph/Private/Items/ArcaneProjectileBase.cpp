@@ -70,13 +70,13 @@ void AArcaneProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent, A
 	EventData.Target = HitPawn;
 	EventData.Instigator = this;
 
-	bool IsInvincibility = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(HitPawn, ArcaneGameplayTags::Player_Status_Invincibility);
+	bool IsInvincibility = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(HitPawn, ArcaneGameplayTags::Shared_Status_Invincibility);
 
 	if (IsInvincibility)
 	{
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
 					HitPawn,
-					ArcaneGameplayTags::Player_Event_Invincibility,
+					ArcaneGameplayTags::Player_Event_RollSuccess,
 					EventData
 					);
 	}

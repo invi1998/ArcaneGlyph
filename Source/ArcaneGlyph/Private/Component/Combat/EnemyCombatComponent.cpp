@@ -31,13 +31,13 @@ void UEnemyCombatComponent::OnHitTargetActor(AActor* InHitActor, int32 InCollisi
 	EventData.Target = InHitActor;
 	EventData.Instigator = GetOwningPawn();
 
-	bool IsInvincibility = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(InHitActor, ArcaneGameplayTags::Player_Status_Invincibility);
+	bool IsInvincibility = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(InHitActor, ArcaneGameplayTags::Shared_Status_Invincibility);
 
 	if (IsInvincibility)
 	{
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
 					InHitActor,
-					ArcaneGameplayTags::Player_Event_Invincibility,
+					ArcaneGameplayTags::Player_Event_RollSuccess,
 					EventData
 					);
 	}
