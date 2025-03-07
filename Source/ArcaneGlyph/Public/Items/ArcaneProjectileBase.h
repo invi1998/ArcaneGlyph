@@ -39,7 +39,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Projectile")
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovementComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Projectile")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile")
 	EProjectileDamagePolicy ProjectileDamagePolicy = EProjectileDamagePolicy::OnHit;
 
 	//meta = (ExposeOnSpawn = "true")

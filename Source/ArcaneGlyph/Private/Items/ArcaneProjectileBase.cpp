@@ -19,15 +19,11 @@ AArcaneProjectileBase::AArcaneProjectileBase()
 	ProjectileCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("ProjectileCollisionBox"));
 	SetRootComponent(ProjectileCollisionBox);
 	ProjectileCollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	ProjectileCollisionBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 	ProjectileCollisionBox->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
-	ProjectileCollisionBox->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Block);
-	ProjectileCollisionBox->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
+	
 
 	// 添加碰撞盒子的碰撞事件
-	ProjectileCollisionBox->OnComponentHit.AddUniqueDynamic(this, &AArcaneProjectileBase::OnProjectileHit);
-	ProjectileCollisionBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &AArcaneProjectileBase::OnProjectileBeginOverlap);
-
+	
 	ProjectileNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("ProjectileNiagaraComponent"));
 	ProjectileNiagaraComponent->SetupAttachment(GetRootComponent());
 	ProjectileNiagaraComponent->SetAutoActivate(false);
@@ -45,10 +41,21 @@ AArcaneProjectileBase::AArcaneProjectileBase()
 void AArcaneProjectileBase::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	if (ProjectileDamagePolicy == EProjectileDamagePolicy::OnOverlap)
 	{
 		ProjectileCollisionBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+		ProjectileCollisionBox->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
+		ProjectileCollisionBox->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Overlap);
+		ProjectileCollisionBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &AArcaneProjectileBase::OnProjectileBeginOverlap);
+
+	}
+	else if (ProjectileDamagePolicy == EProjectileDamagePolicy::OnHit)
+	{
+		ProjectileCollisionBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+		ProjectileCollisionBox->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Block);
+		ProjectileCollisionBox->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
+		ProjectileCollisionBox->OnComponentHit.AddUniqueDynamic(this, &AArcaneProjectileBase::OnProjectileHit);
 	}
 	
 }
@@ -60,9 +67,16 @@ void AArcaneProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent, A
 	
 	// 如果目标不是敌对的，或者目标不是Pawn，就不做任何事情
 	// || UArcaneBlueprintFunctionLibrary::IsTargetPawnHostile(GetInstigator<APawn>(), HitPawn)
-	if (!HitPawn)
+	if (!HitPawn || UArcaneBlueprintFunctionLibrary::IsTargetPawnHostile(GetInstigator<APawn>(), HitPawn))
 	{
 		Destroy();
+		
+		return;
+	}
+
+	// 如果击中的是自己，就不做任何事情
+	if (HitPawn == GetInstigator<APawn>())
+	{
 		return;
 	}
 
@@ -117,16 +131,86 @@ void AArcaneProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent, A
 			}
 		}
 		
-		
 	}
-
 	
-	Destroy();
+	if (ProjectileDamagePolicy == EProjectileDamagePolicy::OnHit)
+	{
+		Destroy();
+	}
 	
 }
 
 void AArcaneProjectileBase::OnProjectileBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	APawn* HitPawn = Cast<APawn>(OtherActor);
+	
+	// 如果目标不是敌对的，或者目标不是Pawn，就不做任何事情
+	// || UArcaneBlueprintFunctionLibrary::IsTargetPawnHostile(GetInstigator<APawn>(), HitPawn)
+	if (!HitPawn)
+	{
+		
+		return;
+	}
+
+	// 如果击中的是自己，就不做任何事情
+	if (HitPawn == GetInstigator<APawn>())
+	{
+		return;
+	}
+
+	FGameplayEventData EventData;
+	EventData.Target = HitPawn;
+	EventData.Instigator = this;
+
+	bool IsInvincibility = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(HitPawn, ArcaneGameplayTags::Shared_Status_Invincibility);
+
+	if (IsInvincibility)
+	{
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+					HitPawn,
+					ArcaneGameplayTags::Player_Event_RollSuccess,
+					EventData
+					);
+	}
+	else
+	{
+		bool bIsRolling = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(HitPawn, ArcaneGameplayTags::Player_Status_Rolling);
+
+		if (bIsRolling)
+		{
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+					HitPawn,
+					ArcaneGameplayTags::Player_Event_RollSuccess,
+					EventData
+					);
+		}
+		else
+		{
+			bool bIsValidBlock = false;
+			const bool bIsPlayerBlocking = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(HitPawn, ArcaneGameplayTags::Player_Status_Blocking);
+
+			if (bIsPlayerBlocking)
+			{
+				bIsValidBlock = UArcaneBlueprintFunctionLibrary::IsCurrentBlockValid(GetInstigator<APawn>(), HitPawn);
+			}
+			
+			if (bIsValidBlock)
+			{
+				UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+					HitPawn,
+					ArcaneGameplayTags::Player_Event_BlockSuccess,
+					EventData
+				);
+			}
+			else
+			{
+				// apply damage
+				HandelApplyProjectileDamage(HitPawn, EventData);
+			}
+		}
+		
+	}
+	
 }
 
 void AArcaneProjectileBase::HandelApplyProjectileDamage(APawn* HitPawn, const FGameplayEventData& EventData)
