@@ -15,8 +15,7 @@
 void UEnemyCombatComponent::OnHitTargetActor(AActor* InHitActor, int32 InCollisionBoxIndex)
 {
 	if (!InHitActor) return;
-
-	/*
+	
 	if (HitOverlappedActors.Contains(InHitActor))
 	{
 		// 说明已经击中过了
@@ -24,84 +23,84 @@ void UEnemyCombatComponent::OnHitTargetActor(AActor* InHitActor, int32 InCollisi
 	}
 
 	HitOverlappedActors.AddUnique(InHitActor);
-	*/
-	HitOverlappedActors.Add(InHitActor);
+	
+	// HitOverlappedActors.Add(InHitActor);
 
 	FGameplayEventData EventData;
 	EventData.Target = InHitActor;
 	EventData.Instigator = GetOwningPawn();
 
-	bool IsInvincibility = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(InHitActor, ArcaneGameplayTags::Shared_Status_Invincibility);
 
-	if (IsInvincibility)
-	{
-		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
-					InHitActor,
-					ArcaneGameplayTags::Player_Event_RollSuccess,
-					EventData
-					);
-	}
-	else
-	{
-		bool bIsRolling = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(InHitActor, ArcaneGameplayTags::Player_Status_Rolling);
+	bool bIsRolling = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(InHitActor, ArcaneGameplayTags::Player_Status_Rolling);
 
-		if (bIsRolling)
+	if (bIsRolling)
+	{
+		if (InCollisionBoxIndex == 1)
 		{
-			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
-					InHitActor,
-					ArcaneGameplayTags::Player_Event_RollSuccess,
-					EventData
-					);
+			EventData.EventTag = ArcaneGameplayTags::Shared_Event_MeleeAttack_1;
 		}
 		else
 		{
-			bool bIsValidBlock = false;
+			EventData.EventTag = ArcaneGameplayTags::Shared_Event_MeleeAttack_2;
+		}
+		
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+				InHitActor,
+				ArcaneGameplayTags::Player_Event_RollSuccess,
+				EventData
+				);
+	}
+	else
+	{
+		bool bIsValidBlock = false;
 	
-			const bool bIsPlayerBlocking = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(InHitActor, ArcaneGameplayTags::Player_Status_Blocking);
-			const bool bIsMyAttackUnblockable = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(GetOwningPawn(), ArcaneGameplayTags::Enemy_Status_Unblockable);
+		const bool bIsPlayerBlocking = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(InHitActor, ArcaneGameplayTags::Player_Status_Blocking);
+		const bool bIsMyAttackUnblockable = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(GetOwningPawn(), ArcaneGameplayTags::Enemy_Status_Unblockable);
 
-			if (bIsPlayerBlocking && !bIsMyAttackUnblockable)
-			{
-				bIsValidBlock = UArcaneBlueprintFunctionLibrary::IsCurrentBlockValid(GetOwningPawn(), InHitActor);
-			}
+		if (bIsPlayerBlocking && !bIsMyAttackUnblockable)
+		{
+			bIsValidBlock = UArcaneBlueprintFunctionLibrary::IsCurrentBlockValid(GetOwningPawn(), InHitActor);
+		}
 
 		
 
-			if (bIsValidBlock)
+		if (bIsValidBlock)
+		{
+			// 格挡成功，告知格挡者
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+				InHitActor,
+				ArcaneGameplayTags::Player_Event_BlockSuccess,
+				EventData
+				);
+		}
+		else
+		{
+			// 未被格挡，告知攻击者
+			if (InCollisionBoxIndex == 1)
 			{
-				// 格挡成功，告知格挡者
 				UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
-					InHitActor,
-					ArcaneGameplayTags::Player_Event_BlockSuccess,
+					GetOwningPawn(),
+					ArcaneGameplayTags::Shared_Event_MeleeAttack_1,
 					EventData
-					);
+				);
 			}
 			else
 			{
-				// 未被格挡，告知攻击者
-				if (InCollisionBoxIndex == 1)
-				{
-					UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
-						GetOwningPawn(),
-						ArcaneGameplayTags::Shared_Event_MeleeAttack_1,
-						EventData
-					);
-				}
-				else
-				{
-					UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
-						GetOwningPawn(),
-						ArcaneGameplayTags::Shared_Event_MeleeAttack_2,
-						EventData
-					);
-				}
+				UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+					GetOwningPawn(),
+					ArcaneGameplayTags::Shared_Event_MeleeAttack_2,
+					EventData
+				);
 			}
 		}
 	}
+	
 }
 
 void UEnemyCombatComponent::ToggleBodyCollisionBoxCollision(bool bEnable, EToggleDamageType InToggleDamageType)
 {
+	Super::ToggleBodyCollisionBoxCollision(bEnable, InToggleDamageType);
+	
 	AArcaneEnemyCharacter* EnemyCharacter = Cast<AArcaneEnemyCharacter>(GetOwningPawn());
 	if (!EnemyCharacter) return;
 

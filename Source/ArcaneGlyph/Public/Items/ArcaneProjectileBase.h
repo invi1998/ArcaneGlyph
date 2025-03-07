@@ -59,6 +59,7 @@ protected:
 	void BP_OnSpawnProjectileHitFX(const FVector& HitLocation);
 
 private:
+	UFUNCTION(BlueprintCallable, Category = "Projectile")
 	void HandelApplyProjectileDamage(APawn* HitPawn, const FGameplayEventData& EventData);
 	
 };

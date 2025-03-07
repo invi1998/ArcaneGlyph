@@ -102,5 +102,9 @@ void UPawnCombatComponent::ToggleCurrentEquippedWeaponCollision(bool bEnable, bo
 
 void UPawnCombatComponent::ToggleBodyCollisionBoxCollision(bool bEnable, EToggleDamageType InToggleDamageType)
 {
+	if (!bEnable)
+	{
+		HitOverlappedActors.Empty();
+	}
 }
 

@@ -34,7 +34,7 @@ AArcaneProjectileBase::AArcaneProjectileBase()
 	ProjectileMovementComponent->Velocity = FVector(1.f, 0, 0);		// 让投射物朝向X轴正方向
 	ProjectileMovementComponent->ProjectileGravityScale = 0.f;		// 重力缩放
 
-	InitialLifeSpan = 2.f;		// 默认2秒后销毁
+	InitialLifeSpan = 3.f;		// 默认2秒后销毁
 	
 }
 
@@ -84,53 +84,39 @@ void AArcaneProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent, A
 	EventData.Target = HitPawn;
 	EventData.Instigator = this;
 
-	bool IsInvincibility = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(HitPawn, ArcaneGameplayTags::Shared_Status_Invincibility);
+	bool bIsRolling = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(HitPawn, ArcaneGameplayTags::Player_Status_Rolling);
 
-	if (IsInvincibility)
+	if (bIsRolling)
 	{
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
-					HitPawn,
-					ArcaneGameplayTags::Player_Event_RollSuccess,
-					EventData
-					);
+				HitPawn,
+				ArcaneGameplayTags::Player_Event_RollSuccess,
+				EventData
+				);
 	}
 	else
 	{
-		bool bIsRolling = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(HitPawn, ArcaneGameplayTags::Player_Status_Rolling);
+		bool bIsValidBlock = false;
+		const bool bIsPlayerBlocking = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(HitPawn, ArcaneGameplayTags::Player_Status_Blocking);
 
-		if (bIsRolling)
+		if (bIsPlayerBlocking)
+		{
+			bIsValidBlock = UArcaneBlueprintFunctionLibrary::IsCurrentBlockValid(GetInstigator<APawn>(), HitPawn);
+		}
+			
+		if (bIsValidBlock)
 		{
 			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
-					HitPawn,
-					ArcaneGameplayTags::Player_Event_RollSuccess,
-					EventData
-					);
+				HitPawn,
+				ArcaneGameplayTags::Player_Event_BlockSuccess,
+				EventData
+			);
 		}
 		else
 		{
-			bool bIsValidBlock = false;
-			const bool bIsPlayerBlocking = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(HitPawn, ArcaneGameplayTags::Player_Status_Blocking);
-
-			if (bIsPlayerBlocking)
-			{
-				bIsValidBlock = UArcaneBlueprintFunctionLibrary::IsCurrentBlockValid(GetInstigator<APawn>(), HitPawn);
-			}
-			
-			if (bIsValidBlock)
-			{
-				UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
-					HitPawn,
-					ArcaneGameplayTags::Player_Event_BlockSuccess,
-					EventData
-				);
-			}
-			else
-			{
-				// apply damage
-				HandelApplyProjectileDamage(HitPawn, EventData);
-			}
+			// apply damage
+			HandelApplyProjectileDamage(HitPawn, EventData);
 		}
-		
 	}
 	
 	if (ProjectileDamagePolicy == EProjectileDamagePolicy::OnHit)
@@ -162,53 +148,41 @@ void AArcaneProjectileBase::OnProjectileBeginOverlap(UPrimitiveComponent* Overla
 	EventData.Target = HitPawn;
 	EventData.Instigator = this;
 
-	bool IsInvincibility = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(HitPawn, ArcaneGameplayTags::Shared_Status_Invincibility);
+	bool bIsRolling = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(HitPawn, ArcaneGameplayTags::Player_Status_Rolling);
 
-	if (IsInvincibility)
+	if (bIsRolling)
 	{
+		
+		
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
-					HitPawn,
-					ArcaneGameplayTags::Player_Event_RollSuccess,
-					EventData
-					);
+				HitPawn,
+				ArcaneGameplayTags::Player_Event_RollSuccess,
+				EventData
+				);
 	}
 	else
 	{
-		bool bIsRolling = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(HitPawn, ArcaneGameplayTags::Player_Status_Rolling);
+		bool bIsValidBlock = false;
+		const bool bIsPlayerBlocking = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(HitPawn, ArcaneGameplayTags::Player_Status_Blocking);
 
-		if (bIsRolling)
+		if (bIsPlayerBlocking)
+		{
+			bIsValidBlock = UArcaneBlueprintFunctionLibrary::IsCurrentBlockValid(GetInstigator<APawn>(), HitPawn);
+		}
+			
+		if (bIsValidBlock)
 		{
 			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
-					HitPawn,
-					ArcaneGameplayTags::Player_Event_RollSuccess,
-					EventData
-					);
+				HitPawn,
+				ArcaneGameplayTags::Player_Event_BlockSuccess,
+				EventData
+			);
 		}
 		else
 		{
-			bool bIsValidBlock = false;
-			const bool bIsPlayerBlocking = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(HitPawn, ArcaneGameplayTags::Player_Status_Blocking);
-
-			if (bIsPlayerBlocking)
-			{
-				bIsValidBlock = UArcaneBlueprintFunctionLibrary::IsCurrentBlockValid(GetInstigator<APawn>(), HitPawn);
-			}
-			
-			if (bIsValidBlock)
-			{
-				UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
-					HitPawn,
-					ArcaneGameplayTags::Player_Event_BlockSuccess,
-					EventData
-				);
-			}
-			else
-			{
-				// apply damage
-				HandelApplyProjectileDamage(HitPawn, EventData);
-			}
+			// apply damage
+			HandelApplyProjectileDamage(HitPawn, EventData);
 		}
-		
 	}
 	
 }
