@@ -86,6 +86,7 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Enemy_Ability_Melee, "Enemy.Ability.Melee", "敌人技能：近战攻击");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Enemy_Ability_Range, "Enemy.Ability.Range", "敌人技能：远程攻击");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Enemy_Ability_SummonEnemy, "Enemy.Ability.SummonEnemy", "敌人技能：召唤敌人");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Enemy_Ability_Skill, "Enemy.Ability.Skill", "敌人技能：技能");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Enemy_Event_SummonEnemy, "Enemy.Event.SummonEnemy", "敌人事件：召唤敌人");
 
