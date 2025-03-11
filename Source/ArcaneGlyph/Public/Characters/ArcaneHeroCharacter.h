@@ -42,6 +42,12 @@ public:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 	bool bIsLeftHandUsingWeapon = false;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AbilitySystem")
+	TObjectPtr<AActor> CurrentLockedTargetActor;		// 当前锁定的目标角色
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AbilitySystem")
+	float CentripetalFactor = 10000.f;		// 向心力因子
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -67,6 +73,8 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharacterData", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UDadaAsset_InputConfig> InputConfigDataAsset;
 
+	void ProcessLockedMovement(float InputAxisValue);
+	
 	void Input_Move(const FInputActionValue& InputActionValue);
 	void Input_Look(const FInputActionValue& InputActionValue);
 	void Input_Jump();

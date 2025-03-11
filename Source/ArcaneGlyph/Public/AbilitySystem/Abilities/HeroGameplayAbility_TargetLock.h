@@ -79,7 +79,7 @@ private:
 	TArray<AActor*> AvailableTargetToLock;	// 可锁定的目标
 
 	UPROPERTY()
-	AActor* CurrentLockedActor = nullptr;	// 锁定的目标
+	TObjectPtr<AActor> CurrentLockedActor = nullptr;	// 锁定的目标
 
 	UPROPERTY()
 	float CachedDefaultMaxWalkSpeed = 0.f;	// 缓存的默认最大步行速度

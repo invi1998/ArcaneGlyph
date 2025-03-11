@@ -100,6 +100,7 @@ void UHeroGameplayAbility_TargetLock::SwitchLockTarget(const FGameplayTag& InSwi
 	if (NewLockTarget != nullptr)
 	{
 		CurrentLockedActor = NewLockTarget;
+		GetHeroCharacterFromActorInfo()->CurrentLockedTargetActor = CurrentLockedActor;
 	}
 	
 }
@@ -115,6 +116,9 @@ void UHeroGameplayAbility_TargetLock::TryLockTargetLock()
 	}
 
 	CurrentLockedActor = GetNearestTargetFromAvailable(AvailableTargetToLock);
+	
+	GetHeroCharacterFromActorInfo()->CurrentLockedTargetActor = CurrentLockedActor;
+	
 	if (CurrentLockedActor)
 	{
 		DrawTargetLockWidget();
@@ -299,6 +303,7 @@ void UHeroGameplayAbility_TargetLock::Cleanup()
 {
 	AvailableTargetToLock.Empty();
 	CurrentLockedActor = nullptr;
+	GetHeroCharacterFromActorInfo()->CurrentLockedTargetActor = nullptr;
 
 	if (IsValid(TargetLockWidget))
 	{

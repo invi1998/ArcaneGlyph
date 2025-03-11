@@ -4,6 +4,7 @@
 #include "Characters/ArcaneHeroCharacter.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "ArcaneBlueprintFunctionLibrary.h"
 #include "ArcaneGameplayTags.h"
 #include "EnhancedInputSubsystems.h"
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
@@ -109,20 +110,59 @@ void AArcaneHeroCharacter::BeginPlay()
 	
 }
 
+void AArcaneHeroCharacter::ProcessLockedMovement(float InputAxisValue)
+{
+	if (!CurrentLockedTargetActor) return;
+
+	// 1. 计算目标方向
+	FVector ToTarget = CurrentLockedTargetActor->GetActorLocation() - GetActorLocation();
+	FVector RadialDir = ToTarget.GetSafeNormal();
+    
+	// 2. 确定切线方向（关键：根据输入符号调整）
+	float InputSign = FMath::Sign(InputAxisValue);
+	FVector TangentDir = FVector::CrossProduct(
+		GetActorUpVector(), // 注意顺序：Up x Radial 得到左侧切线
+		RadialDir
+	).GetSafeNormal() * InputSign;
+
+	// 3. 计算向心补偿角度
+	float Speed = GetVelocity().Size();
+	float Radius = ToTarget.Size();
+	float CentripetalAngle = FMath::RadiansToDegrees(
+		FMath::Atan((Speed * Speed) / (Radius * CentripetalFactor)) // 100为调试参数
+	);
+
+	// 4. 方向修正（左移顺时针补偿，右移逆时针补偿）
+	FVector AdjustedDir = TangentDir.RotateAngleAxis(
+		-InputSign * CentripetalAngle, // 关键符号处理
+		GetActorUpVector()
+	);
+	AdjustedDir.Normalize();
+
+	// 5. 应用修正后的移动方向
+	AddMovementInput(AdjustedDir, FMath::Abs(InputAxisValue));
+}
+
 void AArcaneHeroCharacter::Input_Move(const FInputActionValue& InputActionValue)
 {
 	const FVector2d AxisValue = InputActionValue.Get<FVector2d>();
 	const FRotator CurrentControlRotation = GetControlRotation();
 	const FRotator YawRotation(0.0f, CurrentControlRotation.Yaw, 0.0f);
-
+	
 	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
 	if (AxisValue.X != 0.0f)
 	{
-		AddMovementInput(RightDirection, AxisValue.X);
+		if (IsValid(CurrentLockedTargetActor))
+		{
+			ProcessLockedMovement(AxisValue.X);
+		}
+		else
+		{
+			AddMovementInput(RightDirection, AxisValue.X);
+		}
 	}
-	
 	if (AxisValue.Y != 0.0f)
 	{
 		AddMovementInput(ForwardDirection, AxisValue.Y);
