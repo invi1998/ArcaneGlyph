@@ -34,6 +34,7 @@ namespace ArcaneGameplayTags
 	// Player Tags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Weapon_Sword);		// 玩家武器：剑
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Weapon_Twinblades);		// 玩家武器：双刃剑
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Weapon_MageStaff);		// 玩家武器：法杖
 
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_Equipped_Sword);		// 玩家事件：装备剑
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_UnEquipped_Sword);		// 玩家事件：卸下剑

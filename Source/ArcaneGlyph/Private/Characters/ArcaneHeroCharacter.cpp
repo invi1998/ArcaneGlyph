@@ -117,7 +117,7 @@ void AArcaneHeroCharacter::ProcessLockedMovement(float InputAxisValue)
 	// 1. 计算目标方向
 	FVector ToTarget = CurrentLockedTargetActor->GetActorLocation() - GetActorLocation();
 	FVector RadialDir = ToTarget.GetSafeNormal();
-    
+	
 	// 2. 确定切线方向（关键：根据输入符号调整）
 	float InputSign = FMath::Sign(InputAxisValue);
 	FVector TangentDir = FVector::CrossProduct(
