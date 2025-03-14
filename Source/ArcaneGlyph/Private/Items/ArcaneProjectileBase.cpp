@@ -5,6 +5,7 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "ArcaneBlueprintFunctionLibrary.h"
+#include "ArcaneDebugHelper.h"
 #include "ArcaneGameplayTags.h"
 #include "Components/BoxComponent.h"
 #include "NiagaraComponent.h"
@@ -67,7 +68,7 @@ void AArcaneProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent, A
 	
 	// 如果目标不是敌对的，或者目标不是Pawn，就不做任何事情
 	// || UArcaneBlueprintFunctionLibrary::IsTargetPawnHostile(GetInstigator<APawn>(), HitPawn)
-	if (!HitPawn || UArcaneBlueprintFunctionLibrary::IsTargetPawnHostile(GetInstigator<APawn>(), HitPawn))
+	if (!HitPawn || !UArcaneBlueprintFunctionLibrary::IsTargetPawnHostile(GetInstigator<APawn>(), HitPawn))
 	{
 		Destroy();
 		
@@ -119,22 +120,21 @@ void AArcaneProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent, A
 		}
 	}
 	
-	if (ProjectileDamagePolicy == EProjectileDamagePolicy::OnHit)
-	{
-		Destroy();
-	}
+	Destroy();
 	
 }
 
 void AArcaneProjectileBase::OnProjectileBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (OverlappedActors.Contains(OtherActor)) return;
+
+	OverlappedActors.AddUnique(OtherActor);
+	
 	APawn* HitPawn = Cast<APawn>(OtherActor);
 	
 	// 如果目标不是敌对的，或者目标不是Pawn，就不做任何事情
-	// || UArcaneBlueprintFunctionLibrary::IsTargetPawnHostile(GetInstigator<APawn>(), HitPawn)
-	if (!HitPawn)
+	if (!HitPawn || !UArcaneBlueprintFunctionLibrary::IsTargetPawnHostile(GetInstigator<APawn>(), HitPawn))
 	{
-		
 		return;
 	}
 
@@ -144,15 +144,16 @@ void AArcaneProjectileBase::OnProjectileBeginOverlap(UPrimitiveComponent* Overla
 		return;
 	}
 
+	BP_OnSpawnProjectileHitFX(HitPawn->GetActorLocation());
+
 	FGameplayEventData EventData;
 	EventData.Target = HitPawn;
-	EventData.Instigator = this;
+	EventData.Instigator = GetInstigator<APawn>();
 
 	bool bIsRolling = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(HitPawn, ArcaneGameplayTags::Player_Status_Rolling);
 
 	if (bIsRolling)
 	{
-		
 		
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
 				HitPawn,

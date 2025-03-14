@@ -61,5 +61,7 @@ protected:
 private:
 	UFUNCTION(BlueprintCallable, Category = "Projectile")
 	void HandelApplyProjectileDamage(APawn* HitPawn, const FGameplayEventData& EventData);
-	
+
+	UPROPERTY()
+	TArray<AActor*> OverlappedActors;
 };
