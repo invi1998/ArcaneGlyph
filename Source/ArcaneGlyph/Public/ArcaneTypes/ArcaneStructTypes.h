@@ -16,13 +16,28 @@ struct FArcaneHeroAbilitySet
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputTag")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(Category = "InputTag"))
 	FGameplayTag InputTag;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<UArcaneHeroGameplayAbility> AbilityToGrantClass;
 
 	bool IsValid() const;
+};
+
+USTRUCT(BlueprintType)
+struct FArcaneHeroSpecialAbilitySet : public FArcaneHeroAbilitySet
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSoftObjectPtr<UMaterialInterface> AbilityIconMaterial;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (Category = "Player.Cooldown"))
+	FGameplayTag AbilityCooldownTag;
+
+	
+
 };
 
 
@@ -36,6 +51,9 @@ struct FArcaneHeroWeaponData
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WeaponData", meta = (TitleProperty = "InputTag"))
 	TArray<FArcaneHeroAbilitySet> DefaultWeaponAbilities;		// 武器能力集合
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WeaponData", meta = (TitleProperty = "InputTag"))
+	TArray<FArcaneHeroSpecialAbilitySet> SpecialWeaponAbilities;		// 特殊武器能力集合
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WeaponData")
 	UInputMappingContext* WeaponInputMappingContext;		// 武器输入映射上下文

@@ -51,7 +51,7 @@ void UArcaneAbilitySystemComponent::OnAbilityInputReleased(const FGameplayTag& I
 	
 }
 
-void UArcaneAbilitySystemComponent::GrantHeroWeaponAbilities(const TArray<FArcaneHeroAbilitySet>& InAbilitySets, int32 InApplyLevel, TArray<FGameplayAbilitySpecHandle>& OutGrantedAbilitySpecHandles)
+void UArcaneAbilitySystemComponent::GrantHeroWeaponAbilities(const TArray<FArcaneHeroAbilitySet>& InAbilitySets, const TArray<FArcaneHeroSpecialAbilitySet>& InSpecialAbilities, int32 InApplyLevel, TArray<FGameplayAbilitySpecHandle>& OutGrantedAbilitySpecHandles)
 {
 	if (InAbilitySets.Num() > 0)
 	{
@@ -71,6 +71,26 @@ void UArcaneAbilitySystemComponent::GrantHeroWeaponAbilities(const TArray<FArcan
 				OutGrantedAbilitySpecHandles.AddUnique(NewAbilitySpec.Handle);
 			}
 		}
+	}
+
+	if (OutGrantedAbilitySpecHandles.Num() > 0)
+	{
+		for (const FArcaneHeroSpecialAbilitySet& SpecialAbilitySet : InSpecialAbilities)
+		{
+			if (SpecialAbilitySet.IsValid())
+			{
+				FGameplayAbilitySpec NewAbilitySpec(SpecialAbilitySet.AbilityToGrantClass);
+				NewAbilitySpec.SourceObject = GetAvatarActor();
+				NewAbilitySpec.Level = InApplyLevel;
+				NewAbilitySpec.GetDynamicSpecSourceTags().AddTag(SpecialAbilitySet.InputTag);
+
+				GiveAbility(NewAbilitySpec);
+
+				OutGrantedAbilitySpecHandles.AddUnique(NewAbilitySpec.Handle);
+				
+			}
+		}
+		
 	}
 }
 
