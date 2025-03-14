@@ -31,7 +31,7 @@ struct FArcaneHeroSpecialAbilitySet : public FArcaneHeroAbilitySet
 	GENERATED_BODY()
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSoftObjectPtr<UMaterialInterface> AbilityIconMaterial;
+	TSoftObjectPtr<UMaterialInterface> SoftAbilityIconMaterial;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (Category = "Player.Cooldown"))
 	FGameplayTag AbilityCooldownTag;
