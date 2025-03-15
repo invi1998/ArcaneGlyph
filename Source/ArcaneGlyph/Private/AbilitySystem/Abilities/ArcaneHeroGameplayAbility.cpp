@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/Abilities/ArcaneHeroGameplayAbility.h"
 
+#include "ArcaneDebugHelper.h"
 #include "ArcaneGameplayTags.h"
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
 #include "Characters/ArcaneHeroCharacter.h"
@@ -74,6 +75,8 @@ bool UArcaneHeroGameplayAbility::GetAbilityRemainingCooldownByTag(FGameplayTag I
 {
 	check(InCooldownTag.IsValid());
 
+	Debug::Print("GetAbilityRemainingCooldownByTag, Tag: " + InCooldownTag.ToString(), FColor::Green);
+
 	FGameplayEffectQuery CooldownQuery = FGameplayEffectQuery::MakeQuery_MatchAnyOwningTags(InCooldownTag.GetSingleTagContainer());
 
 	TArray<TPair<float, float>> CooldownList = GetAbilitySystemComponentFromActorInfo()->GetActiveEffectsTimeRemainingAndDuration(CooldownQuery);
@@ -83,6 +86,8 @@ bool UArcaneHeroGameplayAbility::GetAbilityRemainingCooldownByTag(FGameplayTag I
 		TotalCooldownTime = CooldownList[0].Value;
 		OutRemainingCooldown = CooldownList[0].Key;
 	}
+
+	Debug::Print("GetAbilityRemainingCooldownByTag, TotalCooldownTime: " + FString::SanitizeFloat(TotalCooldownTime) + ", OutRemainingCooldown: " + FString::SanitizeFloat(OutRemainingCooldown), FColor::Red);
 
 	return OutRemainingCooldown > 0.f;
 
