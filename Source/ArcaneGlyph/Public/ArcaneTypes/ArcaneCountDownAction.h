@@ -22,6 +22,8 @@ public:
 	{
 	}
 
+	virtual void UpdateOperation(FLatentResponse& Response) override;
+	
 	void CancelAction();
 
 private:
@@ -31,10 +33,10 @@ private:
 	
 	float& OutRemainingTime;		// 剩余时间
 
-	EArcaneCountDownActionOutput& CountDownActionOutput;
-	FName ExecutionFunction;
-	int32 OutputLink;
-	FWeakObjectPtr CallbackTarget;
+	EArcaneCountDownActionOutput& CountDownActionOutput;	// 倒计时输出状态引脚
+	FName ExecutionFunction;	// 执行函数
+	int32 OutputLink;	// 输出链接
+	FWeakObjectPtr CallbackTarget;		// 回调目标
 	float ElapsedIntervalTime;	// 已经过去的时间
 	float ElapsedTimeSinceStart;	// 从开始到现在经过的时间
 };
