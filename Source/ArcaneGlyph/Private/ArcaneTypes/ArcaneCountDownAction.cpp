@@ -3,3 +3,7 @@
 
 #include "ArcaneTypes/ArcaneCountDownAction.h"
 
+void FArcaneCountDownAction::CancelAction()
+{
+	bNeedToCancel = true;
+}

@@ -22,6 +22,8 @@ public:
 	{
 	}
 
+	void CancelAction();
+
 private:
 	bool bNeedToCancel;	// 是否需要取消
 	float TotalCountDownTime;	// 总倒计时时间

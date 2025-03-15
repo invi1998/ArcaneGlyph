@@ -9,6 +9,7 @@
 #include "GenericTeamAgentInterface.h"
 #include "KismetAnimationLibrary.h"
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
+#include "ArcaneTypes/ArcaneCountDownAction.h"
 #include "Characters/ArcaneHeroCharacter.h"
 #include "Component/Combat/PawnCombatComponent.h"
 #include "Component/UI/PawnUIComponent.h"
@@ -296,7 +297,32 @@ void UArcaneBlueprintFunctionLibrary::CountDown(const UObject* WorldContextObjec
 	float UpdateInterval, float& OutRemainingTime, EArcaneCountDownActionInput CountDownActionInput,
 	UPARAM(DisplayName="Output") EArcaneCountDownActionOutput& CountDownActionOutput, FLatentActionInfo LatentInfo)
 {
-	
+	UWorld* World = GEngine->GetWorldFromContextObjectChecked(WorldContextObject);
+
+	if (!World) return;
+
+	FLatentActionManager& LatentActionManager = World->GetLatentActionManager();
+	FArcaneCountDownAction* FoundAction = LatentActionManager.FindExistingAction<FArcaneCountDownAction>(LatentInfo.CallbackTarget, LatentInfo.UUID);
+
+	if (CountDownActionInput == EArcaneCountDownActionInput::Start)
+	{
+		// 如果找不到已存在的Action，就创建一个新的Action
+		if (!FoundAction)
+		{
+			FArcaneCountDownAction* NewAction = new FArcaneCountDownAction(TotalTime, UpdateInterval, OutRemainingTime, CountDownActionOutput, LatentInfo);
+
+			LatentActionManager.AddNewAction(LatentInfo.CallbackTarget, LatentInfo.UUID, NewAction);
+		}
+	}
+
+	if (CountDownActionInput == EArcaneCountDownActionInput::Cancel)
+	{
+		if (FoundAction)
+		{
+			FoundAction->CancelAction();
+		}
+	}
+
 }
 
 
