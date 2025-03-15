@@ -161,8 +161,7 @@ FActiveGameplayEffectHandle UArcaneGameplayAbility::BP_ApplyGameplayEffectSpecTo
 	return ActiveHandle;
 }
 
-void UArcaneGameplayAbility::ApplyGameplayEffectToHitResults(const TArray<FHitResult>& InHitResults,
-	const FGameplayEffectSpecHandle& InSpecHandle)
+void UArcaneGameplayAbility::ApplyGameplayEffectToHitResults(const TArray<FHitResult>& InHitResults, const FGameplayEffectSpecHandle& InSpecHandle)
 {
 	if (InHitResults.IsEmpty()) return;
 
