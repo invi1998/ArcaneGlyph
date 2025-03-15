@@ -165,12 +165,19 @@ void UArcaneGameplayAbility::ApplyGameplayEffectToHitResults(const TArray<FHitRe
 {
 	if (InHitResults.IsEmpty()) return;
 
+	// 对InHitResults去重，因为InHitResults里面可能会包含多次同一个Pawn
+	TArray<APawn*> HitPawns;
+	HitPawns.Empty();
+
 	APawn* OwningPawn = Cast<APawn>(GetAvatarActorFromActorInfo());
 
 	for (const FHitResult& HitResult : InHitResults)
 	{
 		if (APawn* HitPawn = Cast<APawn>(HitResult.GetActor()))
 		{
+			if (HitPawns.Contains(HitPawn)) continue;
+			HitPawns.AddUnique(HitPawn);
+			
 			if (UArcaneBlueprintFunctionLibrary::IsTargetPawnHostile(OwningPawn, HitPawn))
 			{
 				FActiveGameplayEffectHandle ActiveHandle = NativeApplyGameplayEffectSpecToTarget(HitPawn, InSpecHandle);
