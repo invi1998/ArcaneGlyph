@@ -11,6 +11,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEquippedWeaponChangedDelegate, TS
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAbilityIconSlotUpdatedDelegate, FGameplayTag, AbilityInputTag, TSoftObjectPtr<UTexture2D>, InAbilityIcon);	// 能力图标槽更新委托
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnAbilityCooldownBeginDelegate, FGameplayTag, AbilityInputTag, float, InCooldownDuration, float, InCooldownTimeRemaining);	// 能力冷却开始委托
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class ARCANEGLYPH_API UHeroUIComponent : public UPawnUIComponent
 {
@@ -25,5 +27,8 @@ public:
 
 	UPROPERTY(BlueprintAssignable, BlueprintCallable)
 	FOnAbilityIconSlotUpdatedDelegate OnAbilityIconSlotUpdated;	// 能力图标槽更新
+
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnAbilityCooldownBeginDelegate OnAbilityCooldownBegin;	// 能力冷却开始
 	
 };
