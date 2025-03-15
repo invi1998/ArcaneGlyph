@@ -109,6 +109,7 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Event_MeleeAttack_2, "Shared.Event.MeleeAttack.2", "共享事件：近战攻击");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Event_HitReact, "Shared.Event.HitReact", "共享事件：受击反应");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Event_SpawnProjectile, "Shared.Event.SpawnProjectile", "共享事件：生成投射物");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Event_AOE, "Shared.Event.AOE", "共享事件：群体伤害");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Ability_HitReact, "Shared.Ability.HitReact", "共享技能：受击反应");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Ability_Death, "Shared.Ability.Death", "共享技能：死亡");

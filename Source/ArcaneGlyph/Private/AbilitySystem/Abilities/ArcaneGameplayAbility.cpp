@@ -5,6 +5,8 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemGlobals.h"
+#include "ArcaneBlueprintFunctionLibrary.h"
+#include "ArcaneGameplayTags.h"
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
 #include "Component/Combat/PawnCombatComponent.h"
 
@@ -157,4 +159,35 @@ FActiveGameplayEffectHandle UArcaneGameplayAbility::BP_ApplyGameplayEffectSpecTo
 	// 根据激活句柄是否成功应用来设置成功类型
 	SuccessType = ActiveHandle.WasSuccessfullyApplied() ? EArcaneSuccessType::Success : EArcaneSuccessType::Fail;
 	return ActiveHandle;
+}
+
+void UArcaneGameplayAbility::ApplyGameplayEffectToHitResults(const TArray<FHitResult>& InHitResults,
+	const FGameplayEffectSpecHandle& InSpecHandle)
+{
+	if (InHitResults.IsEmpty()) return;
+
+	APawn* OwningPawn = Cast<APawn>(GetAvatarActorFromActorInfo());
+
+	for (const FHitResult& HitResult : InHitResults)
+	{
+		if (APawn* HitPawn = Cast<APawn>(HitResult.GetActor()))
+		{
+			if (UArcaneBlueprintFunctionLibrary::IsTargetPawnHostile(OwningPawn, HitPawn))
+			{
+				FActiveGameplayEffectHandle ActiveHandle = NativeApplyGameplayEffectSpecToTarget(HitPawn, InSpecHandle);
+				if (ActiveHandle.WasSuccessfullyApplied())
+				{
+					FGameplayEventData EventData;
+					EventData.Instigator = OwningPawn;
+					EventData.Target = HitPawn;
+					
+					UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+						HitPawn,
+						ArcaneGameplayTags::Shared_Event_HitReact,
+						EventData
+					);
+				}
+			}
+		}
+	}
 }

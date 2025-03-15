@@ -48,4 +48,7 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Arcane | Ability", meta = (DisplayName = "Apply GameplayEffect Spec Handle To Target", ExpandEnumAsExecs = "SuccessType"))
 	FActiveGameplayEffectHandle BP_ApplyGameplayEffectSpecToTarget(AActor* InTargetActor, const FGameplayEffectSpecHandle& InSpecHandle, EArcaneSuccessType& SuccessType);
 
+	UFUNCTION(BlueprintCallable, Category = "Arcane | Ability")
+	void ApplyGameplayEffectToHitResults(const TArray<FHitResult>& InHitResults, const FGameplayEffectSpecHandle& InSpecHandle);
+	
 };
