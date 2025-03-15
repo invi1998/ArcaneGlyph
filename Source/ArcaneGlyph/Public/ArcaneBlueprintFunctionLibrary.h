@@ -94,6 +94,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary", meta=(Latent, WorldContext="WorldContextObject", LatentInfo="LatentInfo", ExpandEnumAsExecs="CountDownActionInput|CountDownActionOutput", TotalTime="1.0", UpdateInterval="0.1"))
 	static void CountDown(const UObject* WorldContextObject, float TotalTime, float UpdateInterval, float& OutRemainingTime, EArcaneCountDownActionInput CountDownActionInput, UPARAM(DisplayName="Output") EArcaneCountDownActionOutput& CountDownActionOutput, FLatentActionInfo LatentInfo);
+
+	// 开启或者关闭角色重力
+	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary")
+	static void ToggleCharacterGravity(AActor* InActor, bool bEnableGravity);
 	
 };
 

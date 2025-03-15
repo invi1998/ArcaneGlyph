@@ -325,5 +325,15 @@ void UArcaneBlueprintFunctionLibrary::CountDown(const UObject* WorldContextObjec
 
 }
 
+void UArcaneBlueprintFunctionLibrary::ToggleCharacterGravity(AActor* InActor, bool bEnableGravity)
+{
+	check(InActor);
+
+	if (AArcaneCharacterBase* ArcaneCharacter = Cast<AArcaneCharacterBase>(InActor))
+	{
+		ArcaneCharacter->GetCharacterMovement()->SetMovementMode(bEnableGravity ? MOVE_Walking : MOVE_Flying);
+	}
+}
+
 
 
