@@ -91,6 +91,9 @@ public:
 	// 输入移动向量，获取移动方向
 	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary")
 	static EArcaneMoveDirection GetMoveDirection(EArcaneMovementDirectionMethod Method, const FVector& InputVector, float DeadZone = 0.1f);
+
+	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary", meta=(Latent, WorldContext="WorldContextObject", LatentInfo="LatentInfo", ExpandEnumAsExecs="CountDownActionInput|CountDownActionOutput", TotalTime="1.0", UpdateInterval="0.1"))
+	static void CountDown(const UObject* WorldContextObject, float TotalTime, float UpdateInterval, float& OutRemainingTime, EArcaneCountDownActionInput CountDownActionInput, UPARAM(DisplayName="Output") EArcaneCountDownActionOutput& CountDownActionOutput, FLatentActionInfo LatentInfo);
 	
 };
 

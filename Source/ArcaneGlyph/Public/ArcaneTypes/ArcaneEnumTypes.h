@@ -60,3 +60,21 @@ enum class EArcaneMovementDirectionMethod : uint8
 	
 };
 
+UENUM()
+enum class EArcaneCountDownActionInput : uint8
+{
+	// 开始倒计时
+	Start,
+	// 倒计时取消
+	Cancel
+};
+
+UENUM()
+enum class EArcaneCountDownActionOutput : uint8
+{
+	Update,
+	Completed,
+	Cancelled
+};
+	
+

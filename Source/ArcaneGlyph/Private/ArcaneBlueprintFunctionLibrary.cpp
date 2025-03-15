@@ -292,5 +292,12 @@ EArcaneMoveDirection UArcaneBlueprintFunctionLibrary::GetMoveDirection(EArcaneMo
     return EArcaneMoveDirection::None;
 }
 
+void UArcaneBlueprintFunctionLibrary::CountDown(const UObject* WorldContextObject, float TotalTime,
+	float UpdateInterval, float& OutRemainingTime, EArcaneCountDownActionInput CountDownActionInput,
+	UPARAM(DisplayName="Output") EArcaneCountDownActionOutput& CountDownActionOutput, FLatentActionInfo LatentInfo)
+{
+	
+}
+
 
 
