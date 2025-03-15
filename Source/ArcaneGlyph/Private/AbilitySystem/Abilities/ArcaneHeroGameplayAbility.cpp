@@ -69,3 +69,21 @@ FGameplayEffectSpecHandle UArcaneHeroGameplayAbility::MakeHeroDamageEffectSpecHa
 	
 	return DamageEffectSpecHandle;
 }
+
+bool UArcaneHeroGameplayAbility::GetAbilityRemainingCooldownByTag(FGameplayTag InCooldownTag, float& TotalCooldownTime, float& OutRemainingCooldown)
+{
+	check(InCooldownTag.IsValid());
+
+	FGameplayEffectQuery CooldownQuery = FGameplayEffectQuery::MakeQuery_MatchAnyOwningTags(InCooldownTag.GetSingleTagContainer());
+
+	TArray<TPair<float, float>> CooldownList = GetAbilitySystemComponentFromActorInfo()->GetActiveEffectsTimeRemainingAndDuration(CooldownQuery);
+
+	if (CooldownList.Num() > 0)
+	{
+		TotalCooldownTime = CooldownList[0].Value;
+		OutRemainingCooldown = CooldownList[0].Key;
+	}
+
+	return OutRemainingCooldown > 0.f;
+
+}

@@ -30,6 +30,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Arcane | Ability")
 	FGameplayEffectSpecHandle MakeHeroDamageEffectSpecHandle(TSubclassOf<UGameplayEffect> InGameplayEffectClass, FGameplayTag InCurrentAttackType, float InBaseDamageValue, int32 InUsedComboCount);
 
+	// 获取技能冷却时间（包括剩余冷却时间和总冷却时间）
+	UFUNCTION(BlueprintCallable, Category = "Arcane | Ability")
+	bool GetAbilityRemainingCooldownByTag(FGameplayTag InCooldownTag, float& TotalCooldownTime, float& OutRemainingCooldown);
+	
 private:
 	TWeakObjectPtr<AArcaneHeroCharacter> CachedArcaneHeroCharacter;		// 缓存的英雄角色
 	TWeakObjectPtr<AArcaneHeroController> CachedArcaneHeroController;	// 缓存的英雄控制器
