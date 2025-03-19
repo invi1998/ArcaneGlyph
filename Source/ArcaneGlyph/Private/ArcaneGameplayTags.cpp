@@ -51,6 +51,7 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_SwitchLockTarget_Right, "Player.Event.SwitchLockTarget.Right", "玩家事件：切换锁定目标-向右切换");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_RollSuccess, "Player.Event.RollSuccess", "玩家事件：翻滚成功");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_ActivateRage, "Player.Event.ActivateRage", "玩家事件：激活愤怒");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_StopAttackingBackswing, "Player.Event.StopAttackingBackswing", "玩家事件：停止攻击后摇");
 	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Equip_Sword, "Player.Ability.Equip.Sword", "玩家技能：装备剑");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_UnEquip_Sword, "Player.Ability.UnEquip.Sword", "玩家技能：卸下剑");
@@ -110,9 +111,11 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Event_HitReact, "Shared.Event.HitReact", "共享事件：受击反应");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Event_SpawnProjectile, "Shared.Event.SpawnProjectile", "共享事件：生成投射物");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Event_AOE, "Shared.Event.AOE", "共享事件：群体伤害");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Event_FellDown, "Shared.Event.FellDown", "共享事件：倒地");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Ability_HitReact, "Shared.Ability.HitReact", "共享技能：受击反应");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Ability_Death, "Shared.Ability.Death", "共享技能：死亡");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Ability_FellDown, "Shared.Ability.FellDown", "共享技能：倒地");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_SetByCaller_BaseDamage, "Shared.SetByCaller.BaseDamage", "共享：基础伤害");
 
@@ -122,5 +125,6 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Status_HitReact_Right, "Shared.Status.HitReact.Right", "共享状态：受击反应-右");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Status_HitReact_Back, "Shared.Status.HitReact.Back", "共享状态：受击反应-后");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Status_Invincibility, "Shared.Status.Invincibility", "共享状态：无敌状态");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Status_FellDown, "Shared.Status.FellDown", "共享状态：倒地");
 	
 }
