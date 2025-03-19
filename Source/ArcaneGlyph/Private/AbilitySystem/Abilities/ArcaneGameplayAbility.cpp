@@ -197,3 +197,8 @@ void UArcaneGameplayAbility::ApplyGameplayEffectToHitResults(const TArray<FHitRe
 		}
 	}
 }
+
+void UArcaneGameplayAbility::SpawnProjectiles(const FVector& ProjectileTargetLocation, const FName& SocketName, AActor* HomingTarget, bool bOverridePitch, float Pitch)
+{
+	
+}

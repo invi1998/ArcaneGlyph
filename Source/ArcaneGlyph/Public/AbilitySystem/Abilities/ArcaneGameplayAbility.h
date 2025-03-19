@@ -50,5 +50,8 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Arcane | Ability")
 	void ApplyGameplayEffectToHitResults(const TArray<FHitResult>& InHitResults, const FGameplayEffectSpecHandle& InSpecHandle);
+
+	UFUNCTION(BlueprintCallable, Category = "Arcane | Ability")
+	void SpawnProjectiles(const FVector& ProjectileTargetLocation, const FName& SocketName, AActor* HomingTarget, bool bOverridePitch = false, float Pitch = 0.0f);
 	
 };
