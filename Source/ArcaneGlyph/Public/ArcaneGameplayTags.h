@@ -23,6 +23,9 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_HeavyAttack_Sword);		// 输入标签：重攻击：剑
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_HeavyAttack_Twinblades);		// 输入标签：重攻击：双刃剑
 
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_PickUpSoul);		// 输入标签：拾取灵魂
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_DrinkPotion);		// 输入标签：喝药水
+
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_SpecialWeaponAbility_Light);		// 输入标签：特殊武器技能：轻攻击
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_SpecialWeaponAbility_Heavy);		// 输入标签：特殊武器技能：重攻击
   

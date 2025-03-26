@@ -11,6 +11,8 @@
 void AArcaneStoneBase::OnPickUpCollisionBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                                      UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	Super::OnPickUpCollisionBeginOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
+	
 	if (AArcaneHeroCharacter* HeroCharacter = Cast<AArcaneHeroCharacter>(OtherActor))
 	{
 		// 如果是英雄角色，就拾取

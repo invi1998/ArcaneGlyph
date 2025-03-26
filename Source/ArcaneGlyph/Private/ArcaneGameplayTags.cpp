@@ -21,6 +21,10 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_LightAttack_Twinblades, "InputTag.LightAttack.Twinblades", "轻攻击:双刃剑");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_HeavyAttack_Sword, "InputTag.HeavyAttack.Sword", "重攻击:剑");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_HeavyAttack_Twinblades, "InputTag.HeavyAttack.Twinblades", "重攻击:双刃剑");
+
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_PickUpSoul, "InputTag.PickUpSoul", "拾取灵魂");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_DrinkPotion, "InputTag.DrinkPotion", "喝药水");
+	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_SpecialWeaponAbility_Light, "InputTag.SpecialWeaponAbility.Light", "特殊武器技能:轻攻击");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_SpecialWeaponAbility_Heavy, "InputTag.SpecialWeaponAbility.Heavy", "特殊武器技能:重攻击");
 
