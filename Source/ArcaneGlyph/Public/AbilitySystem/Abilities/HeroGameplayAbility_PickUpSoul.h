@@ -6,6 +6,7 @@
 #include "ArcaneHeroGameplayAbility.h"
 #include "HeroGameplayAbility_PickUpSoul.generated.h"
 
+class AArcanePickUpBase;
 /**
  * 
  */
@@ -19,5 +20,24 @@ protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 	// ~End UGameplayAbility interface
+
+	UFUNCTION(BlueprintCallable)
+	void CollectSoul();
+
+private:
+	UPROPERTY(EditDefaultsOnly)
+	float BoxTraceDistance = 100.f;
+
+	UPROPERTY(EditDefaultsOnly)
+	FVector TraceBoxSize = FVector(200.f, 200.f, 200.f);
+
+	UPROPERTY(EditDefaultsOnly)
+	TArray<TEnumAsByte<EObjectTypeQuery>> SoulTraceChannels;
+
+	UPROPERTY(EditDefaultsOnly)
+	bool bDrawDebug = false;
+
+	UPROPERTY()
+	TArray<AArcanePickUpBase*> CollectedSouls;
 	
 };
