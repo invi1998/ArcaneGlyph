@@ -12,7 +12,8 @@ class ARCANEGLYPH_API AArcaneStoneBase : public AArcanePickUpBase
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this actor's properties
-	AArcaneStoneBase();
+
+protected:
+	virtual void OnPickUpCollisionBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 
 };

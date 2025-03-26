@@ -3,11 +3,22 @@
 
 #include "Items/PickUp/ArcaneStoneBase.h"
 
+#include "ArcaneGameplayTags.h"
+#include "AbilitySystem/ArcaneAbilitySystemComponent.h"
+#include "Characters/ArcaneHeroCharacter.h"
 
-// Sets default values
-AArcaneStoneBase::AArcaneStoneBase()
+
+void AArcaneStoneBase::OnPickUpCollisionBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                                                     UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
+	if (AArcaneHeroCharacter* HeroCharacter = Cast<AArcaneHeroCharacter>(OtherActor))
+	{
+		// 如果是英雄角色，就拾取
+	 	UArcaneAbilitySystemComponent* ArcaneASC = HeroCharacter->GetArcaneAbilitySystemComponent();
+		if (ArcaneASC)
+		{
+			ArcaneASC->TryActivateAbilityByTag(ArcaneGameplayTags::Player_Ability_Pickup_Soul);
+		}
+	}
+	
 }
-
