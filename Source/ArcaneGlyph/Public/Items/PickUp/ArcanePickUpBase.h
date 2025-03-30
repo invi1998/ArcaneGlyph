@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "ArcanePickUpBase.generated.h"
 
+class UInputMappingContext;
 class UWidgetComponent;
 class USphereComponent;
 
@@ -26,6 +27,12 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
 	TObjectPtr<UWidgetComponent> PickUpWidgetComponent;	// 拾取小部件组件
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Pick Up InputMappingContext")
+	TObjectPtr<UInputMappingContext> PickUpInputMappingContext;	// 拾取输入映射上下文
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Pick Up InputMappingContext")
+	int32 MappingPriority = 2;		// 输入映射上下文的优先级
 
 	UFUNCTION()
 	virtual void OnPickUpCollisionBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);	// 拾取碰撞开始重叠

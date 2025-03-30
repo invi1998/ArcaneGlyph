@@ -55,6 +55,14 @@ public:
 	FGameplayAttributeData DamageTaken;
 	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, DamageTaken);		// 伤害承受
 
+	UPROPERTY(BlueprintReadOnly, Category = "Potion")
+	FGameplayAttributeData HealthPotion;		//	生命药水
+	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, HealthPotion);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Potion")
+	FGameplayAttributeData RagePotion;		// 怒气药水
+	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, RagePotion);
+
 private:
 	TWeakInterfacePtr<IPawnUIInterface> CachedPawnUIInterface;
 	

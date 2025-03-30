@@ -3,6 +3,11 @@
 
 #include "Items/PickUp/ArcanePickUpBase.h"
 
+#include "ArcaneDebugHelper.h"
+#include "ArcaneGameplayTags.h"
+#include "EnhancedInputSubsystems.h"
+#include "AbilitySystem/ArcaneAbilitySystemComponent.h"
+#include "Characters/ArcaneHeroCharacter.h"
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 
@@ -38,6 +43,19 @@ void AArcanePickUpBase::OnPickUpCollisionBeginOverlap(UPrimitiveComponent* Overl
 {
 	// 显示拾取UI
 	PickUpWidgetComponent->SetVisibility(true);
+
+	if (AArcaneHeroCharacter* HeroCharacter = Cast<AArcaneHeroCharacter>(OtherActor))
+	{
+		ULocalPlayer* LocalPlayer = HeroCharacter->GetController<APlayerController>()->GetLocalPlayer();
+		if (UEnhancedInputLocalPlayerSubsystem* EnhancedInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer))
+		{
+			// 确保当前没有重复添加输入映射上下文
+			if (!EnhancedInputSubsystem->HasMappingContext(PickUpInputMappingContext))
+			{
+				EnhancedInputSubsystem->AddMappingContext(PickUpInputMappingContext, MappingPriority);
+			}
+		}
+	}
 }
 
 void AArcanePickUpBase::OnPickUpCollisionEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -45,6 +63,16 @@ void AArcanePickUpBase::OnPickUpCollisionEndOverlap(UPrimitiveComponent* Overlap
 {
 	// 隐藏拾取UI
 	PickUpWidgetComponent->SetVisibility(false);
+
+	if (AArcaneHeroCharacter* HeroCharacter = Cast<AArcaneHeroCharacter>(OtherActor))
+	{
+		ULocalPlayer* LocalPlayer = HeroCharacter->GetController<APlayerController>()->GetLocalPlayer();
+		if (UEnhancedInputLocalPlayerSubsystem* EnhancedInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer))
+		{
+			// 移除输入映射上下文
+			EnhancedInputSubsystem->RemoveMappingContext(PickUpInputMappingContext);
+		}
+	}
 }
 
 

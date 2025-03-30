@@ -37,7 +37,7 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	bool bDrawDebug = false;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TArray<AArcanePickUpBase*> CollectedSouls;
 	
 };

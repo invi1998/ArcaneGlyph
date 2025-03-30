@@ -53,10 +53,9 @@ void AArcaneHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	{
 		EnhancedInputSubsystem->AddMappingContext(InputConfigDataAsset->DefaultMappingContext, 0);
 	}
-	
 
-	UArcaneInputComponent* EnhancedInputComponent = CastChecked<UArcaneInputComponent>(PlayerInputComponent);
-	if (EnhancedInputComponent)
+
+	if (UArcaneInputComponent* EnhancedInputComponent = CastChecked<UArcaneInputComponent>(PlayerInputComponent))
 	{
 		EnhancedInputComponent->BindNativeInputAction(InputConfigDataAsset, ArcaneGameplayTags::InputTag_Move, ETriggerEvent::Triggered, this, &AArcaneHeroCharacter::Input_Move);
 		EnhancedInputComponent->BindNativeInputAction(InputConfigDataAsset, ArcaneGameplayTags::InputTag_Look, ETriggerEvent::Triggered, this, &AArcaneHeroCharacter::Input_Look);
