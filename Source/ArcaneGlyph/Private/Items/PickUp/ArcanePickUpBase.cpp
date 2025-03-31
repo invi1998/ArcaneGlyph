@@ -41,11 +41,11 @@ void AArcanePickUpBase::BeginPlay()
 
 void AArcanePickUpBase::OnPickUpCollisionBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	// 显示拾取UI
-	PickUpWidgetComponent->SetVisibility(true);
-
 	if (AArcaneHeroCharacter* HeroCharacter = Cast<AArcaneHeroCharacter>(OtherActor))
 	{
+		// 显示拾取UI
+		PickUpWidgetComponent->SetVisibility(true);
+		
 		ULocalPlayer* LocalPlayer = HeroCharacter->GetController<APlayerController>()->GetLocalPlayer();
 		if (UEnhancedInputLocalPlayerSubsystem* EnhancedInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer))
 		{
@@ -61,11 +61,11 @@ void AArcanePickUpBase::OnPickUpCollisionBeginOverlap(UPrimitiveComponent* Overl
 void AArcanePickUpBase::OnPickUpCollisionEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	// 隐藏拾取UI
-	PickUpWidgetComponent->SetVisibility(false);
-
 	if (AArcaneHeroCharacter* HeroCharacter = Cast<AArcaneHeroCharacter>(OtherActor))
 	{
+		// 隐藏拾取UI
+		PickUpWidgetComponent->SetVisibility(false);
+		
 		ULocalPlayer* LocalPlayer = HeroCharacter->GetController<APlayerController>()->GetLocalPlayer();
 		if (UEnhancedInputLocalPlayerSubsystem* EnhancedInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer))
 		{
