@@ -60,8 +60,16 @@ public:
 	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, HealthPotion);
 
 	UPROPERTY(BlueprintReadOnly, Category = "Potion")
+	FGameplayAttributeData MaxHealthPotion;		// 最大生命药水容量
+	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, MaxHealthPotion);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Potion")
 	FGameplayAttributeData RagePotion;		// 怒气药水
 	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, RagePotion);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Potion")
+	FGameplayAttributeData MaxRagePotion;		// 最大怒气药水容量
+	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, MaxRagePotion);
 
 private:
 	TWeakInterfacePtr<IPawnUIInterface> CachedPawnUIInterface;

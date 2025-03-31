@@ -18,6 +18,11 @@ UArcaneAttributeSet::UArcaneAttributeSet()
 	InitMaxRage(1.f);
 	InitAttackPower(1.f);
 	InitDefensePower(1.f);
+	InitDamageTaken(0.f);
+	InitHealthPotion(0.f);
+	InitMaxHealthPotion(0.f);
+	InitRagePotion(0.f);
+	InitMaxRagePotion(0.f);
 }
 
 void UArcaneAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data)
@@ -64,6 +69,28 @@ void UArcaneAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 		{
 			HeroUIComponent->OnCurrentRageChanged.Broadcast(GetCurrentRage() / GetMaxRage());
 		}
+	}
+
+	// 获取当前生命药水和最大生命药水
+	if (Data.EvaluatedData.Attribute == GetHealthPotionAttribute())
+	{
+		if (UHeroUIComponent* HeroUIComponent = CachedPawnUIInterface->GetHeroUIComponent())
+		{
+			SetHealthPotion(FMath::Clamp(GetHealthPotion(), 0.f, GetMaxHealthPotion()));
+			HeroUIComponent->OnCurrentHealthPotionChanged.Broadcast(GetHealthPotion(), GetMaxHealthPotion());
+		}
+		
+	}
+	
+	// 获取当前怒气药水和最大怒气药水
+	if (Data.EvaluatedData.Attribute == GetRagePotionAttribute())
+	{
+		if (UHeroUIComponent* HeroUIComponent = CachedPawnUIInterface->GetHeroUIComponent())
+		{
+			SetRagePotion(FMath::Clamp(GetRagePotion(), 0.f, GetMaxRagePotion()));
+			HeroUIComponent->OnCurrentRagePotionChanged.Broadcast(GetRagePotion(), GetMaxRagePotion());
+		}
+		
 	}
 
 	if (Data.EvaluatedData.Attribute == GetDamageTakenAttribute())

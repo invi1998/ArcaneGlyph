@@ -13,6 +13,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAbilityIconSlotUpdatedDelegate, 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnAbilityCooldownBeginDelegate, FGameplayTag, AbilityInputTag, float, InCooldownDuration, float, InCooldownTimeRemaining);	// 能力冷却开始委托
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPotionNumberChangedDelegate, int32, InPotionNumber, int32, InMaxPotionNumber);	// 药水数量变化委托
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class ARCANEGLYPH_API UHeroUIComponent : public UPawnUIComponent
 {
@@ -30,5 +32,11 @@ public:
 
 	UPROPERTY(BlueprintAssignable, BlueprintCallable)
 	FOnAbilityCooldownBeginDelegate OnAbilityCooldownBegin;	// 能力冷却开始
+
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnPotionNumberChangedDelegate OnCurrentHealthPotionChanged;	// 当前生命药水数量变化
+
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnPotionNumberChangedDelegate OnCurrentRagePotionChanged;	// 当前愤怒药水数量变化
 	
 };
