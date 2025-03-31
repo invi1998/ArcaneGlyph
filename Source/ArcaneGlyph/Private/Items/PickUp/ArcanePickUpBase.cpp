@@ -31,6 +31,10 @@ AArcanePickUpBase::AArcanePickUpBase()
 	
 }
 
+void AArcanePickUpBase::Consume(UArcaneAbilitySystemComponent* AbilitySystemComponent, int32 InApplyLevel)
+{
+}
+
 void AArcanePickUpBase::BeginPlay()
 {
 	Super::BeginPlay();

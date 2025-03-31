@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "ArcanePickUpBase.generated.h"
 
+class UArcaneAbilitySystemComponent;
 class UInputMappingContext;
 class UWidgetComponent;
 class USphereComponent;
@@ -18,6 +19,8 @@ class ARCANEGLYPH_API AArcanePickUpBase : public AActor
 public:
 	// Sets default values for this actor's properties
 	AArcanePickUpBase();
+
+	virtual void Consume(UArcaneAbilitySystemComponent* AbilitySystemComponent, int32 InApplyLevel);
 
 protected:
 	virtual void BeginPlay() override;

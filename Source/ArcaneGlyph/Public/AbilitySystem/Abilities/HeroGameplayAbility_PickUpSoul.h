@@ -24,6 +24,9 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void CollectSoul();
 
+	UFUNCTION(BlueprintCallable)
+	void ConsumeSouls();
+
 private:
 	UPROPERTY(EditDefaultsOnly)
 	float BoxTraceDistance = 100.f;

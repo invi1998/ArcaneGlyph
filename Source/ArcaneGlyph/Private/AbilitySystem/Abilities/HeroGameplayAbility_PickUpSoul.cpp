@@ -54,3 +54,19 @@ void UHeroGameplayAbility_PickUpSoul::CollectSoul()
 		CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true);
 	}
 }
+
+void UHeroGameplayAbility_PickUpSoul::ConsumeSouls()
+{
+	if (CollectedSouls.IsEmpty())
+	{
+		CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(), true);
+		return;
+	}
+	for (AArcanePickUpBase* PickUpObject : CollectedSouls)
+	{
+		if (PickUpObject)
+		{
+			PickUpObject->Consume(GetArcaneAbilitySystemComponentFromActorInfo(), GetAbilityLevel());
+		}
+	}
+}
