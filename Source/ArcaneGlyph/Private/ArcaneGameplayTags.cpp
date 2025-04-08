@@ -131,6 +131,8 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Ability_FellDown, "Shared.Ability.FellDown", "共享技能：倒地");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_SetByCaller_BaseDamage, "Shared.SetByCaller.BaseDamage", "共享：基础伤害");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_SetByCaller_HealPercentage, "Shared.SetByCaller.HealPercentage", "共享：治疗百分比");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_SetByCaller_RageRecoverPercentage, "Shared.SetByCaller.RageRecoverPercentage", "共享：愤怒恢复百分比");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Status_Dead, "Shared.Status.Dead", "共享状态：死亡");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Status_HitReact_Front, "Shared.Status.HitReact.Front", "共享状态：受击反应-前");
