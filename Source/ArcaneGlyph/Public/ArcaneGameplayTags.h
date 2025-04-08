@@ -25,7 +25,8 @@ namespace ArcaneGameplayTags
 
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_PickUp_HealSoul);		// 输入标签：拾取疗伤灵魂
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_PickUp_RageSoul);		// 输入标签：拾取愤怒灵魂
-	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_DrinkPotion);		// 输入标签：喝药水
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_UseItem_HealPotion);		// 输入标签：使用物品：疗伤药水
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_UseItem_RagePotion);		// 输入标签：使用物品：愤怒药水
 
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_SpecialWeaponAbility_Light);		// 输入标签：特殊武器技能：轻攻击
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_SpecialWeaponAbility_Heavy);		// 输入标签：特殊武器技能：重攻击
@@ -79,6 +80,8 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_SpecialWeaponAbility_Heavy);	// 玩家技能：特殊武器技能：重攻击
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_Pickup_Soul_Heal);		// 玩家技能：拾取疗伤灵魂
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_Pickup_Soul_Rage);		// 玩家技能：拾取愤怒灵魂
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_UseItem_HealPotion);	// 玩家技能：使用物品：疗伤药水
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_UseItem_RagePotion);	// 玩家技能：使用物品：愤怒药水
 	
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Cooldown_Ability_Block);	// 玩家冷却：技能：格挡
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Cooldown_Ability_Rage);	// 玩家冷却：技能：愤怒

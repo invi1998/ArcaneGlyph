@@ -24,7 +24,8 @@ namespace ArcaneGameplayTags
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_PickUp_HealSoul, "InputTag.PickUp.HealSoul", "拾取疗伤灵魂");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_PickUp_RageSoul, "InputTag.PickUp.RageSoul", "拾取愤怒灵魂");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_DrinkPotion, "InputTag.DrinkPotion", "喝药水");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_UseItem_HealPotion, "InputTag.UseItem.HealPotion", "使用药水");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_UseItem_RagePotion, "InputTag.UseItem.RagePotion", "使用愤怒药水");
 	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_SpecialWeaponAbility_Light, "InputTag.SpecialWeaponAbility.Light", "特殊武器技能:轻攻击");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_SpecialWeaponAbility_Heavy, "InputTag.SpecialWeaponAbility.Heavy", "特殊武器技能:重攻击");
@@ -79,6 +80,8 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_SpecialWeaponAbility_Heavy, "Player.Ability.SpecialWeaponAbility.Heavy", "玩家技能：特殊武器技能：重攻击");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Pickup_Soul_Heal, "Player.Ability.PickupSoul.Heal", "玩家技能：拾取疗伤灵魂");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Pickup_Soul_Rage, "Player.Ability.PickupSoul.Rage", "玩家技能：拾取愤怒灵魂");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_UseItem_HealPotion, "Player.Ability.UseItem.HealPotion", "玩家技能：使用药水");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_UseItem_RagePotion, "Player.Ability.UseItem.RagePotion", "玩家技能：使用愤怒药水");
 	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Cooldown_Ability_Block, "Player.Cooldown.Ability.Block", "玩家冷却：技能：格挡");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Cooldown_Ability_Rage, "Player.Cooldown.Ability.Rage", "玩家冷却：技能：愤怒");
