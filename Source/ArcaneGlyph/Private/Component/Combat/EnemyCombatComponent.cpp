@@ -75,6 +75,12 @@ void UEnemyCombatComponent::OnHitTargetActor(AActor* InHitActor, int32 InCollisi
 		}
 		else
 		{
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+					GetOwningPawn(),
+					ArcaneGameplayTags::Player_Event_BlockFailed,
+					EventData
+				);
+			
 			// 未被格挡，告知攻击者
 			if (InCollisionBoxIndex == 1)
 			{
