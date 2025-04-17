@@ -4,6 +4,7 @@
 #include "Component/Combat/HeroCombatComponent.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "ArcaneBlueprintFunctionLibrary.h"
 #include "ArcaneGameplayTags.h"
 #include "Items/Weapons/ArcaneHeroWeapon.h"
 
@@ -39,29 +40,56 @@ void UHeroCombatComponent::OnHitTargetActor(AActor* InHitActor, int32 InCollisio
 	EventData.Target = InHitActor;
 	EventData.Instigator = GetOwningPawn();
 
-	if (InCollisionBoxIndex == 1)
+	bool bIsBlocking = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(InHitActor, ArcaneGameplayTags::Enemy_Status_Blocking);
+	bool bIsSuccessBlock = false;
+	if (bIsBlocking)
 	{
+		// 格挡
+		bIsSuccessBlock = UArcaneBlueprintFunctionLibrary::IsCurrentBlockValid(GetOwningPawn(), InHitActor);
+	}
+	
+	if (bIsSuccessBlock)
+	{
+		// 格挡成功
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
-			GetOwningPawn(),
-			ArcaneGameplayTags::Shared_Event_MeleeAttack_1,
+			InHitActor,
+			ArcaneGameplayTags::Enemy_Event_SuccessBlock,
 			EventData
 		);
 	}
 	else
 	{
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
-			GetOwningPawn(),
-			ArcaneGameplayTags::Shared_Event_MeleeAttack_2,
+			InHitActor,
+			ArcaneGameplayTags::Enemy_Event_FailedBlock,
 			EventData
 		);
-	}
+		
+		if (InCollisionBoxIndex == 1)
+		{
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+				GetOwningPawn(),
+				ArcaneGameplayTags::Shared_Event_MeleeAttack_1,
+				EventData
+			);
+		}
+		else
+		{
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+				GetOwningPawn(),
+				ArcaneGameplayTags::Shared_Event_MeleeAttack_2,
+				EventData
+			);
+		}
 
-	// 发送受击暂停事件
-	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
-		GetOwningPawn(),
-		ArcaneGameplayTags::Player_Event_HitPause,
-		FGameplayEventData()
-	);
+		// 发送受击暂停事件
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+			GetOwningPawn(),
+			ArcaneGameplayTags::Player_Event_HitPause,
+			FGameplayEventData()
+		);
+	}
+	
 }
 
 void UHeroCombatComponent::OnWeaponPulledFromTargetActor(AActor* InHitActor, int32 InCollisionBoxIndex)

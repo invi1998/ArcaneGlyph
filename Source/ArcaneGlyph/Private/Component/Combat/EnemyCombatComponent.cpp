@@ -62,8 +62,6 @@ void UEnemyCombatComponent::OnHitTargetActor(AActor* InHitActor, int32 InCollisi
 			bIsValidBlock = UArcaneBlueprintFunctionLibrary::IsCurrentBlockValid(GetOwningPawn(), InHitActor);
 		}
 
-		
-
 		if (bIsValidBlock)
 		{
 			// 格挡成功，告知格挡者
@@ -76,7 +74,7 @@ void UEnemyCombatComponent::OnHitTargetActor(AActor* InHitActor, int32 InCollisi
 		else
 		{
 			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
-					GetOwningPawn(),
+					InHitActor,
 					ArcaneGameplayTags::Player_Event_BlockFailed,
 					EventData
 				);
