@@ -335,5 +335,15 @@ void UArcaneBlueprintFunctionLibrary::ToggleCharacterGravity(AActor* InActor, bo
 	}
 }
 
+AActor* UArcaneBlueprintFunctionLibrary::GetPlayerCurrentLockedTarget(AActor* InActor)
+{
+	check(InActor);
+	if (AArcaneHeroCharacter* ArcaneHeroCharacter = Cast<AArcaneHeroCharacter>(InActor))
+	{
+		return ArcaneHeroCharacter->CurrentLockedTargetActor;
+	}
+	return nullptr;
+}
+
 
 
