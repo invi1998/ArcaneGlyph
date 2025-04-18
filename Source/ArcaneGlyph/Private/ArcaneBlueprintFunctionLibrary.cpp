@@ -345,5 +345,22 @@ AActor* UArcaneBlueprintFunctionLibrary::GetPlayerCurrentLockedTarget(AActor* In
 	return nullptr;
 }
 
+void UArcaneBlueprintFunctionLibrary::ToggleCharacterHegemony(AActor* InActor, bool bEnable)
+{
+	check(InActor);
+	// 通过添加或者移除Tag来实现霸体状态的切换
+	if (AArcaneCharacterBase* ArcaneCharacter = Cast<AArcaneCharacterBase>(InActor))
+	{
+		if (bEnable)
+		{
+			AddGameplayTagToActorIfNotHas(ArcaneCharacter, ArcaneGameplayTags::Shared_Status_Hegemony);
+		}
+		else
+		{
+			RemoveGameplayTagFromActorIfHas(ArcaneCharacter, ArcaneGameplayTags::Shared_Status_Hegemony);
+		}
+	}
+}
+
 
 

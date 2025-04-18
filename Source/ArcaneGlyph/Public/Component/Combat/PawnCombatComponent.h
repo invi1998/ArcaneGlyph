@@ -29,7 +29,7 @@ class ARCANEGLYPH_API UPawnCombatComponent : public UPawnExtensionComponentBase
 public:
 	UFUNCTION(BlueprintCallable, Category="Arcane|Combat")
 	void RegisterSpawnedWeapon(const FGameplayTag& InWeaponTag, AArcaneWeaponBase* InWeapon, bool bEquipped = false, bool bLeftHand = false);
-
+	
 	UFUNCTION(BlueprintCallable, Category="Arcane|Combat")
 	AArcaneWeaponBase* GetCharacterCarriedWeapon(const FGameplayTag& InWeaponTag) const;
 

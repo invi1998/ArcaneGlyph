@@ -102,6 +102,9 @@ public:
 	// 获取玩家当前锁定的敌人，如果没有锁定敌人，则返回距离玩家最近的敌人
 	UFUNCTION(BlueprintPure, Category = "Arcane | FunctionLibrary")
 	static AActor* GetPlayerCurrentLockedTarget(AActor* InActor);
+
+	UFUNCTION(BlueprintCallable, Category="Arcane|Combat")
+	static void ToggleCharacterHegemony(AActor* InActor, bool bEnable);		// 启用/禁用角色霸体
 };
 
 
