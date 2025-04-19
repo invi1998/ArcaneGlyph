@@ -16,11 +16,15 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_EquipTwinblades, "InputTag.EquipTwinblades", "装备双刃剑");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_UnEquipSword, "InputTag.UnEquipSword", "卸下剑");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_UnEquipTwinblades, "InputTag.UnEquipTwinblades", "卸下双刃剑");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_EquipSpear, "InputTag.EquipSpear", "装备长矛");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_UnEquipSpear, "InputTag.UnEquipSpear", "卸下长矛");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_LightAttack_Sword, "InputTag.LightAttack.Sword", "轻攻击:剑");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_LightAttack_Twinblades, "InputTag.LightAttack.Twinblades", "轻攻击:双刃剑");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_LightAttack_Spear, "InputTag.LightAttack.Spear", "轻攻击:长矛");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_HeavyAttack_Sword, "InputTag.HeavyAttack.Sword", "重攻击:剑");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_HeavyAttack_Twinblades, "InputTag.HeavyAttack.Twinblades", "重攻击:双刃剑");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_HeavyAttack_Spear, "InputTag.HeavyAttack.Spear", "重攻击:长矛");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_PickUp_HealSoul, "InputTag.PickUp.HealSoul", "拾取疗伤灵魂");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_PickUp_RageSoul, "InputTag.PickUp.RageSoul", "拾取愤怒灵魂");
@@ -42,11 +46,14 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Weapon_Sword, "Player.Weapon.Sword", "玩家武器：剑");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Weapon_Twinblades, "Player.Weapon.Twinblades", "玩家武器：双刃剑");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Weapon_MageStaff, "Player.Weapon.MageStaff", "玩家武器：法杖");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Weapon_Spear, "Player.Weapon.Spear", "玩家武器：长矛");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_Equipped_Sword, "Player.Event.Equipped.Sword", "玩家事件：装备剑");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_UnEquipped_Sword, "Player.Event.UnEquipped.Sword", "玩家事件：卸下剑");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_Equipped_Twinblades, "Player.Event.Equipped.Twinblades", "玩家事件：装备双刃剑");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_UnEquipped_Twinblades, "Player.Event.UnEquipped.Twinblades", "玩家事件：卸下双刃剑");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_Equipped_Spear, "Player.Event.Equipped.Spear", "玩家事件：装备长矛");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_UnEquipped_Spear, "Player.Event.UnEquipped.Spear", "玩家事件：卸下长矛");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_ComboChangeHandRight, "Player.Event.ComboChange.HandRight", "玩家事件：连击切换-右手");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_ComboChangeHandLeft, "Player.Event.ComboChange.HandLeft", "玩家事件：连击切换-左手");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_BeginRotateSlot, "Player.Event.BeginRotateSlot", "玩家事件：开始旋转槽");
@@ -67,10 +74,14 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_UnEquip_Sword, "Player.Ability.UnEquip.Sword", "玩家技能：卸下剑");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Equip_Twinblades, "Player.Ability.Equip.Twinblades", "玩家技能：装备双刃剑");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_UnEquip_Twinblades, "Player.Ability.UnEquip.Twinblades", "玩家技能：卸下双刃剑");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Equip_Spear, "Player.Ability.Equip.Spear", "玩家技能：装备长矛");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_UnEquip_Spear, "Player.Ability.UnEquip.Spear", "玩家技能：卸下长矛");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Attack_Light_Sword, "Player.Ability.Attack.Light.Sword", "玩家技能：轻攻击-剑");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Attack_Heavy_Sword, "Player.Ability.Attack.Heavy.Sword", "玩家技能：重攻击-剑");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Attack_Light_Twinblades, "Player.Ability.Attack.Light.Twinblades", "玩家技能：轻攻击-双刃剑");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Attack_Heavy_Twinblades, "Player.Ability.Attack.Heavy.Twinblades", "玩家技能：重攻击-双刃剑");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Attack_Light_Spear, "Player.Ability.Attack.Light.Spear", "玩家技能：轻攻击-长矛");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Attack_Heavy_Spear, "Player.Ability.Attack.Heavy.Spear", "玩家技能：重攻击-长矛");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_HitPause, "Player.Ability.HitPause", "玩家技能：受击暂停");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Roll, "Player.Ability.Roll", "玩家技能：翻滚");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Block, "Player.Ability.Block", "玩家技能：格挡");

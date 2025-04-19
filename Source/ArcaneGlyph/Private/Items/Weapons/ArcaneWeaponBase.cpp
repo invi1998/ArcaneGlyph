@@ -16,7 +16,7 @@ AArcaneWeaponBase::AArcaneWeaponBase()
 
 	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::Type::NoCollision);		// 默认关闭碰撞
 	WeaponMesh->SetCollisionResponseToAllChannels(ECR_Ignore);					// 默认忽略所有碰撞
-
+	
 	WeaponCollisionBox1 = CreateDefaultSubobject<UBoxComponent>(TEXT("WeaponCollisionBox"));
 	WeaponCollisionBox1->SetupAttachment(GetRootComponent());
 	WeaponCollisionBox1->SetBoxExtent(FVector(20.f, 20.f, 20.f));

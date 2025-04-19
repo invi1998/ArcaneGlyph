@@ -32,6 +32,9 @@ protected:
 	TObjectPtr<UStaticMeshComponent> WeaponMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
+	TObjectPtr<USkeletalMeshComponent> WeaponSkeletalMesh;		// 武器的骨骼网格体
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
 	TObjectPtr<UBoxComponent> WeaponCollisionBox1;
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Weapon")
