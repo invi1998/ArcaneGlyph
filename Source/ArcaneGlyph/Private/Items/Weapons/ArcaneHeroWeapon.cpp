@@ -8,6 +8,9 @@
 AArcaneHeroWeapon::AArcaneHeroWeapon(): HeroWeaponData()
 {
 	PrimaryActorTick.bCanEverTick = false;
+
+	WeaponSkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponSkeletalMesh"));
+	SetRootComponent(WeaponSkeletalMesh);
 }
 
 void AArcaneHeroWeapon::AssignGrantedAbilitySpecHandles(const TArray<FGameplayAbilitySpecHandle>& InGrantedAbilitySpecHandles)

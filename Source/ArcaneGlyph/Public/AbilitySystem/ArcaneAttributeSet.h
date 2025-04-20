@@ -27,6 +27,9 @@ public:
 
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 
+	int32 CalculateCurrentSpark() const;
+	float GetCurrentSegmentRagePercent() const;		// 当前阶段怒气值百分比
+
 	UPROPERTY(BlueprintReadOnly, Category = "Health")
 	FGameplayAttributeData CurrentHealth;
 	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, CurrentHealth);
@@ -70,6 +73,18 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Potion")
 	FGameplayAttributeData MaxRagePotion;		// 最大怒气药水容量
 	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, MaxRagePotion);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Spark")
+	FGameplayAttributeData MaxSpark;		// 最大火花数
+	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, MaxSpark);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Spark")
+	FGameplayAttributeData CurrentSpark;		// 当前火花数
+	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, CurrentSpark);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Spark")
+	FGameplayAttributeData RageBaseIncrement;		// 怒气基础增量
+	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, RageBaseIncrement);
 
 private:
 	TWeakInterfacePtr<IPawnUIInterface> CachedPawnUIInterface;

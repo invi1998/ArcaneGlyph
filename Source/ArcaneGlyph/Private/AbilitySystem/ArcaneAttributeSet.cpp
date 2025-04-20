@@ -23,6 +23,9 @@ UArcaneAttributeSet::UArcaneAttributeSet()
 	InitMaxHealthPotion(0.f);
 	InitRagePotion(0.f);
 	InitMaxRagePotion(0.f);
+	InitMaxSpark(0.f);
+	InitCurrentSpark(0.f);
+	InitRageBaseIncrement(100.f);
 }
 
 void UArcaneAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data)
@@ -51,11 +54,21 @@ void UArcaneAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 	{
 		SetCurrentRage(FMath::Clamp(GetCurrentRage(), 0.f, GetMaxRage()));
 
-		if (GetCurrentRage() >= GetMaxRage())
+		int32 Spark = CalculateCurrentSpark();
+		if (Spark != GetCurrentSpark())
+		{
+			SetCurrentSpark(FMath::Clamp(Spark, 0.f, GetMaxSpark()));
+			if (UHeroUIComponent* HeroUIComponent = CachedPawnUIInterface->GetHeroUIComponent())
+			{
+				HeroUIComponent->OnCurrentSparkNumChanged.Broadcast(GetCurrentSpark(), GetMaxSpark());
+			}
+		}
+		
+		if (GetCurrentSpark() >= 1)
 		{
 			UArcaneBlueprintFunctionLibrary::AddGameplayTagToActorIfNotHas(Data.Target.GetAvatarActor(), ArcaneGameplayTags::Player_Status_Rage_Full);
 		}
-		else if (GetCurrentRage() <= 0.f)
+		else if (GetCurrentSpark() <= 0.f)
 		{
 			UArcaneBlueprintFunctionLibrary::AddGameplayTagToActorIfNotHas(Data.Target.GetAvatarActor(), ArcaneGameplayTags::Player_Status_Rage_None);
 		}
@@ -67,7 +80,7 @@ void UArcaneAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 
 		if (UHeroUIComponent* HeroUIComponent = CachedPawnUIInterface->GetHeroUIComponent())
 		{
-			HeroUIComponent->OnCurrentRageChanged.Broadcast(GetCurrentRage() / GetMaxRage());
+			HeroUIComponent->OnCurrentRageChanged.Broadcast(GetCurrentSegmentRagePercent());
 		}
 	}
 
@@ -93,6 +106,16 @@ void UArcaneAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 		
 	}
 
+	// 获取当前火花点和最大火花点
+	if (Data.EvaluatedData.Attribute == GetCurrentSparkAttribute())
+	{
+		if (UHeroUIComponent* HeroUIComponent = CachedPawnUIInterface->GetHeroUIComponent())
+		{
+			SetCurrentSpark(FMath::Clamp(GetCurrentSpark(), 0.f, GetMaxSpark()));
+			HeroUIComponent->OnCurrentSparkNumChanged.Broadcast(GetCurrentSpark(), GetMaxSpark());
+		}
+	}
+
 	if (Data.EvaluatedData.Attribute == GetDamageTakenAttribute())
 	{
 		const float OldHealth = GetCurrentHealth();
@@ -107,5 +130,52 @@ void UArcaneAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 			UArcaneBlueprintFunctionLibrary::AddGameplayTagToActorIfNotHas(Data.Target.GetAvatarActor(), ArcaneGameplayTags::Shared_Status_Dead);
 		}
 	}
+	
+}
+
+int32 UArcaneAttributeSet::CalculateCurrentSpark() const
+{
+	float CurrentValue = GetCurrentRage();
+	int32 CalculatedSpark = 0;
+	for (int32 Tier = 1; Tier <= GetMaxSpark(); ++Tier)
+	{
+		float TierThreshold = GetRageBaseIncrement() * Tier * (Tier + 1) / 2;
+		if (CurrentValue >= TierThreshold)
+		{
+			CalculatedSpark = Tier;
+		}
+		else
+		{
+			break;
+		}
+	}
+	return CalculatedSpark;
+}
+
+float UArcaneAttributeSet::GetCurrentSegmentRagePercent() const
+{
+	// 边界条件处理
+	if (GetCurrentSpark() <= 0 || GetCurrentSpark() > GetMaxSpark() || GetRageBaseIncrement() <= 0)
+	{
+		return 0.f;
+	}
+
+	// 计算当前段的起始和结束阈值
+	const int32 Tier = GetCurrentSpark();
+	const float StartThreshold = (Tier - 1) * Tier * GetRageBaseIncrement() / 2.f;
+	const float EndThreshold = Tier * (Tier + 1) * GetRageBaseIncrement() / 2.f;
+
+	// 避免除以零 FMath::IsNearlyZero(EndThreshold - StartThreshold)
+	if (FMath::IsNearlyEqual(EndThreshold, StartThreshold))
+	{
+		return (GetCurrentRage() >= EndThreshold) ? 1.f : 0.f;
+	}
+
+	// 计算当前段的百分比（自动钳制范围）
+	const float ClampedMomentum = FMath::Clamp(GetCurrentRage(), StartThreshold, EndThreshold);
+	const float RagePercent = (ClampedMomentum - StartThreshold) / (EndThreshold - StartThreshold);
+	// 保留两位小数
+	// return FMath::RoundToFloat(RagePercent * 100) / 100;
+	return RagePercent;
 	
 }

@@ -38,5 +38,8 @@ public:
 
 	UPROPERTY(BlueprintAssignable, BlueprintCallable)
 	FOnPotionNumberChangedDelegate OnCurrentRagePotionChanged;	// 当前愤怒药水数量变化
+
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnPotionNumberChangedDelegate OnCurrentSparkNumChanged;	// 当前火花数量变化
 	
 };
