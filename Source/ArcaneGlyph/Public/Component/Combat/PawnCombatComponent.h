@@ -62,7 +62,7 @@ protected:
 	virtual void ToggleBodyCollisionBoxCollision(bool bEnable, EToggleDamageType InToggleDamageType);
 	
 private:
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Combat", meta=(AllowPrivateAccess = "true"))
 	TMap<FGameplayTag, AArcaneWeaponBase*> CharacterCarriedWeaponMap;		// 角色携带的武器映射表
 
 	

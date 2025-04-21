@@ -10,6 +10,7 @@
 #include "KismetAnimationLibrary.h"
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
 #include "AbilitySystem/ArcaneAttributeSet.h"
+#include "AnimInstances/ArcaneCharacterAnimInstance.h"
 #include "ArcaneTypes/ArcaneCountDownAction.h"
 #include "Characters/ArcaneHeroCharacter.h"
 #include "Component/Combat/PawnCombatComponent.h"
@@ -375,6 +376,36 @@ int32 UArcaneBlueprintFunctionLibrary::GetCharacterCurrentSpark(AActor* InActor)
 		return Spark;
 	}
 	return 0;
+}
+
+EArcaneMoveDirection UArcaneBlueprintFunctionLibrary::GetAnimLayerLocomotionDirection(AActor* InActor)
+{
+	// 获取角色的AnimInstance
+	if (AArcaneCharacterBase* ArcaneCharacter = Cast<AArcaneCharacterBase>(InActor))
+	{
+		if (UArcaneCharacterAnimInstance* AnimInstance = Cast<UArcaneCharacterAnimInstance>(ArcaneCharacter->GetMesh()->GetAnimInstance()))
+		{
+			// 获取指定层的Locomotion方向
+			float Dir = AnimInstance->GetLocomotionDirection();
+			if ((Dir >= -180 && Dir < -135) || (Dir >= 135 && Dir < 180))
+			{
+				return EArcaneMoveDirection::Backward;
+			}
+			else if (Dir >= -135 && Dir < -45)
+			{
+				return EArcaneMoveDirection::Left;
+			}
+			else if (Dir >= -45 && Dir < 45)
+			{
+				return EArcaneMoveDirection::Forward;
+			}
+			else if (Dir >= 45 && Dir < 135)
+			{
+				return EArcaneMoveDirection::Right;
+			}
+		}
+	}
+	return EArcaneMoveDirection::None;
 }
 
 

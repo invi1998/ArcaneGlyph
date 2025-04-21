@@ -25,6 +25,8 @@ public:
 	// 但是需要注意的是，该函数中不能访问任何非线程安全的数据，比如 Actor 的成员变量等
 	virtual void NativeThreadSafeUpdateAnimation(float DeltaSeconds) override;
 
+	FORCEINLINE float GetLocomotionDirection() const { return LocomotionDirection; }
+
 protected:
 	UPROPERTY()
 	TObjectPtr<AArcaneCharacterBase> OwnerCharacter;

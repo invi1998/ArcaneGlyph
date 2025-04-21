@@ -108,6 +108,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary")
 	static int32 GetCharacterCurrentSpark(AActor* InActor);
+	
+	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary")
+	static EArcaneMoveDirection GetAnimLayerLocomotionDirection(AActor* InActor);
 };
 
 

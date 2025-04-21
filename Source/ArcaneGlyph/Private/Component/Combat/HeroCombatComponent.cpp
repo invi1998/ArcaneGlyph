@@ -31,10 +31,12 @@ float UHeroCombatComponent::GetHeroCurrenEquippedWeaponDamageAtLevel(float InLev
 
 void UHeroCombatComponent::OnHitTargetActor(AActor* InHitActor, int32 InCollisionBoxIndex)
 {
-	// if (HitOverlappedActors.Contains(InHitActor)) return;
-	// HitOverlappedActors.AddUnique(InHitActor);
 	if (!IsValid(InHitActor)) return;
-	HitOverlappedActors.Add(InHitActor);
+	
+	if (HitOverlappedActors.Contains(InHitActor)) return;
+	HitOverlappedActors.AddUnique(InHitActor);
+	
+	// HitOverlappedActors.Add(InHitActor);
 
 	FGameplayEventData EventData;
 	EventData.Target = InHitActor;
