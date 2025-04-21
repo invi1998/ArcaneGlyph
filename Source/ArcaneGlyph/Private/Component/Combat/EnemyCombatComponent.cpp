@@ -100,24 +100,3 @@ void UEnemyCombatComponent::OnHitTargetActor(AActor* InHitActor, int32 InCollisi
 	}
 	
 }
-
-void UEnemyCombatComponent::ToggleBodyCollisionBoxCollision(bool bEnable, EToggleDamageType InToggleDamageType)
-{
-	Super::ToggleBodyCollisionBoxCollision(bEnable, InToggleDamageType);
-	
-	AArcaneEnemyCharacter* EnemyCharacter = Cast<AArcaneEnemyCharacter>(GetOwningPawn());
-	if (!EnemyCharacter) return;
-
-	if (InToggleDamageType == EToggleDamageType::LeftHand)
-	{
-		EnemyCharacter->GetLeftHandCollisionBox()->SetCollisionEnabled(bEnable ? ECollisionEnabled::QueryOnly : ECollisionEnabled::NoCollision);
-	}
-	else if (InToggleDamageType == EToggleDamageType::RightHand)
-	{
-		EnemyCharacter->GetRightHandCollisionBox()->SetCollisionEnabled(bEnable ? ECollisionEnabled::QueryOnly : ECollisionEnabled::NoCollision);
-	}
-	else if (InToggleDamageType == EToggleDamageType::Head)
-	{
-		EnemyCharacter->GetHeadCollisionBox()->SetCollisionEnabled(bEnable ? ECollisionEnabled::QueryOnly : ECollisionEnabled::NoCollision);
-	}
-}

@@ -3,6 +3,8 @@
 
 #include "Items/Weapons/ArcaneHeroWeapon.h"
 
+#include "Components/BoxComponent.h"
+
 
 // Sets default values
 AArcaneHeroWeapon::AArcaneHeroWeapon(): HeroWeaponData()
@@ -11,6 +13,7 @@ AArcaneHeroWeapon::AArcaneHeroWeapon(): HeroWeaponData()
 
 	WeaponSkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponSkeletalMesh"));
 	SetRootComponent(WeaponSkeletalMesh);
+	WeaponCollisionBox1->SetupAttachment(GetRootComponent());
 }
 
 void AArcaneHeroWeapon::AssignGrantedAbilitySpecHandles(const TArray<FGameplayAbilitySpecHandle>& InGrantedAbilitySpecHandles)

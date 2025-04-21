@@ -105,6 +105,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Arcane|Combat")
 	static void ToggleCharacterHegemony(AActor* InActor, bool bEnable);		// 启用/禁用角色霸体
+
+	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary")
+	static int32 GetCharacterCurrentSpark(AActor* InActor);
 };
 
 

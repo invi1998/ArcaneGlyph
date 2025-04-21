@@ -4,6 +4,7 @@
 #include "AbilitySystem/ArcaneAttributeSet.h"
 
 #include "ArcaneBlueprintFunctionLibrary.h"
+#include "ArcaneDebugHelper.h"
 #include "GameplayEffectExtension.h"
 #include "ArcaneGameplayTags.h"
 #include "Component/UI/HeroUIComponent.h"
@@ -15,7 +16,7 @@ UArcaneAttributeSet::UArcaneAttributeSet()
 	InitCurrentHealth(1.f);
 	InitMaxHealth(1.f);
 	InitCurrentRage(1.f);
-	InitMaxRage(1.f);
+	InitMaxRage(480.f);
 	InitAttackPower(1.f);
 	InitDefensePower(1.f);
 	InitDamageTaken(0.f);
@@ -23,9 +24,10 @@ UArcaneAttributeSet::UArcaneAttributeSet()
 	InitMaxHealthPotion(0.f);
 	InitRagePotion(0.f);
 	InitMaxRagePotion(0.f);
-	InitMaxSpark(0.f);
+	InitMaxSpark(4.f);
 	InitCurrentSpark(0.f);
 	InitRageBaseIncrement(100.f);
+	InitExtraRageIncrement(10.f);
 }
 
 void UArcaneAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data)
@@ -55,9 +57,9 @@ void UArcaneAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 		SetCurrentRage(FMath::Clamp(GetCurrentRage(), 0.f, GetMaxRage()));
 
 		int32 Spark = CalculateCurrentSpark();
-		if (Spark != GetCurrentSpark())
+		if (Spark <= GetMaxSpark())
 		{
-			SetCurrentSpark(FMath::Clamp(Spark, 0.f, GetMaxSpark()));
+			SetCurrentSpark(FMath::Clamp(Spark, 0, GetMaxSpark()));
 			if (UHeroUIComponent* HeroUIComponent = CachedPawnUIInterface->GetHeroUIComponent())
 			{
 				HeroUIComponent->OnCurrentSparkNumChanged.Broadcast(GetCurrentSpark(), GetMaxSpark());
@@ -80,6 +82,8 @@ void UArcaneAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 
 		if (UHeroUIComponent* HeroUIComponent = CachedPawnUIInterface->GetHeroUIComponent())
 		{
+			// 打印角色当前怒气值和最大值
+			Debug::Print(TEXT("Current Rage ----- : " + FString::SanitizeFloat(GetCurrentRage()) + TEXT(" / ") + FString::SanitizeFloat(GetMaxRage())));
 			HeroUIComponent->OnCurrentRageChanged.Broadcast(GetCurrentSegmentRagePercent());
 		}
 	}
@@ -133,13 +137,21 @@ void UArcaneAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 	
 }
 
+float UArcaneAttributeSet::CalculateTierThreshold(int32 Tier) const
+{
+	if (Tier <= 0) return 0.f;
+
+	// 公式：Threshold(n) = BaseIncrement * n + ExtraIncrement * (n(n-1)/2)
+	return GetRageBaseIncrement() * Tier + GetExtraRageIncrement() * (Tier * (Tier - 1) / 2.0f);
+}
+
 int32 UArcaneAttributeSet::CalculateCurrentSpark() const
 {
 	float CurrentValue = GetCurrentRage();
 	int32 CalculatedSpark = 0;
 	for (int32 Tier = 1; Tier <= GetMaxSpark(); ++Tier)
 	{
-		float TierThreshold = GetRageBaseIncrement() * Tier * (Tier + 1) / 2;
+		float TierThreshold = CalculateTierThreshold(Tier);
 		if (CurrentValue >= TierThreshold)
 		{
 			CalculatedSpark = Tier;
@@ -154,28 +166,20 @@ int32 UArcaneAttributeSet::CalculateCurrentSpark() const
 
 float UArcaneAttributeSet::GetCurrentSegmentRagePercent() const
 {
-	// 边界条件处理
-	if (GetCurrentSpark() <= 0 || GetCurrentSpark() > GetMaxSpark() || GetRageBaseIncrement() <= 0)
-	{
-		return 0.f;
-	}
+	const int32 CurrentTier = CalculateCurrentSpark();
+	const float CurrentValue = GetCurrentRage();
 
-	// 计算当前段的起始和结束阈值
-	const int32 Tier = GetCurrentSpark();
-	const float StartThreshold = (Tier - 1) * Tier * GetRageBaseIncrement() / 2.f;
-	const float EndThreshold = Tier * (Tier + 1) * GetRageBaseIncrement() / 2.f;
+	// 计算当前段起始和结束阈值
+	const float StartThreshold = (CurrentTier == 0) ? 0.0f : CalculateTierThreshold(CurrentTier);
+	const float EndThreshold = CalculateTierThreshold(CurrentTier + 1);
 
-	// 避免除以零 FMath::IsNearlyZero(EndThreshold - StartThreshold)
-	if (FMath::IsNearlyEqual(EndThreshold, StartThreshold))
-	{
-		return (GetCurrentRage() >= EndThreshold) ? 1.f : 0.f;
-	}
+	// 边界处理
+	if (CurrentTier >= GetMaxSpark()) return 1.0f; // 已达最大值
+	if (FMath::IsNearlyZero(EndThreshold - StartThreshold)) return 0.0f;
 
-	// 计算当前段的百分比（自动钳制范围）
-	const float ClampedMomentum = FMath::Clamp(GetCurrentRage(), StartThreshold, EndThreshold);
-	const float RagePercent = (ClampedMomentum - StartThreshold) / (EndThreshold - StartThreshold);
-	// 保留两位小数
-	// return FMath::RoundToFloat(RagePercent * 100) / 100;
-	return RagePercent;
+	// 计算百分比
+	const float ClampedValue = FMath::Clamp(CurrentValue, StartThreshold, EndThreshold);
+	const float Percentage = (ClampedValue - StartThreshold) / (EndThreshold - StartThreshold);
+	return Percentage;
 	
 }

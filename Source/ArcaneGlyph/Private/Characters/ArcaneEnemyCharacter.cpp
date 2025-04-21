@@ -37,24 +37,7 @@ AArcaneEnemyCharacter::AArcaneEnemyCharacter()
 	EnemyHealthWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("EnemyHealthWidgetComponent"));
 	EnemyHealthWidgetComponent->SetupAttachment(GetMesh());
 	EnemyHealthWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
-
-	LeftHandCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("LeftHandCollisionBox"));
-	LeftHandCollisionBox->SetupAttachment(GetMesh());
-	LeftHandCollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	LeftHandCollisionBox->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
-	LeftHandCollisionBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &AArcaneEnemyCharacter::OnBodyCollisionBoxBeginOverlap);
-
-	RightHandCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("RightHandCollisionBox"));
-	RightHandCollisionBox->SetupAttachment(GetMesh());
-	RightHandCollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	LeftHandCollisionBox->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
-	RightHandCollisionBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &AArcaneEnemyCharacter::OnBodyCollisionBoxBeginOverlap);
-
-	HeadCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("HeadCollisionBox"));
-	HeadCollisionBox->SetupAttachment(GetMesh());
-	HeadCollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	LeftHandCollisionBox->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
-	HeadCollisionBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &AArcaneEnemyCharacter::OnBodyCollisionBoxBeginOverlap);
+	
 }
 
 UPawnCombatComponent* AArcaneEnemyCharacter::GetPawnCombatComponent() const
@@ -88,41 +71,6 @@ void AArcaneEnemyCharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 	
 	InitEnemyStartupData();
-}
-
-#if WITH_EDITOR
-void AArcaneEnemyCharacter::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
-{
-	Super::PostEditChangeProperty(PropertyChangedEvent);
-
-	// 如果修改了左手碰撞盒的骨骼名称，那么需要重新将碰撞盒附加到新的骨骼上
-	if (PropertyChangedEvent.GetMemberPropertyName() == GET_MEMBER_NAME_CHECKED(AArcaneEnemyCharacter, LeftHandCollisionBoxAttachBoneName))
-	{
-		LeftHandCollisionBox->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, LeftHandCollisionBoxAttachBoneName);
-	}
-
-	if (PropertyChangedEvent.GetMemberPropertyName() == GET_MEMBER_NAME_CHECKED(AArcaneEnemyCharacter, RightHandCollisionBoxAttachBoneName))
-	{
-		RightHandCollisionBox->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, RightHandCollisionBoxAttachBoneName);
-	}
-
-	if (PropertyChangedEvent.GetMemberPropertyName() == GET_MEMBER_NAME_CHECKED(AArcaneEnemyCharacter, HeadCollisionBoxAttachBoneName))
-	{
-		HeadCollisionBox->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, HeadCollisionBoxAttachBoneName);
-	}
-}
-#endif
-
-void AArcaneEnemyCharacter::OnBodyCollisionBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (APawn* HitPawn = Cast<APawn>(OtherActor))
-	{
-		// 如果目标是敌对的
-		if (UArcaneBlueprintFunctionLibrary::IsTargetPawnHostile(this, HitPawn))
-		{
-			EnemyCombatComponent->OnHitTargetActor(HitPawn, 1);
-		}
-	}
 }
 
 void AArcaneEnemyCharacter::InitEnemyStartupData()

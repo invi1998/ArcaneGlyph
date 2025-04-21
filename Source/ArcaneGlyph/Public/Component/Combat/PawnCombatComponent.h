@@ -17,6 +17,8 @@ enum class EToggleDamageType : uint8
 	LeftHand,
 	RightHand,
 	Head,
+	LeftFoot,
+	RightFoot,
 	LeftHandWeapon,
 	RightHandWeapon
 };
@@ -60,6 +62,7 @@ protected:
 	virtual void ToggleBodyCollisionBoxCollision(bool bEnable, EToggleDamageType InToggleDamageType);
 	
 private:
+	UPROPERTY()
 	TMap<FGameplayTag, AArcaneWeaponBase*> CharacterCarriedWeaponMap;		// 角色携带的武器映射表
 
 	

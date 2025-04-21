@@ -3,6 +3,8 @@
 
 #include "Component/Combat/PawnCombatComponent.h"
 
+#include "Characters/ArcaneCharacterBase.h"
+#include "Components/BoxComponent.h"
 #include "Items/Weapons/ArcaneWeaponBase.h"
 
 
@@ -105,6 +107,30 @@ void UPawnCombatComponent::ToggleBodyCollisionBoxCollision(bool bEnable, EToggle
 	if (!bEnable)
 	{
 		HitOverlappedActors.Empty();
+	}
+
+	AArcaneCharacterBase* EnemyCharacter = Cast<AArcaneCharacterBase>(GetOwningPawn());
+	if (!EnemyCharacter) return;
+
+	if (InToggleDamageType == EToggleDamageType::LeftHand)
+	{
+		EnemyCharacter->GetLeftHandCollisionBox()->SetCollisionEnabled(bEnable ? ECollisionEnabled::QueryOnly : ECollisionEnabled::NoCollision);
+	}
+	else if (InToggleDamageType == EToggleDamageType::RightHand)
+	{
+		EnemyCharacter->GetRightHandCollisionBox()->SetCollisionEnabled(bEnable ? ECollisionEnabled::QueryOnly : ECollisionEnabled::NoCollision);
+	}
+	else if (InToggleDamageType == EToggleDamageType::Head)
+	{
+		EnemyCharacter->GetHeadCollisionBox()->SetCollisionEnabled(bEnable ? ECollisionEnabled::QueryOnly : ECollisionEnabled::NoCollision);
+	}
+	else if (InToggleDamageType == EToggleDamageType::LeftFoot)
+	{
+		EnemyCharacter->GetLeftFootCollision()->SetCollisionEnabled(bEnable ? ECollisionEnabled::QueryOnly : ECollisionEnabled::NoCollision);
+	}
+	else if (InToggleDamageType == EToggleDamageType::RightFoot)
+	{
+		EnemyCharacter->GetRightFootCollision()->SetCollisionEnabled(bEnable ? ECollisionEnabled::QueryOnly : ECollisionEnabled::NoCollision);
 	}
 }
 

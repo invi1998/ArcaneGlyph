@@ -27,6 +27,7 @@ public:
 
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 
+	float CalculateTierThreshold(int32 Tier) const;		// 计算当前豆子的棍势
 	int32 CalculateCurrentSpark() const;
 	float GetCurrentSegmentRagePercent() const;		// 当前阶段怒气值百分比
 
@@ -82,9 +83,13 @@ public:
 	FGameplayAttributeData CurrentSpark;		// 当前火花数
 	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, CurrentSpark);
 
-	UPROPERTY(BlueprintReadOnly, Category = "Spark")
+	UPROPERTY(BlueprintReadOnly, Category = "Increment")
 	FGameplayAttributeData RageBaseIncrement;		// 怒气基础增量
 	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, RageBaseIncrement);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Increment")
+	FGameplayAttributeData ExtraRageIncrement;		// 额外怒气步长增量
+	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, ExtraRageIncrement);
 
 private:
 	TWeakInterfacePtr<IPawnUIInterface> CachedPawnUIInterface;

@@ -9,6 +9,7 @@
 #include "GenericTeamAgentInterface.h"
 #include "KismetAnimationLibrary.h"
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
+#include "AbilitySystem/ArcaneAttributeSet.h"
 #include "ArcaneTypes/ArcaneCountDownAction.h"
 #include "Characters/ArcaneHeroCharacter.h"
 #include "Component/Combat/PawnCombatComponent.h"
@@ -242,55 +243,57 @@ bool UArcaneBlueprintFunctionLibrary::ApplyGameplayEffectSpecHandleToTarget(AAct
 	return false;
 }
 
-EArcaneMoveDirection UArcaneBlueprintFunctionLibrary::GetMoveDirection(EArcaneMovementDirectionMethod Method, const FVector& InputVector, float DeadZone)
+EArcaneMoveDirection UArcaneBlueprintFunctionLibrary::GetMoveDirection(
+    EArcaneMovementDirectionMethod Method, const FVector& InputVector, float DeadZone)
 {
-	const FVector SafeInput = InputVector.GetSafeNormal2D();
+    const FVector SafeInput = InputVector.GetSafeNormal2D();
     if (SafeInput.IsNearlyZero(DeadZone)) return EArcaneMoveDirection::None;
 
     switch (Method)
     {
     case EArcaneMovementDirectionMethod::AxisDominant:
-        // 基于分量绝对值比较的4方向判定
-        return (FMath::Abs(SafeInput.X) > FMath::Abs(SafeInput.Y)) ?
-            ((SafeInput.X > 0) ? EArcaneMoveDirection::Backward : EArcaneMoveDirection::Forward) :
-            ((SafeInput.Y > 0) ? EArcaneMoveDirection::Left : EArcaneMoveDirection::Right);
+        // Y轴决定前后，但Pawn的Forward方向可能与Y轴负方向一致
+        return (FMath::Abs(SafeInput.Y) > FMath::Abs(SafeInput.X)) ?
+            ((SafeInput.Y < 0) ? EArcaneMoveDirection::Forward : EArcaneMoveDirection::Backward) : // Y负为前，Y正为后
+            ((SafeInput.X > 0) ? EArcaneMoveDirection::Right : EArcaneMoveDirection::Left);
 
     case EArcaneMovementDirectionMethod::AngleThreshold4:
-        // 基于角度阈值分割的4方向判定
-        {
-            const float Angle = FMath::RadiansToDegrees(FMath::Atan2(SafeInput.Y, SafeInput.X));
-            const float WrappedAngle = (Angle < 0) ? Angle + 360 : Angle;
+    {
+        // 将Y轴方向反转，确保角度计算与Pawn的Forward方向一致（Y负为前）
+        const float Angle = FMath::RadiansToDegrees(FMath::Atan2(-SafeInput.Y, SafeInput.X));
+        const float WrappedAngle = (Angle < 0) ? Angle + 360 : Angle;
 
-            if (WrappedAngle >= 315 || WrappedAngle < 45)    return EArcaneMoveDirection::Backward;
-            if (WrappedAngle >= 45 && WrappedAngle < 135)    return EArcaneMoveDirection::Left;
-            if (WrappedAngle >= 135 && WrappedAngle < 225)   return EArcaneMoveDirection::Forward;
-            return EArcaneMoveDirection::Right;
-        }
+        if (WrappedAngle >= 225 && WrappedAngle < 315)    return EArcaneMoveDirection::Forward;   // 270度 → Forward（Y负）
+        if (WrappedAngle >= 315 || WrappedAngle < 45)    return EArcaneMoveDirection::Right;     // 0度 → Right
+        if (WrappedAngle >= 45 && WrappedAngle < 135)    return EArcaneMoveDirection::Backward;  // 90度 → Backward（Y正）
+        if (WrappedAngle >= 135 && WrappedAngle < 225)   return EArcaneMoveDirection::Left;      // 180度 → Left
+        return EArcaneMoveDirection::None;
+    }
 
     case EArcaneMovementDirectionMethod::AngleThreshold8:
-        // 精确的8方向判定
-        {
-            constexpr float SectorSize = 45.0f; // 每个方向45度范围
-            const float Angle = FMath::RadiansToDegrees(FMath::Atan2(SafeInput.Y, SafeInput.X));
-            const float NormalizedAngle = FMath::Fmod(Angle + 360 + 22.5f, 360); // 偏移22.5度对齐中心
+    {
+        constexpr float SectorSize = 45.0f;
+        // 将Y轴方向反转，确保角度计算与Pawn的Forward方向一致（Y负为前）
+        const float Angle = FMath::RadiansToDegrees(FMath::Atan2(-SafeInput.Y, SafeInput.X));
+        const float NormalizedAngle = FMath::Fmod(Angle + 360 + 22.5f, 360);
 
-            const int32 SectorIndex = FMath::FloorToInt(NormalizedAngle / SectorSize);
-            switch (SectorIndex)
-            {
-                case 0:  return EArcaneMoveDirection::Backward;
-                case 1:  return EArcaneMoveDirection::BackwardLeft;
-                case 2:  return EArcaneMoveDirection::Left;
-                case 3:  return EArcaneMoveDirection::ForwardLeft;
-                case 4:  return EArcaneMoveDirection::Forward;
-                case 5:  return EArcaneMoveDirection::ForwardRight;
-                case 6:  return EArcaneMoveDirection::Right;
-                case 7:  return EArcaneMoveDirection::BackwardRight;
-                default: return EArcaneMoveDirection::None;
-            }
+        const int32 SectorIndex = FMath::FloorToInt(NormalizedAngle / SectorSize);
+        switch (SectorIndex)
+        {
+        case 0:  return EArcaneMoveDirection::Right;         // 0度 → Right
+        case 1:  return EArcaneMoveDirection::ForwardRight;  // 45度 → ForwardRight
+        case 2:  return EArcaneMoveDirection::Forward;       // 90度 → Forward（Y负）
+        case 3:  return EArcaneMoveDirection::ForwardLeft;   // 135度 → ForwardLeft
+        case 4:  return EArcaneMoveDirection::Left;          // 180度 → Left
+        case 5:  return EArcaneMoveDirection::BackwardLeft;  // 225度 → BackwardLeft
+        case 6:  return EArcaneMoveDirection::Backward;      // 270度 → Backward（Y正）
+        case 7:  return EArcaneMoveDirection::BackwardRight; // 315度 → BackwardRight
+        default: return EArcaneMoveDirection::None;
         }
-	default: break;
     }
-    return EArcaneMoveDirection::None;
+    default:
+        return EArcaneMoveDirection::None;
+    }
 }
 
 void UArcaneBlueprintFunctionLibrary::CountDown(const UObject* WorldContextObject, float TotalTime,
@@ -360,6 +363,18 @@ void UArcaneBlueprintFunctionLibrary::ToggleCharacterHegemony(AActor* InActor, b
 			RemoveGameplayTagFromActorIfHas(ArcaneCharacter, ArcaneGameplayTags::Shared_Status_Hegemony);
 		}
 	}
+}
+
+int32 UArcaneBlueprintFunctionLibrary::GetCharacterCurrentSpark(AActor* InActor)
+{
+	check(InActor);
+
+	if (AArcaneCharacterBase* ArcaneCharacter = Cast<AArcaneCharacterBase>(InActor))
+	{
+		int32 Spark = ArcaneCharacter->GetArcaneAttributeSet()->GetCurrentSpark();
+		return Spark;
+	}
+	return 0;
 }
 
 
