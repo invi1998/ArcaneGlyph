@@ -7,7 +7,7 @@
 #include "GameplayTagContainer.h"
 #include "PawnUIComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPercentChangedDelegate, float, NewPercent);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPercentChangedDelegate, float, NewPercent);	// 百分比变化委托
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnOwnnerGameplayTagChangedDelegate, FGameplayTag, NewGameplayTag);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))

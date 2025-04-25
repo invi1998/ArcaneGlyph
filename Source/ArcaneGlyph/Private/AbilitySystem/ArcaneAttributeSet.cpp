@@ -83,8 +83,7 @@ void UArcaneAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 		if (UHeroUIComponent* HeroUIComponent = CachedPawnUIInterface->GetHeroUIComponent())
 		{
 			// 打印角色当前怒气值和最大值
-			Debug::Print(TEXT("Current Rage ----- : " + FString::SanitizeFloat(GetCurrentRage()) + TEXT(" / ") + FString::SanitizeFloat(GetMaxRage())));
-			HeroUIComponent->OnCurrentRageChanged.Broadcast(GetCurrentSegmentRagePercent());
+			HeroUIComponent->OnCurrentRageChanged.Broadcast(GetCurrentSegmentRagePercent(), GetCurrentSpark(), GetMaxSpark());
 		}
 	}
 

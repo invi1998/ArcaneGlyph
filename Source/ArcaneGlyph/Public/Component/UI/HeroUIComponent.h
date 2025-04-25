@@ -15,6 +15,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnAbilityCooldownBeginDelegate, 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPotionNumberChangedDelegate, int32, InPotionNumber, int32, InMaxPotionNumber);	// 药水数量变化委托
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnPercentChangedWithSparkDelegate, float, NewPercent, int32, InCurrentSpark, int32, InMaxSpark);	// 百分比变化委托
+
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class ARCANEGLYPH_API UHeroUIComponent : public UPawnUIComponent
 {
@@ -22,7 +25,7 @@ class ARCANEGLYPH_API UHeroUIComponent : public UPawnUIComponent
 
 public:
 	UPROPERTY(BlueprintAssignable)
-	FOnPercentChangedDelegate OnCurrentRageChanged;	// 当前怒气值变化
+	FOnPercentChangedWithSparkDelegate OnCurrentRageChanged;	// 当前怒气值变化
 
 	UPROPERTY(BlueprintAssignable, BlueprintCallable)
 	FOnEquippedWeaponChangedDelegate OnEquippedWeaponChanged;	// 装备武器变化
