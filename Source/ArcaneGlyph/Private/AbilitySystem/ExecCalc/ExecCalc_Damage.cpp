@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/ExecCalc/ExecCalc_Damage.h"
 
+#include "ArcaneDebugHelper.h"
 #include "ArcaneGameplayTags.h"
 
 UExecCalc_Damage::UExecCalc_Damage()
@@ -102,12 +103,21 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	if (CurrentSpark > 0.f)
 	{
-		BaseDamage *= CurrentSpark;		// 乘以当前火花值
+		BaseDamage *= CurrentSpark * 0.5;		// 乘以当前火花值
 	}
+
+	// 伤害有个百分之5.5的浮动
+	const float DamageRandomPercent = FMath::FRandRange(-0.055f, 0.055f);
+	BaseDamage += BaseDamage * DamageRandomPercent;
 
 	float FinalDamage = BaseDamage * SourceAttackPower / TargetDefensePower;
 	// 伤害向上取整，保留小数点后两位
 	FinalDamage = FMath::CeilToFloat(FinalDamage * 100.f) / 100.f;
+
+	Debug::Print(
+		FString::Printf(TEXT("FinalDamage: %f"), FinalDamage),
+		FColor::Red
+	);
 	
 	if (FinalDamage > 0.f)
 	{

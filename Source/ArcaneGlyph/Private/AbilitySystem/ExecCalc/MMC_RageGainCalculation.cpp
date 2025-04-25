@@ -60,10 +60,5 @@ float UMMC_RageGainCalculation::CalculateBaseMagnitude_Implementation(const FGam
 		RageGainTotal += HeavyComboCount * RageGainBase* ((CurrentSpark + 1) * 1.5);	// 重击连击次数
 	}
 	
-	// 打印RageGainBase信息
-	Debug::Print(
-		FString::Printf(TEXT("RageGainTotal: %f"), RageGainTotal),
-		FColor::Green
-	);
 	return RageGainTotal;
 }
