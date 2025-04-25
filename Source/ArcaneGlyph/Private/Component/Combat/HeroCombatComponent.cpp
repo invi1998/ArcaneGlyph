@@ -29,6 +29,11 @@ float UHeroCombatComponent::GetHeroCurrenEquippedWeaponDamageAtLevel(float InLev
 	return 0.f;
 }
 
+float UHeroCombatComponent::GetHeroCurrenRageGainBaseAtlevel(float InLevel) const
+{
+	return RageGainBase.GetValueAtLevel(InLevel);
+}
+
 void UHeroCombatComponent::OnHitTargetActor(AActor* InHitActor, int32 InCollisionBoxIndex)
 {
 	if (!IsValid(InHitActor)) return;

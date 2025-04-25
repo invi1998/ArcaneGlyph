@@ -12,6 +12,7 @@ struct ArcaneDamageCaptureStatics
 	// 该宏用于声明一个捕获属性的结构体，其中包含了捕获属性的指针，以及捕获属性的标签
 	DECLARE_ATTRIBUTE_CAPTUREDEF(AttackPower);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(DefensePower);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(CurrentSpark);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(DamageTaken);
 
 	ArcaneDamageCaptureStatics()
@@ -19,6 +20,7 @@ struct ArcaneDamageCaptureStatics
 		// 通过捕获属性的标签来捕获属性
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UArcaneAttributeSet, AttackPower, Source, false);	// 捕获源目标的攻击力，不拍快照
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UArcaneAttributeSet, DefensePower, Target, false);	// 捕获目标的防御力，不拍快照
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UArcaneAttributeSet, CurrentSpark, Source, false);	// 捕获源目标的当前豆子数量，不拍快照
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UArcaneAttributeSet, DamageTaken, Target, false);	// 捕获目标的伤害承受，不拍快照
 	}
 };

@@ -26,6 +26,7 @@ UExecCalc_Damage::UExecCalc_Damage()
 	// 2: 更快的方式，通过属性标签来查找属性
 	RelevantAttributesToCapture.Add(GetArcaneDamageCaptureStatics().AttackPowerDef);	// 捕获攻击力属性
 	RelevantAttributesToCapture.Add(GetArcaneDamageCaptureStatics().DefensePowerDef);	// 捕获防御力属性
+	RelevantAttributesToCapture.Add(GetArcaneDamageCaptureStatics().CurrentSparkDef);	// 捕获当前火花属性
 	RelevantAttributesToCapture.Add(GetArcaneDamageCaptureStatics().DamageTakenDef);	// 捕获伤害承受属性
 	
 }
@@ -56,6 +57,12 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		GetArcaneDamageCaptureStatics().DefensePowerDef,
 		EvaluationParameters,
 		TargetDefensePower);
+
+	float CurrentSpark = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
+		GetArcaneDamageCaptureStatics().CurrentSparkDef,
+		EvaluationParameters,
+		CurrentSpark);
 
 	float BaseDamage = 0.f;
 	int32 LightComboCount = 0;
@@ -91,6 +98,11 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	{
 		const float DamageIncreasePercentHeavy = HeavyComboCount * 0.55f + 1.f;
 		BaseDamage += BaseDamage * DamageIncreasePercentHeavy;
+	}
+
+	if (CurrentSpark > 0.f)
+	{
+		BaseDamage *= CurrentSpark;		// 乘以当前火花值
 	}
 
 	float FinalDamage = BaseDamage * SourceAttackPower / TargetDefensePower;
