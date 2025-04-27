@@ -8,6 +8,7 @@
 #include "ArcaneGameplayTags.h"
 #include "EnhancedInputSubsystems.h"
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
+#include "AnimInstances/ArcaneCharacterAnimInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Component/Combat/HeroCombatComponent.h"
 #include "Component/Input/ArcaneInputComponent.h"
@@ -35,10 +36,7 @@ AArcaneHeroCharacter::AArcaneHeroCharacter()
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;		// 角色面向移动方向
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f);		// 角色旋转速度
-	GetCharacterMovement()->MaxWalkSpeed = 450.0f;		// 角色移动速度
-	GetCharacterMovement()->BrakingDecelerationWalking = 2048.0f;		// 角色停止时的减速度
-	GetCharacterMovement()->JumpZVelocity = 600.0f;		// 角色跳跃高度
-
+	
 	HeroCombatComponent = CreateDefaultSubobject<UHeroCombatComponent>(TEXT("HeroCombatComponent"));
 	HeroUIComponent = CreateDefaultSubobject<UHeroUIComponent>(TEXT("HeroUIComponent"));
 }
@@ -103,9 +101,42 @@ UHeroUIComponent* AArcaneHeroCharacter::GetHeroUIComponent() const
 }
 
 
+void AArcaneHeroCharacter::UpdateGait(EArcaneGaits InNewGait)
+{
+	PreviousGait = CurrentGait;
+	CurrentGait = InNewGait;
+
+	if (FArcaneGaitSetting* GaitSetting = ArcaneGaits.Find(CurrentGait))
+	{
+		GetCharacterMovement()->MaxWalkSpeed = GaitSetting->MaxWalkSpeed;
+		GetCharacterMovement()->MaxAcceleration = GaitSetting->MaxAcceleration;
+		GetCharacterMovement()->BrakingDecelerationWalking = GaitSetting->BreakingDeceleration;
+		GetCharacterMovement()->BrakingFrictionFactor = GaitSetting->BrakingFrictionFactor;
+		GetCharacterMovement()->bUseSeparateBrakingFriction = GaitSetting->bUseSeparateBrakingFriction;
+		GetCharacterMovement()->GroundFriction = GaitSetting->BreakFriction;
+		GetCharacterMovement()->JumpZVelocity = GaitSetting->MaxJumpHeight;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Gait setting not found for gait: %s"), *UEnum::GetDisplayValueAsText(CurrentGait).ToString());
+	}
+
+	if (UArcaneCharacterAnimInstance* AnimInstance = Cast<UArcaneCharacterAnimInstance>(GetMesh()->GetAnimInstance()))
+	{
+		AnimInstance->ReceiveGaitData(CurrentGait);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AnimInstance is null or not of type UArcaneCharacterAnimInstance"));
+	}
+	
+}
+
 void AArcaneHeroCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	UpdateGait(EArcaneGaits::Walking);
 	
 }
 

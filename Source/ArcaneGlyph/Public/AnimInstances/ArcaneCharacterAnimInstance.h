@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "ArcaneBaseAnimInstance.h"
+#include "ArcaneTypes/ArcaneEnumTypes.h"
+#include "Interfaces/ArcaneGaitDataInterface.h"
 #include "ArcaneCharacterAnimInstance.generated.h"
 
 class UCharacterMovementComponent;
@@ -13,7 +15,7 @@ class AArcaneCharacterBase;
  * 
  */
 UCLASS()
-class ARCANEGLYPH_API UArcaneCharacterAnimInstance : public UArcaneBaseAnimInstance
+class ARCANEGLYPH_API UArcaneCharacterAnimInstance : public UArcaneBaseAnimInstance, public IArcaneGaitDataInterface
 {
 	GENERATED_BODY()
 
@@ -24,6 +26,8 @@ public:
 	// 这意味着使用这个函数可以提高动画的性能，使用该函数来计算我们需要的动画数据是一个很大的优化项
 	// 但是需要注意的是，该函数中不能访问任何非线程安全的数据，比如 Actor 的成员变量等
 	virtual void NativeThreadSafeUpdateAnimation(float DeltaSeconds) override;
+
+	virtual bool ReceiveGaitData(const EArcaneGaits InGait) override;
 
 	FORCEINLINE float GetLocomotionDirection() const { return LocomotionDirection; }
 
@@ -58,7 +62,8 @@ protected:
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|AccelerationData")
 	FVector  ArcaneAcceleration;		// 角色加速度
 	
-
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|VelocityData")
+	EArcaneGaits CurrentGait = EArcaneGaits::Walking;		// 角色步态
 
 private:
 	

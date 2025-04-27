@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "ArcaneCharacterBase.h"
 #include "GameplayTagContainer.h"
+#include "ArcaneTypes/ArcaneEnumTypes.h"
+#include "ArcaneTypes/ArcaneStructTypes.h"
 #include "ArcaneHeroCharacter.generated.h"
 
 class UHeroUIComponent;
@@ -47,6 +49,18 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AbilitySystem")
 	float CentripetalFactor = 10000.f;		// 向心力因子
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ArcaneMovement")
+	EArcaneGaits CurrentGait = EArcaneGaits::Walking;		// 当前步态
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ArcaneMovement")
+	EArcaneGaits PreviousGait = EArcaneGaits::Walking;		// 上一个步态
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ArcaneMovement")
+	TMap<EArcaneGaits, FArcaneGaitSetting> ArcaneGaits;
+
+	UFUNCTION(BlueprintCallable)
+	void UpdateGait(EArcaneGaits InNewGait);
 
 protected:
 	virtual void BeginPlay() override;

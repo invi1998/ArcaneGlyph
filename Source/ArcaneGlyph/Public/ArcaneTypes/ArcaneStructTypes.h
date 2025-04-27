@@ -35,9 +35,34 @@ struct FArcaneHeroSpecialAbilitySet : public FArcaneHeroAbilitySet
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (Category = "Player.Cooldown"))
 	FGameplayTag AbilityCooldownTag;
-
 	
+};
 
+USTRUCT(BlueprintType)
+struct FArcaneGaitSetting
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float MaxWalkSpeed;		// 最大行走速度
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float MaxAcceleration;	// 最大加速度
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float BreakingDeceleration;	// 刹车减速度
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float BrakingFrictionFactor;	// 刹车摩擦因子
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bUseSeparateBrakingFriction;	// 是否使用单独的刹车摩擦因子
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float BreakFriction;	// 刹车摩擦力
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float MaxJumpHeight;	// 最大跳跃高度
 };
 
 

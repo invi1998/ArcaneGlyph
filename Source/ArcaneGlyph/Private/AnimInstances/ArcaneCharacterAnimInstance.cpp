@@ -39,3 +39,9 @@ void UArcaneCharacterAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSe
 	bHasAcceleration = ArcaneAcceleration.SizeSquared2D() > 0.0f;
 }
 
+bool UArcaneCharacterAnimInstance::ReceiveGaitData(const EArcaneGaits InGait)
+{
+	CurrentGait = InGait;
+	return true;
+}
+
