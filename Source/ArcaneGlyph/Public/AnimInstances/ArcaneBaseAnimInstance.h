@@ -7,6 +7,7 @@
 #include "GameplayTagContainer.h"
 #include "ArcaneBaseAnimInstance.generated.h"
 
+class UCharacterMovementComponent;
 /**
  * 
  */

@@ -28,7 +28,14 @@ void UArcaneCharacterAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSe
 	}
 
 	GroundSpeed = OwnerCharacterMovementComponent->Velocity.Size2D();
-	bHasAcceleration = OwnerCharacterMovementComponent->GetCurrentAcceleration().SizeSquared2D() > 0.0f;
 	// 计算当前移动的方向
 	LocomotionDirection = UKismetAnimationLibrary::CalculateDirection(OwnerCharacter->GetVelocity(), OwnerCharacter->GetActorRotation());
+	// 计算当前角色位置
+	ArcaneWorldLocation = OwnerCharacter->GetActorLocation();
+	// 计算当前角色Rotator
+	ArcaneWorldRotation = OwnerCharacter->GetActorRotation();
+	// 计算当前角色的加速度
+	ArcaneAcceleration = OwnerCharacterMovementComponent->GetCurrentAcceleration();
+	bHasAcceleration = ArcaneAcceleration.SizeSquared2D() > 0.0f;
 }
+
