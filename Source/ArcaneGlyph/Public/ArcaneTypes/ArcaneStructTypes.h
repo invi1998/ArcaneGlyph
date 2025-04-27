@@ -90,3 +90,60 @@ struct FArcaneHeroWeaponData
 	TSoftObjectPtr<UTexture2D> WeaponIcon;		// 武器图标
 	
 };
+
+USTRUCT(BlueprintType)
+struct FArcaneLocomotionDirectionSettings
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float BMin = -180.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float BMax = 180.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float BLMin = -157.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float BLMax = -112.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float LMin = -112.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float LMax = -67.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float FLMin = -67.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float FLMax = -22.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float FMin = -22.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float FMax = 22.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float FRMin = 22.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float FRMax = 67.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float RMin = 67.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float RMax = 112.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float BRMin = 112.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float BRMax = 157.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float DeadZone = 22.5f;	// 死区
+};
