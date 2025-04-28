@@ -49,124 +49,61 @@ bool UArcaneBaseAnimInstance::ReceiveGaitData(const EArcaneGaits InGait)
 	return true;
 }
 
-EArcaneMoveDirection UArcaneBaseAnimInstance::CalculateLocomotionDirection(FArcaneLocomotionDirectionSettings InLocomotionDirectionSettings) const
+EArcaneMoveDirection UArcaneBaseAnimInstance::CalculateLocomotionDirection(const FArcaneLocomotionDirectionSettings& InSettings) const
 {
-	if (!bHasAcceleration) 
+	if (!bHasAcceleration)
 	{
 		return EArcaneMoveDirection::None;
 	}
-	
-	switch (CurrentLocomotionDirection)
+
+	// 规范化角度到[-180°, 180°]
+	const float NormalizedAngle = FRotator::NormalizeAxis(LocomotionDirectionAngle);
+
+	// 步骤1：检查是否在死区内保持当前方向
+	if (CurrentLocomotionDirection != EArcaneMoveDirection::None)
 	{
-	case EArcaneMoveDirection::None:
-		break;
-	case EArcaneMoveDirection::Forward:
+		const bool bIsInDeadZone = IsAngleInDirectionWithDeadZone(
+			NormalizedAngle, CurrentLocomotionDirection, InSettings);
+		if (bIsInDeadZone)
 		{
-			if (LocomotionDirectionAngle >= InLocomotionDirectionSettings.FMin - InLocomotionDirectionSettings.DeadZone &&
-				LocomotionDirectionAngle <= InLocomotionDirectionSettings.FMax + InLocomotionDirectionSettings.DeadZone)
-			{
-				return EArcaneMoveDirection::Forward;
-			}
+			return CurrentLocomotionDirection;
 		}
-		break;
-	case EArcaneMoveDirection::ForwardRight:
-		{
-			if (LocomotionDirectionAngle >= InLocomotionDirectionSettings.FRMin - InLocomotionDirectionSettings.DeadZone &&
-				LocomotionDirectionAngle <= InLocomotionDirectionSettings.FRMax + InLocomotionDirectionSettings.DeadZone)
-			{
-				return EArcaneMoveDirection::ForwardRight;
-			}
-		}
-		break;
-	case EArcaneMoveDirection::Right:
-		{
-			if (LocomotionDirectionAngle >= InLocomotionDirectionSettings.RMin - InLocomotionDirectionSettings.DeadZone &&
-				LocomotionDirectionAngle <= InLocomotionDirectionSettings.RMax + InLocomotionDirectionSettings.DeadZone)
-			{
-				return EArcaneMoveDirection::Right;
-			}
-		}
-		break;
-	case EArcaneMoveDirection::BackwardRight:
-		if (LocomotionDirectionAngle >= InLocomotionDirectionSettings.BRMin - InLocomotionDirectionSettings.DeadZone &&
-			LocomotionDirectionAngle <= InLocomotionDirectionSettings.BRMax + InLocomotionDirectionSettings.DeadZone)
-		{
-			return EArcaneMoveDirection::BackwardRight;
-		}
-		break;
-	case EArcaneMoveDirection::Backward:
-		{
-			if (!(LocomotionDirectionAngle >= InLocomotionDirectionSettings.BMin + InLocomotionDirectionSettings.DeadZone &&
-				LocomotionDirectionAngle <= InLocomotionDirectionSettings.BMax - InLocomotionDirectionSettings.DeadZone))
-			{
-				return EArcaneMoveDirection::Backward;
-			}
-		}
-		break;
-	case EArcaneMoveDirection::BackwardLeft:
-		if (LocomotionDirectionAngle >= InLocomotionDirectionSettings.BLMin - InLocomotionDirectionSettings.DeadZone &&
-			LocomotionDirectionAngle <= InLocomotionDirectionSettings.BLMax + InLocomotionDirectionSettings.DeadZone)
-		{
-			return EArcaneMoveDirection::BackwardLeft;
-		}
-		break;
-	case EArcaneMoveDirection::Left:
-		if (LocomotionDirectionAngle >= InLocomotionDirectionSettings.LMin - InLocomotionDirectionSettings.DeadZone &&
-			LocomotionDirectionAngle <= InLocomotionDirectionSettings.LMax + InLocomotionDirectionSettings.DeadZone)
-		{
-			return EArcaneMoveDirection::Left;
-		}
-		break;
-	case EArcaneMoveDirection::ForwardLeft:
-		if (LocomotionDirectionAngle >= InLocomotionDirectionSettings.FLMin - InLocomotionDirectionSettings.DeadZone &&
-			LocomotionDirectionAngle <= InLocomotionDirectionSettings.FLMax + InLocomotionDirectionSettings.DeadZone)
-		{
-			return EArcaneMoveDirection::ForwardLeft;
-		}
-		break;
 	}
 
-	if (!(LocomotionDirectionAngle >= InLocomotionDirectionSettings.BMin + InLocomotionDirectionSettings.DeadZone &&
-				LocomotionDirectionAngle <= InLocomotionDirectionSettings.BMax - InLocomotionDirectionSettings.DeadZone))
-	{
-		return EArcaneMoveDirection::Backward;
-	}
-	else if (LocomotionDirectionAngle >= InLocomotionDirectionSettings.BLMin &&
-				LocomotionDirectionAngle <= InLocomotionDirectionSettings.BLMax)
-	{
-		return EArcaneMoveDirection::BackwardLeft;
-	}
-	else if (LocomotionDirectionAngle >= InLocomotionDirectionSettings.LMin &&
-				LocomotionDirectionAngle <= InLocomotionDirectionSettings.LMax)
-	{
-		return EArcaneMoveDirection::Left;
-	}
-	else if (LocomotionDirectionAngle >= InLocomotionDirectionSettings.FLMin &&
-				LocomotionDirectionAngle <= InLocomotionDirectionSettings.FLMax)
-	{
-		return EArcaneMoveDirection::ForwardLeft;
-	}
-	else if (LocomotionDirectionAngle >= InLocomotionDirectionSettings.FMin &&
-				LocomotionDirectionAngle <= InLocomotionDirectionSettings.FMax)
+	// 步骤2：按优先级重新判定方向（从最小区间开始检查）
+	if (IsAngleInRange(NormalizedAngle, InSettings.FMin, InSettings.FMax))
 	{
 		return EArcaneMoveDirection::Forward;
 	}
-	else if (LocomotionDirectionAngle >= InLocomotionDirectionSettings.FRMin &&
-				LocomotionDirectionAngle <= InLocomotionDirectionSettings.FRMax)
+	else if (IsAngleInRange(NormalizedAngle, InSettings.FRMin, InSettings.FRMax))
 	{
 		return EArcaneMoveDirection::ForwardRight;
 	}
-	else if (LocomotionDirectionAngle >= InLocomotionDirectionSettings.RMin &&
-				LocomotionDirectionAngle <= InLocomotionDirectionSettings.RMax)
+	else if (IsAngleInRange(NormalizedAngle, InSettings.RMin, InSettings.RMax))
 	{
 		return EArcaneMoveDirection::Right;
 	}
-	else if (LocomotionDirectionAngle >= InLocomotionDirectionSettings.BRMin &&
-				LocomotionDirectionAngle <= InLocomotionDirectionSettings.BRMax)
+	else if (IsAngleInRange(NormalizedAngle, InSettings.BRMin, InSettings.BRMax))
 	{
 		return EArcaneMoveDirection::BackwardRight;
 	}
-	
+	else if (IsAngleInRange(NormalizedAngle, InSettings.BLMin, InSettings.BLMax))
+	{
+		return EArcaneMoveDirection::BackwardLeft;
+	}
+	else if (IsAngleInRange(NormalizedAngle, InSettings.LMin, InSettings.LMax))
+	{
+		return EArcaneMoveDirection::Left;
+	}
+	else if (IsAngleInRange(NormalizedAngle, InSettings.FLMin, InSettings.FLMax))
+	{
+		return EArcaneMoveDirection::ForwardLeft;
+	}
+	else if (IsAngleInRange(NormalizedAngle, InSettings.BMin, InSettings.BMax))
+	{
+		return EArcaneMoveDirection::Backward;
+	}
+
 	return EArcaneMoveDirection::None;
 	
 }
@@ -179,4 +116,42 @@ bool UArcaneBaseAnimInstance::DoesOwnerHaveTag(FGameplayTag InTag) const
 	}
 
 	return false;
+}
+
+bool UArcaneBaseAnimInstance::IsAngleInDirectionWithDeadZone(float Angle, EArcaneMoveDirection Direction, const FArcaneLocomotionDirectionSettings& InSettings) const
+{
+	switch (Direction)
+	{
+	case EArcaneMoveDirection::Forward:
+		return IsAngleInRange(Angle, InSettings.FMin - InSettings.DeadZone, InSettings.FMax + InSettings.DeadZone);
+	case EArcaneMoveDirection::ForwardRight:
+		return IsAngleInRange(Angle, InSettings.FRMin - InSettings.DeadZone, InSettings.FRMax + InSettings.DeadZone);
+	case EArcaneMoveDirection::Right:
+		return IsAngleInRange(Angle, InSettings.RMin - InSettings.DeadZone, InSettings.RMax + InSettings.DeadZone);
+	case EArcaneMoveDirection::BackwardRight:
+		return IsAngleInRange(Angle, InSettings.BRMin - InSettings.DeadZone, InSettings.BRMax + InSettings.DeadZone);
+	case EArcaneMoveDirection::Backward:
+		return IsAngleInRange(Angle, InSettings.BMin - InSettings.DeadZone, InSettings.BMax + InSettings.DeadZone);
+	case EArcaneMoveDirection::BackwardLeft:
+		return IsAngleInRange(Angle, InSettings.BLMin - InSettings.DeadZone, InSettings.BLMax + InSettings.DeadZone);
+	case EArcaneMoveDirection::Left:
+		return IsAngleInRange(Angle, InSettings.LMin - InSettings.DeadZone, InSettings.LMax + InSettings.DeadZone);
+	case EArcaneMoveDirection::ForwardLeft:
+		return IsAngleInRange(Angle, InSettings.FLMin - InSettings.DeadZone, InSettings.FLMax + InSettings.DeadZone);
+	default:
+		return false;
+	}
+}
+
+bool UArcaneBaseAnimInstance::IsAngleInRange(float Angle, float Min, float Max) const
+{
+	// 处理Backward的特殊环形范围（如157.5°~-157.5°）
+	if (Min > Max)
+	{
+		return (Angle >= Min || Angle <= Max);
+	}
+	else
+	{
+		return (Angle >= Min && Angle <= Max);
+	}
 }

@@ -69,11 +69,20 @@ protected:
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|VelocityData")
 	EArcaneGaits CurrentGait = EArcaneGaits::Walking;		// 角色步态
 	
-	EArcaneMoveDirection CalculateLocomotionDirection(FArcaneLocomotionDirectionSettings InLocomotionDirectionSettings) const;
+	EArcaneMoveDirection CalculateLocomotionDirection(const FArcaneLocomotionDirectionSettings& InSettings) const;
 
 	
 
 protected:
 	UFUNCTION(BlueprintPure, meta=(BlueprintThreadSafe))
 	bool DoesOwnerHaveTag(FGameplayTag InTag) const;
+
+	// 辅助函数1：检查角度是否在某个方向范围内（含死区扩展）
+	bool IsAngleInDirectionWithDeadZone(float Angle, EArcaneMoveDirection Direction, const FArcaneLocomotionDirectionSettings& InSettings) const;
+
+	// 辅助函数2：通用角度范围检查（处理环形角度）
+	bool IsAngleInRange(float Angle, float Min, float Max) const;
+
+
+
 };

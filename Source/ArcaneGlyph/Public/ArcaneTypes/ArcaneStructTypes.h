@@ -91,61 +91,63 @@ struct FArcaneHeroWeaponData
 	
 };
 
+// 方向范围定义（角度单位为度，覆盖-180°~180°环形范围）
 USTRUCT(BlueprintType)
 struct FArcaneLocomotionDirectionSettings
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float BMin = -180.f;
+    // 各方向角度范围（Min/Max）
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Locomotion|Direction")
+    float FMin = -22.5f;    // Forward起始角度
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float BMax = 180.f;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Locomotion|Direction")
+    float FMax = 22.5f;     // Forward结束角度
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float BLMin = -157.f;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Locomotion|Direction")
+    float FRMin = 22.5f;    // ForwardRight起始角度
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float BLMax = -112.f;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Locomotion|Direction")
+    float FRMax = 67.5f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float LMin = -112.f;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Locomotion|Direction")
+    float RMin = 67.5f;     // Right起始角度
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float LMax = -67.f;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Locomotion|Direction")
+    float RMax = 112.5f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float FLMin = -67.f;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Locomotion|Direction")
+    float BRMin = 112.5f;   // BackwardRight起始角度
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float FLMax = -22.f;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Locomotion|Direction")
+    float BRMax = 157.5f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float FMin = -22.f;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Locomotion|Direction")
+    float BMin = 157.5f;    // Backward起始角度（左后）
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float FMax = 22.f;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Locomotion|Direction")
+    float BMax = -157.5f;   // Backward结束角度（右后）
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float FRMin = 22.f;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Locomotion|Direction")
+    float BLMin = -157.5f;  // BackwardLeft起始角度
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float FRMax = 67.f;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Locomotion|Direction")
+    float BLMax = -112.5f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float RMin = 67.f;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Locomotion|Direction")
+    float LMin = -112.5f;   // Left起始角度
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float RMax = 112.f;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Locomotion|Direction")
+    float LMax = -67.5f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float BRMin = 112.f;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Locomotion|Direction")
+    float FLMin = -67.5f;   // ForwardLeft起始角度
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float BRMax = 157.f;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Locomotion|Direction")
+    float FLMax = -22.5f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float DeadZone = 22.5f;	// 死区
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Locomotion|Direction")
+    float DeadZone = 10.0f; // 死区角度（推荐10°~15°）
 };
 
 
