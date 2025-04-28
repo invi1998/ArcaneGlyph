@@ -28,7 +28,7 @@ public:
 	// 但是需要注意的是，该函数中不能访问任何非线程安全的数据，比如 Actor 的成员变量等
 	virtual void NativeThreadSafeUpdateAnimation(float DeltaSeconds) override;
 
-	virtual bool ReceiveGaitData(const EArcaneGaits InGait) override;
+	virtual void ReceiveGaitData(const EArcaneGaits InGait) override;
 
 	FORCEINLINE float GetLocomotionDirection() const { return LocomotionDirectionAngle; }
 
@@ -51,6 +51,9 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
 	EArcaneMoveDirection CurrentLocomotionDirection;
 
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "AnimData|LocomotionData")
+	EArcaneHipFacing HipFacingDirection;	// 角色的臀部朝向方向
+
 	// Unreal Engine 的 PropertyAccess 系统（用于动态访问属性和函数）依赖 反射（Reflection） 生成的元数据来识别函数返回值。
 	// 当你在蓝图中定义一个函数时，引擎会为函数的输入/输出参数生成元数据。默认情况下，返回值的名称被强制标记为 ReturnValue。
 	// PropertyAccess 在查找函数返回值时，会严格按照反射元数据中定义的名称（ReturnValue）进行匹配。
@@ -67,9 +70,9 @@ protected:
 	FVector  ArcaneAcceleration;		// 角色加速度
 	
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|VelocityData")
-	EArcaneGaits CurrentGait = EArcaneGaits::Walking;		// 角色步态
+	EArcaneGaits CurrentGait;		// 角色步态
 	
-	EArcaneMoveDirection CalculateLocomotionDirection(const FArcaneLocomotionDirectionSettings& InSettings) const;
+	EArcaneMoveDirection CalculateLocomotionDirection(const FArcaneLocomotionDirectionSettings& InSettings);
 
 	
 
@@ -83,6 +86,13 @@ protected:
 	// 辅助函数2：通用角度范围检查（处理环形角度）
 	bool IsAngleInRange(float Angle, float Min, float Max) const;
 
+	// 辅助函数：判断是否为向后移动
+	bool IsBackwardMovement() const;
 
+	// 辅助函数：判断方向是否属于"前向树"
+	bool IsForwardTree(EArcaneMoveDirection Direction) const;
+
+	// 核心臀部朝向更新逻辑
+	void UpdateHipFacingDirection(EArcaneMoveDirection PreviousDir, EArcaneMoveDirection NewDir);
 
 };

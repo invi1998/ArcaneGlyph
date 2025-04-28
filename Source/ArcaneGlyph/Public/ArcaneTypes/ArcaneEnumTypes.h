@@ -88,9 +88,7 @@ UENUM(BlueprintType)
 enum class EArcaneHipFacing : uint8
 {
 	Forward UMETA(DisplayName = "前"),
-	Backward UMETA(DisplayName = "后"),
-	Left UMETA(DisplayName = "左"),
-	Right UMETA(DisplayName = "右"),
+	Backward UMETA(DisplayName = "后")
 };
 	
 

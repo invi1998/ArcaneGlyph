@@ -8,7 +8,7 @@
 #include "ArcaneGameplayTags.h"
 #include "EnhancedInputSubsystems.h"
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
-#include "AnimInstances/ArcaneCharacterAnimInstance.h"
+#include "AnimInstances/ArcaneBaseAnimInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Component/Combat/HeroCombatComponent.h"
 #include "Component/Input/ArcaneInputComponent.h"
@@ -121,13 +121,13 @@ void AArcaneHeroCharacter::UpdateGait(EArcaneGaits InNewGait)
 		UE_LOG(LogTemp, Warning, TEXT("Gait setting not found for gait: %s"), *UEnum::GetDisplayValueAsText(CurrentGait).ToString());
 	}
 
-	if (UArcaneCharacterAnimInstance* AnimInstance = Cast<UArcaneCharacterAnimInstance>(GetMesh()->GetAnimInstance()))
+	if (UArcaneBaseAnimInstance* AnimInstance = Cast<UArcaneBaseAnimInstance>(GetMesh()->GetAnimInstance()))
 	{
 		AnimInstance->ReceiveGaitData(CurrentGait);
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("AnimInstance is null or not of type UArcaneCharacterAnimInstance"));
+		UE_LOG(LogTemp, Warning, TEXT("AnimInstance is null or not of type UArcaneBaseAnimInstance"));
 	}
 	
 }

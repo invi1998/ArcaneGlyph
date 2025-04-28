@@ -23,6 +23,6 @@ class ARCANEGLYPH_API IArcaneGaitDataInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual bool ReceiveGaitData(const EArcaneGaits InGait) = 0;	// 接收步态数据
+	virtual void ReceiveGaitData(const EArcaneGaits InGait) = 0;	// 接收步态数据
 	
 };

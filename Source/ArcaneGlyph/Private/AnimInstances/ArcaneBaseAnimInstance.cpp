@@ -41,70 +41,53 @@ void UArcaneBaseAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds
 	bHasAcceleration = ArcaneAcceleration.SizeSquared2D() > 0.0f;
 
 	CurrentLocomotionDirection = CalculateLocomotionDirection(FArcaneLocomotionDirectionSettings());
+	
 }
 
-bool UArcaneBaseAnimInstance::ReceiveGaitData(const EArcaneGaits InGait)
+void UArcaneBaseAnimInstance::ReceiveGaitData(const EArcaneGaits InGait)
 {
 	CurrentGait = InGait;
-	return true;
 }
 
-EArcaneMoveDirection UArcaneBaseAnimInstance::CalculateLocomotionDirection(const FArcaneLocomotionDirectionSettings& InSettings) const
+EArcaneMoveDirection UArcaneBaseAnimInstance::CalculateLocomotionDirection(const FArcaneLocomotionDirectionSettings& InSettings)
 {
 	if (!bHasAcceleration)
 	{
+		HipFacingDirection = EArcaneHipFacing::Forward;
 		return EArcaneMoveDirection::None;
 	}
 
 	// 规范化角度到[-180°, 180°]
 	const float NormalizedAngle = FRotator::NormalizeAxis(LocomotionDirectionAngle);
 
+	// 记录上一帧方向用于过渡判断
+	const EArcaneMoveDirection PreviousDirection = CurrentLocomotionDirection;
+
+	//--- 步骤1：计算当前方向 ---
+	EArcaneMoveDirection NewDirection = EArcaneMoveDirection::None;
+
 	// 步骤1：检查是否在死区内保持当前方向
-	if (CurrentLocomotionDirection != EArcaneMoveDirection::None)
+	if (CurrentLocomotionDirection != EArcaneMoveDirection::None && IsAngleInDirectionWithDeadZone(NormalizedAngle, CurrentLocomotionDirection, InSettings))
 	{
-		const bool bIsInDeadZone = IsAngleInDirectionWithDeadZone(
-			NormalizedAngle, CurrentLocomotionDirection, InSettings);
-		if (bIsInDeadZone)
-		{
-			return CurrentLocomotionDirection;
-		}
+		NewDirection = CurrentLocomotionDirection;
+	}
+	else
+	{
+		// 步骤2：按优先级重新判定方向（从最小区间开始检查）
+		// 按优先级重新判定方向
+		if (IsAngleInRange(NormalizedAngle, InSettings.FMin, InSettings.FMax))          NewDirection = EArcaneMoveDirection::Forward;
+		else if (IsAngleInRange(NormalizedAngle, InSettings.FRMin, InSettings.FRMax))  NewDirection = EArcaneMoveDirection::ForwardRight;
+		else if (IsAngleInRange(NormalizedAngle, InSettings.RMin, InSettings.RMax))    NewDirection = EArcaneMoveDirection::Right;
+		else if (IsAngleInRange(NormalizedAngle, InSettings.BRMin, InSettings.BRMax))  NewDirection = EArcaneMoveDirection::BackwardRight;
+		else if (IsAngleInRange(NormalizedAngle, InSettings.BLMin, InSettings.BLMax))  NewDirection = EArcaneMoveDirection::BackwardLeft;
+		else if (IsAngleInRange(NormalizedAngle, InSettings.LMin, InSettings.LMax))    NewDirection = EArcaneMoveDirection::Left;
+		else if (IsAngleInRange(NormalizedAngle, InSettings.FLMin, InSettings.FLMax))  NewDirection = EArcaneMoveDirection::ForwardLeft;
+		else if (IsAngleInRange(NormalizedAngle, InSettings.BMin, InSettings.BMax))    NewDirection = EArcaneMoveDirection::Backward;
 	}
 
-	// 步骤2：按优先级重新判定方向（从最小区间开始检查）
-	if (IsAngleInRange(NormalizedAngle, InSettings.FMin, InSettings.FMax))
-	{
-		return EArcaneMoveDirection::Forward;
-	}
-	else if (IsAngleInRange(NormalizedAngle, InSettings.FRMin, InSettings.FRMax))
-	{
-		return EArcaneMoveDirection::ForwardRight;
-	}
-	else if (IsAngleInRange(NormalizedAngle, InSettings.RMin, InSettings.RMax))
-	{
-		return EArcaneMoveDirection::Right;
-	}
-	else if (IsAngleInRange(NormalizedAngle, InSettings.BRMin, InSettings.BRMax))
-	{
-		return EArcaneMoveDirection::BackwardRight;
-	}
-	else if (IsAngleInRange(NormalizedAngle, InSettings.BLMin, InSettings.BLMax))
-	{
-		return EArcaneMoveDirection::BackwardLeft;
-	}
-	else if (IsAngleInRange(NormalizedAngle, InSettings.LMin, InSettings.LMax))
-	{
-		return EArcaneMoveDirection::Left;
-	}
-	else if (IsAngleInRange(NormalizedAngle, InSettings.FLMin, InSettings.FLMax))
-	{
-		return EArcaneMoveDirection::ForwardLeft;
-	}
-	else if (IsAngleInRange(NormalizedAngle, InSettings.BMin, InSettings.BMax))
-	{
-		return EArcaneMoveDirection::Backward;
-	}
-
-	return EArcaneMoveDirection::None;
+	//--- 步骤2：动态更新臀部朝向 ---
+	UpdateHipFacingDirection(PreviousDirection, NewDirection);
+	return NewDirection;
 	
 }
 
@@ -153,5 +136,54 @@ bool UArcaneBaseAnimInstance::IsAngleInRange(float Angle, float Min, float Max) 
 	else
 	{
 		return (Angle >= Min && Angle <= Max);
+	}
+}
+
+bool UArcaneBaseAnimInstance::IsBackwardMovement() const
+{
+	return (CurrentLocomotionDirection == EArcaneMoveDirection::Backward ||
+				CurrentLocomotionDirection == EArcaneMoveDirection::BackwardLeft ||
+				CurrentLocomotionDirection == EArcaneMoveDirection::BackwardRight);
+}
+
+// 辅助函数：判断方向是否属于"前向树"
+bool UArcaneBaseAnimInstance::IsForwardTree(EArcaneMoveDirection Direction) const
+{
+	switch (Direction)
+	{
+	case EArcaneMoveDirection::Forward:
+	case EArcaneMoveDirection::ForwardRight:
+	case EArcaneMoveDirection::Right:
+	case EArcaneMoveDirection::ForwardLeft:
+	case EArcaneMoveDirection::Left:
+		return true;
+	default:
+		return false; // Backward系列和None属于后向树
+	}
+}
+
+// 核心臀部朝向更新逻辑
+void UArcaneBaseAnimInstance::UpdateHipFacingDirection(EArcaneMoveDirection PreviousDir, EArcaneMoveDirection NewDir)
+{
+	// 初始化处理：首次移动时根据方向设定初始朝向
+	if (PreviousDir == EArcaneMoveDirection::None)
+	{
+		HipFacingDirection = IsForwardTree(NewDir) ? EArcaneHipFacing::Forward : EArcaneHipFacing::Backward;
+		return;
+	}
+
+	// 方向未变化时保持当前朝向
+	if (PreviousDir == NewDir) return;
+
+	// 判断方向树是否切换
+	const bool bWasForward = IsForwardTree(PreviousDir);
+	const bool bIsNowForward = IsForwardTree(NewDir);
+
+	if (bWasForward != bIsNowForward)
+	{
+		// 方向树切换时翻转臀部朝向
+		HipFacingDirection = (HipFacingDirection == EArcaneHipFacing::Forward) ? 
+							EArcaneHipFacing::Backward : 
+							EArcaneHipFacing::Forward;
 	}
 }
