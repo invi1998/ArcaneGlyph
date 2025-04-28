@@ -184,14 +184,15 @@ void AArcaneHeroCharacter::Input_Move(const FInputActionValue& InputActionValue)
 
 	if (AxisValue.X != 0.0f)
 	{
-		if (IsValid(CurrentLockedTargetActor))
-		{
-			ProcessLockedMovement(AxisValue.X);
-		}
-		else
-		{
-			AddMovementInput(RightDirection, AxisValue.X);
-		}
+		// if (IsValid(CurrentLockedTargetActor))
+		// {
+		// 	ProcessLockedMovement(AxisValue.X);
+		// }
+		// else
+		// {
+		// 	AddMovementInput(RightDirection, AxisValue.X);
+		// }
+		AddMovementInput(RightDirection, AxisValue.X);
 	}
 	if (AxisValue.Y != 0.0f)
 	{

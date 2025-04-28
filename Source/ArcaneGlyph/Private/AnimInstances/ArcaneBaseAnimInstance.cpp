@@ -51,14 +51,19 @@ bool UArcaneBaseAnimInstance::ReceiveGaitData(const EArcaneGaits InGait)
 
 EArcaneMoveDirection UArcaneBaseAnimInstance::CalculateLocomotionDirection(FArcaneLocomotionDirectionSettings InLocomotionDirectionSettings) const
 {
+	if (!bHasAcceleration) 
+	{
+		return EArcaneMoveDirection::None;
+	}
+	
 	switch (CurrentLocomotionDirection)
 	{
 	case EArcaneMoveDirection::None:
 		break;
 	case EArcaneMoveDirection::Forward:
 		{
-			if (LocomotionDirectionAngle >= InLocomotionDirectionSettings.FMin &&
-				LocomotionDirectionAngle <= InLocomotionDirectionSettings.FMax)
+			if (LocomotionDirectionAngle >= InLocomotionDirectionSettings.FMin - InLocomotionDirectionSettings.DeadZone &&
+				LocomotionDirectionAngle <= InLocomotionDirectionSettings.FMax + InLocomotionDirectionSettings.DeadZone)
 			{
 				return EArcaneMoveDirection::Forward;
 			}
@@ -66,8 +71,8 @@ EArcaneMoveDirection UArcaneBaseAnimInstance::CalculateLocomotionDirection(FArca
 		break;
 	case EArcaneMoveDirection::ForwardRight:
 		{
-			if (LocomotionDirectionAngle >= InLocomotionDirectionSettings.FRMin &&
-				LocomotionDirectionAngle <= InLocomotionDirectionSettings.FRMax)
+			if (LocomotionDirectionAngle >= InLocomotionDirectionSettings.FRMin - InLocomotionDirectionSettings.DeadZone &&
+				LocomotionDirectionAngle <= InLocomotionDirectionSettings.FRMax + InLocomotionDirectionSettings.DeadZone)
 			{
 				return EArcaneMoveDirection::ForwardRight;
 			}
@@ -75,16 +80,16 @@ EArcaneMoveDirection UArcaneBaseAnimInstance::CalculateLocomotionDirection(FArca
 		break;
 	case EArcaneMoveDirection::Right:
 		{
-			if (LocomotionDirectionAngle >= InLocomotionDirectionSettings.RMin &&
-				LocomotionDirectionAngle <= InLocomotionDirectionSettings.RMax)
+			if (LocomotionDirectionAngle >= InLocomotionDirectionSettings.RMin - InLocomotionDirectionSettings.DeadZone &&
+				LocomotionDirectionAngle <= InLocomotionDirectionSettings.RMax + InLocomotionDirectionSettings.DeadZone)
 			{
 				return EArcaneMoveDirection::Right;
 			}
 		}
 		break;
 	case EArcaneMoveDirection::BackwardRight:
-		if (LocomotionDirectionAngle >= InLocomotionDirectionSettings.BRMin &&
-			LocomotionDirectionAngle <= InLocomotionDirectionSettings.BRMax)
+		if (LocomotionDirectionAngle >= InLocomotionDirectionSettings.BRMin - InLocomotionDirectionSettings.DeadZone &&
+			LocomotionDirectionAngle <= InLocomotionDirectionSettings.BRMax + InLocomotionDirectionSettings.DeadZone)
 		{
 			return EArcaneMoveDirection::BackwardRight;
 		}
@@ -99,22 +104,22 @@ EArcaneMoveDirection UArcaneBaseAnimInstance::CalculateLocomotionDirection(FArca
 		}
 		break;
 	case EArcaneMoveDirection::BackwardLeft:
-		if (LocomotionDirectionAngle >= InLocomotionDirectionSettings.BLMin &&
-			LocomotionDirectionAngle <= InLocomotionDirectionSettings.BLMax)
+		if (LocomotionDirectionAngle >= InLocomotionDirectionSettings.BLMin - InLocomotionDirectionSettings.DeadZone &&
+			LocomotionDirectionAngle <= InLocomotionDirectionSettings.BLMax + InLocomotionDirectionSettings.DeadZone)
 		{
 			return EArcaneMoveDirection::BackwardLeft;
 		}
 		break;
 	case EArcaneMoveDirection::Left:
-		if (LocomotionDirectionAngle >= InLocomotionDirectionSettings.LMin &&
-			LocomotionDirectionAngle <= InLocomotionDirectionSettings.LMax)
+		if (LocomotionDirectionAngle >= InLocomotionDirectionSettings.LMin - InLocomotionDirectionSettings.DeadZone &&
+			LocomotionDirectionAngle <= InLocomotionDirectionSettings.LMax + InLocomotionDirectionSettings.DeadZone)
 		{
 			return EArcaneMoveDirection::Left;
 		}
 		break;
 	case EArcaneMoveDirection::ForwardLeft:
-		if (LocomotionDirectionAngle >= InLocomotionDirectionSettings.FLMin &&
-			LocomotionDirectionAngle <= InLocomotionDirectionSettings.FLMax)
+		if (LocomotionDirectionAngle >= InLocomotionDirectionSettings.FLMin - InLocomotionDirectionSettings.DeadZone &&
+			LocomotionDirectionAngle <= InLocomotionDirectionSettings.FLMax + InLocomotionDirectionSettings.DeadZone)
 		{
 			return EArcaneMoveDirection::ForwardLeft;
 		}
@@ -161,7 +166,7 @@ EArcaneMoveDirection UArcaneBaseAnimInstance::CalculateLocomotionDirection(FArca
 	{
 		return EArcaneMoveDirection::BackwardRight;
 	}
-
+	
 	return EArcaneMoveDirection::None;
 	
 }
