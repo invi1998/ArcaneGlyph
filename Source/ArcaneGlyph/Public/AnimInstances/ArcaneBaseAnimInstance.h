@@ -68,6 +68,9 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|AccelerationData")
 	FVector  ArcaneAcceleration;		// 角色加速度
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
+	FVector Velocity2D;	// 角色的水平速度和垂直速度
 	
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|VelocityData")
 	EArcaneGaits CurrentGait;		// 角色步态

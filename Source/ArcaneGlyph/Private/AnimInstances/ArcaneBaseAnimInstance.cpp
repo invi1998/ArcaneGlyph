@@ -38,6 +38,7 @@ void UArcaneBaseAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds
 	ArcaneWorldRotation = OwnerCharacter->GetActorRotation();
 	// 计算当前角色的加速度
 	ArcaneAcceleration = OwnerCharacterMovementComponent->GetCurrentAcceleration();
+	Velocity2D = ArcaneAcceleration * FVector(1, 1, 0);
 	bHasAcceleration = ArcaneAcceleration.SizeSquared2D() > 0.0f;
 
 	CurrentLocomotionDirection = CalculateLocomotionDirection(FArcaneLocomotionDirectionSettings());
