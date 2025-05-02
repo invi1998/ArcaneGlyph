@@ -8,7 +8,7 @@
 
 enum class EArcaneGaits : uint8;
 // This class does not need to be modified.
-UINTERFACE()
+UINTERFACE(MinimalAPI, BlueprintType)
 class UArcaneGaitDataInterface : public UInterface
 {
 	GENERATED_BODY()
@@ -23,6 +23,7 @@ class ARCANEGLYPH_API IArcaneGaitDataInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void ReceiveGaitData(const EArcaneGaits InGait) = 0;	// 接收步态数据
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// 蓝图可调用，原生事件
+	void ReceiveGaitData(const EArcaneGaits InGait);	// 接收步态数据
 	
 };

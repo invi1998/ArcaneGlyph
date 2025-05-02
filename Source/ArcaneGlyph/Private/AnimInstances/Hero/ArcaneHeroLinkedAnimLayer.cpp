@@ -9,3 +9,13 @@ UArcaneHeroAnimInstance* UArcaneHeroLinkedAnimLayer::GetHeroAnimInstance() const
 {
 	return Cast<UArcaneHeroAnimInstance>(GetOwningComponent()->GetAnimInstance());
 }
+
+void UArcaneHeroLinkedAnimLayer::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
+{
+	Super::NativeThreadSafeUpdateAnimation(DeltaSeconds);
+	if (UArcaneHeroAnimInstance* HeroAnimInstance = GetHeroAnimInstance())
+	{
+		CurrentGait = HeroAnimInstance->GetCurrentGait();
+	}
+}
+

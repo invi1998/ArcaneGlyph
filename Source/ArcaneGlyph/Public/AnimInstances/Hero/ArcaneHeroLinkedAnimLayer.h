@@ -18,4 +18,7 @@ class ARCANEGLYPH_API UArcaneHeroLinkedAnimLayer : public UArcaneBaseAnimInstanc
 public:
 	UFUNCTION(BlueprintPure, meta=(BlueprintThreadSafe))
 	UArcaneHeroAnimInstance* GetHeroAnimInstance() const;
+
+	virtual void NativeThreadSafeUpdateAnimation(float DeltaSeconds) override;
+
 };

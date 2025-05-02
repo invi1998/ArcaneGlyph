@@ -150,4 +150,26 @@ struct FArcaneLocomotionDirectionSettings
     float DeadZone = 10.0f; // 死区角度（推荐10°~15°）
 };
 
+USTRUCT(BlueprintType)
+struct FArcaneLocomotionDirectionSettings_4D
+{
+	GENERATED_BODY()
+
+	// 各方向角度范围（Min/Max）
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Locomotion|Direction")
+	float FMin = -50.f;    // Forward起始角度
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Locomotion|Direction")
+	float FMax = 50.f;     // Forward结束角度
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Locomotion|Direction")
+	float BMin = -130.f;    // Backward起始角度（左后）
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Locomotion|Direction")
+	float BMax = -130.f;   // Backward结束角度（右后）
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Locomotion|Direction")
+	float DeadZone = 20.0f; // 死区角度（推荐10°~15°）
+};
+
 

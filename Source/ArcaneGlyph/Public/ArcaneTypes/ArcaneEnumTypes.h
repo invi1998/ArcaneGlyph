@@ -80,6 +80,7 @@ enum class EArcaneCountDownActionOutput : uint8
 UENUM(BlueprintType)
 enum class EArcaneGaits : uint8
 {
+	Jogging UMETA(DisplayName = "慢跑"),
 	Walking UMETA(DisplayName = "行走"),
 	Running UMETA(DisplayName = "奔跑"),
 };
@@ -90,5 +91,13 @@ enum class EArcaneHipFacing : uint8
 	Forward UMETA(DisplayName = "前"),
 	Backward UMETA(DisplayName = "后")
 };
-	
+
+UENUM(BlueprintType)
+enum class EArcaneLocomotionDirection : uint8
+{
+	Forward UMETA(DisplayName = "前"),
+	Backward UMETA(DisplayName = "后"),
+	Left UMETA(DisplayName = "左"),
+	Right UMETA(DisplayName = "右"),
+};
 

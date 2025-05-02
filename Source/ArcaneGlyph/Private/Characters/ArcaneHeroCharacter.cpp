@@ -9,6 +9,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
 #include "AnimInstances/ArcaneBaseAnimInstance.h"
+#include "AnimInstances/Hero/ArcaneHeroLinkedAnimLayer.h"
 #include "Camera/CameraComponent.h"
 #include "Component/Combat/HeroCombatComponent.h"
 #include "Component/Input/ArcaneInputComponent.h"
@@ -113,22 +114,19 @@ void AArcaneHeroCharacter::UpdateGait(EArcaneGaits InNewGait)
 		GetCharacterMovement()->BrakingDecelerationWalking = GaitSetting->BreakingDeceleration;
 		GetCharacterMovement()->BrakingFrictionFactor = GaitSetting->BrakingFrictionFactor;
 		GetCharacterMovement()->bUseSeparateBrakingFriction = GaitSetting->bUseSeparateBrakingFriction;
-		GetCharacterMovement()->GroundFriction = GaitSetting->BreakFriction;
+		GetCharacterMovement()->BrakingFriction = GaitSetting->BreakFriction;
 		GetCharacterMovement()->JumpZVelocity = GaitSetting->MaxJumpHeight;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Gait setting not found for gait: %s"), *UEnum::GetDisplayValueAsText(CurrentGait).ToString());
 	}
 
 	if (UArcaneBaseAnimInstance* AnimInstance = Cast<UArcaneBaseAnimInstance>(GetMesh()->GetAnimInstance()))
 	{
-		AnimInstance->ReceiveGaitData(CurrentGait);
+		if (IArcaneGaitDataInterface* GaitDataInterface = Cast<IArcaneGaitDataInterface>(AnimInstance))
+		{
+			IArcaneGaitDataInterface::Execute_ReceiveGaitData(AnimInstance, CurrentGait);
+		}
 	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("AnimInstance is null or not of type UArcaneBaseAnimInstance"));
-	}
+
+	
 	
 }
 
@@ -136,7 +134,7 @@ void AArcaneHeroCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UpdateGait(EArcaneGaits::Walking);
+	UpdateGait(EArcaneGaits::Jogging);
 	
 }
 

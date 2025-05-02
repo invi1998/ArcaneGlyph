@@ -4,6 +4,7 @@
 #include "AnimInstances/ArcaneBaseAnimInstance.h"
 
 #include "ArcaneBlueprintFunctionLibrary.h"
+#include "ArcaneDebugHelper.h"
 
 #include "Characters/ArcaneCharacterBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -30,22 +31,27 @@ void UArcaneBaseAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds
 	}
 
 	GroundSpeed = OwnerCharacterMovementComponent->Velocity.Size2D();
-	// 计算当前移动的方向
-	LocomotionDirectionAngle = UKismetAnimationLibrary::CalculateDirection(OwnerCharacter->GetVelocity(), OwnerCharacter->GetActorRotation());
-	// 计算当前角色位置
-	ArcaneWorldLocation = OwnerCharacter->GetActorLocation();
+	Velocity2D = OwnerCharacterMovementComponent->Velocity * FVector(1, 1, 0);
+
 	// 计算当前角色Rotator
 	ArcaneWorldRotation = OwnerCharacter->GetActorRotation();
+	
+	// 计算当前移动的方向
+	// LocomotionDirectionAngle = UKismetAnimationLibrary::CalculateDirection(OwnerCharacter->GetVelocity(), OwnerCharacter->GetActorRotation());
+	LocomotionDirectionAngle = UKismetAnimationLibrary::CalculateDirection(Velocity2D, ArcaneWorldRotation);
+	// 计算当前角色位置
+	ArcaneWorldLocation = OwnerCharacter->GetActorLocation();
+	
 	// 计算当前角色的加速度
 	ArcaneAcceleration = OwnerCharacterMovementComponent->GetCurrentAcceleration();
-	Velocity2D = ArcaneAcceleration * FVector(1, 1, 0);
+	
 	bHasAcceleration = ArcaneAcceleration.SizeSquared2D() > 0.0f;
 
 	CurrentLocomotionDirection = CalculateLocomotionDirection(FArcaneLocomotionDirectionSettings());
-	
+	LocomotionDirection = CalculateLocomotionDirection4D(LocomotionDirectionAngle, LocomotionDirection, FArcaneLocomotionDirectionSettings_4D());
 }
 
-void UArcaneBaseAnimInstance::ReceiveGaitData(const EArcaneGaits InGait)
+void UArcaneBaseAnimInstance::ReceiveGaitData_Implementation(const EArcaneGaits InGait)
 {
 	CurrentGait = InGait;
 }
@@ -90,6 +96,41 @@ EArcaneMoveDirection UArcaneBaseAnimInstance::CalculateLocomotionDirection(const
 	UpdateHipFacingDirection(PreviousDirection, NewDirection);
 	return NewDirection;
 	
+}
+
+EArcaneLocomotionDirection UArcaneBaseAnimInstance::CalculateLocomotionDirection4D(float Angle, const EArcaneLocomotionDirection& CurrentDirection, const FArcaneLocomotionDirectionSettings_4D& InSettings)
+{
+	switch (CurrentDirection) {
+	case EArcaneLocomotionDirection::Forward:
+		{
+			if (IsAngleInRange(Angle,InSettings.FMin - InSettings.DeadZone, InSettings.FMax + InSettings.DeadZone))
+				return EArcaneLocomotionDirection::Forward;
+		}
+		break;
+	case EArcaneLocomotionDirection::Backward:
+		{
+			if (IsAngleInRange(Angle, InSettings.BMin + InSettings.DeadZone, InSettings.BMax - InSettings.DeadZone))
+				return EArcaneLocomotionDirection::Backward;
+		}
+		break;
+	case EArcaneLocomotionDirection::Left:
+		{
+			if (IsAngleInRange(Angle, InSettings.BMin - InSettings.DeadZone, InSettings.FMin + InSettings.DeadZone))
+				return EArcaneLocomotionDirection::Left;
+		}
+		break;
+	case EArcaneLocomotionDirection::Right:
+		{
+			if (IsAngleInRange(Angle, InSettings.FMax - InSettings.DeadZone, InSettings.BMax + InSettings.DeadZone))
+				return EArcaneLocomotionDirection::Right;
+		}
+		break;
+	}
+	
+	if (!IsAngleInRange(Angle, InSettings.BMin, InSettings.BMax)) return EArcaneLocomotionDirection::Backward;
+	else if (IsAngleInRange(Angle, InSettings.FMin, InSettings.FMax)) return EArcaneLocomotionDirection::Forward;
+	else if (Angle < 0.f) return EArcaneLocomotionDirection::Left;
+	else return EArcaneLocomotionDirection::Right;
 }
 
 bool UArcaneBaseAnimInstance::DoesOwnerHaveTag(FGameplayTag InTag) const

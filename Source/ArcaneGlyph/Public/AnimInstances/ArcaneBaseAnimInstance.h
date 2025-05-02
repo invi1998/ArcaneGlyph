@@ -28,9 +28,10 @@ public:
 	// 但是需要注意的是，该函数中不能访问任何非线程安全的数据，比如 Actor 的成员变量等
 	virtual void NativeThreadSafeUpdateAnimation(float DeltaSeconds) override;
 
-	virtual void ReceiveGaitData(const EArcaneGaits InGait) override;
+	virtual void ReceiveGaitData_Implementation(const EArcaneGaits InGait) override;
 
 	FORCEINLINE float GetLocomotionDirection() const { return LocomotionDirectionAngle; }
+	FORCEINLINE EArcaneGaits GetCurrentGait() const { return CurrentGait; }
 
 protected:
 	UPROPERTY()
@@ -51,6 +52,9 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
 	EArcaneMoveDirection CurrentLocomotionDirection;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
+	EArcaneLocomotionDirection LocomotionDirection;
+
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "AnimData|LocomotionData")
 	EArcaneHipFacing HipFacingDirection;	// 角色的臀部朝向方向
 
@@ -59,25 +63,30 @@ protected:
 	// PropertyAccess 在查找函数返回值时，会严格按照反射元数据中定义的名称（ReturnValue）进行匹配。
 	// 如果你手动修改了返回值的名称（例如改为 Result 或 Output），反射元数据中的返回值名称将不再匹配 ReturnValue，导致 PropertyAccess 无法识别。
 
-	
+	// 角色世界坐标
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|LocationData")
-	FVector ArcaneWorldLocation;		// 角色世界坐标
-
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|RotationData")
-	FRotator ArcaneWorldRotation;		// 角色世界旋转
-
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|AccelerationData")
-	FVector  ArcaneAcceleration;		// 角色加速度
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
-	FVector Velocity2D;	// 角色的水平速度和垂直速度
+	FVector ArcaneWorldLocation;
 	
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|VelocityData")
-	EArcaneGaits CurrentGait;		// 角色步态
+	// 角色世界旋转
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|RotationData")
+	FRotator ArcaneWorldRotation;
+	
+	// 角色加速度
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|AccelerationData")
+	FVector  ArcaneAcceleration;
+
+	// 角色的水平速度和垂直速度
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
+	FVector Velocity2D;
+
+	// 角色步态
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Category = "AnimData|VelocityData")
+	EArcaneGaits CurrentGait;
 	
 	EArcaneMoveDirection CalculateLocomotionDirection(const FArcaneLocomotionDirectionSettings& InSettings);
 
-	
+	UFUNCTION(meta=(BlueprintThreadSafe))
+	EArcaneLocomotionDirection CalculateLocomotionDirection4D(float Angle, const EArcaneLocomotionDirection& CurrentDirection, const FArcaneLocomotionDirectionSettings_4D& InSettings);
 
 protected:
 	UFUNCTION(BlueprintPure, meta=(BlueprintThreadSafe))
@@ -97,5 +106,7 @@ protected:
 
 	// 核心臀部朝向更新逻辑
 	void UpdateHipFacingDirection(EArcaneMoveDirection PreviousDir, EArcaneMoveDirection NewDir);
+
+	
 
 };

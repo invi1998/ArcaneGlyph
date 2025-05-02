@@ -113,11 +113,6 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	float FinalDamage = BaseDamage * SourceAttackPower / TargetDefensePower;
 	// 伤害向上取整，保留小数点后两位
 	FinalDamage = FMath::CeilToFloat(FinalDamage * 100.f) / 100.f;
-
-	Debug::Print(
-		FString::Printf(TEXT("FinalDamage: %f"), FinalDamage),
-		FColor::Red
-	);
 	
 	if (FinalDamage > 0.f)
 	{
