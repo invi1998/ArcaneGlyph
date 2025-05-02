@@ -23,7 +23,7 @@ void UHeroGameplayAbility_TargetLock::ActivateAbility(const FGameplayAbilitySpec
                                                       const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
                                                       const FGameplayEventData* TriggerEventData)
 {
-	InitTargetLockMovement();
+	// InitTargetLockMovement();
 	
 	TryLockTargetLock();
 
@@ -36,7 +36,7 @@ void UHeroGameplayAbility_TargetLock::EndAbility(const FGameplayAbilitySpecHandl
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	bool bReplicateEndAbility, bool bWasCancelled)
 {
-	ResetTargetLockMovement();
+	// ResetTargetLockMovement();
 	Cleanup();
 	ResetTargetLockInputMappingContext();
 	
@@ -59,7 +59,10 @@ void UHeroGameplayAbility_TargetLock::OnTargetLockTick(float DeltaTime)
 	const bool bShouldOverrideRotation = !UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(GetHeroCharacterFromActorInfo(), ArcaneGameplayTags::Player_Status_Rolling)
 										&& !UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(GetHeroCharacterFromActorInfo(), ArcaneGameplayTags::Player_Status_Blocking);
 
-	if (bShouldOverrideRotation)
+	// 如果当前角色正处于快速奔跑状态，也不要旋转角色
+	const bool bIsFastRun = GetHeroCharacterFromActorInfo()->CurrentGait == EArcaneGaits::Running;
+	
+	if (bShouldOverrideRotation && !bIsFastRun)
 	{
 		FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetHeroCharacterFromActorInfo()->GetActorLocation(), CurrentLockedActor->GetActorLocation());
 		// 差值旋转，使角色平滑旋转

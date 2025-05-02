@@ -48,7 +48,7 @@ void UArcaneBaseAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds
 	bHasAcceleration = ArcaneAcceleration.SizeSquared2D() > 0.0f;
 
 	CurrentLocomotionDirection = CalculateLocomotionDirection(FArcaneLocomotionDirectionSettings());
-	LocomotionDirection = CalculateLocomotionDirection4D(LocomotionDirectionAngle, LocomotionDirection, FArcaneLocomotionDirectionSettings_4D());
+	// LocomotionDirection = CalculateLocomotionDirection4D(LocomotionDirectionAngle, LocomotionDirection, FArcaneLocomotionDirectionSettings_4D());
 }
 
 void UArcaneBaseAnimInstance::ReceiveGaitData_Implementation(const EArcaneGaits InGait)
