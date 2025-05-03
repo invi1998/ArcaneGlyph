@@ -33,10 +33,10 @@ public:
 	FORCEINLINE EArcaneGaits GetCurrentGait() const { return CurrentGait; }
 
 protected:
-	UPROPERTY()
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "AnimData|ReferenceData")
 	TObjectPtr<AArcaneCharacterBase> OwnerCharacter;
 
-	UPROPERTY()
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "AnimData|ReferenceData")
 	TObjectPtr<UCharacterMovementComponent> OwnerCharacterMovementComponent;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
@@ -96,7 +96,8 @@ protected:
 	// 角色步态
 	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Category = "AnimData|VelocityData")
 	EArcaneGaits CurrentGait;
-	
+
+	UFUNCTION(meta=(BlueprintThreadSafe))
 	EArcaneMoveDirection CalculateLocomotionDirection(const FArcaneLocomotionDirectionSettings& InSettings);
 
 	UFUNCTION(meta=(BlueprintThreadSafe))

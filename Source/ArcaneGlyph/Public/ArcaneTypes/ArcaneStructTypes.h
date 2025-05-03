@@ -147,7 +147,7 @@ struct FArcaneLocomotionDirectionSettings
     float FLMax = -22.5f;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Locomotion|Direction")
-    float DeadZone = 10.0f; // 死区角度（推荐10°~15°）
+    float DeadZone = 15.0f; // 死区角度（推荐10°~15°）
 };
 
 USTRUCT(BlueprintType)

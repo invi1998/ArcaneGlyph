@@ -47,7 +47,8 @@ void UArcaneCharacterAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSe
 	// 计算当前角色的加速度
 	ArcaneAcceleration = OwnerCharacterMovementComponent->GetCurrentAcceleration();
 	
-	bHasAcceleration = ArcaneAcceleration.SizeSquared2D() > 0.0f;
+	bHasAcceleration = UKismetMathLibrary::NearlyEqual_FloatFloat(ArcaneAcceleration.SizeSquared2D(), 0.f, 0.001f) == false;
+	// bHasAcceleration = UKismetMathLibrary::NearlyEqual_FloatFloat(Velocity2D.Length(), 0.f, 0.001f) == false;
 
 	CurrentLocomotionDirection = CalculateLocomotionDirection(FArcaneLocomotionDirectionSettings());
 
@@ -65,23 +66,26 @@ void UArcaneCharacterAnimInstance::ReceiveGaitData_Implementation(const EArcaneG
 
 EArcaneMoveDirection UArcaneCharacterAnimInstance::CalculateLocomotionDirection(const FArcaneLocomotionDirectionSettings& InSettings)
 {
+	/*
 	if (!bHasAcceleration)
 	{
 		HipFacingDirection = EArcaneHipFacing::Forward;
 		return EArcaneMoveDirection::None;
 	}
+	*/
 
 	// 规范化角度到[-180°, 180°]
 	const float NormalizedAngle = FRotator::NormalizeAxis(LocomotionDirectionAngle);
+	// const float NormalizedAngle = LocomotionDirectionAngle;
 
 	// 记录上一帧方向用于过渡判断
 	PreviousLocomotionDirection = CurrentLocomotionDirection;
 
 	//--- 步骤1：计算当前方向 ---
-	EArcaneMoveDirection NewDirection = EArcaneMoveDirection::None;
+	EArcaneMoveDirection NewDirection = PreviousLocomotionDirection;
 
 	// 步骤1：检查是否在死区内保持当前方向
-	if (CurrentLocomotionDirection != EArcaneMoveDirection::None && IsAngleInDirectionWithDeadZone(NormalizedAngle, CurrentLocomotionDirection, InSettings))
+	if (IsAngleInDirectionWithDeadZone(NormalizedAngle, CurrentLocomotionDirection, InSettings))
 	{
 		NewDirection = CurrentLocomotionDirection;
 	}
