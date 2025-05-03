@@ -9,6 +9,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
 #include "AnimInstances/ArcaneBaseAnimInstance.h"
+#include "AnimInstances/ArcaneCharacterAnimInstance.h"
+#include "AnimInstances/Hero/ArcaneHeroAnimInstance.h"
 #include "AnimInstances/Hero/ArcaneHeroLinkedAnimLayer.h"
 #include "Camera/CameraComponent.h"
 #include "Component/Combat/HeroCombatComponent.h"
@@ -17,6 +19,7 @@
 #include "DataAssets/StartupData/DataAsset_HeroStartupDada.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Interfaces/ArcaneGaitDataInterface.h"
 
 
 AArcaneHeroCharacter::AArcaneHeroCharacter()
@@ -118,10 +121,12 @@ void AArcaneHeroCharacter::UpdateGait(EArcaneGaits InNewGait)
 		GetCharacterMovement()->JumpZVelocity = GaitSetting->MaxJumpHeight;
 	}
 
-	if (UArcaneBaseAnimInstance* AnimInstance = Cast<UArcaneBaseAnimInstance>(GetMesh()->GetAnimInstance()))
+	if (UArcaneHeroAnimInstance* AnimInstance = Cast<UArcaneHeroAnimInstance>(GetMesh()->GetAnimInstance()))
 	{
-		if (IArcaneGaitDataInterface* GaitDataInterface = Cast<IArcaneGaitDataInterface>(AnimInstance))
+		// 判断AnimInstance是否实现了U
+		if (IArcaneGaitDataInterface* GaitDataInterface = AnimInstance->Implements<UArcaneGaitDataInterface>() ? Cast<IArcaneGaitDataInterface>(AnimInstance) : nullptr)
 		{
+			// 调用接口函数
 			IArcaneGaitDataInterface::Execute_ReceiveGaitData(AnimInstance, CurrentGait);
 		}
 	}

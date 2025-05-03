@@ -19,6 +19,5 @@ public:
 	UFUNCTION(BlueprintPure, meta=(BlueprintThreadSafe))
 	UArcaneHeroAnimInstance* GetHeroAnimInstance() const;
 
-	virtual void NativeThreadSafeUpdateAnimation(float DeltaSeconds) override;
 
 };
