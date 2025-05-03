@@ -53,6 +53,9 @@ protected:
 	EArcaneMoveDirection CurrentLocomotionDirection;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
+	EArcaneMoveDirection PreviousLocomotionDirection;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
 	EArcaneLocomotionDirection LocomotionDirection;
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "AnimData|LocomotionData")
@@ -70,6 +73,18 @@ protected:
 	// 角色世界旋转
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|RotationData")
 	FRotator ArcaneWorldRotation;
+
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|RotationData")
+	float PreviousActorYaw;
+
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|RotationData")
+	float CurrentActorYaw;
+
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|RotationData")
+	float ActorYawDelta;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
+	float LeanAngle;		// 角色的倾斜角度
 	
 	// 角色加速度
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|AccelerationData")
@@ -103,6 +118,7 @@ protected:
 
 	// 辅助函数：判断方向是否属于"前向树"
 	bool IsForwardTree(EArcaneMoveDirection Direction) const;
+	bool IsBackwardTree(EArcaneMoveDirection Direction) const;
 
 	// 核心臀部朝向更新逻辑
 	void UpdateHipFacingDirection(EArcaneMoveDirection PreviousDir, EArcaneMoveDirection NewDir);
