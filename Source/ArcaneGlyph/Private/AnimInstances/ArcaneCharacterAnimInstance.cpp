@@ -41,11 +41,15 @@ void UArcaneCharacterAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSe
 	// 计算当前移动的方向
 	// LocomotionDirectionAngle = UKismetAnimationLibrary::CalculateDirection(OwnerCharacter->GetVelocity(), OwnerCharacter->GetActorRotation());
 	LocomotionDirectionAngle = UKismetAnimationLibrary::CalculateDirection(Velocity2D, ArcaneWorldRotation);
+	PreviousWorldLocation = ArcaneWorldLocation;
 	// 计算当前角色位置
 	ArcaneWorldLocation = OwnerCharacter->GetActorLocation();
+	// 计算角色的起始距离
+	LocomotionDelta = (ArcaneWorldLocation - PreviousWorldLocation).Length();
 	
 	// 计算当前角色的加速度
 	ArcaneAcceleration = OwnerCharacterMovementComponent->GetCurrentAcceleration();
+	ArcaneAcceleration2D = ArcaneAcceleration * FVector(1, 1, 0);
 	
 	bHasAcceleration = UKismetMathLibrary::NearlyEqual_FloatFloat(ArcaneAcceleration.SizeSquared2D(), 0.f, 0.001f) == false;
 	// bHasAcceleration = UKismetMathLibrary::NearlyEqual_FloatFloat(Velocity2D.Length(), 0.f, 0.001f) == false;
@@ -57,11 +61,16 @@ void UArcaneCharacterAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSe
 	LeanAngle = FMath::Clamp(UKismetMathLibrary::SafeDivide(ActorYawDelta, DeltaSeconds)/4.f * LeanAngleFactor, -90.f, 90.f);
 	
 	// LocomotionDirection = CalculateLocomotionDirection4D(LocomotionDirectionAngle, LocomotionDirection, FArcaneLocomotionDirectionSettings_4D());
+
+	PreviousGait = CurrentGait;
+	CurrentGait = InComingGait;
+	bGaitChanged = InComingGait != PreviousGait;
+	
 }
 
 void UArcaneCharacterAnimInstance::ReceiveGaitData_Implementation(const EArcaneGaits InGait)
 {
-	CurrentGait = InGait;
+	InComingGait = InGait;
 }
 
 EArcaneMoveDirection UArcaneCharacterAnimInstance::CalculateLocomotionDirection(const FArcaneLocomotionDirectionSettings& InSettings)

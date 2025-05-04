@@ -68,6 +68,12 @@ protected:
 	// 角色世界坐标
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|LocationData")
 	FVector ArcaneWorldLocation;
+
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|LocationData")
+	FVector PreviousWorldLocation;
+
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Category = "AnimData|LocationData")
+	float LocomotionDelta;	// 角色在世界坐标系中的位移
 	
 	// 角色世界旋转
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|RotationData")
@@ -86,16 +92,28 @@ protected:
 	float LeanAngle;		// 角色的倾斜角度
 	
 	// 角色加速度
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|AccelerationData")
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|VelocityData")
 	FVector  ArcaneAcceleration;
 
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|VelocityData")
+	FVector ArcaneAcceleration2D;
+
 	// 角色的水平速度和垂直速度
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|VelocityData")
 	FVector Velocity2D;
 
 	// 角色步态
-	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Category = "AnimData|VelocityData")
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Category = "AnimData|GaitData")
+	EArcaneGaits InComingGait;
+	
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Category = "AnimData|GaitData")
 	EArcaneGaits CurrentGait;
+
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Category = "AnimData|GaitData")
+	EArcaneGaits PreviousGait;
+
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Category = "AnimData|GaitData")
+	bool bGaitChanged;
 
 	UFUNCTION(meta=(BlueprintThreadSafe))
 	EArcaneMoveDirection CalculateLocomotionDirection(const FArcaneLocomotionDirectionSettings& InSettings);
