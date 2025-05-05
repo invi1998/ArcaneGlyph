@@ -21,6 +21,7 @@ class ARCANEGLYPH_API UArcaneCharacterAnimInstance : public UArcaneBaseAnimInsta
 
 public:
 	virtual void NativeInitializeAnimation() override;
+	void UpdateHipFacingByCurve();
 
 	// 该动画实例的更新函数是线程安全的，运行在独立的工作线程中，而非游戏线程中，因此可以在该函数中进行一些计算密集型的操作
 	// 这意味着使用这个函数可以提高动画的性能，使用该函数来计算我们需要的动画数据是一个很大的优化项
@@ -49,10 +50,19 @@ protected:
 	float LocomotionDirectionAngle;	// 角色运动方向与面朝方向之间的水平平面角度差，这是一个-180~180的值
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
+	float AccelerationLocomotionAngle;		// 加速度方向与面朝方向之间的水平平面角度差，这是一个-180~180的值
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
 	EArcaneMoveDirection CurrentLocomotionDirection;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
+	EArcaneMoveDirection AccelerationLocomotionDirection;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
 	EArcaneMoveDirection PreviousLocomotionDirection;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
+	EArcaneMoveDirection PreviousAccelerationLocomotionDirection;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
 	EArcaneLocomotionDirection LocomotionDirection;
@@ -98,6 +108,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|VelocityData")
 	FVector ArcaneAcceleration2D;
 
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "AnimData|VelocityData")
+	FVector PivotAcceleration2D;
+
 	// 角色的水平速度和垂直速度
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|VelocityData")
 	FVector Velocity2D;
@@ -115,10 +128,8 @@ protected:
 	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Category = "AnimData|GaitData")
 	bool bGaitChanged;
 
-	UFUNCTION(meta=(BlueprintThreadSafe))
-	EArcaneMoveDirection CalculateLocomotionDirection(const FArcaneLocomotionDirectionSettings& InSettings);
+	EArcaneMoveDirection CalculateLocomotionDirection(float Angle, EArcaneMoveDirection Direction, const FArcaneLocomotionDirectionSettings& InSettings);
 
-	UFUNCTION(meta=(BlueprintThreadSafe))
 	EArcaneLocomotionDirection CalculateLocomotionDirection4D(float Angle, const EArcaneLocomotionDirection& CurrentDirection, const FArcaneLocomotionDirectionSettings_4D& InSettings);
 
 protected:

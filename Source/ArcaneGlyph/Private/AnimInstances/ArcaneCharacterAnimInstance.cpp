@@ -20,6 +20,20 @@ void UArcaneCharacterAnimInstance::NativeInitializeAnimation()
 	}
 }
 
+void UArcaneCharacterAnimInstance::UpdateHipFacingByCurve()
+{
+	// 设置HipFacing
+	const float HipFacingValue = GetCurveValue(FName("HipFacing"));
+	if (HipFacingValue > 0)
+	{
+		HipFacingDirection = EArcaneHipFacing::Forward;
+	}
+	else if (HipFacingValue < 0)
+	{
+		HipFacingDirection = EArcaneHipFacing::Backward;
+	}
+}
+
 void UArcaneCharacterAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeThreadSafeUpdateAnimation(DeltaSeconds);
@@ -37,24 +51,32 @@ void UArcaneCharacterAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSe
 	ArcaneWorldRotation = OwnerCharacter->GetActorRotation();
 	CurrentActorYaw = ArcaneWorldRotation.Yaw;
 	ActorYawDelta = (CurrentActorYaw - PreviousActorYaw);
+
+	// 计算当前角色的加速度
+	ArcaneAcceleration = OwnerCharacterMovementComponent->GetCurrentAcceleration();
+	ArcaneAcceleration2D = ArcaneAcceleration * FVector(1, 1, 0);
 	
 	// 计算当前移动的方向
-	// LocomotionDirectionAngle = UKismetAnimationLibrary::CalculateDirection(OwnerCharacter->GetVelocity(), OwnerCharacter->GetActorRotation());
 	LocomotionDirectionAngle = UKismetAnimationLibrary::CalculateDirection(Velocity2D, ArcaneWorldRotation);
+	AccelerationLocomotionAngle = UKismetAnimationLibrary::CalculateDirection(ArcaneAcceleration2D, OwnerCharacter->GetActorRotation());
+
 	PreviousWorldLocation = ArcaneWorldLocation;
 	// 计算当前角色位置
 	ArcaneWorldLocation = OwnerCharacter->GetActorLocation();
 	// 计算角色的起始距离
 	LocomotionDelta = (ArcaneWorldLocation - PreviousWorldLocation).Length();
 	
-	// 计算当前角色的加速度
-	ArcaneAcceleration = OwnerCharacterMovementComponent->GetCurrentAcceleration();
-	ArcaneAcceleration2D = ArcaneAcceleration * FVector(1, 1, 0);
 	
 	bHasAcceleration = UKismetMathLibrary::NearlyEqual_FloatFloat(ArcaneAcceleration.SizeSquared2D(), 0.f, 0.001f) == false;
 	// bHasAcceleration = UKismetMathLibrary::NearlyEqual_FloatFloat(Velocity2D.Length(), 0.f, 0.001f) == false;
 
-	CurrentLocomotionDirection = CalculateLocomotionDirection(FArcaneLocomotionDirectionSettings());
+	// 记录上一帧方向用于过渡判断
+	PreviousLocomotionDirection = CurrentLocomotionDirection;
+	CurrentLocomotionDirection = CalculateLocomotionDirection(LocomotionDirectionAngle, CurrentLocomotionDirection, FArcaneLocomotionDirectionSettings());
+	PreviousAccelerationLocomotionDirection = AccelerationLocomotionDirection;
+	AccelerationLocomotionDirection = CalculateLocomotionDirection(AccelerationLocomotionAngle, AccelerationLocomotionDirection, FArcaneLocomotionDirectionSettings());
+
+	UpdateHipFacingByCurve();
 
 	float LeanAngleFactor = HipFacingDirection == EArcaneHipFacing::Forward ? 1.f : -1.f;
 
@@ -73,7 +95,7 @@ void UArcaneCharacterAnimInstance::ReceiveGaitData_Implementation(const EArcaneG
 	InComingGait = InGait;
 }
 
-EArcaneMoveDirection UArcaneCharacterAnimInstance::CalculateLocomotionDirection(const FArcaneLocomotionDirectionSettings& InSettings)
+EArcaneMoveDirection UArcaneCharacterAnimInstance::CalculateLocomotionDirection(float Angle, EArcaneMoveDirection Direction, const FArcaneLocomotionDirectionSettings& InSettings)
 {
 	/*
 	if (!bHasAcceleration)
@@ -84,19 +106,15 @@ EArcaneMoveDirection UArcaneCharacterAnimInstance::CalculateLocomotionDirection(
 	*/
 
 	// 规范化角度到[-180°, 180°]
-	const float NormalizedAngle = FRotator::NormalizeAxis(LocomotionDirectionAngle);
+	const float NormalizedAngle = FRotator::NormalizeAxis(Angle);
 	// const float NormalizedAngle = LocomotionDirectionAngle;
 
-	// 记录上一帧方向用于过渡判断
-	PreviousLocomotionDirection = CurrentLocomotionDirection;
-
-	//--- 步骤1：计算当前方向 ---
-	EArcaneMoveDirection NewDirection = PreviousLocomotionDirection;
+	EArcaneMoveDirection NewDirection = Direction;
 
 	// 步骤1：检查是否在死区内保持当前方向
-	if (IsAngleInDirectionWithDeadZone(NormalizedAngle, CurrentLocomotionDirection, InSettings))
+	if (IsAngleInDirectionWithDeadZone(NormalizedAngle, Direction, InSettings))
 	{
-		NewDirection = CurrentLocomotionDirection;
+		return NewDirection;
 	}
 	else
 	{
@@ -111,6 +129,7 @@ EArcaneMoveDirection UArcaneCharacterAnimInstance::CalculateLocomotionDirection(
 		else if (IsAngleInRange(NormalizedAngle, InSettings.RMin, InSettings.RMax))
 		{
 			NewDirection = EArcaneMoveDirection::Right;
+			
 			if (IsForwardTree(PreviousLocomotionDirection))
 			{
 				HipFacingDirection = EArcaneHipFacing::Forward;
@@ -124,12 +143,14 @@ EArcaneMoveDirection UArcaneCharacterAnimInstance::CalculateLocomotionDirection(
 				HipFacingDirection = HipFacingDirection == EArcaneHipFacing::Forward ? EArcaneHipFacing::Backward : EArcaneHipFacing::Forward;
 			}
 			
+			
 		}
 		else if (IsAngleInRange(NormalizedAngle, InSettings.BRMin, InSettings.BRMax))  NewDirection = EArcaneMoveDirection::BackwardRight;
 		else if (IsAngleInRange(NormalizedAngle, InSettings.BLMin, InSettings.BLMax))  NewDirection = EArcaneMoveDirection::BackwardLeft;
 		else if (IsAngleInRange(NormalizedAngle, InSettings.LMin, InSettings.LMax))
 		{
 			NewDirection = EArcaneMoveDirection::Left;
+			
 			if (IsForwardTree(PreviousLocomotionDirection))
 			{
 				HipFacingDirection = EArcaneHipFacing::Forward;
@@ -142,6 +163,7 @@ EArcaneMoveDirection UArcaneCharacterAnimInstance::CalculateLocomotionDirection(
 			{
 				HipFacingDirection = HipFacingDirection == EArcaneHipFacing::Forward ? EArcaneHipFacing::Backward : EArcaneHipFacing::Forward;
 			}
+			
 		}
 		else if (IsAngleInRange(NormalizedAngle, InSettings.FLMin, InSettings.FLMax))  NewDirection = EArcaneMoveDirection::ForwardLeft;
 		else if (IsAngleInRange(NormalizedAngle, InSettings.BMin, InSettings.BMax))
@@ -273,7 +295,7 @@ void UArcaneCharacterAnimInstance::UpdateHipFacingDirection(EArcaneMoveDirection
 		HipFacingDirection = IsForwardTree(NewDir) ? EArcaneHipFacing::Forward : EArcaneHipFacing::Backward;
 		return;
 	}
-
+	
 	// 方向未变化时保持当前朝向
 	if (PreviousDir == NewDir) return;
 
