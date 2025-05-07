@@ -53,6 +53,9 @@ protected:
 	float LocomotionDirectionAngle;	// 角色运动方向与面朝方向之间的水平平面角度差，这是一个-180~180的值
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
+	float LocomotionAngleWithOffset;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
 	float AccelerationLocomotionAngle;		// 加速度方向与面朝方向之间的水平平面角度差，这是一个-180~180的值
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")

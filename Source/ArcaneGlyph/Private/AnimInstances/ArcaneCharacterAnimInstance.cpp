@@ -99,6 +99,7 @@ void UArcaneCharacterAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSe
 	
 	// 计算当前移动的方向
 	LocomotionDirectionAngle = UKismetAnimationLibrary::CalculateDirection(Velocity2D, ArcaneWorldRotation);
+	LocomotionAngleWithOffset = FRotator::NormalizeAxis(LocomotionDirectionAngle - RootYawOffset);
 	AccelerationLocomotionAngle = UKismetAnimationLibrary::CalculateDirection(ArcaneAcceleration2D, OwnerCharacter->GetActorRotation());
 
 	PreviousWorldLocation = ArcaneWorldLocation;
