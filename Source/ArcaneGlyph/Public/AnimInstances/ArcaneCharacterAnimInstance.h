@@ -7,6 +7,7 @@
 #include "ArcaneTypes/ArcaneEnumTypes.h"
 #include "ArcaneTypes/ArcaneStructTypes.h"
 #include "Interfaces/ArcaneGaitDataInterface.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "ArcaneCharacterAnimInstance.generated.h"
 
 class UCharacterMovementComponent;
@@ -22,6 +23,8 @@ class ARCANEGLYPH_API UArcaneCharacterAnimInstance : public UArcaneBaseAnimInsta
 public:
 	virtual void NativeInitializeAnimation() override;
 	void UpdateHipFacingByCurve();
+	void UpdateRootYawOffsetData(float DeltaSeconds);
+	void SetRootYawOffset(float InRootYawOffset);
 
 	// 该动画实例的更新函数是线程安全的，运行在独立的工作线程中，而非游戏线程中，因此可以在该函数中进行一些计算密集型的操作
 	// 这意味着使用这个函数可以提高动画的性能，使用该函数来计算我们需要的动画数据是一个很大的优化项
@@ -40,31 +43,31 @@ protected:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "AnimData|ReferenceData")
 	TObjectPtr<UCharacterMovementComponent> OwnerCharacterMovementComponent;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
 	float GroundSpeed;	// 地面速度
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
 	bool bHasAcceleration;	// 是否有加速度
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
 	float LocomotionDirectionAngle;	// 角色运动方向与面朝方向之间的水平平面角度差，这是一个-180~180的值
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
 	float AccelerationLocomotionAngle;		// 加速度方向与面朝方向之间的水平平面角度差，这是一个-180~180的值
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
 	EArcaneMoveDirection CurrentLocomotionDirection;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
 	EArcaneMoveDirection AccelerationLocomotionDirection;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
 	EArcaneMoveDirection PreviousLocomotionDirection;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
 	EArcaneMoveDirection PreviousAccelerationLocomotionDirection;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
 	EArcaneLocomotionDirection LocomotionDirection;
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "AnimData|LocomotionData")
@@ -76,43 +79,55 @@ protected:
 	// 如果你手动修改了返回值的名称（例如改为 Result 或 Output），反射元数据中的返回值名称将不再匹配 ReturnValue，导致 PropertyAccess 无法识别。
 
 	// 角色世界坐标
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|LocationData")
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Category = "AnimData|LocationData")
 	FVector ArcaneWorldLocation;
 
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|LocationData")
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Category = "AnimData|LocationData")
 	FVector PreviousWorldLocation;
 
 	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Category = "AnimData|LocationData")
 	float LocomotionDelta;	// 角色在世界坐标系中的位移
 	
 	// 角色世界旋转
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|RotationData")
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Category = "AnimData|RotationData")
 	FRotator ArcaneWorldRotation;
 
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|RotationData")
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Category = "AnimData|RotationData")
 	float PreviousActorYaw;
 
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|RotationData")
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Category = "AnimData|RotationData")
 	float CurrentActorYaw;
 
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|RotationData")
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Category = "AnimData|RotationData")
 	float ActorYawDelta;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "AnimData|RotationData")
 	float LeanAngle;		// 角色的倾斜角度
 	
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "AnimData|RootYawOffsetData")
+	float RootYawOffset = 0.f;	// 角色的根部偏移角度
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "AnimData|RootYawOffsetData")
+	float PreviousRootYawOffset;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "AnimData|RootYawOffsetData")
+	FFloatSpringState RootYawOffsetSpringState;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "AnimData|RootYawOffsetData")
+	EArcaneRootYawOffsetMode RootYawOffsetMode;
+	
 	// 角色加速度
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|VelocityData")
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Category = "AnimData|VelocityData")
 	FVector  ArcaneAcceleration;
 
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "AnimData|VelocityData")
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Category = "AnimData|VelocityData")
 	FVector ArcaneAcceleration2D;
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "AnimData|VelocityData")
 	FVector PivotAcceleration2D;
 
 	// 角色的水平速度和垂直速度
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|VelocityData")
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "AnimData|VelocityData")
 	FVector Velocity2D;
 
 	// 角色步态

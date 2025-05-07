@@ -7,6 +7,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "KismetAnimationLibrary.h"
 #include "ArcaneTypes/ArcaneEnumTypes.h"
+#include "Engine/SpringInterpolator.h"
 #include "Kismet/KismetMathLibrary.h"
 
 void UArcaneCharacterAnimInstance::NativeInitializeAnimation()
@@ -32,6 +33,46 @@ void UArcaneCharacterAnimInstance::UpdateHipFacingByCurve()
 	{
 		HipFacingDirection = EArcaneHipFacing::Backward;
 	}
+}
+
+void UArcaneCharacterAnimInstance::UpdateRootYawOffsetData(float DeltaSeconds)
+{
+	if (RootYawOffsetMode == EArcaneRootYawOffsetMode::Accumulate)
+	{
+		// 当我们处于累积根部偏航偏移量（AccumulateRootYawOffset）时，我们将把根部Yaw偏移量叠加到当前的偏移值上
+		// 这样，在我们自由旋转摄像机时，我们的角色网格体仍能保持朝向特定的方向
+		SetRootYawOffset(RootYawOffset - ActorYawDelta);
+		
+	}
+	if (RootYawOffsetMode == EArcaneRootYawOffsetMode::BlendOut)
+	{
+		// 单我们处于淡出根部偏航偏移量（BlendOutRootYawOffset）时，我们将把根部Yaw偏移量淡出到0（随时间推移将那个根 Y 轴偏移值混合归零）
+		const float Offset = UKismetMathLibrary::FloatSpringInterp(
+			RootYawOffset,
+			0.f,
+			RootYawOffsetSpringState,
+			80.f,
+			1.f,
+			DeltaSeconds,
+			1.f,
+			0.5f);
+
+		SetRootYawOffset(Offset);
+		
+	}
+	if (RootYawOffsetMode == EArcaneRootYawOffsetMode::Hold)
+	{
+		// 当我们处于保持根部偏航偏移量（HoldRootYawOffset）时，我们将把根部Yaw偏移量保持在当前的偏移值上
+		
+		RootYawOffset = FMath::FInterpTo(RootYawOffset, 0.f, DeltaSeconds, 5.f);
+	}
+}
+
+void UArcaneCharacterAnimInstance::SetRootYawOffset(float InRootYawOffset)
+{
+	PreviousRootYawOffset = RootYawOffset;
+	InRootYawOffset = FRotator::NormalizeAxis(InRootYawOffset);
+	RootYawOffset = InRootYawOffset;
 }
 
 void UArcaneCharacterAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
@@ -87,6 +128,8 @@ void UArcaneCharacterAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSe
 	PreviousGait = CurrentGait;
 	CurrentGait = InComingGait;
 	bGaitChanged = InComingGait != PreviousGait;
+
+	UpdateRootYawOffsetData(DeltaSeconds);
 	
 }
 

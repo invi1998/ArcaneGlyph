@@ -101,3 +101,12 @@ enum class EArcaneLocomotionDirection : uint8
 	Right UMETA(DisplayName = "右"),
 };
 
+UENUM(BlueprintType)
+enum class EArcaneRootYawOffsetMode : uint8
+{
+	Accumulate UMETA(DisplayName = "累积"),
+	BlendOut UMETA(DisplayName = "混合"),
+	Hold UMETA(DisplayName = "保持"),
+};
+
+
