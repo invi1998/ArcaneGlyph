@@ -125,7 +125,6 @@ bool UArcaneGameplayAbility::DoesAbilitySatisfyTagRequirements(const UAbilitySys
  
 	// We succeeded if there were no blocked tags and no missing required tags	
 	return !bBlocked && !bMissing;
-
 }
 
 UPawnCombatComponent* UArcaneGameplayAbility::GetPawnCombatComponentFromActorInfo() const
