@@ -27,6 +27,9 @@ public:
 	static UArcaneAbilitySystemComponent* NativeGetArcaneASCFromActor(AActor* InActor);
 
 	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary")
+	static UArcaneAbilitySystemComponent* GetArcaneASCFromActor(AActor* InActor);
+
+	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary")
 	static void AddGameplayTagToActorIfNotHas(AActor* InActor, FGameplayTag InTag);
 
 	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary")
