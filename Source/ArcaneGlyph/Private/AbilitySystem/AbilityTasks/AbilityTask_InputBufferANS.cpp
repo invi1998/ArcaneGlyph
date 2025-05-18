@@ -7,38 +7,25 @@
 #include "ArcaneGameplayTags.h"
 #include "EnhancedInputComponent.h"
 
-
-UAbilityTask_InputBufferANS* UAbilityTask_InputBufferANS::CreateInputBufferTaskANS(UGameplayAbility* OwningAbility, FGameplayTag WindowTag)
+UAbilityTask_InputBufferANS* UAbilityTask_InputBufferANS::ListenForComboInput(UGameplayAbility* OwningAbility, const TArray<UInputAction*>& ValidActions)
 {
 	UAbilityTask_InputBufferANS* Task = NewAbilityTask<UAbilityTask_InputBufferANS>(OwningAbility);
-	Task->AssociatedWindowTag = WindowTag;
+	Task->TrackedActions = ValidActions;
+	Task->InputBindings.Empty();
 	return Task;
 }
 
 void UAbilityTask_InputBufferANS::Activate()
 {
-	Super::Activate();
-
-	// 绑定ANS窗口事件
-	if (AbilitySystemComponent.IsValid())
+	if (APlayerController* PC = Ability->GetCurrentActorInfo()->PlayerController.Get())
 	{
-		// 监听窗口开启事件
-		AbilitySystemComponent->GenericGameplayEventCallbacks.FindOrAdd(ArcaneGameplayTags::Player_Event_InputBuffer_WindowOpened).AddUObject(this, &UAbilityTask_InputBufferANS::OnInputWindowOpened);
-
-		// 监听窗口关闭事件
-		AbilitySystemComponent->GenericGameplayEventCallbacks.FindOrAdd(ArcaneGameplayTags::Player_Event_InputBuffer_WindowClosed).AddUObject(this, &UAbilityTask_InputBufferANS::OnInputWindowClosed);
-
-	}
-
-	// 绑定输入事件（EnhancedInput)
-	if (APawn* Pawn = Cast<APawn>(GetAvatarActor()))
-	{
-		if (UEnhancedInputComponent* InputComponent = Cast<UEnhancedInputComponent>(Pawn->InputComponent))
+		if (UEnhancedInputComponent* EIC = Cast<UEnhancedInputComponent>(PC->InputComponent))
 		{
-			// 遍历所有需要跟踪的输入动作
-			for (const UInputAction* Action : TrackedInputActions)
+			for (UInputAction* Action : TrackedActions)
 			{
-				InputComponent->BindAction(Action, ETriggerEvent::Triggered, this, &UAbilityTask_InputBufferANS::OnInputActionTriggered);
+				// 绑定并存储句柄
+				const uint32 Handle = EIC->BindAction(Action, ETriggerEvent::Triggered, this, &UAbilityTask_InputBufferANS::OnInputActionTriggered).GetHandle();
+				InputBindings.Add(Action, Handle);
 			}
 		}
 	}
@@ -46,31 +33,26 @@ void UAbilityTask_InputBufferANS::Activate()
 
 void UAbilityTask_InputBufferANS::OnDestroy(bool AbilityEnded)
 {
+	// 清理输入绑定
+	if (APlayerController* PC = Ability->GetCurrentActorInfo()->PlayerController.Get())
+	{
+		if (UEnhancedInputComponent* EIC = Cast<UEnhancedInputComponent>(PC->InputComponent))
+		{
+			// 遍历所有存储的句柄进行解绑
+			for (const auto& Pair : InputBindings)
+			{
+				EIC->RemoveBindingByHandle(Pair.Value); // 使用uint32参数
+			}
+		}
+	}
+	InputBindings.Empty();
 	Super::OnDestroy(AbilityEnded);
 }
 
-void UAbilityTask_InputBufferANS::OnInputActionTriggered(const FInputActionInstance& Instance)
+void UAbilityTask_InputBufferANS::OnInputActionTriggered(const FInputActionInstance& ActionInstance)
 {
-	// 仅在输入缓冲窗口激活时记录
-	if (AbilitySystemComponent.IsValid() && AbilitySystemComponent->HasMatchingGameplayTag(ArcaneGameplayTags::Player_Ability_InputBuffer_Active))
+	if (ShouldBroadcastAbilityTaskDelegates())
 	{
-		BufferedActions.AddUnique(Instance.GetSourceAction());
+		OnComboInputDetected.Broadcast(ActionInstance.GetSourceAction());
 	}
-}
-
-void UAbilityTask_InputBufferANS::OnInputWindowOpened(const FGameplayEventData* EventData)
-{
-	// 清空旧的缓冲输入
-	BufferedActions.Empty();
-}
-
-void UAbilityTask_InputBufferANS::OnInputWindowClosed(const FGameplayEventData* EventData)
-{
-	if (BufferedActions.Num() > 0)
-	{
-		OnBufferedInput.Broadcast(BufferedActions.Last());
-		BufferedActions.Empty();
-	}
-
-	EndTask();
 }

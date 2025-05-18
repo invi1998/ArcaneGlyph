@@ -25,6 +25,14 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_HeavyAttack_Sword, "InputTag.HeavyAttack.Sword", "重攻击:剑");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_HeavyAttack_Twinblades, "InputTag.HeavyAttack.Twinblades", "重攻击:双刃剑");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_HeavyAttack_Spear, "InputTag.HeavyAttack.Spear", "重攻击:长矛");
+	
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_Combo_LightAttack_1, "InputTag.Combo.LightAttack.1", "连击轻攻击1");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_Combo_LightAttack_2, "InputTag.Combo.LightAttack.2", "连击轻攻击2");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_Combo_LightAttack_3, "InputTag.Combo.LightAttack.3", "连击轻攻击3");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_Combo_LightAttack_4, "InputTag.Combo.LightAttack.4", "连击轻攻击4");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_Combo_ChangeHand_1, "InputTag.Combo.ChangeHand.1", "切手技-重");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_Combo_ChangeHand_2, "InputTag.Combo.ChangeHand.2", "切手技-重-重");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_MustBeHeld_Combo_Heavy, "InputTag.MustBeHeld.Combo.Heavy", "必须被持续按住-重攻击");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_PickUp_HealSoul, "InputTag.PickUp.HealSoul", "拾取疗伤灵魂");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_PickUp_RageSoul, "InputTag.PickUp.RageSoul", "拾取愤怒灵魂");
@@ -69,7 +77,8 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_PickupSoul_Start, "Player.Event.PickupSoul.Start", "玩家事件：拾取灵魂开始");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_PickupSoul_End, "Player.Event.PickupSoul.End", "玩家事件：拾取灵魂结束");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_UsePotion, "Player.Event.UsePotion", "玩家事件：使用药水");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_ComboWindow, "Player.Event.ComboWindow", "玩家事件：连击窗口");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_ComboWindow_Opened, "Player.Event.ComboWindow.Opened", "玩家事件：连招窗口打开");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_ComboWindow_Closed, "Player.Event.ComboWindow.Closed", "玩家事件：连招窗口关闭");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_InputBuffer_WindowOpened, "Player.Event.InputBuffer.WindowOpened", "玩家事件：输入窗口打开");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_InputBuffer_WindowClosed, "Player.Event.InputBuffer.WindowClosed", "玩家事件：输入窗口关闭");
 	
@@ -98,7 +107,14 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_UseItem_HealPotion, "Player.Ability.UseItem.HealPotion", "玩家技能：使用药水");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_UseItem_RagePotion, "Player.Ability.UseItem.RagePotion", "玩家技能：使用愤怒药水");
 
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_InputBuffer_Active, "Player.Ability.InputBuffer.Active", "玩家技能：输入缓冲激活");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Combo_Light_1, "Player.Ability.Combo.Light.1", "玩家技能：连招：轻攻击-1");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Combo_Light_2, "Player.Ability.Combo.Light.2", "玩家技能：连招：轻攻击-2");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Combo_Light_3, "Player.Ability.Combo.Light.3", "玩家技能：连招：轻攻击-3");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Combo_Light_4, "Player.Ability.Combo.Light.4", "玩家技能：连招：轻攻击-4");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Combo_ChangeHand_1, "Player.Ability.Combo.ChangeHand.1", "玩家技能：连招：一段切手技");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Combo_ChangeHand_2, "Player.Ability.Combo.ChangeHand.2", "玩家技能：连招：二段切手技");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Combo_Heavy, "Player.Ability.Combo.Heavy", "玩家技能：连招：重攻击");
+	
 	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Cooldown_Ability_Block, "Player.Cooldown.Ability.Block", "玩家冷却：技能：格挡");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Cooldown_Ability_Rage, "Player.Cooldown.Ability.Rage", "玩家冷却：技能：愤怒");
@@ -114,6 +130,7 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_Rage_Active, "Player.Status.Rage.Active", "玩家状态：愤怒激活");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_Rage_Full, "Player.Status.Rage.Full", "玩家状态：愤怒满");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_Rage_None, "Player.Status.Rage.None", "玩家状态：愤怒无");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_ComboWindow_Active, "Player.Status.ComboWindow.Active", "玩家状态：连招窗口激活");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_SetByCaller_AttackType_Light, "Player.SetByCaller.AttackType.Light", "玩家设置：攻击类型-轻");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_SetByCaller_AttackType_Heavy, "Player.SetByCaller.AttackType.Heavy", "玩家设置：攻击类型-重");

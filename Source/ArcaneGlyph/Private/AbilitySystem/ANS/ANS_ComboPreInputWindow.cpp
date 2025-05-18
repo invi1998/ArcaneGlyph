@@ -15,15 +15,6 @@ void UANS_ComboPreInputWindow::NotifyBegin(USkeletalMeshComponent* MeshComp, UAn
 	{
 		if (AActor* Owner = Mesh->GetOwner())
 		{
-			if (UArcaneAbilitySystemComponent* ASC = UArcaneBlueprintFunctionLibrary::NativeGetArcaneASCFromActor(Owner))
-			{
-				if (ASC->AbilityActorInfo->IsLocallyControlled())
-				{
-					// 通过接口通知GA
-					
-				}
-				
-			}
 		}
 	}
 }

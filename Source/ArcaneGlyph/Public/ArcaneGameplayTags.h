@@ -27,6 +27,14 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_HeavyAttack_Twinblades);		// 输入标签：重攻击：双刃剑
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_HeavyAttack_Spear);		// 输入标签：重攻击：长矛
 
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_Combo_LightAttack_1);		// 输入标签：连击轻攻击1
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_Combo_LightAttack_2);		// 输入标签：连击轻攻击2
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_Combo_LightAttack_3);		// 输入标签：连击轻攻击3
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_Combo_LightAttack_4);		// 输入标签：连击轻攻击4
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_Combo_ChangeHand_1);		// 输入标签：切手技-重
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_Combo_ChangeHand_2);		// 输入标签：切手技-重-重
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_MustBeHeld_Combo_Heavy);		// 输入标签：必须被持续按住-重攻击
+
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_PickUp_HealSoul);		// 输入标签：拾取疗伤灵魂
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_PickUp_RageSoul);		// 输入标签：拾取愤怒灵魂
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_UseItem_HealPotion);		// 输入标签：使用物品：疗伤药水
@@ -69,7 +77,8 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_PickupSoul_Start);			// 玩家事件：拾取灵魂开始
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_PickupSoul_End);			// 玩家事件：拾取灵魂结束
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_UsePotion);				// 玩家事件：使用药水
-	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_ComboWindow);			// 玩家事件：连击窗口
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_ComboWindow_Opened);		// 玩家事件：连招窗口打开
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_ComboWindow_Closed);		// 玩家事件：连招窗口关闭
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_InputBuffer_WindowOpened);	// 玩家事件：输入缓冲窗口打开
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_InputBuffer_WindowClosed);	// 玩家事件：输入缓冲窗口关闭
 
@@ -98,7 +107,14 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_UseItem_HealPotion);	// 玩家技能：使用物品：疗伤药水
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_UseItem_RagePotion);	// 玩家技能：使用物品：愤怒药水
 
-	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_InputBuffer_Active);	// 玩家技能：输入缓冲窗口激活
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_Combo_Light_1);	// 玩家技能：连招：轻攻击-1
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_Combo_Light_2);	// 玩家技能：连招：轻攻击-2
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_Combo_Light_3);	// 玩家技能：连招：轻攻击-3
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_Combo_Light_4);	// 玩家技能：连招：轻攻击-4
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_Combo_ChangeHand_1);	// 玩家技能：连招：一段切手技
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_Combo_ChangeHand_2);	// 玩家技能：连招：二段切手技
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_Combo_Heavy);	// 玩家技能：连招：重攻击
+	
 	
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Cooldown_Ability_Block);	// 玩家冷却：技能：格挡
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Cooldown_Ability_Rage);	// 玩家冷却：技能：愤怒
@@ -114,6 +130,7 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_Rage_Active);		// 玩家状态：愤怒激活
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_Rage_Full);		// 玩家状态：愤怒满
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_Rage_None);		// 玩家状态：愤怒无
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_ComboWindow_Active);	// 玩家状态：输入缓冲窗口激活
 	
 	
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_SetByCaller_AttackType_Light);	// 玩家设置：攻击类型-轻

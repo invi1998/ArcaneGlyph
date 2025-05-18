@@ -24,6 +24,6 @@ public:
 
 	// 配置参数：允许缓冲哪些输入动作
 	UPROPERTY(EditAnywhere, Category="Input")
-	TArray<TObjectPtr<UInputAction>> BufferedInputActions;
+	TArray<UInputAction*> BufferedInputActions;
 	
 };
