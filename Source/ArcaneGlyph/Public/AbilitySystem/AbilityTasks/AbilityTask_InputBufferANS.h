@@ -41,5 +41,7 @@ private:
 	TMap<TObjectPtr<UInputAction>, uint32> InputBindings;
 
 	void OnInputActionTriggered(const FInputActionInstance& ActionInstance);
+
+	bool bIsFirstInput = true;	// 是否是第一次输入
 	
 };

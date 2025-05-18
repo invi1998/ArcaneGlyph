@@ -113,7 +113,15 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_Combo_Light_4);	// 玩家技能：连招：轻攻击-4
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_Combo_ChangeHand_1);	// 玩家技能：连招：一段切手技
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_Combo_ChangeHand_2);	// 玩家技能：连招：二段切手技
-	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_Combo_Heavy);	// 玩家技能：连招：重攻击
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_Combo_Heavy);		// 玩家技能：连招：重攻击
+
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Combo_Light_1);	// 玩家连招：轻攻击-1
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Combo_Light_2);	// 玩家连招：轻攻击-2
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Combo_Light_3);	// 玩家连招：轻攻击-3
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Combo_Light_4);	// 玩家连招：轻攻击-4
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Combo_ChangeHand_1);	// 玩家连招：一段切手技
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Combo_ChangeHand_2);	// 玩家连招：二段切手技
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Combo_Heavy);		// 玩家连招：重攻击
 	
 	
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Cooldown_Ability_Block);	// 玩家冷却：技能：格挡

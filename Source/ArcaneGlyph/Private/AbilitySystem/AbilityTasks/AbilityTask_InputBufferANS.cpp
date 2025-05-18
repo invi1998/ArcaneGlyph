@@ -51,6 +51,12 @@ void UAbilityTask_InputBufferANS::OnDestroy(bool AbilityEnded)
 
 void UAbilityTask_InputBufferANS::OnInputActionTriggered(const FInputActionInstance& ActionInstance)
 {
+	if (bIsFirstInput) 
+	{
+		bIsFirstInput = false; // 仅在第一次输入时设置为false
+		return;
+	}
+	
 	if (ShouldBroadcastAbilityTaskDelegates())
 	{
 		OnComboInputDetected.Broadcast(ActionInstance.GetSourceAction());

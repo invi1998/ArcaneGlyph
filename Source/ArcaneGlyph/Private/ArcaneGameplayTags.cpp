@@ -114,7 +114,14 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Combo_ChangeHand_1, "Player.Ability.Combo.ChangeHand.1", "玩家技能：连招：一段切手技");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Combo_ChangeHand_2, "Player.Ability.Combo.ChangeHand.2", "玩家技能：连招：二段切手技");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Combo_Heavy, "Player.Ability.Combo.Heavy", "玩家技能：连招：重攻击");
-	
+
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Combo_Light_1, "Player.Combo.Light.1", "玩家连招：轻攻击-1");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Combo_Light_2, "Player.Combo.Light.2", "玩家连招：轻攻击-2");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Combo_Light_3, "Player.Combo.Light.3", "玩家连招：轻攻击-3");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Combo_Light_4, "Player.Combo.Light.4", "玩家连招：轻攻击-4");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Combo_ChangeHand_1, "Player.Combo.ChangeHand.1", "玩家连招：一段切手技");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Combo_ChangeHand_2, "Player.Combo.ChangeHand.2", "玩家连招：二段切手技");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Combo_Heavy, "Player.Combo.Heavy", "玩家连招：重攻击");
 	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Cooldown_Ability_Block, "Player.Cooldown.Ability.Block", "玩家冷却：技能：格挡");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Cooldown_Ability_Rage, "Player.Cooldown.Ability.Rage", "玩家冷却：技能：愤怒");
