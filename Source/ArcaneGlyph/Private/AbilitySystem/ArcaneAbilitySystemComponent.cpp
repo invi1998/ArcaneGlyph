@@ -44,8 +44,22 @@ void UArcaneAbilitySystemComponent::OnAbilityInputReleased(const FGameplayTag& I
 	{
 		if (AbilitySpec.GetDynamicSpecSourceTags().HasTagExact(InInputTag) && AbilitySpec.IsActive())
 		{
-			// 如果当前输入指向的技能是出于激活状态，就取消激活
-			CancelAbilityHandle(AbilitySpec.Handle);
+			if (InInputTag.MatchesTag(ArcaneGameplayTags::InputTag_MustBeHeld_Combo_Heavy))
+			{
+				// 向Ability发送事件Tag
+				FGameplayEventData EventData;
+				EventData.EventTag = ArcaneGameplayTags::Player_Event_Charge_Complete;
+				EventData.Instigator = GetAvatarActor();
+				EventData.Target = GetAvatarActor();
+
+				// 发送事件
+				HandleGameplayEvent(ArcaneGameplayTags::Player_Event_Charge_Complete, &EventData);
+			}
+			else
+			{
+				// 如果当前输入指向的技能是出于激活状态，就取消激活
+				CancelAbilityHandle(AbilitySpec.Handle);
+			}
 		}
 	}
 	
