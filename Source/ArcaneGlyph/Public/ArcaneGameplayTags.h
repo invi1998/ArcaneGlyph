@@ -82,6 +82,7 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_InputBuffer_WindowOpened);	// 玩家事件：输入缓冲窗口打开
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_InputBuffer_WindowClosed);	// 玩家事件：输入缓冲窗口关闭
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_Charge_Complete);		// 玩家事件：蓄力完成
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_Charge_Start);			// 玩家事件：蓄力开始
 
 	
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_Equip_Sword);			// 玩家技能：装备剑
@@ -141,6 +142,7 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_Rage_Full);		// 玩家状态：愤怒满
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_Rage_None);		// 玩家状态：愤怒无
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_ComboWindow_Active);	// 玩家状态：输入缓冲窗口激活
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_Shipo);			// 玩家状态：识破对手招式（识破招式）
 	
 	
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_SetByCaller_AttackType_Light);	// 玩家设置：攻击类型-轻
