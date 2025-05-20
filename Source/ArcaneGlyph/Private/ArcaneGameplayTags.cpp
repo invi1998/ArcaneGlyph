@@ -83,6 +83,7 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_InputBuffer_WindowClosed, "Player.Event.InputBuffer.WindowClosed", "玩家事件：输入窗口关闭");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_Charge_Complete, "Player.Event.Charge.Complete", "玩家事件：蓄力完成");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_Charge_Start, "Player.Event.Charge.Start", "玩家事件：蓄力开始");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_Charge_EnterLoop, "Player.Event.Charge.EnterLoop", "玩家事件：蓄力进入循环");
 	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Equip_Sword, "Player.Ability.Equip.Sword", "玩家技能：装备剑");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_UnEquip_Sword, "Player.Ability.UnEquip.Sword", "玩家技能：卸下剑");
