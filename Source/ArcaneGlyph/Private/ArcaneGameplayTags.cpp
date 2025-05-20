@@ -142,6 +142,7 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_Rage_None, "Player.Status.Rage.None", "玩家状态：愤怒无");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_ComboWindow_Active, "Player.Status.ComboWindow.Active", "玩家状态：连招窗口激活");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_Shipo, "Player.Status.Shipo", "玩家状态：识破");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_Charge_Looping, "Player.Status.Charge.Looping", "玩家状态：蓄力循环中");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_SetByCaller_AttackType_Light, "Player.SetByCaller.AttackType.Light", "玩家设置：攻击类型-轻");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_SetByCaller_AttackType_Heavy, "Player.SetByCaller.AttackType.Heavy", "玩家设置：攻击类型-重");
