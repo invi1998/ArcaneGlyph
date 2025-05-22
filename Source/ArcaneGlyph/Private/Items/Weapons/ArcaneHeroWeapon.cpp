@@ -3,6 +3,7 @@
 
 #include "Items/Weapons/ArcaneHeroWeapon.h"
 
+#include "ArcaneDebugHelper.h"
 #include "Components/BoxComponent.h"
 
 
@@ -20,3 +21,4 @@ void AArcaneHeroWeapon::AssignGrantedAbilitySpecHandles(const TArray<FGameplayAb
 {
 	GrantedAbilitySpecHandles = InGrantedAbilitySpecHandles;
 }
+

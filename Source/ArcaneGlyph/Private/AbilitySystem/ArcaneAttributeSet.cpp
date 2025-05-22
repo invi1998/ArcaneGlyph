@@ -7,9 +7,13 @@
 #include "ArcaneDebugHelper.h"
 #include "GameplayEffectExtension.h"
 #include "ArcaneGameplayTags.h"
+#include "Component/Combat/PawnCombatComponent.h"
 #include "Component/UI/HeroUIComponent.h"
 #include "Component/UI/PawnUIComponent.h"
+#include "Interfaces/ArcaneStatusInterface.h"
+#include "Interfaces/PawnCombatInterface.h"
 #include "Interfaces/PawnUIInterface.h"
+#include "Items/Weapons/ArcaneHeroWeapon.h"
 
 UArcaneAttributeSet::UArcaneAttributeSet()
 {
@@ -44,6 +48,14 @@ void UArcaneAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 	UPawnUIComponent* PawnUIComponent = CachedPawnUIInterface->GetPawnUIComponent();
 	UEnemyUIComponent* EnemyUIComponent = CachedPawnUIInterface->GetEnemyUIComponent();
 	checkf(PawnUIComponent, TEXT("%s: PawnUIComponent is null in %s!"), *FString(__FUNCTION__), *Data.Target.GetAvatarActor()->GetActorNameOrLabel());
+
+	if (!CachedPawnCombatInterface.IsValid())
+	{
+		CachedPawnCombatInterface = TWeakInterfacePtr<IPawnCombatInterface>(Data.Target.GetAvatarActor());
+	}
+	checkf(CachedPawnCombatInterface.IsValid(), TEXT("%s: PawnCombatInterface is not implemented in %s!"), *FString(__FUNCTION__), *Data.Target.GetAvatarActor()->GetName());
+	UPawnCombatComponent* PawnCombatComponent = CachedPawnCombatInterface->GetPawnCombatComponent();
+	checkf(PawnCombatComponent, TEXT("%s: PawnCombatComponent is null in %s!"), *FString(__FUNCTION__), *Data.Target.GetAvatarActor()->GetActorNameOrLabel());
 	
 	// 获取当前生命值和最大生命值
 	if (Data.EvaluatedData.Attribute == GetCurrentHealthAttribute())
@@ -57,12 +69,20 @@ void UArcaneAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 		SetCurrentRage(FMath::Clamp(GetCurrentRage(), 0.f, GetMaxRage()));
 
 		int32 Spark = CalculateCurrentSpark();
-		if (Spark <= GetMaxSpark())
+		if (Spark <= GetMaxSpark() && Spark != GetCurrentSpark())
 		{
 			SetCurrentSpark(FMath::Clamp(Spark, 0, GetMaxSpark()));
 			if (UHeroUIComponent* HeroUIComponent = CachedPawnUIInterface->GetHeroUIComponent())
 			{
 				HeroUIComponent->OnCurrentSparkNumChanged.Broadcast(GetCurrentSpark(), GetMaxSpark());
+			}
+			// 给玩家武器发送棍势点改变事件
+			if (AArcaneHeroWeapon* PlayerWeapon = Cast<AArcaneHeroWeapon>(PawnCombatComponent->GetCharacterCurrentEquippedWeapon()))
+			{
+				if (PlayerWeapon->GetClass()->ImplementsInterface(UArcaneStatusInterface::StaticClass()))
+				{
+					IArcaneStatusInterface::Execute_OnSparkChanged(PlayerWeapon, GetCurrentSpark());
+				}
 			}
 		}
 		

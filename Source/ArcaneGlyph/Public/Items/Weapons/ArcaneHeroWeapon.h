@@ -6,10 +6,11 @@
 #include "ArcaneWeaponBase.h"
 #include "GameplayAbilitySpecHandle.h"
 #include "ArcaneTypes/ArcaneStructTypes.h"
+#include "Interfaces/ArcaneStatusInterface.h"
 #include "ArcaneHeroWeapon.generated.h"
 
 UCLASS()
-class ARCANEGLYPH_API AArcaneHeroWeapon : public AArcaneWeaponBase
+class ARCANEGLYPH_API AArcaneHeroWeapon : public AArcaneWeaponBase, public IArcaneStatusInterface
 {
 	GENERATED_BODY()
 
@@ -24,7 +25,7 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	TArray<FGameplayAbilitySpecHandle>& GetGrantedAbilitySpecHandles() { return GrantedAbilitySpecHandles; }
-
+	
 private:
 	TArray<FGameplayAbilitySpecHandle> GrantedAbilitySpecHandles;	// 赋予的能力规格句柄
 

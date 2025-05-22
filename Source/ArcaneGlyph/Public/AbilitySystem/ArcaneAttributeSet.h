@@ -13,6 +13,7 @@ GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
+class IPawnCombatInterface;
 class IPawnUIInterface;
 /**
  * 
@@ -93,5 +94,5 @@ public:
 
 private:
 	TWeakInterfacePtr<IPawnUIInterface> CachedPawnUIInterface;
-	
+	TWeakInterfacePtr<IPawnCombatInterface> CachedPawnCombatInterface;
 };
