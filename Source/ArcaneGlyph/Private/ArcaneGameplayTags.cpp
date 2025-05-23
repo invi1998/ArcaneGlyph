@@ -177,6 +177,7 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Event_SpawnProjectile, "Shared.Event.SpawnProjectile", "共享事件：生成投射物");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Event_AOE, "Shared.Event.AOE", "共享事件：群体伤害");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Event_FellDown, "Shared.Event.FellDown", "共享事件：倒地");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Event_ShipoSuccess, "Shared.Event.ShipoSuccess", "共享事件：识破成功");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Ability_HitReact, "Shared.Ability.HitReact", "共享技能：受击反应");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Ability_Death, "Shared.Ability.Death", "共享技能：死亡");

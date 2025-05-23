@@ -32,7 +32,7 @@ void UEnemyCombatComponent::OnHitTargetActor(AActor* InHitActor, int32 InCollisi
 
 
 	bool bIsRolling = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(InHitActor, ArcaneGameplayTags::Player_Status_Rolling);
-
+	bool bIsShipo = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(InHitActor, ArcaneGameplayTags::Shared_Status_ShipoWindow);
 	if (bIsRolling)
 	{
 		if (InCollisionBoxIndex == 1)
@@ -47,6 +47,14 @@ void UEnemyCombatComponent::OnHitTargetActor(AActor* InHitActor, int32 InCollisi
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
 				InHitActor,
 				ArcaneGameplayTags::Player_Event_RollSuccess,
+				EventData
+				);
+	}
+	else if (bIsShipo)
+	{
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+				InHitActor,
+				ArcaneGameplayTags::Shared_Event_ShipoSuccess,
 				EventData
 				);
 	}
