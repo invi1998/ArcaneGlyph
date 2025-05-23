@@ -195,5 +195,6 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Status_Invincibility, "Shared.Status.Invincibility", "共享状态：无敌状态");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Status_FellDown, "Shared.Status.FellDown", "共享状态：倒地");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Status_Hegemony, "Shared.Status.Hegemony", "共享状态：霸体");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Status_ShipoWindow, "Shared.Status.ShipoWindow", "共享状态：识破窗口");
 	
 }

@@ -197,6 +197,7 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Status_Invincibility);		// 共享状态：无敌状态
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Status_FellDown);				// 共享状态：受击反应-倒地
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Status_Hegemony);				// 共享状态：霸体状态
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Status_ShipoWindow);			// 共享状态：识破招式窗口
 	
 }
 
