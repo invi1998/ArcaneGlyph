@@ -3,6 +3,8 @@
 
 #include "AbilitySystem/ExecCalc/ExecCalc_CostOneSpark.h"
 
+#include "ArcaneGameplayTags.h"
+
 UExecCalc_CostOneSpark::UExecCalc_CostOneSpark()
 {
 	RelevantAttributesToCapture.Add(GetArcaneCostOneSparkCaptureStatics().CurrentSparkDef);
@@ -57,12 +59,23 @@ void UExecCalc_CostOneSpark::Execute_Implementation(const FGameplayEffectCustomE
 		RageBaseIncrement,
 		ExtraRageIncrement);
 
+	float Flag = 1.f;
+	for (const TPair<FGameplayTag, float>& Pair : Spec.SetByCallerTagMagnitudes)
+	{
+		if (Pair.Key.MatchesTagExact( ArcaneGameplayTags::Shared_SetByCaller_RageGainOrCost))
+		{
+			Flag = Pair.Value;
+			break;
+		}
+	}
+
 	if (CostRage > 0.0f)
 	{
+		CostRage *= Flag;
 		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(
 			GetArcaneCostOneSparkCaptureStatics().CurrentRageProperty,
 			EGameplayModOp::AddBase,
-			-CostRage));
+			CostRage));
 	}
 	
 }
