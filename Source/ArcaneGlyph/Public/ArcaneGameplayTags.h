@@ -77,8 +77,10 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_PickupSoul_Start);			// 玩家事件：拾取灵魂开始
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_PickupSoul_End);			// 玩家事件：拾取灵魂结束
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_UsePotion);				// 玩家事件：使用药水
-	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_ComboWindow_Opened);		// 玩家事件：连招窗口打开
-	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_ComboWindow_Closed);		// 玩家事件：连招窗口关闭
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_ComboWindow_Opened_Light);	// 玩家事件：连招窗口打开-轻攻击
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_ComboWindow_Opened_Heavy);	// 玩家事件：连招窗口打开-重攻击
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_ComboWindow_Closed_Light);	// 玩家事件：连招窗口关闭-轻攻击
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_ComboWindow_Closed_Heavy);	// 玩家事件：连招窗口关闭-重攻击
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_InputBuffer_WindowOpened);	// 玩家事件：输入缓冲窗口打开
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_InputBuffer_WindowClosed);	// 玩家事件：输入缓冲窗口关闭
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_Charge_Complete);		// 玩家事件：蓄力完成
@@ -141,9 +143,11 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_Rage_Active);		// 玩家状态：愤怒激活
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_Rage_Full);		// 玩家状态：愤怒满
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_Rage_None);		// 玩家状态：愤怒无
-	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_ComboWindow_Active);	// 玩家状态：输入缓冲窗口激活
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_ComboWindow_Active_Light);	// 玩家状态：连招窗口激活(轻攻击)
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_ComboWindow_Active_Heavy);	// 玩家状态：连招窗口激活(重攻击)
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_Shipo);			// 玩家状态：识破对手招式（识破招式）
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_Charge_Looping);	// 玩家状态：蓄力循环中
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_ShipoWindow_Active);	// 玩家状态：识破招式窗口激活
 	
 	
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_SetByCaller_AttackType_Light);	// 玩家设置：攻击类型-轻

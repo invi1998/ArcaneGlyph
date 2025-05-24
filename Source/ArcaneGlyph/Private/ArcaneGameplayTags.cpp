@@ -77,8 +77,10 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_PickupSoul_Start, "Player.Event.PickupSoul.Start", "玩家事件：拾取灵魂开始");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_PickupSoul_End, "Player.Event.PickupSoul.End", "玩家事件：拾取灵魂结束");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_UsePotion, "Player.Event.UsePotion", "玩家事件：使用药水");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_ComboWindow_Opened, "Player.Event.ComboWindow.Opened", "玩家事件：连招窗口打开");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_ComboWindow_Closed, "Player.Event.ComboWindow.Closed", "玩家事件：连招窗口关闭");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_ComboWindow_Opened_Light, "Player.Event.ComboWindow.Opened.Light", "玩家事件：连招窗口打开-轻攻击");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_ComboWindow_Opened_Heavy, "Player.Event.ComboWindow.Opened.Heavy", "玩家事件：连招窗口打开-重攻击");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_ComboWindow_Closed_Light, "Player.Event.ComboWindow.Closed.Light", "玩家事件：连招窗口关闭-轻攻击");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_ComboWindow_Closed_Heavy, "Player.Event.ComboWindow.Closed.Heavy", "玩家事件：连招窗口关闭-重攻击");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_InputBuffer_WindowOpened, "Player.Event.InputBuffer.WindowOpened", "玩家事件：输入窗口打开");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_InputBuffer_WindowClosed, "Player.Event.InputBuffer.WindowClosed", "玩家事件：输入窗口关闭");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Event_Charge_Complete, "Player.Event.Charge.Complete", "玩家事件：蓄力完成");
@@ -140,7 +142,8 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_Rage_Active, "Player.Status.Rage.Active", "玩家状态：愤怒激活");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_Rage_Full, "Player.Status.Rage.Full", "玩家状态：愤怒满");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_Rage_None, "Player.Status.Rage.None", "玩家状态：愤怒无");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_ComboWindow_Active, "Player.Status.ComboWindow.Active", "玩家状态：连招窗口激活");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_ComboWindow_Active_Light, "Player.Status.ComboWindow.Active.Light", "玩家状态：连招窗口激活-轻攻击");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_ComboWindow_Active_Heavy, "Player.Status.ComboWindow.Active.Heavy", "玩家状态：连招窗口激活-重攻击");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_Shipo, "Player.Status.Shipo", "玩家状态：识破");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_Charge_Looping, "Player.Status.Charge.Looping", "玩家状态：蓄力循环中");
 
