@@ -86,12 +86,20 @@ void AArcaneProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent, A
 	EventData.Instigator = this;
 
 	bool bIsRolling = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(HitPawn, ArcaneGameplayTags::Player_Status_Rolling);
-
+	bool bIsShipo = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(HitPawn, ArcaneGameplayTags::Shared_Status_ShipoWindow);
 	if (bIsRolling)
 	{
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
 				HitPawn,
 				ArcaneGameplayTags::Player_Event_RollSuccess,
+				EventData
+				);
+	}
+	if (bIsShipo)
+	{
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+				HitPawn,
+				ArcaneGameplayTags::Shared_Event_ShipoSuccess,
 				EventData
 				);
 	}
