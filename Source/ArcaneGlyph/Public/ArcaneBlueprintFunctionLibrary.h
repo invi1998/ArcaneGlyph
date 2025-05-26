@@ -26,7 +26,7 @@ class ARCANEGLYPH_API UArcaneBlueprintFunctionLibrary : public UBlueprintFunctio
 public:
 	static UArcaneAbilitySystemComponent* NativeGetArcaneASCFromActor(AActor* InActor);
 
-	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary")
+	UFUNCTION(BlueprintPure, Category = "Arcane | FunctionLibrary")
 	static UArcaneAbilitySystemComponent* GetArcaneASCFromActor(AActor* InActor);
 
 	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary")

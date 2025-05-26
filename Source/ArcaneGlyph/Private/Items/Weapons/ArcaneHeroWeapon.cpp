@@ -22,3 +22,8 @@ void AArcaneHeroWeapon::AssignGrantedAbilitySpecHandles(const TArray<FGameplayAb
 	GrantedAbilitySpecHandles = InGrantedAbilitySpecHandles;
 }
 
+void AArcaneHeroWeapon::AssignGrantedComboGroupAbilitySpecHandles(const TArray<FGameplayAbilitySpecHandle>& InGrantedComboGroupAbilitySpecHandles)
+{
+	GrantedComboGroupAbilitySpecHandles = InGrantedComboGroupAbilitySpecHandles;
+}
+

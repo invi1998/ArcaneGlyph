@@ -23,10 +23,17 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void AssignGrantedAbilitySpecHandles(const TArray<FGameplayAbilitySpecHandle>& InGrantedAbilitySpecHandles);
 
+	UFUNCTION(BlueprintCallable)
+	void AssignGrantedComboGroupAbilitySpecHandles(const TArray<FGameplayAbilitySpecHandle>& InGrantedComboGroupAbilitySpecHandles);
+
 	UFUNCTION(BlueprintPure)
 	TArray<FGameplayAbilitySpecHandle>& GetGrantedAbilitySpecHandles() { return GrantedAbilitySpecHandles; }
+
+	UFUNCTION(BlueprintPure)
+	TArray<FGameplayAbilitySpecHandle>& GetGrantedComboGroupAbilitySpecHandles() { return GrantedComboGroupAbilitySpecHandles; }
 	
 private:
 	TArray<FGameplayAbilitySpecHandle> GrantedAbilitySpecHandles;	// 赋予的能力规格句柄
+	TArray<FGameplayAbilitySpecHandle> GrantedComboGroupAbilitySpecHandles;	// 赋予的连招组能力规格句柄
 
 };

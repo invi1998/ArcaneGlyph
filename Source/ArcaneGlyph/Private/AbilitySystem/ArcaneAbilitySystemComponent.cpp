@@ -108,6 +108,29 @@ void UArcaneAbilitySystemComponent::GrantHeroWeaponAbilities(const TArray<FArcan
 	}
 }
 
+void UArcaneAbilitySystemComponent::GrantHeroComboGroupAbilities(const TArray<FArcaneHeroAbilitySet>& InAbilitySetGroups, int32 InApplyLevel, TArray<FGameplayAbilitySpecHandle>& OutGrantedComboGroupAbilitySpecHandles)
+{
+	if (InAbilitySetGroups.Num() > 0)
+	{
+		for (const FArcaneHeroAbilitySet& AbilitySet : InAbilitySetGroups)
+		{
+			if (AbilitySet.IsValid())
+			{
+				// 生成一个新的动态能力规格
+				FGameplayAbilitySpec NewAbilitySpec(AbilitySet.AbilityToGrantClass);
+				NewAbilitySpec.SourceObject = GetAvatarActor();
+				NewAbilitySpec.Level = InApplyLevel;
+				NewAbilitySpec.GetDynamicSpecSourceTags().AddTag(AbilitySet.InputTag);
+
+				// 给予能力
+				GiveAbility(NewAbilitySpec);
+				
+				OutGrantedComboGroupAbilitySpecHandles.AddUnique(NewAbilitySpec.Handle);
+			}
+		}
+	}
+}
+
 void UArcaneAbilitySystemComponent::RemoveGrantHeroWeaponAbilities(AArcaneHeroWeapon* InWeapon)
 {
 	if (InWeapon)
@@ -120,6 +143,21 @@ void UArcaneAbilitySystemComponent::RemoveGrantHeroWeaponAbilities(AArcaneHeroWe
 		}
 
 		GrantedAbilitySpecHandles.Empty();
+	}
+}
+
+void UArcaneAbilitySystemComponent::RemoveGrantHeroComboGroupAbilities(AArcaneHeroWeapon* InWeapon)
+{
+	if (InWeapon)
+	{
+		TArray<FGameplayAbilitySpecHandle>& GrantedComboGroupAbilitySpecHandles = InWeapon->GetGrantedComboGroupAbilitySpecHandles();
+		for (const FGameplayAbilitySpecHandle& AbilitySpecHandle : GrantedComboGroupAbilitySpecHandles)
+		{
+			// 移除能力
+			ClearAbility(AbilitySpecHandle);
+		}
+
+		GrantedComboGroupAbilitySpecHandles.Empty();
 	}
 }
 

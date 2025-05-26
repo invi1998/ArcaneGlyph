@@ -26,6 +26,11 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_HeavyAttack_Twinblades, "InputTag.HeavyAttack.Twinblades", "重攻击:双刃剑");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_HeavyAttack_Spear, "InputTag.HeavyAttack.Spear", "重攻击:长矛");
 	
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_ChangeComboType_VerticalStaff, "InputTag.ChangeComboType.VerticalStaff", "切换连击类型:立棍");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_ChangeComboType_HorizontalStaff, "InputTag.ChangeComboType.HorizontalStaff", "切换连击类型:横棍");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_ChangeComboType_CleavingStaff, "InputTag.ChangeComboType.CleavingStaff", "切换连击类型:劈棍");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_ChangeComboType_ThrustingStaff, "InputTag.ChangeComboType.ThrustingStaff", "切换连击类型:戳棍");
+	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_Combo_LightAttack_1, "InputTag.Combo.LightAttack.1", "连击轻攻击1");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_Combo_LightAttack_2, "InputTag.Combo.LightAttack.2", "连击轻攻击2");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_Combo_LightAttack_3, "InputTag.Combo.LightAttack.3", "连击轻攻击3");
@@ -119,6 +124,11 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Combo_ChangeHand_1, "Player.Ability.Combo.ChangeHand.1", "玩家技能：连招：一段切手技");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Combo_ChangeHand_2, "Player.Ability.Combo.ChangeHand.2", "玩家技能：连招：二段切手技");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Combo_Heavy, "Player.Ability.Combo.Heavy", "玩家技能：连招：重攻击");
+	
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_ChangeComboType_VerticalStaff, "Player.Ability.ChangeComboType.VerticalStaff", "玩家技能：切换连击类型：立棍");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_ChangeComboType_HorizontalStaff, "Player.Ability.ChangeComboType.HorizontalStaff", "玩家技能：切换连击类型：横棍");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_ChangeComboType_CleavingStaff, "Player.Ability.ChangeComboType.CleavingStaff", "玩家技能：切换连击类型：劈棍");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_ChangeComboType_ThrustingStaff, "Player.Ability.ChangeComboType.ThrustingStaff", "玩家技能：切换连击类型：戳棍");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Combo_Light_1, "Player.Combo.Light.1", "玩家连招：轻攻击-1");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Combo_Light_2, "Player.Combo.Light.2", "玩家连招：轻攻击-2");
