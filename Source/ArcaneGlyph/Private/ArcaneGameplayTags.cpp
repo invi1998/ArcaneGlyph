@@ -147,6 +147,11 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_Shipo, "Player.Status.Shipo", "玩家状态：识破");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_Charge_Looping, "Player.Status.Charge.Looping", "玩家状态：蓄力循环中");
 
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_ComboType_VerticalStaff, "Player.ComboType.VerticalStaff", "玩家连招类型：立棍");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_ComboType_HorizontalStaff, "Player.ComboType.HorizontalStaff", "玩家连招类型：横棍");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_ComboType_CleavingStaff, "Player.ComboType.CleavingStaff", "玩家连招类型：劈棍");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_ComboType_ThrustingStaff, "Player.ComboType.ThrustingStaff", "玩家连招类型：戳棍");
+	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_SetByCaller_AttackType_Light, "Player.SetByCaller.AttackType.Light", "玩家设置：攻击类型-轻");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_SetByCaller_AttackType_Heavy, "Player.SetByCaller.AttackType.Heavy", "玩家设置：攻击类型-重");
 

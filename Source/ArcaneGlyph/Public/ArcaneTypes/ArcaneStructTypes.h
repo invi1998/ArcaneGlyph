@@ -16,7 +16,7 @@ struct FArcaneHeroAbilitySet
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(Category = "InputTag"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(Category = "InputTag", GameplayTagFilter = "InputTag"))
 	FGameplayTag InputTag;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -36,6 +36,21 @@ struct FArcaneHeroSpecialAbilitySet : public FArcaneHeroAbilitySet
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (Category = "Player.Cooldown"))
 	FGameplayTag AbilityCooldownTag;
 	
+};
+
+USTRUCT(BlueprintType)
+struct FArcaneHeroAbilitySetGroup
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(GameplayTagFilter = "Player.ComboType"))
+	FGameplayTag GroupTag;		// 组标签
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSoftObjectPtr<UTexture2D> GroupIcon;		// 组图标
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TArray<FArcaneHeroAbilitySet> AbilitySets;		// 能力集合
 };
 
 USTRUCT(BlueprintType)
@@ -88,6 +103,9 @@ struct FArcaneHeroWeaponData
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WeaponData")
 	TSoftObjectPtr<UTexture2D> WeaponIcon;		// 武器图标
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WeaponData", meta=(GameplayTagFilter = "Player.ComboType", TitleProperty = "GroupTag"))
+	TMap<FGameplayTag, FArcaneHeroAbilitySetGroup> AbilitySetGroups;		// 能力集合组
 	
 };
 
