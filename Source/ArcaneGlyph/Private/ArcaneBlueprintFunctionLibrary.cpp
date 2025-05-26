@@ -6,6 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "ArcaneDebugHelper.h"
 #include "ArcaneGameplayTags.h"
+#include "EngineUtils.h"
 #include "GenericTeamAgentInterface.h"
 #include "KismetAnimationLibrary.h"
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
@@ -19,7 +20,9 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Interfaces/PawnCombatInterface.h"
 #include "Interfaces/PawnUIInterface.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 
 UArcaneAbilitySystemComponent* UArcaneBlueprintFunctionLibrary::NativeGetArcaneASCFromActor(AActor* InActor)
@@ -409,6 +412,53 @@ EArcaneMoveDirection UArcaneBlueprintFunctionLibrary::GetAnimLayerLocomotionDire
 		}
 	}
 	return EArcaneMoveDirection::None;
+}
+
+AActor* UArcaneBlueprintFunctionLibrary::GetNearestEnemyInFrontOfCharacter(AActor* InActor, TArray<TEnumAsByte<EObjectTypeQuery>> TargetObjectTypes, bool bShowDebugTrace, float MaxDistance, float MaxAngle, FVector TraceBoxSize)
+{
+	check(InActor);
+
+	// 获取InActor的位置和前向向量
+	const FVector ActorLocation = InActor->GetActorLocation();
+	const FVector ActorForward = InActor->GetActorForwardVector();
+
+	AActor* NearestEnemy = nullptr;
+
+	TArray<AActor*> AvailableTargetToLock;
+	TArray<FHitResult> BoxTraceHitResults;
+	
+	UKismetSystemLibrary::BoxTraceMultiForObjects(
+		InActor,					// 获取角色
+		ActorLocation,				// 从英雄角色获取位置
+		ActorLocation + ActorForward * MaxDistance,		// 从英雄角色获取前方1000米的位置
+		TraceBoxSize * 0.5f,		// 射线盒大小
+		ActorForward.ToOrientationRotator(),		// 从英雄角色获取前方向量
+		TargetObjectTypes,		// 指定检测目标的对象类型
+		false,		// 是否检测复杂碰撞
+		{},		// 忽略的Actor
+		bShowDebugTrace ? EDrawDebugTrace::Persistent : EDrawDebugTrace::None,		// 是否显示调试射线
+		BoxTraceHitResults,		// 射线命中结果
+		true		// 是否忽略自身
+		);
+
+	// 遍历射线命中结果
+	for (const FHitResult& HitResult : BoxTraceHitResults)
+	{
+		if (AActor* HitActor = HitResult.GetActor())
+		{
+			if (HitActor != InActor)
+			{
+				AvailableTargetToLock.AddUnique(HitActor);
+			}
+		}
+	}
+
+	float ClosestDistance = TNumericLimits<float>::Max();
+
+	// 使用GameplayStatics的FindNearestActor函数来查找最近的Actor，该函数会返回最近的Actor和距离
+	NearestEnemy = UGameplayStatics::FindNearestActor(ActorLocation, AvailableTargetToLock, ClosestDistance);
+
+	return NearestEnemy;	// 返回最近的敌人Actor
 }
 
 
