@@ -71,6 +71,15 @@ UPawnUIComponent* AArcaneCharacterBase::GetPawnUIComponent() const
 	return nullptr;
 }
 
+bool AArcaneCharacterBase::IsCharacterAlive() const
+{
+	if (ArcaneAttributeSet)
+	{
+		return ArcaneAttributeSet->GetCurrentHealth() > 0.0f;
+	}
+	return false;
+}
+
 void AArcaneCharacterBase::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);

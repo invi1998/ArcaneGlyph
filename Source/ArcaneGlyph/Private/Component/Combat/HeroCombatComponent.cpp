@@ -6,8 +6,26 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "ArcaneBlueprintFunctionLibrary.h"
 #include "ArcaneGameplayTags.h"
+#include "Characters/ArcaneHeroCharacter.h"
+#include "Component/UI/HeroUIComponent.h"
 #include "Items/Weapons/ArcaneHeroWeapon.h"
 
+
+void UHeroCombatComponent::ChangeCurrentComboTypeTag(AArcaneHeroCharacter* InHeroCharacter, const FGameplayTag& InComboTypeTag)
+{
+	CurrentComboTypeTag = InComboTypeTag;
+	if (UHeroUIComponent* HeroUI = InHeroCharacter->GetHeroUIComponent())
+	{
+		if (const AArcaneHeroWeapon* CurrentEquippedWeapon = GetHeroCurrentEquippedWeapon())
+		{
+			const FArcaneHeroWeaponData& WeaponData = CurrentEquippedWeapon->HeroWeaponData;
+			TSoftObjectPtr<UTexture2D> IconTexture2D = WeaponData.AbilitySetGroups.Find(InComboTypeTag)->GroupIcon;
+			
+			HeroUI->OnComboTypeChanged.Broadcast(InComboTypeTag, IconTexture2D);
+		}
+		
+	}
+}
 
 AArcaneHeroWeapon* UHeroCombatComponent::GetHeroCarriedWeaponByTag(const FGameplayTag& InWeaponTag) const
 {

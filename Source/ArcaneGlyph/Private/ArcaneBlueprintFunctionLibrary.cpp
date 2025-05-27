@@ -446,6 +446,14 @@ AActor* UArcaneBlueprintFunctionLibrary::GetNearestEnemyInFrontOfCharacter(AActo
 	{
 		if (AActor* HitActor = HitResult.GetActor())
 		{
+			if (AArcaneCharacterBase* ArcaneCharacter = Cast<AArcaneCharacterBase>(HitActor))
+			{
+				// 检查是是否存活
+				if (!ArcaneCharacter->IsCharacterAlive())
+				{
+					continue;	// 如果角色不存活，则跳过
+				}
+			}
 			if (HitActor != InActor)
 			{
 				AvailableTargetToLock.AddUnique(HitActor);

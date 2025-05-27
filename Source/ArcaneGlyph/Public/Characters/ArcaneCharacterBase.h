@@ -44,6 +44,9 @@ public:
 	FORCEINLINE UBoxComponent* GetLeftFootCollision() const { return LeftFootCollisionBox; }
 	FORCEINLINE UBoxComponent* GetRightFootCollision() const { return RightFootCollisionBox; }
 
+	UFUNCTION(BlueprintCallable, Category = "Arcane | Character")
+	bool IsCharacterAlive() const;
+
 protected:
 	// ~ Begin APawn Interface
 	virtual void PossessedBy(AController* NewController) override;	// 当角色被控制器控制时调用
