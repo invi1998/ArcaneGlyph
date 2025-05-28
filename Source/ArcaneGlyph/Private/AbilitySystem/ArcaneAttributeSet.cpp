@@ -34,7 +34,7 @@ UArcaneAttributeSet::UArcaneAttributeSet()
 	InitRageBaseIncrement(100.f);
 	InitExtraRageIncrement(10.f);
 	InitCurrentEnergy(0.f);
-	InitMaxEnergy(1.f);
+	InitMaxEnergy(0.f);
 }
 
 void UArcaneAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data)

@@ -14,6 +14,8 @@ struct ArcaneDamageCaptureStatics
 	DECLARE_ATTRIBUTE_CAPTUREDEF(DefensePower);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CurrentSpark);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(DamageTaken);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(CurrentEnergy);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(MaxEnergy);
 
 	ArcaneDamageCaptureStatics()
 	{
@@ -22,6 +24,8 @@ struct ArcaneDamageCaptureStatics
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UArcaneAttributeSet, DefensePower, Target, false);	// 捕获目标的防御力，不拍快照
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UArcaneAttributeSet, CurrentSpark, Source, false);	// 捕获源目标的当前豆子数量，不拍快照
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UArcaneAttributeSet, DamageTaken, Target, false);	// 捕获目标的伤害承受，不拍快照
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UArcaneAttributeSet, CurrentEnergy, Source, false);	// 捕获源目标的当前气力值，不拍快照
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UArcaneAttributeSet, MaxEnergy, Source, false);	// 捕获源目标的最大气力值，不拍快照
 	}
 };
 

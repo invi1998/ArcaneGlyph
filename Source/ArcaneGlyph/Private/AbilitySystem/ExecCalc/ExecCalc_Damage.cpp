@@ -29,6 +29,8 @@ UExecCalc_Damage::UExecCalc_Damage()
 	RelevantAttributesToCapture.Add(GetArcaneDamageCaptureStatics().DefensePowerDef);	// 捕获防御力属性
 	RelevantAttributesToCapture.Add(GetArcaneDamageCaptureStatics().CurrentSparkDef);	// 捕获当前火花属性
 	RelevantAttributesToCapture.Add(GetArcaneDamageCaptureStatics().DamageTakenDef);	// 捕获伤害承受属性
+	RelevantAttributesToCapture.Add(GetArcaneDamageCaptureStatics().CurrentEnergyDef);	// 捕获当前能量属性
+	RelevantAttributesToCapture.Add(GetArcaneDamageCaptureStatics().MaxEnergyDef);		// 捕获最大能量属性
 	
 }
 
@@ -113,6 +115,41 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	float FinalDamage = BaseDamage * SourceAttackPower / TargetDefensePower;
 	// 伤害向上取整，保留小数点后两位
 	FinalDamage = FMath::CeilToFloat(FinalDamage * 100.f) / 100.f;
+
+	// 捕获当前气力值，在气力充盈（百分之20以上）的情况下，角色的伤害会有额外加成（暴击加成）
+	// 在气力耗尽的情况下，角色的伤害将大幅降低（0.25倍）
+	float CurrentEnergy = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
+		GetArcaneDamageCaptureStatics().CurrentEnergyDef,
+		EvaluationParameters,
+		CurrentEnergy);
+
+	float MaxEnergy = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
+		GetArcaneDamageCaptureStatics().MaxEnergyDef,
+		EvaluationParameters,
+		MaxEnergy);
+
+	// 根据当前气力值调整最终伤害
+	if (MaxEnergy > 0.f)
+	{
+		if (CurrentEnergy >= MaxEnergy * 0.2f)
+		{
+			// 气力充盈，伤害增加50%
+			// 计算是否暴击（暴击率为20%）
+			if (constexpr float CritChance = 0.2f; FMath::FRand() <= CritChance)
+			{
+				// 触发暴击
+				FinalDamage *= 2.f; // 暴击伤害翻倍
+			}
+		}
+		else if (CurrentEnergy <= 0.1f)
+		{
+			// 气力耗尽，伤害降低75%
+			FinalDamage *= 0.25f;
+		}
+	}
+	
 	
 	if (FinalDamage > 0.f)
 	{

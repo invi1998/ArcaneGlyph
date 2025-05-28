@@ -157,7 +157,7 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_ComboWindow_Active_Heavy);	// 玩家状态：连招窗口激活(重攻击)
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_Shipo);			// 玩家状态：识破对手招式（识破招式）
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_Charge_Looping);	// 玩家状态：蓄力循环中
-	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_ShipoWindow_Active);	// 玩家状态：识破招式窗口激活
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_EnergyRegenCooldown);	// 玩家状态：能量回复冷却中
 
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_ComboType_VerticalStaff);		// 玩家连招类型：立棍
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_ComboType_HorizontalStaff);		// 玩家连招类型：横棍

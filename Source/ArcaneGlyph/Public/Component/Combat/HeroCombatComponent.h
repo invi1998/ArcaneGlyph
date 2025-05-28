@@ -22,6 +22,22 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components", meta=(GameplayTagFilter="Player.ComboType"))
 	FGameplayTag CurrentComboTypeTag;	// 当前连击组合类型标签（当前攻击模组）
+	
+	FTimerHandle EnergyRegenTimerHandle;	// 气力回复计时器句柄
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Components")
+	float EnergyRegenDelay = 0.75f;		// 气力回复延迟时间
+
+	UFUNCTION(BlueprintCallable, Category="Components")
+	void StartEnergyRegenTimer();
+
+	UFUNCTION(BlueprintCallable, Category="Components")
+	void ClearEnergyRegenTimer();
+
+	UFUNCTION(BlueprintCallable, Category="Components")
+	void SetEnergyRegenCooldownTag();
+
+	void EnergyRegen();
 
 	UFUNCTION(BlueprintCallable, Category="Components")
 	void ChangeCurrentComboTypeTag(AArcaneHeroCharacter* InHeroCharacter, const FGameplayTag& InComboTypeTag);

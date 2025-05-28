@@ -156,6 +156,7 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_ComboWindow_Active_Heavy, "Player.Status.ComboWindow.Active.Heavy", "玩家状态：连招窗口激活-重攻击");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_Shipo, "Player.Status.Shipo", "玩家状态：识破");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_Charge_Looping, "Player.Status.Charge.Looping", "玩家状态：蓄力循环中");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_EnergyRegenCooldown, "Player.Status.EnergyRegenCooldown", "玩家状态：能量回复冷却中");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_ComboType_VerticalStaff, "Player.ComboType.VerticalStaff", "玩家连招类型：立棍");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_ComboType_HorizontalStaff, "Player.ComboType.HorizontalStaff", "玩家连招类型：横棍");

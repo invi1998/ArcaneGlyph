@@ -18,6 +18,7 @@ class ARCANEGLYPH_API UArcaneHeroGameplayAbility : public UArcaneGameplayAbility
 	GENERATED_BODY()
 
 public:
+	
 	UFUNCTION(BlueprintPure, Category = "Arcane | Ability")
 	AArcaneHeroCharacter* GetHeroCharacterFromActorInfo();
 
@@ -40,4 +41,5 @@ public:
 private:
 	TWeakObjectPtr<AArcaneHeroCharacter> CachedArcaneHeroCharacter;		// 缓存的英雄角色
 	TWeakObjectPtr<AArcaneHeroController> CachedArcaneHeroController;	// 缓存的英雄控制器
+	
 };
