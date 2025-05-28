@@ -19,6 +19,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnPercentChangedWithSparkDelegat
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnComboTypeChangedDelegate, FGameplayTag, InComboTypeTag, TSoftObjectPtr<UTexture2D>, InComboTypeIcon);	// 连击类型变化委托
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEnegyChangedDelegate, float, InCurrentEnergyPercent);			// 气力变化委托
+
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class ARCANEGLYPH_API UHeroUIComponent : public UPawnUIComponent
@@ -49,5 +51,8 @@ public:
 
 	UPROPERTY(BlueprintAssignable, BlueprintCallable)
 	FOnComboTypeChangedDelegate OnComboTypeChanged;				// 连击类型变化
+
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnEnegyChangedDelegate OnCurrentEnergyChanged;				// 气力变化
 	
 };

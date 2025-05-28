@@ -14,6 +14,7 @@
 #include "Interfaces/PawnCombatInterface.h"
 #include "Interfaces/PawnUIInterface.h"
 #include "Items/Weapons/ArcaneHeroWeapon.h"
+#include "Kismet/KismetMathLibrary.h"
 
 UArcaneAttributeSet::UArcaneAttributeSet()
 {
@@ -32,6 +33,8 @@ UArcaneAttributeSet::UArcaneAttributeSet()
 	InitCurrentSpark(0.f);
 	InitRageBaseIncrement(100.f);
 	InitExtraRageIncrement(10.f);
+	InitCurrentEnergy(0.f);
+	InitMaxEnergy(1.f);
 }
 
 void UArcaneAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data)
@@ -56,6 +59,17 @@ void UArcaneAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 	checkf(CachedPawnCombatInterface.IsValid(), TEXT("%s: PawnCombatInterface is not implemented in %s!"), *FString(__FUNCTION__), *Data.Target.GetAvatarActor()->GetName());
 	UPawnCombatComponent* PawnCombatComponent = CachedPawnCombatInterface->GetPawnCombatComponent();
 	checkf(PawnCombatComponent, TEXT("%s: PawnCombatComponent is null in %s!"), *FString(__FUNCTION__), *Data.Target.GetAvatarActor()->GetActorNameOrLabel());
+
+	// 气力变化
+	if (Data.EvaluatedData.Attribute == GetCurrentEnergyAttribute())
+	{
+		SetCurrentEnergy(FMath::Clamp(GetCurrentEnergy(), 0.f, GetMaxEnergy()));
+		if (UHeroUIComponent* HeroUIComponent = CachedPawnUIInterface->GetHeroUIComponent())
+		{
+			float TempCurrentEnergyPercent = UKismetMathLibrary::SafeDivide(GetCurrentEnergy(), GetMaxEnergy());
+			HeroUIComponent->OnCurrentEnergyChanged.Broadcast(TempCurrentEnergyPercent);
+		}
+	}
 	
 	// 获取当前生命值和最大生命值
 	if (Data.EvaluatedData.Attribute == GetCurrentHealthAttribute())

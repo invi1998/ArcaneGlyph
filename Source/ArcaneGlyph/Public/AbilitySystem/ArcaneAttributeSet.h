@@ -92,6 +92,15 @@ public:
 	FGameplayAttributeData ExtraRageIncrement;		// 额外怒气步长增量
 	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, ExtraRageIncrement);
 
+	// 气力
+	UPROPERTY(BlueprintReadOnly, Category = "Energy")
+	FGameplayAttributeData CurrentEnergy;
+	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, CurrentEnergy);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Energy")
+	FGameplayAttributeData MaxEnergy;
+	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, MaxEnergy);
+
 private:
 	TWeakInterfacePtr<IPawnUIInterface> CachedPawnUIInterface;
 	TWeakInterfacePtr<IPawnCombatInterface> CachedPawnCombatInterface;
