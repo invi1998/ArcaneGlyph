@@ -29,7 +29,6 @@ UExecCalc_Damage::UExecCalc_Damage()
 	RelevantAttributesToCapture.Add(GetArcaneDamageCaptureStatics().DefensePowerDef);	// 捕获防御力属性
 	RelevantAttributesToCapture.Add(GetArcaneDamageCaptureStatics().CurrentSparkDef);	// 捕获当前火花属性
 	RelevantAttributesToCapture.Add(GetArcaneDamageCaptureStatics().DamageTakenDef);	// 捕获伤害承受属性
-	RelevantAttributesToCapture.Add(GetArcaneDamageCaptureStatics().CurrentEnergyDef);	// 捕获当前能量属性
 	RelevantAttributesToCapture.Add(GetArcaneDamageCaptureStatics().MaxEnergyDef);		// 捕获最大能量属性
 	
 }
@@ -70,6 +69,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	float BaseDamage = 0.f;
 	int32 LightComboCount = 0;
 	int32 HeavyComboCount = 0;
+	float CurrentEnergy = 0.f;
 	for (const TPair<FGameplayTag, float>& TagMagnitudes : Spec.SetByCallerTagMagnitudes)
 	{
 		// 这里可以获取到我们在创建GameplayEffectSpec时传入的动态标签
@@ -88,6 +88,11 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		if (TagMagnitudes.Key.MatchesTagExact(ArcaneGameplayTags::Player_SetByCaller_AttackType_Heavy))
 		{
 			HeavyComboCount = TagMagnitudes.Value;
+		}
+
+		if (TagMagnitudes.Key.MatchesTagExact(ArcaneGameplayTags::Player_SetByCaller_PreEnergy))
+		{
+			CurrentEnergy = TagMagnitudes.Value;
 		}
 		
 	}
@@ -118,11 +123,6 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	// 捕获当前气力值，在气力充盈（百分之20以上）的情况下，角色的伤害会有额外加成（暴击加成）
 	// 在气力耗尽的情况下，角色的伤害将大幅降低（0.25倍）
-	float CurrentEnergy = 0.f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
-		GetArcaneDamageCaptureStatics().CurrentEnergyDef,
-		EvaluationParameters,
-		CurrentEnergy);
 
 	float MaxEnergy = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
@@ -140,7 +140,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 			if (constexpr float CritChance = 0.2f; FMath::FRand() <= CritChance)
 			{
 				// 触发暴击
-				FinalDamage *= 2.f; // 暴击伤害翻倍
+				FinalDamage *= 1.5f; // 暴击伤害翻倍
 			}
 		}
 		else if (CurrentEnergy <= 0.1f)

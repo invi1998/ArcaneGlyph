@@ -38,7 +38,7 @@ UHeroCombatComponent* UArcaneHeroGameplayAbility::GetHeroCombatComponentFromActo
 	return nullptr;
 }
 
-FGameplayEffectSpecHandle UArcaneHeroGameplayAbility::MakeHeroDamageEffectSpecHandle(TSubclassOf<UGameplayEffect> InGameplayEffectClass, FGameplayTag InCurrentAttackType, float InBaseDamageValue, int32 InUsedComboCount)
+FGameplayEffectSpecHandle UArcaneHeroGameplayAbility::MakeHeroDamageEffectSpecHandle(TSubclassOf<UGameplayEffect> InGameplayEffectClass, FGameplayTag InCurrentAttackType, float InBaseDamageValue, int32 InUsedComboCount, float InPreEnergyCost)
 {
 	check(InGameplayEffectClass);
 
@@ -63,6 +63,9 @@ FGameplayEffectSpecHandle UArcaneHeroGameplayAbility::MakeHeroDamageEffectSpecHa
 		ArcaneGameplayTags::Shared_SetByCaller_BaseDamage,
 		InBaseDamageValue
 	);
+
+	// 设置能量消耗数值（以键值对的形式设置）
+	DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(ArcaneGameplayTags::Player_SetByCaller_PreEnergy, InUsedComboCount);
 
 	// 设置当前攻击类型和连击数
 	if (InCurrentAttackType.IsValid())

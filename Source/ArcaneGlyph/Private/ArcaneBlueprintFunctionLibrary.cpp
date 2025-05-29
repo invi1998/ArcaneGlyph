@@ -384,6 +384,17 @@ int32 UArcaneBlueprintFunctionLibrary::GetCharacterCurrentSpark(AActor* InActor)
 	return 0;
 }
 
+float UArcaneBlueprintFunctionLibrary::GetCharacterCurrentEnergy(AActor* InActor)
+{
+	check(InActor);
+
+	if (AArcaneCharacterBase* ArcaneCharacter = Cast<AArcaneCharacterBase>(InActor))
+	{
+		return ArcaneCharacter->GetArcaneAttributeSet()->GetCurrentEnergy();
+	}
+	return 0.f;
+}
+
 EArcaneMoveDirection UArcaneBlueprintFunctionLibrary::GetAnimLayerLocomotionDirection(AActor* InActor)
 {
 	// 获取角色的AnimInstance

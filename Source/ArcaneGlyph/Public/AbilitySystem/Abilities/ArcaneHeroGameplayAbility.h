@@ -29,7 +29,7 @@ public:
 	UHeroCombatComponent* GetHeroCombatComponentFromActorInfo();
 
 	UFUNCTION(BlueprintPure, Category = "Arcane | Ability")
-	FGameplayEffectSpecHandle MakeHeroDamageEffectSpecHandle(TSubclassOf<UGameplayEffect> InGameplayEffectClass, FGameplayTag InCurrentAttackType, float InBaseDamageValue, int32 InUsedComboCount);
+	FGameplayEffectSpecHandle MakeHeroDamageEffectSpecHandle(TSubclassOf<UGameplayEffect> InGameplayEffectClass, FGameplayTag InCurrentAttackType, float InBaseDamageValue, int32 InUsedComboCount, float InPreEnergyCost = 0.0f);
 
 	UFUNCTION(BlueprintPure, Category = "Arcane | Ability")
 	FGameplayEffectSpecHandle MakeHeroRageGainEffectSpecHandle(TSubclassOf<UGameplayEffect> InGameplayEffectClass, FGameplayTag InCurrentAttackType, float InBaseRageGain, int32 InUsedComboCount);
