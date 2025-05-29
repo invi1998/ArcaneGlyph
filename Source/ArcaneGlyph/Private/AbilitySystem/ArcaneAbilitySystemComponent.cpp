@@ -32,6 +32,18 @@ void UArcaneAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& In
 	}
 }
 
+void UArcaneAbilitySystemComponent::SendChargeComplete()
+{
+	// 向Ability发送事件Tag
+	FGameplayEventData EventData;
+	EventData.EventTag = ArcaneGameplayTags::Player_Event_Charge_Complete;
+	EventData.Instigator = GetAvatarActor();
+	EventData.Target = GetAvatarActor();
+
+	// 发送事件
+	HandleGameplayEvent(ArcaneGameplayTags::Player_Event_Charge_Complete, &EventData);
+}
+
 void UArcaneAbilitySystemComponent::OnAbilityInputReleased(const FGameplayTag& InInputTag)
 {
 	if (!InInputTag.IsValid() || !InInputTag.MatchesTag(ArcaneGameplayTags::InputTag_MustBeHeld))
@@ -46,14 +58,7 @@ void UArcaneAbilitySystemComponent::OnAbilityInputReleased(const FGameplayTag& I
 		{
 			if (InInputTag.MatchesTag(ArcaneGameplayTags::InputTag_MustBeHeld_Combo_Heavy))
 			{
-				// 向Ability发送事件Tag
-				FGameplayEventData EventData;
-				EventData.EventTag = ArcaneGameplayTags::Player_Event_Charge_Complete;
-				EventData.Instigator = GetAvatarActor();
-				EventData.Target = GetAvatarActor();
-
-				// 发送事件
-				HandleGameplayEvent(ArcaneGameplayTags::Player_Event_Charge_Complete, &EventData);
+				SendChargeComplete();
 			}
 			else
 			{

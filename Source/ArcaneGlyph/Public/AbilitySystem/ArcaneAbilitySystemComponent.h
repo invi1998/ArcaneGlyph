@@ -18,6 +18,7 @@ class ARCANEGLYPH_API UArcaneAbilitySystemComponent : public UAbilitySystemCompo
 
 public:
 	void OnAbilityInputPressed(const FGameplayTag& InInputTag);
+	void SendChargeComplete();
 	void OnAbilityInputReleased(const FGameplayTag& InInputTag);
 
 	UFUNCTION(BlueprintCallable, Category = "Arcane | AbilitySystem", meta = (InApplyLevel = "1"))

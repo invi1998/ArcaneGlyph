@@ -7,6 +7,7 @@
 #include "ArcaneDebugHelper.h"
 #include "GameplayEffectExtension.h"
 #include "ArcaneGameplayTags.h"
+#include "Component/Combat/HeroCombatComponent.h"
 #include "Component/Combat/PawnCombatComponent.h"
 #include "Component/UI/HeroUIComponent.h"
 #include "Component/UI/PawnUIComponent.h"
@@ -64,6 +65,15 @@ void UArcaneAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 	if (Data.EvaluatedData.Attribute == GetCurrentEnergyAttribute())
 	{
 		SetCurrentEnergy(FMath::Clamp(GetCurrentEnergy(), 0.f, GetMaxEnergy()));
+		if (GetCurrentEnergy() <= 0.f)
+		{
+			// 获取当前角色的ASC
+			if (UArcaneAbilitySystemComponent* ArcaneASC = UArcaneBlueprintFunctionLibrary::NativeGetArcaneASCFromActor(Data.Target.GetAvatarActor()))
+			{
+				ArcaneASC->SendChargeComplete();
+			}
+		}
+		
 		if (UHeroUIComponent* HeroUIComponent = CachedPawnUIInterface->GetHeroUIComponent())
 		{
 			float TempCurrentEnergyPercent = UKismetMathLibrary::SafeDivide(GetCurrentEnergy(), GetMaxEnergy());

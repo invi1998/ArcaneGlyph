@@ -133,7 +133,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	// 根据当前气力值调整最终伤害
 	if (MaxEnergy > 0.f)
 	{
-		if (CurrentEnergy >= MaxEnergy * 0.2f)
+		if (CurrentEnergy >= MaxEnergy * 0.1f)
 		{
 			// 气力充盈，伤害增加50%
 			// 计算是否暴击（暴击率为20%）
