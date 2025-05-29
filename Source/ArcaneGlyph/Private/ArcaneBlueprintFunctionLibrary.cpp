@@ -433,6 +433,32 @@ AActor* UArcaneBlueprintFunctionLibrary::GetNearestEnemyInFrontOfCharacter(AActo
 	const FVector ActorLocation = InActor->GetActorLocation();
 	const FVector ActorForward = InActor->GetActorForwardVector();
 
+	AArcaneHeroCharacter* HeroCharacter = Cast<AArcaneHeroCharacter>(InActor);
+	// 查看是否有软锁定角色
+	if (HeroCharacter && IsValid(HeroCharacter->SoftLockedTargetActor))
+	{
+		AArcaneCharacterBase* Character = Cast<AArcaneCharacterBase>(HeroCharacter->SoftLockedTargetActor);
+		if (Character && Character->IsCharacterAlive())
+		{
+			// 如果软锁定角色存活，查看软锁定角色是否还在范围内（距离是否在MaxDistance)
+			const FVector TargetLocation = Character->GetActorLocation();
+			if (FVector::Dist(ActorLocation, TargetLocation) <= MaxDistance)
+			{
+				// 如果软锁定角色在范围内，直接返回软锁定角色
+				return Character;
+			}
+			else
+			{
+				// 如果软锁定角色不在范围内，则清除软锁定角色
+				HeroCharacter->SoftLockedTargetActor = nullptr;
+			}
+		}
+		else
+		{
+			HeroCharacter->SoftLockedTargetActor = nullptr;
+		}
+	}
+
 	AActor* NearestEnemy = nullptr;
 
 	TArray<AActor*> AvailableTargetToLock;
@@ -476,6 +502,8 @@ AActor* UArcaneBlueprintFunctionLibrary::GetNearestEnemyInFrontOfCharacter(AActo
 
 	// 使用GameplayStatics的FindNearestActor函数来查找最近的Actor，该函数会返回最近的Actor和距离
 	NearestEnemy = UGameplayStatics::FindNearestActor(ActorLocation, AvailableTargetToLock, ClosestDistance);
+
+	HeroCharacter->SoftLockedTargetActor = NearestEnemy;	// 将最近的敌人设置为软锁定目标
 
 	return NearestEnemy;	// 返回最近的敌人Actor
 }

@@ -45,6 +45,9 @@ public:
 	bool bIsLeftHandUsingWeapon = false;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AbilitySystem")
+	TObjectPtr<AActor> SoftLockedTargetActor;		// 软锁定目标角色
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AbilitySystem")
 	TObjectPtr<AActor> CurrentLockedTargetActor;		// 当前锁定的目标角色
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AbilitySystem")
