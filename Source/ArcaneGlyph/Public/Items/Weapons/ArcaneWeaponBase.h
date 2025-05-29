@@ -8,7 +8,8 @@
 
 class UBoxComponent;
 
-DECLARE_DELEGATE_TwoParams(FOnTargetInteractedDelegate, AActor*, int32);
+DECLARE_DELEGATE_ThreeParams(FOnTargetInteractedDelegate, AActor*, int32, FVector);		// 委托：目标交互委托，参数为目标Actor、伤害值
+DECLARE_DELEGATE_TwoParams(FOnTargetInteractedEndDelegate, AActor*, int32);
 
 UCLASS()
 class ARCANEGLYPH_API AArcaneWeaponBase : public AActor
@@ -24,8 +25,8 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Weapon")
 	void ToggleWeaponCollision(bool bEnable);
 
-	FOnTargetInteractedDelegate OnWeaponHitTarget;		// 武器击中目标委托
-	FOnTargetInteractedDelegate OnWeaponPulledTarget;		// 武器结束击中目标委托
+	FOnTargetInteractedDelegate OnWeaponHitTarget;			// 武器击中目标委托
+	FOnTargetInteractedEndDelegate OnWeaponPulledTarget;		// 武器结束击中目标委托
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")

@@ -54,17 +54,33 @@ void AArcaneWeaponBase::OnWeaponCollisionBoxBeginOverlap(UPrimitiveComponent* Ov
 		// 如果目标是敌对的
 		if (UArcaneBlueprintFunctionLibrary::IsTargetPawnHostile(WeaponOwningPawn, HitPawn))
 		{
+			FVector OverlapLocation;
+			// 在非扫描情况下计算近似碰撞点
+			if(!bFromSweep)
+			{
+				
+				if (OverlappedComponent && OtherComp)
+				{
+					// 计算两个组件之间的中点
+					OverlapLocation = (OverlappedComponent->GetComponentLocation() + OtherComp->GetComponentLocation()) * 0.5f;
+				}
+			}
+			else
+			{
+				OverlapLocation = SweepResult.ImpactPoint;
+			}
+			
 			// 获取碰撞盒子的名字，用于判断是哪个碰撞盒子
 			FName CollisionBoxName = OverlappedComponent->GetFName();
 			if (CollisionBoxName == WeaponCollisionBox1->GetFName())
 			{
 				// 通知武器拥有者
-				OnWeaponHitTarget.ExecuteIfBound(HitPawn, 1);
+				OnWeaponHitTarget.ExecuteIfBound(HitPawn, 1, OverlapLocation);
 			}
 			else if (CollisionBoxName == WeaponCollisionBox2->GetFName())
 			{
 				// 通知武器拥有者
-				OnWeaponHitTarget.ExecuteIfBound(HitPawn, 2);
+				OnWeaponHitTarget.ExecuteIfBound(HitPawn, 2, OverlapLocation);
 			}
 		}
 		

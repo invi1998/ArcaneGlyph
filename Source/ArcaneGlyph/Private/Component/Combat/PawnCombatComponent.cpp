@@ -81,7 +81,7 @@ void UPawnCombatComponent::ToggleWeaponCollision(bool bEnable, EToggleDamageType
 	}
 }
 
-void UPawnCombatComponent::OnHitTargetActor(AActor* InHitActor, int32 InCollisionBoxIndex)
+void UPawnCombatComponent::OnHitTargetActor(AActor* InHitActor, int32 InCollisionBoxIndex, FVector InHitLocation)
 {
 }
 

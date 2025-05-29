@@ -3,8 +3,11 @@
 
 #include "AbilitySystem/ExecCalc/ExecCalc_Damage.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
+#include "ArcaneBlueprintFunctionLibrary.h"
 #include "ArcaneDebugHelper.h"
 #include "ArcaneGameplayTags.h"
+#include "Component/Combat/HeroCombatComponent.h"
 
 UExecCalc_Damage::UExecCalc_Damage()
 {
@@ -130,23 +133,28 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		EvaluationParameters,
 		MaxEnergy);
 
+	bool bIsCriticalHit = false;
+
 	// 根据当前气力值调整最终伤害
 	if (MaxEnergy > 0.f)
 	{
-		if (CurrentEnergy >= MaxEnergy * 0.1f)
+		if (CurrentEnergy > 0.f)
 		{
+			float CritChance = 0.2f;
+			CritChance += (FMath::Max3(LightComboCount, HeavyComboCount, FMath::RoundToInt(CurrentSpark)) / 10.f);
 			// 气力充盈，伤害增加50%
 			// 计算是否暴击（暴击率为20%）
-			if (constexpr float CritChance = 0.2f; FMath::FRand() <= CritChance)
+			bIsCriticalHit = FMath::FRand() < CritChance; // 随机生成一个0到1之间的浮点数，如果小于暴击率，则触发暴击
+			if (bIsCriticalHit)
 			{
 				// 触发暴击
 				FinalDamage *= 1.5f; // 暴击伤害翻倍
 			}
 		}
-		else if (CurrentEnergy <= 0.1f)
+		else if (CurrentEnergy <= 0.f)
 		{
 			// 气力耗尽，伤害降低75%
-			FinalDamage *= 0.25f;
+			FinalDamage *= 0.1f;
 		}
 	}
 	
@@ -161,6 +169,19 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 				FinalDamage
 			)
 		);
+
+		if (MaxEnergy > 0.f)
+		{
+			// 说明是玩家角色
+			UHeroCombatComponent* HeroCombatComponent = Cast<UHeroCombatComponent>(UArcaneBlueprintFunctionLibrary::NativeGetPawnCombatComponentFromActor(ExecutionParams.GetOwningSpec().GetContext().GetEffectCauser()));
+			if (HeroCombatComponent)
+			{
+				int32 FinalDamageInt = FMath::RoundToInt(FinalDamage);
+				// 触发伤害浮动文本事件
+				HeroCombatComponent->ShowDamageFloatingText(FinalDamageInt, bIsCriticalHit);
+			}
+		}
+		
 	}
 	
 }

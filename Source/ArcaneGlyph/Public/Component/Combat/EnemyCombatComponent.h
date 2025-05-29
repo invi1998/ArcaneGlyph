@@ -13,6 +13,6 @@ class ARCANEGLYPH_API UEnemyCombatComponent : public UPawnCombatComponent
 	GENERATED_BODY()
 
 public:
-	virtual void OnHitTargetActor(AActor* InHitActor, int32 InCollisionBoxIndex) override;		// 当击中目标Actor时调用
+	virtual void OnHitTargetActor(AActor* InHitActor, int32 InCollisionBoxIndex, FVector InHitLocation) override;
 	
 };

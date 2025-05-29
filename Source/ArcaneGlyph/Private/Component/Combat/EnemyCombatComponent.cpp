@@ -12,7 +12,7 @@
 #include "Components/BoxComponent.h"
 
 
-void UEnemyCombatComponent::OnHitTargetActor(AActor* InHitActor, int32 InCollisionBoxIndex)
+void UEnemyCombatComponent::OnHitTargetActor(AActor* InHitActor, int32 InCollisionBoxIndex, FVector InHitLocation)
 {
 	if (!InHitActor) return;
 	
