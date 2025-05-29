@@ -65,7 +65,7 @@ FGameplayEffectSpecHandle UArcaneHeroGameplayAbility::MakeHeroDamageEffectSpecHa
 	);
 
 	// 设置能量消耗数值（以键值对的形式设置）
-	DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(ArcaneGameplayTags::Player_SetByCaller_PreEnergy, InUsedComboCount);
+	DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(ArcaneGameplayTags::Player_SetByCaller_PreEnergy, InPreEnergyCost);
 
 	// 设置当前攻击类型和连击数
 	if (InCurrentAttackType.IsValid())

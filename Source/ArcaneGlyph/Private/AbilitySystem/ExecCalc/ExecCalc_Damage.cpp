@@ -138,7 +138,13 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	// 根据当前气力值调整最终伤害
 	if (MaxEnergy > 0.f)
 	{
-		if (CurrentEnergy > 0.f)
+		
+		if (FMath::IsNearlyZero(CurrentEnergy))
+		{
+			// 气力耗尽，伤害降低75%
+			FinalDamage *= 0.1f;
+		}
+		else
 		{
 			float CritChance = 0.2f;
 			CritChance += (FMath::Max3(LightComboCount, HeavyComboCount, FMath::RoundToInt(CurrentSpark)) / 10.f);
@@ -150,11 +156,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 				// 触发暴击
 				FinalDamage *= 1.5f; // 暴击伤害翻倍
 			}
-		}
-		else if (CurrentEnergy <= 0.f)
-		{
-			// 气力耗尽，伤害降低75%
-			FinalDamage *= 0.1f;
+			
 		}
 	}
 	

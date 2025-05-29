@@ -38,6 +38,12 @@ void UExecCalc_EnergyCost::Execute_Implementation(const FGameplayEffectCustomExe
 		}
 	}
 
+	if (EnergyCost < 0.f && FMath::Abs(EnergyCost) > CurrentEnergy)
+	{
+		// 如果能量消耗小于0，并且大于当前能量，则不进行任何操作
+		EnergyCost = -CurrentEnergy; // 将能量消耗设置为当前能量的负值，表示消耗所有剩余能量
+	}
+
 	if (EnergyCost != 0.f)
 	{
 		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(
