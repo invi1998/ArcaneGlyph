@@ -136,27 +136,22 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	bool bIsCriticalHit = false;
 
 	// 根据当前气力值调整最终伤害
-	if (MaxEnergy > 0.f)
+	if (FMath::IsNearlyZero(CurrentEnergy) && MaxEnergy > 0.f)
 	{
-		
-		if (FMath::IsNearlyZero(CurrentEnergy))
+		// 气力耗尽，伤害降低75%
+		FinalDamage *= 0.1f;
+	}
+	else
+	{
+		float CritChance = 0.2f;
+		CritChance += (FMath::Max3(LightComboCount, HeavyComboCount, FMath::RoundToInt(CurrentSpark)) / 10.f);
+		// 气力充盈，伤害增加50%
+		// 计算是否暴击（暴击率为20%）
+		bIsCriticalHit = FMath::FRand() < CritChance; // 随机生成一个0到1之间的浮点数，如果小于暴击率，则触发暴击
+		if (bIsCriticalHit)
 		{
-			// 气力耗尽，伤害降低75%
-			FinalDamage *= 0.1f;
-		}
-		else
-		{
-			float CritChance = 0.2f;
-			CritChance += (FMath::Max3(LightComboCount, HeavyComboCount, FMath::RoundToInt(CurrentSpark)) / 10.f);
-			// 气力充盈，伤害增加50%
-			// 计算是否暴击（暴击率为20%）
-			bIsCriticalHit = FMath::FRand() < CritChance; // 随机生成一个0到1之间的浮点数，如果小于暴击率，则触发暴击
-			if (bIsCriticalHit)
-			{
-				// 触发暴击
-				FinalDamage *= 1.5f; // 暴击伤害翻倍
-			}
-			
+			// 触发暴击
+			FinalDamage *= 1.5f; // 暴击伤害翻倍
 		}
 	}
 	
