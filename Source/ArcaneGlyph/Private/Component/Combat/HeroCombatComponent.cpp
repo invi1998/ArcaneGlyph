@@ -11,27 +11,6 @@
 #include "Component/UI/HeroUIComponent.h"
 #include "Items/Weapons/ArcaneHeroWeapon.h"
 
-
-void UHeroCombatComponent::ShowDamageFloatingText(int32 InDamageValue, bool bIsCriticalHit)
-{
-	AArcaneHeroCharacter* Character = Cast<AArcaneHeroCharacter>(GetOwningPawn());
-	if (!Character) return;
-
-	
-	if (DamageHitLocation.IsZero())
-	{
-		FVector HitLocation = Character->GetActorLocation() + Character->GetActorForwardVector() * 100.f;
-		OnCauseDamage.Broadcast(HitLocation, InDamageValue, bIsCriticalHit);
-	}
-	else
-	{
-		// 触发伤害浮动文本事件
-        	OnCauseDamage.Broadcast(DamageHitLocation, InDamageValue, bIsCriticalHit);
-	}
-	
-	
-}
-
 void UHeroCombatComponent::StartEnergyRegenTimer()
 {
 	// 获取世界上下文
@@ -126,12 +105,13 @@ float UHeroCombatComponent::GetHeroCurrenRageGainBaseAtlevel(float InLevel) cons
 
 void UHeroCombatComponent::OnHitTargetActor(AActor* InHitActor, int32 InCollisionBoxIndex, FVector InHitLocation)
 {
+	
 	if (!IsValid(InHitActor)) return;
 	
 	if (HitOverlappedActors.Contains(InHitActor)) return;
 	HitOverlappedActors.AddUnique(InHitActor);
 
-	DamageHitLocation = InHitLocation;
+	Super::OnHitTargetActor(InHitActor, InCollisionBoxIndex, InHitLocation);
 	
 	// HitOverlappedActors.Add(InHitActor);
 

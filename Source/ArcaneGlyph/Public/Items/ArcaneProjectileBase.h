@@ -12,6 +12,8 @@ class UProjectileMovementComponent;
 class UBoxComponent;
 class UNiagaraComponent;
 
+DECLARE_DELEGATE_ThreeParams(FOnProjectileTargetInteractedDelegate, AActor*, int32, FVector);		// 委托：目标交互委托，参数为目标Actor、伤害值
+
 UENUM(BlueprintType)
 enum class EProjectileDamagePolicy : uint8
 {
@@ -27,8 +29,11 @@ class ARCANEGLYPH_API AArcaneProjectileBase : public AActor
 public:
 	AArcaneProjectileBase();
 
+	FOnProjectileTargetInteractedDelegate OnProjectileHitTarget;		// 投射物击中目标委托
+
 protected:
 	virtual void BeginPlay() override;
+	virtual void Destroyed() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Projectile")
 	TObjectPtr<UBoxComponent> ProjectileCollisionBox;

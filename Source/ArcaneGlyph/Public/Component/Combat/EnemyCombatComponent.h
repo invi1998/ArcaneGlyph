@@ -14,5 +14,7 @@ class ARCANEGLYPH_API UEnemyCombatComponent : public UPawnCombatComponent
 
 public:
 	virtual void OnHitTargetActor(AActor* InHitActor, int32 InCollisionBoxIndex, FVector InHitLocation) override;
+
+	
 	
 };

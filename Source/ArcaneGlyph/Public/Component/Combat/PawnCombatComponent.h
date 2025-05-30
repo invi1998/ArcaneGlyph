@@ -10,6 +10,8 @@
 
 class AArcaneWeaponBase;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnCauseDamageDelegate, FVector, InHitImpactLocation, int32, InDamageValue, bool, bIsCriticalHit);	// 造成伤害委托
+
 UENUM(BlueprintType)
 enum class EToggleDamageType : uint8
 {
@@ -40,6 +42,14 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Arcane|Combat")
 	FGameplayTag CurrentEquippedRightHandWeaponTag;		// 当前右手装备的武器标签
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="Components")
+	FVector DamageHitLocation = FVector::ZeroVector;	// 伤害位置
+
+	UPROPERTY(BlueprintAssignable, Category="Components")
+	FOnCauseDamageDelegate OnCauseDamage;	// 造成伤害委托
+
+	void ShowDamageFloatingText(int32 InDamageValue, bool bIsCriticalHit = false) const;
 
 	UFUNCTION(BlueprintCallable, Category="Arcane|Combat")
 	AArcaneWeaponBase* GetCharacterCurrentEquippedWeapon(bool bLeftHand = false) const;

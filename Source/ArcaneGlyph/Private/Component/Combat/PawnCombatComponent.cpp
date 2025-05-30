@@ -8,6 +8,25 @@
 #include "Items/Weapons/ArcaneWeaponBase.h"
 
 
+void UPawnCombatComponent::ShowDamageFloatingText(int32 InDamageValue, bool bIsCriticalHit) const
+{
+	AArcaneCharacterBase* Character = Cast<AArcaneCharacterBase>(GetOwningPawn());
+	if (!Character) return;
+
+	
+	if (DamageHitLocation.IsZero())
+	{
+		FVector HitLocation = Character->GetActorLocation() + Character->GetActorForwardVector() * 100.f;
+		OnCauseDamage.Broadcast(HitLocation, InDamageValue, bIsCriticalHit);
+	}
+	else
+	{
+		// 触发伤害浮动文本事件
+		OnCauseDamage.Broadcast(DamageHitLocation, InDamageValue, bIsCriticalHit);
+	}
+	
+}
+
 void UPawnCombatComponent::RegisterSpawnedWeapon(const FGameplayTag& InWeaponTag, AArcaneWeaponBase* InWeapon, bool bEquipped, bool bLeftHand)
 {
 	checkf(!CharacterCarriedWeaponMap.Contains(InWeaponTag), TEXT("Weapon %s already exists in the map!"), *InWeaponTag.ToString());
@@ -83,6 +102,7 @@ void UPawnCombatComponent::ToggleWeaponCollision(bool bEnable, EToggleDamageType
 
 void UPawnCombatComponent::OnHitTargetActor(AActor* InHitActor, int32 InCollisionBoxIndex, FVector InHitLocation)
 {
+	DamageHitLocation = InHitLocation;
 }
 
 void UPawnCombatComponent::OnWeaponPulledFromTargetActor(AActor* InHitActor, int32 InCollisionBoxIndex)

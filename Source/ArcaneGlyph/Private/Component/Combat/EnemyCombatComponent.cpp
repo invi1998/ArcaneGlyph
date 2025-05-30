@@ -14,6 +14,7 @@
 
 void UEnemyCombatComponent::OnHitTargetActor(AActor* InHitActor, int32 InCollisionBoxIndex, FVector InHitLocation)
 {
+	
 	if (!InHitActor) return;
 	
 	if (HitOverlappedActors.Contains(InHitActor))
@@ -21,6 +22,8 @@ void UEnemyCombatComponent::OnHitTargetActor(AActor* InHitActor, int32 InCollisi
 		// 说明已经击中过了
 		return;
 	}
+
+	Super::OnHitTargetActor(InHitActor, InCollisionBoxIndex, InHitLocation);
 
 	HitOverlappedActors.AddUnique(InHitActor);
 	

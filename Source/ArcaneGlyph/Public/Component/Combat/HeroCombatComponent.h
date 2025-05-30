@@ -11,8 +11,6 @@
 class AArcaneHeroCharacter;
 class AArcaneHeroWeapon;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnCauseDamageDelegate, FVector, InHitImpactLocation, int32, InDamageValue, bool, bIsCriticalHit);	// 造成伤害委托
-
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class ARCANEGLYPH_API UHeroCombatComponent : public UPawnCombatComponent
 {
@@ -30,16 +28,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Components")
 	float EnergyRegenDelay = 0.75f;		// 气力回复延迟时间
 
-	UPROPERTY(BlueprintAssignable, Category="Components")
-	FOnCauseDamageDelegate OnCauseDamage;	// 造成伤害委托
-
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Components")
 	FName DamageSocketName = "HitLocation";		// 伤害插槽名称
-
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="Components")
-	FVector DamageHitLocation = FVector::ZeroVector;	// 伤害位置
-
-	void ShowDamageFloatingText(int32 InDamageValue, bool bIsCriticalHit = false);
 
 	UFUNCTION(BlueprintCallable, Category="Components")
 	void StartEnergyRegenTimer();

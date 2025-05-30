@@ -9,6 +9,8 @@
 #include "ArcaneGameplayTags.h"
 #include "Components/BoxComponent.h"
 #include "NiagaraComponent.h"
+#include "Characters/ArcaneCharacterBase.h"
+#include "Component/Combat/PawnCombatComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
 
@@ -61,6 +63,11 @@ void AArcaneProjectileBase::BeginPlay()
 	
 }
 
+void AArcaneProjectileBase::Destroyed()
+{
+	Super::Destroyed();
+}
+
 void AArcaneProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	BP_OnSpawnProjectileHitFX(Hit.ImpactPoint);
@@ -83,7 +90,15 @@ void AArcaneProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent, A
 
 	FGameplayEventData EventData;
 	EventData.Target = HitPawn;
-	EventData.Instigator = this;
+	EventData.Instigator = GetInstigator<APawn>();
+
+	if (AArcaneCharacterBase* InstigatorCharacter = Cast<AArcaneCharacterBase>(GetInstigator<APawn>()))
+	{
+		if (UPawnCombatComponent* CombatComponent = InstigatorCharacter->GetPawnCombatComponent())
+		{
+			CombatComponent->DamageHitLocation = Hit.ImpactPoint;
+		}
+	}
 
 	bool bIsRolling = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(HitPawn, ArcaneGameplayTags::Player_Status_Rolling);
 	bool bIsShipo = UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(HitPawn, ArcaneGameplayTags::Shared_Status_ShipoWindow);
@@ -152,7 +167,31 @@ void AArcaneProjectileBase::OnProjectileBeginOverlap(UPrimitiveComponent* Overla
 		return;
 	}
 
-	BP_OnSpawnProjectileHitFX(HitPawn->GetActorLocation());
+	FVector OverlapLocation;
+	// 在非扫描情况下计算近似碰撞点
+	if(!bFromSweep)
+	{
+				
+		if (OverlappedComponent && OtherComp)
+		{
+			// 计算两个组件之间的中点
+			OverlapLocation = (OverlappedComponent->GetComponentLocation() + OtherComp->GetComponentLocation()) * 0.5f;
+		}
+	}
+	else
+	{
+		OverlapLocation = SweepResult.ImpactPoint;
+	}
+
+	if (AArcaneCharacterBase* InstigatorCharacter = Cast<AArcaneCharacterBase>(GetInstigator<APawn>()))
+	{
+		if (UPawnCombatComponent* CombatComponent = InstigatorCharacter->GetPawnCombatComponent())
+		{
+			CombatComponent->DamageHitLocation = OverlapLocation;
+		}
+	}
+
+	BP_OnSpawnProjectileHitFX(OverlapLocation);
 
 	FGameplayEventData EventData;
 	EventData.Target = HitPawn;

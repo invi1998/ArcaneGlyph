@@ -172,16 +172,11 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 			)
 		);
 
-		if (MaxEnergy > 0.f)
+		if (UPawnCombatComponent* CombatComponent = Cast<UPawnCombatComponent>(UArcaneBlueprintFunctionLibrary::NativeGetPawnCombatComponentFromActor(ExecutionParams.GetOwningSpec().GetContext().GetEffectCauser())))
 		{
-			// 说明是玩家角色
-			UHeroCombatComponent* HeroCombatComponent = Cast<UHeroCombatComponent>(UArcaneBlueprintFunctionLibrary::NativeGetPawnCombatComponentFromActor(ExecutionParams.GetOwningSpec().GetContext().GetEffectCauser()));
-			if (HeroCombatComponent)
-			{
-				int32 FinalDamageInt = FMath::RoundToInt(FinalDamage);
-				// 触发伤害浮动文本事件
-				HeroCombatComponent->ShowDamageFloatingText(FinalDamageInt, bIsCriticalHit);
-			}
+			int32 FinalDamageInt = FMath::RoundToInt(FinalDamage);
+			// 触发伤害浮动文本事件
+			CombatComponent->ShowDamageFloatingText(FinalDamageInt, bIsCriticalHit);
 		}
 		
 	}
