@@ -53,8 +53,12 @@ void UBTService_OrientToTargetActor::TickNode(UBehaviorTreeComponent& OwnerComp,
 			// FRotator TargetRotation = (TargetActor->GetActorLocation() - ControlledPawn->GetActorLocation()).Rotation();
 			// ControlledPawn->SetActorRotation(FMath::RInterpTo(ControlledPawn->GetActorRotation(), TargetRotation, DeltaSeconds, RotationInterpSpeed));
 
-			const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(ControlledPawn->GetActorLocation(), TargetActor->GetActorLocation());
+			// 忽略 Z 轴的旋转，只在 X 和 Y 轴上进行旋转
+			const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(
+				FVector(ControlledPawn->GetActorLocation().X, ControlledPawn->GetActorLocation().Y, 0.0f),
+				FVector(TargetActor->GetActorLocation().X, TargetActor->GetActorLocation().Y, 0.0f));
 			ControlledPawn->SetActorRotation(FMath::RInterpTo(ControlledPawn->GetActorRotation(), LookAtRotation, DeltaSeconds, RotationInterpSpeed));
 		}
 	}
 }
+
