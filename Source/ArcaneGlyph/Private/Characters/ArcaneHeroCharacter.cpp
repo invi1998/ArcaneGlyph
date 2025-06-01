@@ -131,6 +131,43 @@ void AArcaneHeroCharacter::UpdateGait(EArcaneGaits InNewGait)
 	
 }
 
+bool AArcaneHeroCharacter::IsCanDoubleJump() const
+{
+	return GetCharacterMovement()->CanAttemptJump();
+}
+
+bool AArcaneHeroCharacter::CharacterJumpState(EArcaneJumpStateType& JumpState)
+{
+	JumpState = EArcaneJumpStateType::OnGround;
+	if (GetCharacterMovement()->MovementMode == MOVE_Falling)
+	{
+		// 然后根据角色的移动速度判定是否下落
+		if (GetCharacterMovement()->Velocity.Z <= 0.f)
+		{
+			// 角色正在下落
+			JumpState = EArcaneJumpStateType::Falling;
+		}
+		if (GetCharacterMovement()->Velocity.Z > 0.f && JumpCurrentCount > 0)
+		{
+			// 角色正在上升
+			JumpState = EArcaneJumpStateType::Jumping;
+		}
+	}
+	if (GetCharacterMovement()->IsMovingOnGround())
+	{
+		// 角色在地面上
+		JumpState = EArcaneJumpStateType::OnGround;
+	}
+
+	return true;
+}
+
+void AArcaneHeroCharacter::DoubleJump()
+{
+	LaunchCharacter(FVector(0.f, 0.f, DoubleJumpZVelocity), false, true);
+	JumpCurrentCount++;
+}
+
 void AArcaneHeroCharacter::BeginPlay()
 {
 	Super::BeginPlay();

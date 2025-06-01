@@ -63,10 +63,19 @@ public:
 	TMap<EArcaneGaits, FArcaneGaitSetting> ArcaneGaits;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ArcaneMovement")
-	double DoubleJumpZVelocity = 600.0f;		// 跳跃速度
+	double DoubleJumpZVelocity = 450.0f;		// 跳跃速度
 
 	UFUNCTION(BlueprintCallable)
 	void UpdateGait(EArcaneGaits InNewGait);
+
+	UFUNCTION(BlueprintCallable, Category = "Arcane | Character")
+	bool IsCanDoubleJump() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Arcane | Character", meta = (DisplayName = "Get Character Jump State", ExpandEnumAsExecs = "JumpState"))
+	bool CharacterJumpState(EArcaneJumpStateType& JumpState);
+
+	UFUNCTION(BlueprintCallable, Category = "Arcane | Character")
+	void DoubleJump();
 
 protected:
 	virtual void BeginPlay() override;

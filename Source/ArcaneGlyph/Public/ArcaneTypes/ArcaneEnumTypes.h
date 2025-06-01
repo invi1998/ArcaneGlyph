@@ -23,6 +23,14 @@ enum class EArcaneSuccessType : uint8
 	Fail
 };
 
+UENUM()
+enum  class EArcaneJumpStateType : uint8
+{
+	OnGround,		// 在地面上
+	Jumping,		// 跳跃中
+	Falling			// 下落中
+};
+
 UENUM(BlueprintType)
 enum class EArcaneMoveDirection : uint8
 {
