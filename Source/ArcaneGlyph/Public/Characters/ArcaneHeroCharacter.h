@@ -62,6 +62,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ArcaneMovement")
 	TMap<EArcaneGaits, FArcaneGaitSetting> ArcaneGaits;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ArcaneMovement")
+	double DoubleJumpZVelocity = 600.0f;		// 跳跃速度
+
 	UFUNCTION(BlueprintCallable)
 	void UpdateGait(EArcaneGaits InNewGait);
 

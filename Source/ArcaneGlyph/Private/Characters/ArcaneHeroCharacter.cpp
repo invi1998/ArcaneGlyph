@@ -216,6 +216,19 @@ void AArcaneHeroCharacter::Input_Look(const FInputActionValue& InputActionValue)
 
 void AArcaneHeroCharacter::Input_Jump()
 {
+	if (GetCharacterMovement()->IsFalling())
+	{
+		// 如果当前角色正在跳跃，则执行二段跳
+		if (GetCharacterMovement()->CanAttemptJump())
+		{
+			LaunchCharacter(FVector(0.f, 0.f, DoubleJumpZVelocity), false, true);
+		}
+	}
+	else
+	{
+		// 如果当前角色没有在跳跃，则执行普通跳跃
+		ACharacter::Jump();
+	}
 }
 
 void AArcaneHeroCharacter::Input_SwitchTargetTriggered(const FInputActionValue& InputActionValue)

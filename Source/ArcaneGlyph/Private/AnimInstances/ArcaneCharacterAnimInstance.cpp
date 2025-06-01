@@ -7,6 +7,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "KismetAnimationLibrary.h"
 #include "ArcaneTypes/ArcaneEnumTypes.h"
+#include "Components/CapsuleComponent.h"
 #include "Engine/SpringInterpolator.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -84,6 +85,7 @@ void UArcaneCharacterAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSe
 		return;
 	}
 
+	WorldVelocity = OwnerCharacterMovementComponent->Velocity;
 	GroundSpeed = OwnerCharacterMovementComponent->Velocity.Size2D();
 	Velocity2D = OwnerCharacterMovementComponent->Velocity * FVector(1, 1, 0);
 
@@ -131,6 +133,24 @@ void UArcaneCharacterAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSe
 	bGaitChanged = InComingGait != PreviousGait;
 
 	UpdateRootYawOffsetData(DeltaSeconds);
+
+	bIsOnGround = OwnerCharacterMovementComponent->IsMovingOnGround();
+	bIsJumping = false;
+	bIsFalling = false;
+	if (OwnerCharacterMovementComponent->MovementMode == EMovementMode::MOVE_Falling)
+	{
+		if (WorldVelocity.Z > 0.f)
+		{
+			bIsJumping = true;
+		}
+		else
+		{
+			bIsFalling = true;
+		}
+	}
+	
+	UpdateJumpFallData();
+	UpdateGroundDistance();
 	
 }
 
@@ -256,6 +276,41 @@ EArcaneLocomotionDirection UArcaneCharacterAnimInstance::CalculateLocomotionDire
 	else if (IsAngleInRange(Angle, InSettings.FMin, InSettings.FMax)) return EArcaneLocomotionDirection::Forward;
 	else if (Angle < 0.f) return EArcaneLocomotionDirection::Left;
 	else return EArcaneLocomotionDirection::Right;
+}
+
+void UArcaneCharacterAnimInstance::UpdateJumpFallData()
+{
+	if (bIsJumping)
+	{
+		// 获取角色跳跃到顶点的时间（V = gt, t = V/g, 因为跳跃时Z轴速度为负，所以需要取负值）
+		TimeToJumpApex = 0.f - WorldVelocity.Z / OwnerCharacterMovementComponent->GetGravityZ();
+	}
+	else
+	{
+		TimeToJumpApex = 0.f;
+	}
+}
+
+void UArcaneCharacterAnimInstance::UpdateGroundDistance()
+{
+	if (bIsFalling)
+	{
+		FHitResult HitResult;
+		// 使用线性追踪来检测地面距离
+		const FVector Start = OwnerCharacter->GetActorLocation();
+		const FVector End = Start + FVector(0.f, 0.f, -10000.f) - FVector(0.f, 0.f, OwnerCharacter->GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+		FCollisionQueryParams CollisionParams;
+		CollisionParams.AddIgnoredActor(OwnerCharacter);
+		if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, CollisionParams))
+		{
+			// 计算地面距离
+			GroundDistance = HitResult.Distance;
+		}
+		else
+		{
+			GroundDistance = 0.f; // 如果没有检测到地面，则设置为0
+		}
+	}
 }
 
 bool UArcaneCharacterAnimInstance::IsAngleInDirectionWithDeadZone(float Angle, EArcaneMoveDirection Direction, const FArcaneLocomotionDirectionSettings& InSettings) const

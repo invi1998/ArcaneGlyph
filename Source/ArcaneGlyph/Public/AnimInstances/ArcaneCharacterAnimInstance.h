@@ -44,6 +44,9 @@ protected:
 	TObjectPtr<UCharacterMovementComponent> OwnerCharacterMovementComponent;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
+	FVector WorldVelocity;	// 角色在世界坐标系中的速度
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
 	float GroundSpeed;	// 地面速度
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
@@ -150,6 +153,27 @@ protected:
 
 	EArcaneLocomotionDirection CalculateLocomotionDirection4D(float Angle, const EArcaneLocomotionDirection& CurrentDirection, const FArcaneLocomotionDirectionSettings_4D& InSettings);
 
+	/*
+	 * 跳跃相关
+	 */
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Category = "AnimData|JumpData")
+	bool bIsOnGround;		// 是否在地面上
+
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Category = "AnimData|JumpData")
+	bool bIsJumping;		// 是否正在跳跃
+
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Category = "AnimData|JumpData")
+	bool bIsFalling;		// 是否正在下落
+
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Category = "AnimData|JumpData")
+	float TimeToJumpApex;	// 跳跃顶点时间
+
+	UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Category = "AnimData|JumpData")
+	float GroundDistance;	// 距离地面的距离
+
+	void UpdateJumpFallData();
+	void UpdateGroundDistance();
+	
 protected:
 
 	// 辅助函数1：检查角度是否在某个方向范围内（含死区扩展）
