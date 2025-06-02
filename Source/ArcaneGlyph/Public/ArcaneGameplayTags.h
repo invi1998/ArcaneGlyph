@@ -27,6 +27,9 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_HeavyAttack_Twinblades);		// 输入标签：重攻击：双刃剑
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_HeavyAttack_Spear);		// 输入标签：重攻击：长矛
 	
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_JumpAttack_Light);		// 输入标签：跳跃攻击：轻
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_JumpAttack_Heavy);		// 输入标签：跳跃攻击：重
+	
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_ChangeComboType_VerticalStaff);		// 输入标签：切换连招类型：立棍
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_ChangeComboType_HorizontalStaff);		// 输入标签：切换连招类型：横棍
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_ChangeComboType_CleavingStaff);		// 输入标签：切换连招类型：劈棍
@@ -130,6 +133,9 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_Combo_ChangeHand_1);	// 玩家技能：连招：一段切手技
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_Combo_ChangeHand_2);	// 玩家技能：连招：二段切手技
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_Combo_Heavy);		// 玩家技能：连招：重攻击
+	
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_JumpAttack_Light);	// 玩家技能：跳跃攻击：轻
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_JumpAttack_Heavy);	// 玩家技能：跳跃攻击：重
 
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Combo_Light_1);	// 玩家连招：轻攻击-1
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Combo_Light_2);	// 玩家连招：轻攻击-2

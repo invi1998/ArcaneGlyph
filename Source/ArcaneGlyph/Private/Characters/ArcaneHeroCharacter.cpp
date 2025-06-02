@@ -13,6 +13,7 @@
 #include "Component/Combat/HeroCombatComponent.h"
 #include "Component/Input/ArcaneInputComponent.h"
 #include "Component/UI/HeroUIComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "DataAssets/StartupData/DataAsset_HeroStartupDada.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -172,6 +173,72 @@ void AArcaneHeroCharacter::DoubleJump()
 {
 	LaunchCharacter(FVector(0.f, 0.f, DoubleJumpZVelocity), false, true);
 	JumpCurrentCount++;
+}
+
+FVector AArcaneHeroCharacter::GetCharacterJumpEndLocationByVelocity(bool bEnableDebug) const
+{
+    const UCharacterMovementComponent* MoveComp = GetCharacterMovement();
+    if (!MoveComp) return GetActorLocation();
+
+    // 1. 获取水平速度
+    const FVector HorizontalVelocity = FVector(GetVelocity().X, GetVelocity().Y, 0.0f);
+    if (HorizontalVelocity.IsNearlyZero()) return GetActorLocation();
+    
+    // 2. 计算最大跳跃距离
+    const float MaxJumpHeight = 550.0f; // 您的角色最大跳跃高度
+    const float Gravity = FMath::Abs(MoveComp->GetGravityZ());
+    const float MaxHorizontalDistance = HorizontalVelocity.Size() * FMath::Sqrt(2.0f * MaxJumpHeight / Gravity);
+    
+    // 3. 确定预测终点
+    const FVector CurrentLocation = GetActorLocation();
+    const FVector HorizontalDir = HorizontalVelocity.GetSafeNormal();
+    FVector PredictedEndLocation = CurrentLocation + HorizontalDir * MaxHorizontalDistance;
+    
+    // 4. 设置射线检测参数
+    const float TraceHeight = MaxJumpHeight + 300.0f;
+    const FVector TraceStart = PredictedEndLocation + FVector(0, 0, TraceHeight);
+    const FVector TraceEnd = TraceStart - FVector(0, 0, TraceHeight * 2.5f);
+    
+    // 5. 执行地面检测
+    FHitResult HitResult;
+    FCollisionQueryParams CollisionParams;
+    CollisionParams.AddIgnoredActor(this);
+    
+    bool bHitGround = GetWorld()->LineTraceSingleByChannel(
+        HitResult,
+        TraceStart,
+        TraceEnd,
+        ECC_Visibility,
+        CollisionParams
+    );
+    
+    // 6. 调试可视化（可选）
+    if (bEnableDebug)
+    {
+        const float DebugDuration = 2.0f;
+        // 绘制预测终点
+        DrawDebugSphere(GetWorld(), PredictedEndLocation, 30.0f, 12, FColor::Red, false, DebugDuration);
+        
+        // 绘制检测线
+        DrawDebugLine(GetWorld(), TraceStart, bHitGround ? HitResult.Location : TraceEnd, 
+                     bHitGround ? FColor::Green : FColor::Yellow, false, DebugDuration);
+        
+        // 绘制最终落点
+        if (bHitGround)
+        {
+            FVector GroundLocation = HitResult.Location + FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+            DrawDebugSphere(GetWorld(), GroundLocation, 40.0f, 12, FColor::Green, false, DebugDuration);
+        }
+    }
+    
+    // 7. 返回结果
+    if (bHitGround)
+    {
+        return HitResult.Location + FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+    }
+    
+    return PredictedEndLocation;
+	
 }
 
 void AArcaneHeroCharacter::BeginPlay()

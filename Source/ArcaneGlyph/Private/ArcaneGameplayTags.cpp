@@ -26,6 +26,9 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_HeavyAttack_Twinblades, "InputTag.HeavyAttack.Twinblades", "重攻击:双刃剑");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_HeavyAttack_Spear, "InputTag.HeavyAttack.Spear", "重攻击:长矛");
 	
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_JumpAttack_Light, "InputTag.JumpAttack.Light", "跳跃攻击:轻");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_JumpAttack_Heavy, "InputTag.JumpAttack.Heavy", "跳跃攻击:重");
+	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_ChangeComboType_VerticalStaff, "InputTag.ChangeComboType.VerticalStaff", "切换连击类型:立棍");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_ChangeComboType_HorizontalStaff, "InputTag.ChangeComboType.HorizontalStaff", "切换连击类型:横棍");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_ChangeComboType_CleavingStaff, "InputTag.ChangeComboType.CleavingStaff", "切换连击类型:劈棍");
@@ -138,6 +141,9 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Combo_ChangeHand_1, "Player.Combo.ChangeHand.1", "玩家连招：一段切手技");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Combo_ChangeHand_2, "Player.Combo.ChangeHand.2", "玩家连招：二段切手技");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Combo_Heavy, "Player.Combo.Heavy", "玩家连招：重攻击");
+	
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_JumpAttack_Light, "Player.Ability.JumpAttack.Light", "玩家技能：跳跃攻击：轻");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_JumpAttack_Heavy, "Player.Ability.JumpAttack.Heavy", "玩家技能：跳跃攻击：重");
 	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Cooldown_Ability_Block, "Player.Cooldown.Ability.Block", "玩家冷却：技能：格挡");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Cooldown_Ability_Rage, "Player.Cooldown.Ability.Rage", "玩家冷却：技能：愤怒");
