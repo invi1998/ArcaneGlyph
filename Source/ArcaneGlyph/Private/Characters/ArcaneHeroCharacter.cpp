@@ -40,6 +40,12 @@ AArcaneHeroCharacter::AArcaneHeroCharacter()
 	
 	HeroCombatComponent = CreateDefaultSubobject<UHeroCombatComponent>(TEXT("HeroCombatComponent"));
 	HeroUIComponent = CreateDefaultSubobject<UHeroUIComponent>(TEXT("HeroUIComponent"));
+
+	// 角色移动组件设置
+	// GetCharacterMovement()->GravityScale = 2.8f;
+	// GetCharacterMovement()->AirControl = 0.1f;
+	// 启用下落时的重力加速度
+	// GetCharacterMovement()->bEnablePhysicsInteraction = true;		// 启用物理交互
 }
 
 void AArcaneHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

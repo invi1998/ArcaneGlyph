@@ -167,7 +167,7 @@ void AArcaneProjectileBase::OnProjectileBeginOverlap(UPrimitiveComponent* Overla
 		return;
 	}
 
-	FVector OverlapLocation;
+	FVector OverlapLocation = FVector::ZeroVector;
 	// 在非扫描情况下计算近似碰撞点
 	if(!bFromSweep)
 	{

@@ -54,7 +54,7 @@ void AArcaneWeaponBase::OnWeaponCollisionBoxBeginOverlap(UPrimitiveComponent* Ov
 		// 如果目标是敌对的
 		if (UArcaneBlueprintFunctionLibrary::IsTargetPawnHostile(WeaponOwningPawn, HitPawn))
 		{
-			FVector OverlapLocation;
+			FVector OverlapLocation = FVector::ZeroVector;
 			// 在非扫描情况下计算近似碰撞点
 			if(!bFromSweep)
 			{
