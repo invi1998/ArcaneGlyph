@@ -134,8 +134,8 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_Combo_ChangeHand_2);	// 玩家技能：连招：二段切手技
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_Combo_Heavy);		// 玩家技能：连招：重攻击
 	
-	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_JumpAttack_Light);	// 玩家技能：跳跃攻击：轻
-	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_JumpAttack_Heavy);	// 玩家技能：跳跃攻击：重
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_JumpAttack_Light);	// 玩家技能：跳跃攻击：轻
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_JumpAttack_Heavy);	// 玩家技能：跳跃攻击：重
 
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Combo_Light_1);	// 玩家连招：轻攻击-1
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Combo_Light_2);	// 玩家连招：轻攻击-2
@@ -151,6 +151,7 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Cooldown_SpecialWeaponAbility_Light);	// 玩家冷却：特殊武器技能：轻攻击
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Cooldown_SpecialWeaponAbility_Heavy);	// 玩家冷却：特殊武器技能：重攻击
 	
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_JumpAttack_Activating);	// 玩家状态：跳跃攻击激活中
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_JumpToFinish);		// 玩家状态：连招跳转到结束
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_Rolling);			// 玩家状态：翻滚中
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_Blocking);		// 玩家状态：格挡中

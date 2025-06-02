@@ -142,14 +142,15 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Combo_ChangeHand_2, "Player.Combo.ChangeHand.2", "玩家连招：二段切手技");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Combo_Heavy, "Player.Combo.Heavy", "玩家连招：重攻击");
 	
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_JumpAttack_Light, "Player.Ability.JumpAttack.Light", "玩家技能：跳跃攻击：轻");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_JumpAttack_Heavy, "Player.Ability.JumpAttack.Heavy", "玩家技能：跳跃攻击：重");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_JumpAttack_Light, "Player.JumpAttack.Light", "玩家技能：跳跃攻击：轻");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_JumpAttack_Heavy, "Player.JumpAttack.Heavy", "玩家技能：跳跃攻击：重");
 	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Cooldown_Ability_Block, "Player.Cooldown.Ability.Block", "玩家冷却：技能：格挡");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Cooldown_Ability_Rage, "Player.Cooldown.Ability.Rage", "玩家冷却：技能：愤怒");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Cooldown_SpecialWeaponAbility_Light, "Player.Cooldown.SpecialWeaponAbility.Light", "玩家冷却：特殊武器技能：轻攻击");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Cooldown_SpecialWeaponAbility_Heavy, "Player.Cooldown.SpecialWeaponAbility.Heavy", "玩家冷却：特殊武器技能：重攻击");
-	
+
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_JumpAttack_Activating, "Player.Status.JumpAttack.Activating", "玩家状态：跳跃攻击激活中");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_JumpToFinish, "Player.Status.JumpToFinish", "玩家状态：连招跳转到结束");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_Rolling, "Player.Status.Rolling", "玩家状态：翻滚中");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_Blocking, "Player.Status.Blocking", "玩家状态：格挡中");
