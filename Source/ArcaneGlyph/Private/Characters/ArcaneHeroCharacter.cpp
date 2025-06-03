@@ -172,7 +172,6 @@ bool AArcaneHeroCharacter::CharacterJumpState(EArcaneJumpStateType& JumpState)
 void AArcaneHeroCharacter::DoubleJump()
 {
 	LaunchCharacter(FVector(0.f, 0.f, DoubleJumpZVelocity), false, true);
-	JumpCurrentCount++;
 }
 
 FVector AArcaneHeroCharacter::GetCharacterJumpEndLocationByVelocity(bool bEnableDebug) const

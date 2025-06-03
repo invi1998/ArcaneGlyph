@@ -151,6 +151,8 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Cooldown_SpecialWeaponAbility_Heavy, "Player.Cooldown.SpecialWeaponAbility.Heavy", "玩家冷却：特殊武器技能：重攻击");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_JumpAttack_Activating, "Player.Status.JumpAttack.Activating", "玩家状态：跳跃攻击激活中");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_Jumping, "Player.Status.Jumping", "玩家状态：跳跃中");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_JumpAttacking, "Player.Status.JumpAttacking", "玩家状态：跳跃攻击中");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_JumpToFinish, "Player.Status.JumpToFinish", "玩家状态：连招跳转到结束");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_Rolling, "Player.Status.Rolling", "玩家状态：翻滚中");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_Blocking, "Player.Status.Blocking", "玩家状态：格挡中");
