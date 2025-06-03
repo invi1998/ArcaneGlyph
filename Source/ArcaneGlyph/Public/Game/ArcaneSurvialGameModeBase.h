@@ -6,6 +6,8 @@
 #include "ArcaneGameModeBase.h"
 #include "ArcaneSurvialGameModeBase.generated.h"
 
+class AArcaneEnemyCharacter;
+
 UENUM(BlueprintType)
 enum class EArcaneSurvialGameModeState : uint8
 {
@@ -15,6 +17,37 @@ enum class EArcaneSurvialGameModeState : uint8
 	WaveCompleted UMETA(DisplayName = "波次完成"),
 	AllWavesCompleted UMETA(DisplayName = "所有波次完成"),
 	PlayerDied UMETA(DisplayName = "玩家死亡"),
+};
+
+USTRUCT(BlueprintType)
+struct FArcaneEnemyWaveSpawnerInfo
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere)
+	TSoftClassPtr<AArcaneEnemyCharacter> SoftEnemyClassToSpawn;
+
+	// 这个波次的敌人的最低数量
+	UPROPERTY(EditAnywhere)
+	int32 MinPerSpawnCount = 1;
+
+	// 这个波次的敌人的最大数量
+	UPROPERTY(EditAnywhere)
+	int32 MaxPerSpawnCount = 3;
+	
+};
+
+// 定义一个表格行结构体，用于存储敌人波次生成器的信息
+USTRUCT(BlueprintType)
+struct FArcaneEnemyWaveSpawnerTableRow : public FTableRowBase
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere)
+	TArray<FArcaneEnemyWaveSpawnerInfo> EnemyWaveSpawnerDefinitions;	// 敌人波次生成器定义
+
+	UPROPERTY(EditAnywhere)
+	int32 TotalEnemyToSpawnThisWave = 1;	// 这个波次总共需要生成的敌人数量
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSurvialGameModeStateChangedDelegate, EArcaneSurvialGameModeState, state);
@@ -40,5 +73,9 @@ private:
 
 	UPROPERTY(BlueprintAssignable, BlueprintCallable)
 	FOnSurvialGameModeStateChangedDelegate OnSurvialGameModeStateChanged;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WaveDefinition", meta=(AllowPrivateAccess = "true"))
+	UDataTable* EnemyWaveSpawnerDataTable;	// 敌人波次生成器数据表
+	
 
 };
