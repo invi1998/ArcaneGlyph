@@ -82,7 +82,7 @@ private:
 	int32 TotalWavesToSpawn = 0;	// 总共需要生成的波次数量
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "WaveDefinition", meta=(AllowPrivateAccess = "true"))
-	int32 CurrentWave = 0;		// 当前波次的索引
+	int32 CurrentWave = 1;		// 当前波次的索引
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WaveDefinition", meta=(AllowPrivateAccess = "true"))
 	float SpawnNewWaveWaitTime = 5.0f;	// 生成新波次的等待时间

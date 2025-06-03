@@ -69,5 +69,5 @@ void AArcaneSurvialGameModeBase::SetCurrentSurvialState(EArcaneSurvialGameModeSt
 
 bool AArcaneSurvialGameModeBase::HasFinishedAllWaves() const
 {
-	return CurrentWave >= TotalWavesToSpawn;
+	return CurrentWave > TotalWavesToSpawn;
 }
