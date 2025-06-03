@@ -67,6 +67,7 @@ protected:
 
 private:
 	void SetCurrentSurvialState(EArcaneSurvialGameModeState InState);
+	bool HasFinishedAllWaves() const;
 	
 	UPROPERTY()
 	EArcaneSurvialGameModeState CurrentSurvialGameModeState = EArcaneSurvialGameModeState::WaitSpawnNewWave;
@@ -76,6 +77,22 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WaveDefinition", meta=(AllowPrivateAccess = "true"))
 	UDataTable* EnemyWaveSpawnerDataTable;	// 敌人波次生成器数据表
-	
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "WaveDefinition", meta=(AllowPrivateAccess = "true"))
+	int32 TotalWavesToSpawn = 0;	// 总共需要生成的波次数量
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "WaveDefinition", meta=(AllowPrivateAccess = "true"))
+	int32 CurrentWave = 0;		// 当前波次的索引
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WaveDefinition", meta=(AllowPrivateAccess = "true"))
+	float SpawnNewWaveWaitTime = 5.0f;	// 生成新波次的等待时间
+
+	UPROPERTY()
+	float TimePassedSinceStart = 0.0f;	// 从开始到现在经过的时间
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WaveDefinition", meta=(AllowPrivateAccess = "true"))
+	float SpawnEnemyDelayTime = 3.f;	// 生成敌人的延迟时间
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WaveDefinition", meta=(AllowPrivateAccess = "true"))
+	float WaveCompletedWaitTime = 5.0f;	// 波次完成后的等待时间
 };
