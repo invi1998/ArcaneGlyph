@@ -169,9 +169,9 @@ bool AArcaneHeroCharacter::CharacterJumpState(EArcaneJumpStateType& JumpState)
 	return true;
 }
 
-void AArcaneHeroCharacter::DoubleJump()
+void AArcaneHeroCharacter::DoubleJump(float InDoubleJumpZVelocity)
 {
-	LaunchCharacter(FVector(0.f, 0.f, DoubleJumpZVelocity), false, true);
+	LaunchCharacter(FVector(0.f, 0.f, InDoubleJumpZVelocity), false, true);
 }
 
 FVector AArcaneHeroCharacter::GetCharacterJumpEndLocationByVelocity(bool bEnableDebug) const

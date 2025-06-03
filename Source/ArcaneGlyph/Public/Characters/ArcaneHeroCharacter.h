@@ -75,7 +75,7 @@ public:
 	bool CharacterJumpState(EArcaneJumpStateType& JumpState);
 
 	UFUNCTION(BlueprintCallable, Category = "Arcane | Character")
-	void DoubleJump();
+	void DoubleJump(float InDoubleJumpZVelocity);
 
 	// 依据当前角色的速度和运动组件的最大跳跃高度计算跳跃结束位置
 	UFUNCTION(BlueprintCallable, Category = "Arcane | Character")
