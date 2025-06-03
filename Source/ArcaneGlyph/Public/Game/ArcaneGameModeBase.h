@@ -13,5 +13,8 @@ UCLASS()
 class ARCANEGLYPH_API AArcaneGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
+
+public:
+	AArcaneGameModeBase();
 	
 };

@@ -2,3 +2,8 @@
 
 #include "Game/ArcaneGameModeBase.h"
 
+AArcaneGameModeBase::AArcaneGameModeBase()
+{
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = true;
+}
