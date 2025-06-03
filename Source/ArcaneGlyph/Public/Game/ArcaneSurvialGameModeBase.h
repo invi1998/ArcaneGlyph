@@ -68,6 +68,8 @@ protected:
 private:
 	void SetCurrentSurvialState(EArcaneSurvialGameModeState InState);
 	bool HasFinishedAllWaves() const;
+	void PreLoadNextWaveEnemy();
+	FArcaneEnemyWaveSpawnerTableRow* GetCurrentWaveEnemySpawnerTableRow() const;
 	
 	UPROPERTY()
 	EArcaneSurvialGameModeState CurrentSurvialGameModeState = EArcaneSurvialGameModeState::WaitSpawnNewWave;
@@ -95,4 +97,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WaveDefinition", meta=(AllowPrivateAccess = "true"))
 	float WaveCompletedWaitTime = 5.0f;	// 波次完成后的等待时间
+
+	UPROPERTY()
+	TMap<TSoftClassPtr<AArcaneEnemyCharacter>, UClass*> PreLoadedEnemyClasses;	// 预加载的敌人类映射表，用于存储已加载的敌人类，以避免重复加载
 };
