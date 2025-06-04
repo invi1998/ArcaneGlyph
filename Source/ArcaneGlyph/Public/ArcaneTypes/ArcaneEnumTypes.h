@@ -117,4 +117,14 @@ enum class EArcaneRootYawOffsetMode : uint8
 	Hold UMETA(DisplayName = "保持"),
 };
 
+UENUM(BlueprintType)
+enum class EArcaneGameDifficulty : uint8
+{
+	Easy UMETA(DisplayName = "简单"),
+	Normal UMETA(DisplayName = "普通"),
+	Hard UMETA(DisplayName = "困难"),
+	Insane UMETA(DisplayName = "疯狂")
+};
+
+
 

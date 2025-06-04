@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ArcaneTypes/ArcaneEnumTypes.h"
 #include "GameFramework/GameModeBase.h"
 #include "ArcaneGameModeBase.generated.h"
 
@@ -16,5 +17,11 @@ class ARCANEGLYPH_API AArcaneGameModeBase : public AGameModeBase
 
 public:
 	AArcaneGameModeBase();
+
+	FORCEINLINE EArcaneGameDifficulty GetGameDifficulty() const { return GameDifficulty; }
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Game Settings")
+	EArcaneGameDifficulty GameDifficulty = EArcaneGameDifficulty::Normal;	// 游戏难度设置
 	
 };

@@ -11,6 +11,7 @@
 #include "Components/WidgetComponent.h"
 #include "DataAssets/StartupData/DataAsset_EnemyStartupDada.h"
 #include "Engine/AssetManager.h"
+#include "Game/ArcaneGameModeBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Widget/ArcaneWidgetBase.h"
 
@@ -75,15 +76,35 @@ void AArcaneEnemyCharacter::PossessedBy(AController* NewController)
 
 void AArcaneEnemyCharacter::InitEnemyStartupData()
 {
+	int32 AbilityApplyLevel = 1;
+	if (AArcaneGameModeBase* ArcaneGameMode = GetWorld()->GetAuthGameMode<AArcaneGameModeBase>())
+	{
+		switch (ArcaneGameMode->GetGameDifficulty())
+		{
+		case EArcaneGameDifficulty::Easy:
+			AbilityApplyLevel = 1;
+			break;
+		case EArcaneGameDifficulty::Normal:
+			AbilityApplyLevel = 2;
+			break;
+		case EArcaneGameDifficulty::Hard:
+			AbilityApplyLevel = 3;
+			break;
+		case EArcaneGameDifficulty::Insane:
+			AbilityApplyLevel = 4;
+			break;
+		}
+	}
+	
 	// 对于TSoftObjectPtr类型的数据，需要先加载数据，然后再使用
 	// Enemy角色的生成，我们希望他是异步生成的
 	UAssetManager::GetStreamableManager().RequestAsyncLoad(
 		CharacterStartupData.ToSoftObjectPath(),
-		FStreamableDelegate::CreateLambda([this]()
+		FStreamableDelegate::CreateLambda([this, AbilityApplyLevel]()
 		{
 			if (UDataAsset_StartupDadaBase* LoadedData = CharacterStartupData.Get())
 			{
-				LoadedData->GiveToAbilitySystemComponent(ArcaneAbilitySystemComponent.Get());
+				LoadedData->GiveToAbilitySystemComponent(ArcaneAbilitySystemComponent.Get(), AbilityApplyLevel);
 			}
 		})
 	);
