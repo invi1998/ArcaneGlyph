@@ -103,15 +103,15 @@ private:
 
 	UPROPERTY()
 	TArray<AActor*> TargetPointsArray;	// 目标点数组，用于存储敌人生成的目标点
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WaveDefinition", meta=(AllowPrivateAccess = "true"))
-	float SpawnNewWaveWaitTime = 5.0f;	// 生成新波次的等待时间
-
+	
 	UPROPERTY()
 	float TimePassedSinceStart = 0.0f;	// 从开始到现在经过的时间
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WaveDefinition", meta=(AllowPrivateAccess = "true"))
-	float SpawnEnemyDelayTime = 3.f;	// 生成敌人的延迟时间
+	float SpawnNewWaveWaitTime = 5.0f;	// 生成新波次的等待时间
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "WaveDefinition", meta=(AllowPrivateAccess = "true"))
+	float SpawnEnemyDelayTime = 2.f;	// 生成敌人的延迟时间
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WaveDefinition", meta=(AllowPrivateAccess = "true"))
 	float WaveCompletedWaitTime = 5.0f;	// 波次完成后的等待时间
