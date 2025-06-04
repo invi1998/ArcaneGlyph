@@ -169,7 +169,7 @@ int32 AArcaneSurvialGameModeBase::TrySpawnEnemy()
 
 bool AArcaneSurvialGameModeBase::ShouldKeepSpawningEnemies() const
 {
-	return TotalSpawnedEnemyThisWaveCounter >= GetCurrentWaveEnemySpawnerTableRow()->TotalEnemyToSpawnThisWave;
+	return TotalSpawnedEnemyThisWaveCounter < GetCurrentWaveEnemySpawnerTableRow()->TotalEnemyToSpawnThisWave;
 }
 
 void AArcaneSurvialGameModeBase::OnEnemyDestroyed(AActor* DestroyedActor)
@@ -180,7 +180,7 @@ void AArcaneSurvialGameModeBase::OnEnemyDestroyed(AActor* DestroyedActor)
 	{
 		CurrentSpawnedEnemyCounter += TrySpawnEnemy();
 	}
-	else if (CurrentSpawnedEnemyCounter <= 0)
+	else if (CurrentSpawnedEnemyCounter == 0)
 	{
 		// 当前波次的敌人全部死亡，进入下一个状态
 		TotalSpawnedEnemyThisWaveCounter = 0;
