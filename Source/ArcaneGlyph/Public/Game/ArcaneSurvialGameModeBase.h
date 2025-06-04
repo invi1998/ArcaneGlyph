@@ -72,6 +72,9 @@ private:
 	FArcaneEnemyWaveSpawnerTableRow* GetCurrentWaveEnemySpawnerTableRow() const;
 	int32 TrySpawnEnemy();
 	bool ShouldKeepSpawningEnemies() const;
+
+	UFUNCTION()
+	void OnEnemyDestroyed(AActor* DestroyedActor);
 	
 	UPROPERTY()
 	EArcaneSurvialGameModeState CurrentSurvialGameModeState = EArcaneSurvialGameModeState::WaitSpawnNewWave;

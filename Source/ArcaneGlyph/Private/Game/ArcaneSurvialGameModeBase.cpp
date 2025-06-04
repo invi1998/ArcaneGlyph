@@ -86,6 +86,8 @@ void AArcaneSurvialGameModeBase::PreLoadNextWaveEnemy()
 {
 	if (HasFinishedAllWaves()) return;
 
+	PreLoadedEnemyClasses.Empty();
+
 	for (const FArcaneEnemyWaveSpawnerInfo& SpawnerInfo : GetCurrentWaveEnemySpawnerTableRow()->EnemyWaveSpawnerDefinitions)
 	{
 		if (SpawnerInfo.SoftEnemyClassToSpawn.IsNull()) continue;
@@ -149,6 +151,8 @@ int32 AArcaneSurvialGameModeBase::TrySpawnEnemy()
 
 			if (AArcaneEnemyCharacter* SpawnArcaneEnemy = GetWorld()->SpawnActor<AArcaneEnemyCharacter>(LoadedEnemyClass, RandomLocation, SpawnRotation, SpawnParameters))
 			{
+				SpawnArcaneEnemy->OnDestroyed.AddUniqueDynamic(this, &AArcaneSurvialGameModeBase::OnEnemyDestroyed);
+
 				EnemySpawnedThisTime++;
 				TotalSpawnedEnemyThisWaveCounter++;
 			}
@@ -166,4 +170,21 @@ int32 AArcaneSurvialGameModeBase::TrySpawnEnemy()
 bool AArcaneSurvialGameModeBase::ShouldKeepSpawningEnemies() const
 {
 	return TotalSpawnedEnemyThisWaveCounter >= GetCurrentWaveEnemySpawnerTableRow()->TotalEnemyToSpawnThisWave;
+}
+
+void AArcaneSurvialGameModeBase::OnEnemyDestroyed(AActor* DestroyedActor)
+{
+	// 当前角色死亡，继续生成
+	CurrentSpawnedEnemyCounter--;
+	if (ShouldKeepSpawningEnemies())
+	{
+		CurrentSpawnedEnemyCounter += TrySpawnEnemy();
+	}
+	else if (CurrentSpawnedEnemyCounter <= 0)
+	{
+		// 当前波次的敌人全部死亡，进入下一个状态
+		TotalSpawnedEnemyThisWaveCounter = 0;
+		CurrentSpawnedEnemyCounter = 0;
+		SetCurrentSurvialState(EArcaneSurvialGameModeState::WaveCompleted);
+	}
 }
