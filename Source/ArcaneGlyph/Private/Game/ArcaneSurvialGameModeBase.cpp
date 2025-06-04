@@ -3,6 +3,7 @@
 
 #include "Game/ArcaneSurvialGameModeBase.h"
 
+#include "ArcaneDebugHelper.h"
 #include "NavigationSystem.h"
 #include "Characters/ArcaneEnemyCharacter.h"
 #include "Engine/AssetManager.h"
