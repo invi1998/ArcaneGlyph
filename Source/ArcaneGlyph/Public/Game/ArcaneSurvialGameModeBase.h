@@ -60,6 +60,10 @@ class ARCANEGLYPH_API AArcaneSurvialGameModeBase : public AArcaneGameModeBase
 {
 	GENERATED_BODY()
 
+public:
+	UFUNCTION(BlueprintCallable)
+	void RegisterSpawnedEnemies(const TArray<AArcaneEnemyCharacter*> InEnemiesToRegister);
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;

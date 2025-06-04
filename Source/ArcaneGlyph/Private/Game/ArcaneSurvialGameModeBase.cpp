@@ -10,6 +10,18 @@
 #include "Engine/TargetPoint.h"
 #include "Kismet/GameplayStatics.h"
 
+void AArcaneSurvialGameModeBase::RegisterSpawnedEnemies(const TArray<AArcaneEnemyCharacter*> InEnemiesToRegister)
+{
+	for (AArcaneEnemyCharacter* Enemy : InEnemiesToRegister)
+	{
+		if (Enemy)
+		{
+			Enemy->OnDestroyed.AddUniqueDynamic(this, &AArcaneSurvialGameModeBase::OnEnemyDestroyed);
+			CurrentSpawnedEnemyCounter++;
+		}
+	}
+}
+
 void AArcaneSurvialGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
