@@ -24,7 +24,7 @@ public:
 
 protected:
 	UFUNCTION(BlueprintCallable)
-	void RegisterWidgetToStack(FGameplayTag WidgetTag, UCommonActivatableWidgetContainerBase* WidgetContainer);
+	void RegisterWidgetToStack(UPARAM(meta = (Caregories = "Frontend.WidgetStack")) FGameplayTag WidgetTag, UCommonActivatableWidgetContainerBase* WidgetContainer);
 
 private:
 	// Transient 瞬态属性，表示该属性不会被序列化或保存到磁盘，加载时总是会被初始化为0，这就使得它很适合缓存临时运行的值

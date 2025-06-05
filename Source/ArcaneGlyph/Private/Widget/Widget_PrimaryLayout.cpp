@@ -10,7 +10,7 @@ UCommonActivatableWidgetContainerBase* UWidget_PrimaryLayout::FindWidgetStackByT
 	return RegisteredWidgetsStackMap.FindRef(WidgetTag);
 }
 
-void UWidget_PrimaryLayout::RegisterWidgetToStack(FGameplayTag WidgetTag, UCommonActivatableWidgetContainerBase* WidgetContainer)
+void UWidget_PrimaryLayout::RegisterWidgetToStack(UPARAM(meta = (Caregories = "Frontend.WidgetStack")) FGameplayTag WidgetTag, UCommonActivatableWidgetContainerBase* WidgetContainer)
 {
 	// 只有在设计时才会注册控件到栈中
 	if (!IsDesignTime())
