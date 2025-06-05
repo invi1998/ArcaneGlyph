@@ -6,7 +6,16 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "FrontendUISubsystem.generated.h"
 
+class UWidget_ActivatableBase;
+struct FGameplayTag;
 class UWidget_PrimaryLayout;
+
+enum class EAsyncPushWidgetState : uint8
+{
+	OnCreatedBeforePush UMETA(DisplayName = "在创建推送之前"),
+	AfterPush UMETA(DisplayName = "推送之后"),
+};
+
 /**
  * 
  */
@@ -22,6 +31,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void RegisterCreatedPrimaryLayoutWidget(UWidget_PrimaryLayout* InWidget);
+
+	void PushSoftWidgetToStackAsync(const FGameplayTag& WidgetTag, TSoftClassPtr<UWidget_ActivatableBase> InSoftWidgetClass, TFunction<void(EAsyncPushWidgetState, UWidget_ActivatableBase*)> AysncPushStateCallback);
 
 private:
 	UPROPERTY(Transient)

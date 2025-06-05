@@ -228,3 +228,7 @@ void UWidget_PrimaryLayout::RegisterWidgetToStack(UPARAM(meta = (Caregories = "F
 
 ![image-20250605213722343](.\image-20250605213722343.png)
 
+
+
+# 异步推送软部件至堆栈
+

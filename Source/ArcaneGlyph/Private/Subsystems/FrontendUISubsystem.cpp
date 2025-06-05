@@ -3,6 +3,11 @@
 
 #include "Subsystems/FrontendUISubsystem.h"
 
+#include "Engine/AssetManager.h"
+#include "Widget/Widget_ActivatableBase.h"
+#include "Widget/Widget_PrimaryLayout.h"
+#include "Widgets/CommonActivatableWidgetContainer.h"
+
 UFrontendUISubsystem* UFrontendUISubsystem::Get(const UObject* WorldContextObject)
 {
 	if (GEngine)
@@ -33,4 +38,37 @@ void UFrontendUISubsystem::RegisterCreatedPrimaryLayoutWidget(UWidget_PrimaryLay
 {
 	check(InWidget);
 	CreatedPrimaryLayoutWidget = InWidget;
+}
+
+void UFrontendUISubsystem::PushSoftWidgetToStackAsync(const FGameplayTag& WidgetTag, TSoftClassPtr<UWidget_ActivatableBase> InSoftWidgetClass, TFunction<void(EAsyncPushWidgetState, UWidget_ActivatableBase*)> AysncPushStateCallback)
+{
+	check(!InSoftWidgetClass.IsNull());
+
+	UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(
+		InSoftWidgetClass.ToSoftObjectPath(),
+		FStreamableDelegate::CreateLambda([this, WidgetTag, InSoftWidgetClass, AysncPushStateCallback]()
+		{
+			// 确保主布局小部件已创建
+			UClass* LoadedWidgetClass = InSoftWidgetClass.Get();
+			check(LoadedWidgetClass && CreatedPrimaryLayoutWidget);
+
+			if (UCommonActivatableWidgetContainerBase* WidgetStack = CreatedPrimaryLayoutWidget->FindWidgetStackByTag(WidgetTag))
+			{
+				UWidget_ActivatableBase* CreateWidget = WidgetStack->AddWidget<UWidget_ActivatableBase>(
+					LoadedWidgetClass,
+					// 绑定异步推送状态回调 (推送到控件栈之前的回调绑定）
+					[AysncPushStateCallback](UWidget_ActivatableBase& NewWidget)
+					{
+						// 调用异步推送状态回调
+						AysncPushStateCallback(EAsyncPushWidgetState::OnCreatedBeforePush, &NewWidget);
+					}
+				);
+
+				// 调用异步推送状态回调 (推送到控件栈之后的回调绑定）
+				AysncPushStateCallback(EAsyncPushWidgetState::AfterPush, CreateWidget);
+				
+			}
+
+		})
+	);
 }
