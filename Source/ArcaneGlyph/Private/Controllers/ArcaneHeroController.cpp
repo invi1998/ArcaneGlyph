@@ -3,6 +3,9 @@
 
 #include "ArcaneGlyph/Public/Controllers/ArcaneHeroController.h"
 
+#include "Camera/CameraActor.h"
+#include "Kismet/GameplayStatics.h"
+
 
 AArcaneHeroController::AArcaneHeroController()
 {
@@ -16,6 +19,26 @@ AArcaneHeroController::AArcaneHeroController()
 FGenericTeamId AArcaneHeroController::GetGenericTeamId() const
 {
 	return HeroTeamID;
+}
+
+void AArcaneHeroController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+
+	TArray<AActor*> FoundCameras;
+	UGameplayStatics::GetAllActorsOfClassWithTag(this, ACameraActor::StaticClass(), FName("Default"), FoundCameras);
+
+	if (!FoundCameras.IsEmpty())
+	{
+		// 如果找到了摄像机，就将玩家控制器的视角设置为摄像机
+		SetViewTarget(FoundCameras[0]);
+	}
+	else
+	{
+		// 如果没有找到摄像机，就使用默认的视角
+		SetViewTarget(InPawn);
+	}
+
 }
 
 

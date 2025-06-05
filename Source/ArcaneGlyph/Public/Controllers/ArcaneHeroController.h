@@ -24,6 +24,7 @@ public:
 	// ~IGenericTeamAgentInterface End
 
 protected:
+	virtual void OnPossess(APawn* InPawn) override;
 
 private:
 	FGenericTeamId HeroTeamID;	// 英雄团队 ID（玩家团队 ID）
