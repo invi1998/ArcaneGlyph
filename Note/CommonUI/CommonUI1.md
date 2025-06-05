@@ -220,3 +220,11 @@ void UWidget_PrimaryLayout::RegisterWidgetToStack(UPARAM(meta = (Caregories = "F
 }
 ```
 
+
+
+# 注册Widget Stack
+
+回顾上面我的堆栈池，我们自底向上分别是 `前端池->HUD池->Menu池->模态框池`，所以在Layout布局里，我需要按顺序添加这些堆栈框（注意，这里添加的是通用可激活控件堆栈），然后因为在Widget里，越是前端的层级越是在靠下的，所以注意顺序。
+
+![image-20250605213722343](.\image-20250605213722343.png)
+
