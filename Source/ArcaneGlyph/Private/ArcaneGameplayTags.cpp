@@ -228,5 +228,11 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Status_FellDown, "Shared.Status.FellDown", "共享状态：倒地");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Status_Hegemony, "Shared.Status.Hegemony", "共享状态：霸体");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Status_ShipoWindow, "Shared.Status.ShipoWindow", "共享状态：识破窗口");
+
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_WidgetStack_Modal, "Frontend.WidgetStack.Modal", "前端：模态窗口堆栈");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_WidgetStack_GameMenu, "Frontend.WidgetStack.GameMenu", "前端：游戏菜单窗口堆栈");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_WidgetStack_HUD, "Frontend.WidgetStack.HUD", "前端：HUD窗口堆栈");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_WidgetStack_Frontend, "Frontend.WidgetStack.Frontend", "前端：前端窗口堆栈");
+	
 	
 }

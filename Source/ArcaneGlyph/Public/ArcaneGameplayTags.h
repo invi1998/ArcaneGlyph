@@ -229,6 +229,12 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Status_FellDown);				// 共享状态：受击反应-倒地
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Status_Hegemony);				// 共享状态：霸体状态
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Status_ShipoWindow);			// 共享状态：识破招式窗口
-	
+
+
+	// Frontend Tags（前端标签）
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_WidgetStack_Modal);			// 前端标签：模态窗口栈
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_WidgetStack_GameMenu);		// 前端标签：游戏菜单窗口栈
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_WidgetStack_HUD);			// 前端标签：HUD窗口栈
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_WidgetStack_Frontend);		// 前端标签：前端窗口栈
 }
 
