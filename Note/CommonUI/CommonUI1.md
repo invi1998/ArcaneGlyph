@@ -152,3 +152,71 @@ Common Activatable Widget继承自Common User Widget。在创建布局控件时�
 
 ![image-20250605200913549](.\image-20250605200913549.png)
 
+
+
+```c++
+// INVI_1998 All Rights Reserved.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "CommonUserWidget.h"
+#include "GameplayTagContainer.h"
+#include "Widget_PrimaryLayout.generated.h"
+
+class UCommonActivatableWidgetContainerBase;
+
+/**
+ * 标记为抽象类的主布局小部件，同时禁用原生Tick。
+ * 抽象类意味着这个类不能被实例化，必须由子类继承并实现其功能。
+ * 同时因为我们不需要加载所有控件，所以禁用原生Tick可以提高性能。
+ */
+UCLASS(Abstract, BlueprintType, meta=(DisabledNativeTick))
+class ARCANEGLYPH_API UWidget_PrimaryLayout : public UCommonUserWidget
+{
+	GENERATED_BODY()
+
+public:
+	UCommonActivatableWidgetContainerBase* FindWidgetStackByTag(const FGameplayTag& WidgetTag) const;
+
+protected:
+	UFUNCTION(BlueprintCallable)
+	void RegisterWidgetToStack(UPARAM(meta = (Caregories = "Frontend.WidgetStack")) FGameplayTag WidgetTag, UCommonActivatableWidgetContainerBase* WidgetContainer);
+
+private:
+	// Transient 瞬态属性，表示该属性不会被序列化或保存到磁盘，加载时总是会被初始化为0，这就使得它很适合缓存临时运行的值
+	UPROPERTY(Transient)
+	TMap<FGameplayTag, UCommonActivatableWidgetContainerBase*> RegisteredWidgetsStackMap;
+	
+};
+
+```
+
+实现：
+
+```c++
+// INVI_1998 All Rights Reserved.
+
+
+#include "Widget/Widget_PrimaryLayout.h"
+
+UCommonActivatableWidgetContainerBase* UWidget_PrimaryLayout::FindWidgetStackByTag(const FGameplayTag& WidgetTag) const
+{
+	checkf(RegisteredWidgetsStackMap.Contains(WidgetTag), TEXT("Widget not registered by the tag %s"), *WidgetTag.ToString());
+
+	return RegisteredWidgetsStackMap.FindRef(WidgetTag);
+}
+
+void UWidget_PrimaryLayout::RegisterWidgetToStack(UPARAM(meta = (Caregories = "Frontend.WidgetStack")) FGameplayTag WidgetTag, UCommonActivatableWidgetContainerBase* WidgetContainer)
+{
+	// 只有在设计时才会注册控件到栈中
+	if (!IsDesignTime())
+	{
+		if (!RegisteredWidgetsStackMap.Contains(WidgetTag))
+		{
+			RegisteredWidgetsStackMap.Add(WidgetTag, WidgetContainer);
+		}
+	}
+}
+```
+
