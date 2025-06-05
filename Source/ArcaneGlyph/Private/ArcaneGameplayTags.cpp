@@ -234,5 +234,8 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_WidgetStack_HUD, "Frontend.WidgetStack.HUD", "前端：HUD窗口堆栈");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_WidgetStack_Frontend, "Frontend.WidgetStack.Frontend", "前端：前端窗口堆栈");
 	
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_PressAnyKeyScreen, "Frontend.Widget.PressAnyKeyScreen", "前端：按任意键屏幕");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_MainMenuScreen, "Frontend.Widget.MainMenuScreen", "前端：主菜单屏幕");
+	
 	
 }

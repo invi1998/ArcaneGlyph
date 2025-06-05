@@ -858,3 +858,36 @@ graph TD
    - 自动垃圾回收
 
 这个实现是目前最完善的蓝图异步UI推送方案，特别适合需要动态加载UI资源的复杂项目。通过添加建议的错误处理和取消支持后，将达到生产级稳定性。
+
+
+
+# Developer Settings
+
+我希望能像配置游戏默认地图那样配置我们游戏里需要用到的Widget，这就需要我编写自己的 开发者设置 `Developer Settings`
+
+```c++
+
+#include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
+#include "Engine/DeveloperSettings.h"
+#include "FrontendDeveloperSettings.generated.h"
+
+class UWidget_ActivatableBase;
+/**
+ * 对于该设置，它是一个开发者设置类，用于存储前端相关的开发者设置。
+ * 首先我们需要在UCLASS宏中指定该设置类的类别和配置文件。
+ */
+UCLASS(Config=Game, DefaultConfig, meta=(DisplayName="Frontend UI Settings"))
+class ARCANEGLYPH_API UFrontendDeveloperSettings : public UDeveloperSettings
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(Config, EditAnywhere, Category="Widget References", meta=(Categories = "Frontend.Widget", ForceInlineRow))
+	TMap<FGameplayTag, TSoftClassPtr<UWidget_ActivatableBase>> FrontendWidgetMap;	// 前端小部件映射
+};
+```
+
+编辑器效果如下：
+
+![image-20250606043426693](.\image-20250606043426693.png)

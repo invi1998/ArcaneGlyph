@@ -24,6 +24,7 @@ public class ArcaneGlyph : ModuleRules
 			"MotionWarping",
 			"Niagara",
 			"NavigationSystem",
+			"DeveloperSettings",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

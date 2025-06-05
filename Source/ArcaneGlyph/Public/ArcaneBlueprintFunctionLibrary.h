@@ -6,6 +6,7 @@
 #include "GameplayTagContainer.h"
 #include "ArcaneTypes/ArcaneEnumTypes.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "Widget/Widget_ActivatableBase.h"
 #include "ArcaneBlueprintFunctionLibrary.generated.h"
 
 struct FGameplayEffectSpecHandle;
@@ -121,6 +122,11 @@ public:
 	// 获取角色前方视野内的最近的敌人
 	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary")
 	static AActor* GetNearestEnemyInFrontOfCharacter(AActor* InActor, TArray<TEnumAsByte<EObjectTypeQuery>> TargetObjectTypes, bool bShowDebugTrace = false, float MaxDistance = 1000.0f, float MaxAngle = 90.0f, FVector TraceBoxSize = FVector(2000.f, 2000.f, 2000.f));
+
+
+	// Frontend UI Subsystem相关函数
+	UFUNCTION(BlueprintPure, Category = "FrontendUI | FunctionLibrary")
+	static TSoftClassPtr<UWidget_ActivatableBase> GetFrontendSoftWidgetClassByTag(UPARAM(meta = (Categories = "Frontend.Widget")) FGameplayTag WidgetTag);
 };
 
 

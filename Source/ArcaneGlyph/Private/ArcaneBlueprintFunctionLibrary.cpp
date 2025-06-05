@@ -16,6 +16,7 @@
 #include "Characters/ArcaneHeroCharacter.h"
 #include "Component/Combat/PawnCombatComponent.h"
 #include "Component/UI/PawnUIComponent.h"
+#include "FrontendSettings/FrontendDeveloperSettings.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Interfaces/PawnCombatInterface.h"
@@ -506,6 +507,17 @@ AActor* UArcaneBlueprintFunctionLibrary::GetNearestEnemyInFrontOfCharacter(AActo
 	HeroCharacter->SoftLockedTargetActor = NearestEnemy;	// 将最近的敌人设置为软锁定目标
 
 	return NearestEnemy;	// 返回最近的敌人Actor
+}
+
+TSoftClassPtr<UWidget_ActivatableBase> UArcaneBlueprintFunctionLibrary::GetFrontendSoftWidgetClassByTag(UPARAM(meta = (Categories = "Frontend.Widget")) FGameplayTag WidgetTag)
+{
+	const UFrontendDeveloperSettings* FrontendDeveloperSettings = GetDefault<UFrontendDeveloperSettings>();
+
+	check(FrontendDeveloperSettings);
+	checkf(FrontendDeveloperSettings->FrontendWidgetMap.Contains(WidgetTag), TEXT("WidgetTag %s not found in FrontendWidgetMap!"), *WidgetTag.ToString());
+
+	return FrontendDeveloperSettings->FrontendWidgetMap.FindRef(WidgetTag);	// 返回对应的软类
+
 }
 
 
