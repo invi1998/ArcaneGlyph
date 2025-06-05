@@ -232,3 +232,283 @@ void UWidget_PrimaryLayout::RegisterWidgetToStack(UPARAM(meta = (Caregories = "F
 
 # 异步推送软部件至堆栈
 
+![image-20250606001906301](.\image-20250606001906301.png)
+
+
+
+```c++
+enum class EAsyncPushWidgetState : uint8
+{
+	OnCreatedBeforePush UMETA(DisplayName = "在创建推送之前"),
+	AfterPush UMETA(DisplayName = "推送之后"),
+};
+
+/**
+ * 
+ */
+UCLASS()
+class ARCANEGLYPH_API UFrontendUISubsystem : public UGameInstanceSubsystem
+{
+	GENERATED_BODY()
+
+public:
+	static UFrontendUISubsystem* Get(const UObject* WorldContextObject);
+
+	virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
+
+	UFUNCTION(BlueprintCallable)
+	void RegisterCreatedPrimaryLayoutWidget(UWidget_PrimaryLayout* InWidget);
+
+	void PushSoftWidgetToStackAsync(const FGameplayTag& WidgetTag, TSoftClassPtr<UWidget_ActivatableBase> InSoftWidgetClass, TFunction<void(EAsyncPushWidgetState, UWidget_ActivatableBase*)> AysncPushStateCallback);
+
+private:
+	UPROPERTY(Transient)
+	TObjectPtr<UWidget_PrimaryLayout> CreatedPrimaryLayoutWidget;	// 创建的主布局小部件
+};
+```
+
+实现Cpp
+
+```c++
+UFrontendUISubsystem* UFrontendUISubsystem::Get(const UObject* WorldContextObject)
+{
+	if (GEngine)
+	{
+		UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::Assert);
+
+		return UGameInstance::GetSubsystem<UFrontendUISubsystem>(World->GetGameInstance());
+	}
+
+	return nullptr;
+}
+
+bool UFrontendUISubsystem::ShouldCreateSubsystem(UObject* Outer) const
+{
+	if (CastChecked<UGameInstance>(Outer)->IsDedicatedServerInstance())
+	{
+		// 如果是专用服务器实例，就查找是否有派生类，如果没有派生类，则不创建子系统
+		TArray<UClass*> FoundClasses;
+		GetDerivedClasses(GetClass(), FoundClasses);
+
+		return FoundClasses.IsEmpty();
+	}
+
+	return false;
+}
+
+void UFrontendUISubsystem::RegisterCreatedPrimaryLayoutWidget(UWidget_PrimaryLayout* InWidget)
+{
+	check(InWidget);
+	CreatedPrimaryLayoutWidget = InWidget;
+}
+
+void UFrontendUISubsystem::PushSoftWidgetToStackAsync(const FGameplayTag& WidgetTag, TSoftClassPtr<UWidget_ActivatableBase> InSoftWidgetClass, TFunction<void(EAsyncPushWidgetState, UWidget_ActivatableBase*)> AysncPushStateCallback)
+{
+	check(!InSoftWidgetClass.IsNull());
+
+	UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(
+		InSoftWidgetClass.ToSoftObjectPath(),
+		FStreamableDelegate::CreateLambda([this, WidgetTag, InSoftWidgetClass, AysncPushStateCallback]()
+		{
+			// 确保主布局小部件已创建
+			UClass* LoadedWidgetClass = InSoftWidgetClass.Get();
+			check(LoadedWidgetClass && CreatedPrimaryLayoutWidget);
+
+			if (UCommonActivatableWidgetContainerBase* WidgetStack = CreatedPrimaryLayoutWidget->FindWidgetStackByTag(WidgetTag))
+			{
+				UWidget_ActivatableBase* CreateWidget = WidgetStack->AddWidget<UWidget_ActivatableBase>(
+					LoadedWidgetClass,
+					// 绑定异步推送状态回调 (推送到控件栈之前的回调绑定）
+					[AysncPushStateCallback](UWidget_ActivatableBase& NewWidget)
+					{
+						// 调用异步推送状态回调
+						AysncPushStateCallback(EAsyncPushWidgetState::OnCreatedBeforePush, &NewWidget);
+					}
+				);
+
+				// 调用异步推送状态回调 (推送到控件栈之后的回调绑定）
+				AysncPushStateCallback(EAsyncPushWidgetState::AfterPush, CreateWidget);
+				
+			}
+
+		})
+	);
+}
+
+```
+
+
+
+
+
+下面是对前端UI子系统代码的详细分析，我将从架构设计、关键功能实现和优化建议三个方面进行分点解析：
+
+### 一、架构设计分析
+
+1. **子系统类型选择**
+   
+   - 继承自`UGameInstanceSubsystem`，生命周期与`GameInstance`绑定
+   - 适合管理全局UI状态（跨关卡持久存在）
+   - 通过静态`Get()`方法提供全局访问点，符合UE最佳实践
+   
+2. **Transient属性使用**
+   ```cpp
+   UPROPERTY(Transient)
+   TObjectPtr<UWidget_PrimaryLayout> CreatedPrimaryLayoutWidget;
+   ```
+   - 正确标记为`Transient`：主布局控件是运行时动态创建的临时对象
+   - 避免不必要的序列化（游戏保存/加载时不会尝试保存UI状态）
+   - 符合UE内存管理规范
+
+3. **服务器优化设计**
+   ```cpp
+   virtual bool ShouldCreateSubsystem(UObject* Outer) const override {
+     if (CastChecked<UGameInstance>(Outer)->IsDedicatedServerInstance()) {
+       TArray<UClass*> FoundClasses;
+       GetDerivedClasses(GetClass(), FoundClasses);
+       return FoundClasses.IsEmpty();
+     }
+     return false;
+   }
+   ```
+   - 专用服务器不创建UI子系统（节省内存）
+   - 检查派生类的设计允许特殊服务器场景扩展
+   - 符合UE网络游戏优化原则
+
+### 二、关键功能实现解析
+
+1. **主布局注册机制**
+   ```cpp
+   UFUNCTION(BlueprintCallable)
+   void RegisterCreatedPrimaryLayoutWidget(UWidget_PrimaryLayout* InWidget) {
+     check(InWidget);
+     CreatedPrimaryLayoutWidget = InWidget;
+   }
+   ```
+   - 蓝图可调用：允许UI蓝图初始化时注册
+   - `check`确保非空指针，防止空引用
+   - 建立子系统与具体UI实例的连接点
+
+2. **异步推送核心实现**
+   ```cpp
+   void PushSoftWidgetToStackAsync(const FGameplayTag& WidgetTag, 
+                                  TSoftClassPtr<UWidget_ActivatableBase> InSoftWidgetClass,
+                                  TFunction<void(EAsyncPushWidgetState, UWidget_ActivatableBase*)> AysncPushStateCallback)
+   ```
+   - **参数设计**：
+     - `WidgetTag`：使用GameplayTag标识目标堆栈，灵活且可配置
+     - `TSoftClassPtr`：安全处理异步资源加载
+     - 状态回调：提供精细的生命周期控制
+
+   - **异步加载流程**：
+     ```cpp
+     UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(
+       InSoftWidgetClass.ToSoftObjectPath(),
+       FStreamableDelegate::CreateLambda([...]{...})
+     ```
+     - 使用引擎的`StreamableManager`处理异步加载
+     - Lambda捕获必要参数，保持上下文
+
+   - **控件创建与回调**：
+     ```cpp
+     UCommonActivatableWidgetContainerBase* WidgetStack = ...;
+     UWidget_ActivatableBase* CreateWidget = WidgetStack->AddWidget<UWidget_ActivatableBase>(
+       LoadedWidgetClass,
+       [AysncPushStateCallback](UWidget_ActivatableBase& NewWidget) {
+         AysncPushStateCallback(EAsyncPushWidgetState::OnCreatedBeforePush, &NewWidget);
+       }
+     );
+     AysncPushStateCallback(EAsyncPushWidgetState::AfterPush, CreateWidget);
+     ```
+     - 双回调设计：
+       - `OnCreatedBeforePush`：控件实例化后，入栈前（适合初始配置）
+       - `AfterPush`：控件入栈后（适合显示相关操作）
+     - 精确控制生命周期节点
+
+### 三、代码健壮性与优化建议
+
+1. **异常处理强化**
+   - 当前问题：缺少加载失败处理
+   - 建议补充：
+     ```cpp
+     void PushSoftWidgetToStackAsync(...) {
+       if (InSoftWidgetClass.IsNull()) { // 增加空引用检查
+         UE_LOG(LogUI, Error, TEXT("Attempted to push null widget class"));
+         return;
+       }
+       
+       // 在异步加载lambda中增加：
+       if (!LoadedWidgetClass) {
+         AysncPushStateCallback(EAsyncPushWidgetState::LoadFailed, nullptr);
+         return;
+       }
+     }
+     ```
+
+2. **生命周期安全**
+   - 当前风险：异步加载期间主布局控件可能被销毁
+   - 建议方案：
+     ```cpp
+     // 使用弱引用捕获
+     TWeakObjectPtr<UWidget_PrimaryLayout> WeakLayout(CreatedPrimaryLayoutWidget);
+     
+     FStreamableDelegate::CreateLambda([this, WeakLayout, ...]{
+       if (!WeakLayout.IsValid()) {
+         // 处理布局已销毁情况
+         return;
+       }
+       // ...
+     })
+     ```
+
+3. **内存优化**
+   - 问题：Lambda捕获大量参数可能造成不必要的拷贝
+   - 优化方案：
+     ```cpp
+     // 使用移动语义捕获回调
+     auto Callback = MoveTemp(AysncPushStateCallback);
+     
+     FStreamableDelegate::CreateLambda(
+       [this, WidgetTag, InSoftWidgetClass, Callback = MoveTemp(Callback)]() mutable 
+     {
+       // 使用mutable允许修改Callback
+       // ...
+     })
+     ```
+
+4. **扩展性增强**
+   - 建议增加取消机制：
+     ```cpp
+     TSharedPtr<FStreamableHandle> LoadingHandle;
+     
+     // 在函数中
+     LoadingHandle = UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(...);
+     
+     // 添加取消函数
+     void CancelPendingPush() {
+       if (LoadingHandle.IsValid()) {
+         LoadingHandle->CancelRequest();
+         LoadingHandle.Reset();
+       }
+     }
+     ```
+
+### 四、整体架构评价
+
+1. **优点**：
+   - 符合UE5的异步加载最佳实践
+   - 良好的关注点分离（子系统专注UI管理）
+   - 灵活的回调机制提供精细控制
+   - 使用GameplayTag实现解耦的UI堆栈标识
+
+2. **适用场景**：
+   - 大型游戏的动态UI系统
+   - 需要按需加载UI资源的项目
+   - 复杂UI层级管理（如嵌套菜单）
+
+3. **潜在改进方向**：
+   - 增加UI对象池管理重复控件
+   - 实现优先级系统处理并发请求
+   - 添加分析统计（加载时间、内存占用等）
+
+这个子系统设计体现了对UE5 UI系统的深刻理解，特别是在异步资源管理和生命周期控制方面。通过强化异常处理和内存管理后，可以成为更健壮的前端UI核心模块。
