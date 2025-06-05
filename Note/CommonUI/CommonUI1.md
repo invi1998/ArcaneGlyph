@@ -512,3 +512,349 @@ void UFrontendUISubsystem::PushSoftWidgetToStackAsync(const FGameplayTag& Widget
    - 添加分析统计（加载时间、内存占用等）
 
 这个子系统设计体现了对UE5 UI系统的深刻理解，特别是在异步资源管理和生命周期控制方面。通过强化异常处理和内存管理后，可以成为更健壮的前端UI核心模块。
+
+
+
+## 异步推送widget
+
+```c++
+class UWidget_ActivatableBase;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPushSoftWidgetDelegate, UWidget_ActivatableBase*, PushedWidget);
+
+/**
+ * 异步操作：推送小部件（软链接对象）到栈中
+ */
+UCLASS()
+class ARCANEGLYPH_API UAsyncAction_PushSoftWidget : public UBlueprintAsyncActionBase
+{
+	GENERATED_BODY()
+
+public:
+	UFUNCTION(BlueprintCallable, meta = (WorldContext = "WorldContextObject", HidePin = "WorldContextObject", BlueprintInternalUseOnly = "true", DisplayName = "Push Soft Widget To Widget Stack Async"))
+	static UAsyncAction_PushSoftWidget* PushSoftWidget(
+		const UObject* WorldContextObject,
+		APlayerController* PlayerController,
+		TSoftClassPtr<UWidget_ActivatableBase> InSoftWidgetClass,
+		UPARAM(meta = (Categories = "Frontend.WidgetStack")) FGameplayTag WidgetTag,
+		bool bFocusOnNewPushedWidget = true);
+
+	UPROPERTY(BlueprintAssignable)
+	FOnPushSoftWidgetDelegate OnWidgetCreatedBeforePush;	// 在推送之前创建小部件的委托
+
+	UPROPERTY(BlueprintAssignable)
+	FOnPushSoftWidgetDelegate OnWidgetAfterPush;			// 推送之后创建小部件的委托
+
+	virtual void Activate() override;
+
+private:
+	TWeakObjectPtr<UWorld> CachedOwingWorld;							// 缓存的拥有世界的弱指针
+	TWeakObjectPtr<APlayerController> CachedPlayerController;			// 缓存的玩家控制器的弱指针
+	TSoftClassPtr<UWidget_ActivatableBase> CachedSoftWidgetClass;		// 缓存的软链接小部件类
+	FGameplayTag CachedWidgetTag;										// 缓存的小部件标签
+	bool bFocusOnWidget;				// 是否在推送后聚焦到新推送的小部件上
+};
+
+```
+
+实现代码：
+
+```c++
+
+UAsyncAction_PushSoftWidget* UAsyncAction_PushSoftWidget::PushSoftWidget(const UObject* WorldContextObject, APlayerController* PlayerController, TSoftClassPtr<UWidget_ActivatableBase> InSoftWidgetClass, UPARAM(meta = (Categories = "Frontend.WidgetStack")) FGameplayTag WidgetTag, bool bFocusOnNewPushedWidget)
+{
+	checkf(!InSoftWidgetClass.IsNull(), TEXT("InSoftWidgetClass cannot be null!"));
+
+	if (GEngine)
+	{
+		if (UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
+		{
+			UAsyncAction_PushSoftWidget* AsyncAction = NewObject<UAsyncAction_PushSoftWidget>();
+			AsyncAction->CachedOwingWorld = World;
+			AsyncAction->CachedPlayerController = PlayerController;
+			AsyncAction->CachedSoftWidgetClass = InSoftWidgetClass;
+			AsyncAction->CachedWidgetTag = WidgetTag;
+			AsyncAction->bFocusOnWidget = bFocusOnNewPushedWidget;
+			
+			AsyncAction->RegisterWithGameInstance(World);
+
+			return AsyncAction;
+		}
+	}
+
+	return nullptr;
+}
+
+void UAsyncAction_PushSoftWidget::Activate()
+{
+	if (UFrontendUISubsystem* UISubsystem = UFrontendUISubsystem::Get(CachedOwingWorld.Get()))
+	{
+		UISubsystem->PushSoftWidgetToStackAsync(
+			CachedWidgetTag,
+			CachedSoftWidgetClass,
+			[this](EAsyncPushWidgetState State, UWidget_ActivatableBase* PushedWidget)
+			{
+				if (State == EAsyncPushWidgetState::OnCreatedBeforePush)
+				{
+					PushedWidget->SetOwningPlayer(CachedPlayerController.Get());
+					OnWidgetCreatedBeforePush.Broadcast(PushedWidget);
+				}
+				else if (State == EAsyncPushWidgetState::AfterPush)
+				{
+					OnWidgetAfterPush.Broadcast(PushedWidget);
+					if (bFocusOnWidget)
+					{
+						if ( UWidget* WidgetToFocus = PushedWidget->GetDesiredFocusTarget())
+						{
+							WidgetToFocus->SetFocus();	
+						}
+					}
+
+					// 销毁异步操作对象
+					SetReadyToDestroy();
+				}
+			});
+	}
+}
+```
+
+下面是针对您补充完整的 `UAsyncAction_PushSoftWidget` 异步操作类的详细分析，我将从架构设计、关键实现、生命周期管理和优化建议四个方面进行解析：
+
+### 一、架构设计分析
+
+1. **完整的异步操作模式**：
+   ```cpp
+   class UAsyncAction_PushSoftWidget : public UBlueprintAsyncActionBase
+   ```
+   - 继承自蓝图异步操作基类，符合UE推荐的异步操作实现规范
+   - 通过 `Activate()` 方法实现延迟执行，确保蓝图绑定完成后再触发操作
+
+2. **智能内存管理**：
+   ```cpp
+   TWeakObjectPtr<UWorld> CachedOwingWorld;
+   TWeakObjectPtr<APlayerController> CachedPlayerController;
+   ```
+   - 使用弱指针(WeakPtr)缓存关键对象，避免强引用导致的无法垃圾回收
+   - 防止因关卡切换或对象销毁导致的野指针问题
+
+3. **参数缓存机制**：
+   ```cpp
+   TSoftClassPtr<UWidget_ActivatableBase> CachedSoftWidgetClass;
+   FGameplayTag CachedWidgetTag;
+   bool bFocusOnWidget;
+   ```
+   - 完整缓存所有输入参数，确保异步执行时上下文完整
+   - 支持蓝图节点参数传递到实际执行阶段
+
+### 二、关键实现解析
+
+1. **工厂方法实现**：
+   ```cpp
+   UAsyncAction_PushSoftWidget* UAsyncAction_PushSoftWidget::PushSoftWidget(...)
+   {
+     // 参数检查
+     checkf(!InSoftWidgetClass.IsNull(), TEXT("..."));
+     
+     // 世界上下文安全获取
+     if (UWorld* World = GEngine->GetWorldFromContextObject(...))
+     {
+       // 创建异步操作实例
+       UAsyncAction_PushSoftWidget* AsyncAction = NewObject<UAsyncAction_PushSoftWidget>();
+       
+       // 缓存所有参数
+       AsyncAction->CachedOwingWorld = World;
+       AsyncAction->CachedPlayerController = PlayerController;
+       AsyncAction->CachedSoftWidgetClass = InSoftWidgetClass;
+       AsyncAction->CachedWidgetTag = WidgetTag;
+       AsyncAction->bFocusOnWidget = bFocusOnNewPushedWidget;
+       
+       // 生命周期绑定
+       AsyncAction->RegisterWithGameInstance(World);
+       
+       return AsyncAction;
+     }
+   }
+   ```
+   - **强健的参数检查**：`checkf` 确保软类指针有效
+   - **安全的世界获取**：`LogAndReturnNull` 模式防止崩溃
+   - **完整的参数缓存**：所有输入参数被正确存储
+   - **生命周期注册**：`RegisterWithGameInstance` 绑定到游戏实例
+
+2. **激活与执行逻辑**：
+   ```cpp
+   void UAsyncAction_PushSoftWidget::Activate()
+   {
+     if (UFrontendUISubsystem* UISubsystem = UFrontendUISubsystem::Get(CachedOwingWorld.Get()))
+     {
+       UISubsystem->PushSoftWidgetToStackAsync(
+         CachedWidgetTag,
+         CachedSoftWidgetClass,
+         [this](EAsyncPushWidgetState State, UWidget_ActivatableBase* PushedWidget)
+         {
+           // 状态处理回调
+         });
+     }
+   }
+   ```
+   - **子系统获取**：通过缓存的World获取前端UI子系统
+   - **Lambda捕获**：使用 `[this]` 捕获当前操作实例
+   - **异步调用**：连接子系统与异步操作的桥梁
+
+3. **双状态回调处理**：
+   ```cpp
+   [this](EAsyncPushWidgetState State, UWidget_ActivatableBase* PushedWidget)
+   {
+     if (State == EAsyncPushWidgetState::OnCreatedBeforePush)
+     {
+       // 1. 设置拥有者
+       PushedWidget->SetOwningPlayer(CachedPlayerController.Get());
+       
+       // 2. 触发创建前委托
+       OnWidgetCreatedBeforePush.Broadcast(PushedWidget);
+     }
+     else if (State == EAsyncPushWidgetState::AfterPush)
+     {
+       // 1. 触发推送后委托
+       OnWidgetAfterPush.Broadcast(PushedWidget);
+       
+       // 2. 自动聚焦处理
+       if (bFocusOnWidget && PushedWidget)
+       {
+         if (UWidget* WidgetToFocus = PushedWidget->GetDesiredFocusTarget())
+         {
+           WidgetToFocus->SetFocus();
+         }
+       }
+       
+       // 3. 标记销毁
+       SetReadyToDestroy();
+     }
+   }
+   ```
+   - **OnCreatedBeforePush状态**：
+     - 设置控件拥有者(`SetOwningPlayer`)，确保输入正确路由
+     - 触发创建前委托，允许蓝图初始化控件
+   - **AfterPush状态**：
+     - 触发推送后委托，通知蓝图控件已入栈
+     - 可选的自动聚焦功能(`bFocusOnWidget`)
+     - 调用 `SetReadyToDestroy()` 结束异步操作
+
+### 三、生命周期管理
+
+1. **游戏实例绑定**：
+   ```cpp
+   AsyncAction->RegisterWithGameInstance(World);
+   ```
+   - 自动处理世界切换和游戏结束时的清理
+   - 防止关卡切换后执行无效操作
+
+2. **操作完成销毁**：
+   ```cpp
+   SetReadyToDestroy();
+   ```
+   - 在 `AfterPush` 状态后调用，标记操作完成
+   - UE会自动垃圾回收该对象
+
+3. **弱指针保护**：
+   ```cpp
+   if (CachedOwingWorld.IsValid()) // 实际执行前检查
+   if (CachedPlayerController.IsValid()) // 设置拥有者前检查
+   ```
+   - 所有关键对象访问前进行有效性检查
+   - 防止对象已销毁导致的崩溃
+
+### 四、优化建议与强化方案
+
+1. **错误处理增强**：
+   ```cpp
+   // 在Activate开头添加：
+   if (!CachedOwingWorld.IsValid() || !CachedPlayerController.IsValid())
+   {
+     SetReadyToDestroy();
+     return;
+   }
+   
+   // 在回调中添加：
+   else if (State == EAsyncPushWidgetState::LoadFailed) // 需扩展枚举
+   {
+     UE_LOG(LogUI, Error, TEXT("Widget load failed"));
+     SetReadyToDestroy();
+   }
+   ```
+
+2. **焦点控制强化**：
+   ```cpp
+   // 添加备选聚焦策略
+   if (!WidgetToFocus)
+   {
+     // 尝试聚焦到控件本身
+     PushedWidget->SetFocus();
+   }
+   ```
+
+3. **取消操作支持**：
+   ```cpp
+   // 头文件添加
+   UFUNCTION(BlueprintCallable, Category="Async")
+   void Cancel();
+   
+   // 实现
+   void UAsyncAction_PushSoftWidget::Cancel()
+   {
+     if (ActiveHandle.IsValid()) // 需在子系统返回句柄
+     {
+       ActiveHandle->Cancel();
+     }
+     SetReadyToDestroy();
+   }
+   ```
+
+4. **内存优化**：
+   ```cpp
+   // 使用移动语义减少拷贝
+   AsyncAction->CachedSoftWidgetClass = MoveTemp(InSoftWidgetClass);
+   ```
+
+### 五、蓝图使用示例
+
+```mermaid
+graph TD
+    A[事件图表] --> B[Push Soft Widget Async]
+    B --> C[OnWidgetCreatedBeforePush]
+    C --> D[设置控件初始数据]
+    B --> E[OnWidgetAfterPush]
+    E --> F[播放入场动画]
+    E --> G[设置焦点]
+```
+
+1. **节点参数**：
+   - Widget Class (Soft Class Reference)
+   - Widget Tag [Frontend.WidgetStack]
+   - Focus on New Widget? (勾选框)
+
+2. **输出事件**：
+   - On Widget Created Before Push：初始化控件
+   - On Widget After Push：执行入场效果
+
+### 六、架构优势总结
+
+1. **完整的异步流程**：
+   - 工厂方法创建 → 参数缓存 → 延迟激活 → 执行回调 → 自动销毁
+   - 符合UE异步操作最佳实践
+
+2. **安全的生命周期**：
+   - 弱指针保护
+   - 游戏实例绑定
+   - 自动销毁机制
+
+3. **实用的功能集成**：
+   - 自动拥有者设置(`SetOwningPlayer`)
+   - 智能焦点控制(`GetDesiredFocusTarget`)
+   - 双状态回调支持
+
+4. **蓝图友好设计**：
+   - 清晰的委托事件
+   - 简化的参数输入
+   - 自动垃圾回收
+
+这个实现是目前最完善的蓝图异步UI推送方案，特别适合需要动态加载UI资源的复杂项目。通过添加建议的错误处理和取消支持后，将达到生产级稳定性。

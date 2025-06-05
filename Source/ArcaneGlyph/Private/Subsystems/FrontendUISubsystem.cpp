@@ -22,15 +22,16 @@ UFrontendUISubsystem* UFrontendUISubsystem::Get(const UObject* WorldContextObjec
 
 bool UFrontendUISubsystem::ShouldCreateSubsystem(UObject* Outer) const
 {
-	if (CastChecked<UGameInstance>(Outer)->IsDedicatedServerInstance())
+	if (!CastChecked<UGameInstance>(Outer)->IsDedicatedServerInstance())
 	{
-		// 如果是专用服务器实例，就查找是否有派生类，如果没有派生类，则不创建子系统
+		// 如果不是专用服务器实例，就查找是否有派生类，如果没有派生类，则不创建子系统
 		TArray<UClass*> FoundClasses;
 		GetDerivedClasses(GetClass(), FoundClasses);
 
 		return FoundClasses.IsEmpty();
 	}
 
+	// 如果是专用服务器实例，则不创建子系统（因为服务器不需要UI）
 	return false;
 }
 
@@ -40,14 +41,14 @@ void UFrontendUISubsystem::RegisterCreatedPrimaryLayoutWidget(UWidget_PrimaryLay
 	CreatedPrimaryLayoutWidget = InWidget;
 }
 
-void UFrontendUISubsystem::PushSoftWidgetToStackAsync(const FGameplayTag& WidgetTag, TSoftClassPtr<UWidget_ActivatableBase> InSoftWidgetClass, TFunction<void(EAsyncPushWidgetState, UWidget_ActivatableBase*)> AysncPushStateCallback)
+void UFrontendUISubsystem::PushSoftWidgetToStackAsync(const FGameplayTag& WidgetTag, TSoftClassPtr<UWidget_ActivatableBase> InSoftWidgetClass, TFunction<void(EAsyncPushWidgetState, UWidget_ActivatableBase*)> AsyncPushStateCallback)
 {
 	check(!InSoftWidgetClass.IsNull());
 
 	UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(
 		InSoftWidgetClass.ToSoftObjectPath(),
 		// 使用移动语义，以避免不必要的拷贝，将回调传递给异步加载操作
-		FStreamableDelegate::CreateLambda([this, WidgetTag, InSoftWidgetClass, CallBack = MoveTemp(AysncPushStateCallback)]()
+		FStreamableDelegate::CreateLambda([this, WidgetTag, InSoftWidgetClass, AsyncPushStateCallback]()
 		{
 			// 确保主布局小部件已创建
 			UClass* LoadedWidgetClass = InSoftWidgetClass.Get();
@@ -58,15 +59,15 @@ void UFrontendUISubsystem::PushSoftWidgetToStackAsync(const FGameplayTag& Widget
 				UWidget_ActivatableBase* CreateWidget = WidgetStack->AddWidget<UWidget_ActivatableBase>(
 					LoadedWidgetClass,
 					// 绑定异步推送状态回调 (推送到控件栈之前的回调绑定）
-					[CallBackT = MoveTemp(CallBack)](UWidget_ActivatableBase& NewWidget)
+					[AsyncPushStateCallback](UWidget_ActivatableBase& NewWidget)
 					{
 						// 调用异步推送状态回调
-						CallBackT(EAsyncPushWidgetState::OnCreatedBeforePush, &NewWidget);
+						AsyncPushStateCallback(EAsyncPushWidgetState::OnCreatedBeforePush, &NewWidget);
 					}
 				);
 
 				// 调用异步推送状态回调 (推送到控件栈之后的回调绑定）
-				CallBack(EAsyncPushWidgetState::AfterPush, CreateWidget);
+				AsyncPushStateCallback(EAsyncPushWidgetState::AfterPush, CreateWidget);
 				
 			}
 

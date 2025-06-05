@@ -33,4 +33,13 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnPushSoftWidgetDelegate OnWidgetAfterPush;			// 推送之后创建小部件的委托
+
+	virtual void Activate() override;
+
+private:
+	TWeakObjectPtr<UWorld> CachedOwingWorld;							// 缓存的拥有世界的弱指针
+	TWeakObjectPtr<APlayerController> CachedPlayerController;			// 缓存的玩家控制器的弱指针
+	TSoftClassPtr<UWidget_ActivatableBase> CachedSoftWidgetClass;		// 缓存的软链接小部件类
+	FGameplayTag CachedWidgetTag;										// 缓存的小部件标签
+	bool bFocusOnWidget;				// 是否在推送后聚焦到新推送的小部件上
 };
