@@ -6,6 +6,7 @@
 #include "CommonActivatableWidget.h"
 #include "Widget_ActivatableBase.generated.h"
 
+class AArcaneHeroController;
 /**
  * 
  */
@@ -13,5 +14,13 @@ UCLASS(Abstract, BlueprintType, meta=(DisabledNativeTick))
 class ARCANEGLYPH_API UWidget_ActivatableBase : public UCommonActivatableWidget
 {
 	GENERATED_BODY()
+
+protected:
+	UFUNCTION(BlueprintPure)
+	AArcaneHeroController* GetOwningHeroController();
+	
+
+private:
+	TWeakObjectPtr<AArcaneHeroController> CachedOwningPC;	// 缓存拥有的玩家控制器
 	
 };
