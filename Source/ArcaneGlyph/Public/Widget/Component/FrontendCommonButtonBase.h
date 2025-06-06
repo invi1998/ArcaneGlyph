@@ -23,6 +23,8 @@ public:
 protected:
 	virtual void NativePreConstruct() override;
 
+	virtual void NativeOnCurrentTextStyleChanged() override;
+
 private:
 	//*** Bound Widgets (绑定的控件) ***//
 	UPROPERTY(meta=(BindWidgetOptional))
