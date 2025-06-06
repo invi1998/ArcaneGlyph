@@ -13,9 +13,9 @@ void UFrontendCommonButtonBase::SetButtenText(FText InButtonText)
 	}
 }
 
-void UFrontendCommonButtonBase::NativeOnInitialized()
+void UFrontendCommonButtonBase::NativePreConstruct()
 {
-	Super::NativeOnInitialized();
+	Super::NativePreConstruct();
 
 	SetButtenText(ButtonDisplayText);
 }

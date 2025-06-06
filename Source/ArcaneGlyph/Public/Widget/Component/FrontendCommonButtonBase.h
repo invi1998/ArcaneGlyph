@@ -20,21 +20,25 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetButtenText(FText InButtonText);
 
+protected:
+	virtual void NativePreConstruct() override;
+
 private:
-	virtual void NativeOnInitialized() override;
-	
 	//*** Bound Widgets (绑定的控件) ***//
 	UPROPERTY(meta=(BindWidgetOptional))
 	UCommonTextBlock* CommonTextBlock_ButtonText;	// 按钮文本块（可选绑定）
 	// ** Bound Widgets (绑定的控件) ***//
 
+	// 按钮文本
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Frontend Button", meta = (AllowPrivateAccess = "true"))
-	FText ButtonDisplayText;	// 按钮文本
+	FText ButtonDisplayText;
 
+	// 是否将按钮文本转换为大写
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Frontend Button", meta = (AllowPrivateAccess = "true"))
-	bool bUserUpperCaseButtonText = false;	// 是否将按钮文本转换为大写
+	bool bUserUpperCaseButtonText = false;
 
+	// 按钮描述文本
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Frontend Button", meta = (AllowPrivateAccess = "true"))
-	FText ButtonDescriptionText;			// 按钮描述文本
+	FText ButtonDescriptionText;
 	
 };
