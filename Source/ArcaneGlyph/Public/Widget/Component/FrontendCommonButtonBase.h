@@ -24,6 +24,8 @@ protected:
 	virtual void NativePreConstruct() override;
 
 	virtual void NativeOnCurrentTextStyleChanged() override;
+	virtual void NativeOnHovered() override;
+	virtual void NativeOnUnhovered() override;
 
 private:
 	//*** Bound Widgets (绑定的控件) ***//
