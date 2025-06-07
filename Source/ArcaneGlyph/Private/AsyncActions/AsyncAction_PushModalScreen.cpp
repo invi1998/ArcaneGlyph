@@ -6,8 +6,9 @@
 #include "Subsystems/FrontendUISubsystem.h"
 
 UAsyncAction_PushModalScreen* UAsyncAction_PushModalScreen::PushModalScreen(const UObject* WorldContextObject,
-                                                                            APlayerController* PlayerController, EModalType ModalType, const FText& ModalTitle, const FText& ModalSubtitle,
-                                                                            const FText& ModalMessage, const FText& ModalDescription, const FSlateBrush& ModalIcon)
+	UPARAM(meta = (Categories = "Frontend.Widget.ModalScreen")) FGameplayTag WidgetTag,
+	EModalType ModalType, FText ModalTitle, FText ModalSubtitle, FText ModalMessage, FText ModalDescription,
+	FSlateBrush ModalIcon)
 {
 	if (GEngine)
 	{
@@ -15,7 +16,7 @@ UAsyncAction_PushModalScreen* UAsyncAction_PushModalScreen::PushModalScreen(cons
 		{
 			UAsyncAction_PushModalScreen* Action = NewObject<UAsyncAction_PushModalScreen>();
 			Action->CachedOwingWorld = World;
-			Action->CachedPlayerController = PlayerController;
+			Action->CachedWidgetTag = WidgetTag;
 			Action->CachedModalType = ModalType;
 			Action->CachedModalTitle = ModalTitle;
 			Action->CachedModalSubtitle = ModalSubtitle;
@@ -34,7 +35,7 @@ UAsyncAction_PushModalScreen* UAsyncAction_PushModalScreen::PushModalScreen(cons
 void UAsyncAction_PushModalScreen::Activate()
 {
 	UFrontendUISubsystem::Get(CachedOwingWorld.Get())->PushModalScreenToModalStack(
-		CachedModalType, CachedModalTitle, CachedModalSubtitle, CachedModalMessage, CachedModalDescription, CachedModalIcon,
+		CachedWidgetTag, CachedModalType, CachedModalTitle, CachedModalSubtitle, CachedModalMessage, CachedModalDescription, CachedModalIcon,
 		[this](EModalButtonType ButtonType)
 		{
 			OnModalScreenButtonClicked.Broadcast(ButtonType);

@@ -78,7 +78,7 @@ void UFrontendUISubsystem::PushSoftWidgetToStackAsync(const FGameplayTag& Widget
 	);
 }
 
-void UFrontendUISubsystem::PushModalScreenToModalStack(EModalType ModalType, const FText& ModalTitle,
+void UFrontendUISubsystem::PushModalScreenToModalStack(const FGameplayTag& WidgetTag, EModalType ModalType, const FText& ModalTitle,
 	const FText& ModalSubtitle, const FText& ModalMessage, const FText& ModalDescription, const FSlateBrush& ModalIcon,
 	TFunction<void(EModalButtonType)> ButtonClickedCallback)
 {
@@ -102,7 +102,7 @@ void UFrontendUISubsystem::PushModalScreenToModalStack(EModalType ModalType, con
 
 	PushSoftWidgetToStackAsync(
 		ArcaneGameplayTags::Frontend_WidgetStack_Modal,
-		UArcaneBlueprintFunctionLibrary::GetFrontendSoftWidgetClassByTag(ArcaneGameplayTags::Frontend_Widget_ModalScreen),
+		UArcaneBlueprintFunctionLibrary::GetFrontendSoftWidgetClassByTag(WidgetTag),
 		[this, ConfirmScreenInfoObject, ButtonClickedCallback](EAsyncPushWidgetState State, UWidget_ActivatableBase* PushedWidget)
 		{
 			if (State == EAsyncPushWidgetState::OnCreatedBeforePush)

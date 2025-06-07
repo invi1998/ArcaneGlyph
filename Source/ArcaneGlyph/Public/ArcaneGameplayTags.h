@@ -239,6 +239,9 @@ namespace ArcaneGameplayTags
 
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_PressAnyKeyScreen);		// 前端标签：按任意键屏幕
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_MainMenuScreen);			// 前端标签：主菜单屏幕
-	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_ModalScreen);			// 前端标签：模态屏幕
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_ModalScreen_QuitScreen);		// 前端标签：模态框：退出屏幕
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_ModalScreen_ReturnBackToMainMenu);	// 前端标签：模态框：返回主菜单
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_ModalScreen_More);		// 前端标签：模态框：更多
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_ModalScreen_Normal);		// 前端标签：模态框：普通
 }
 

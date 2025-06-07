@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "ArcaneTypes/ArcaneEnumTypes.h"
 #include "Kismet/BlueprintAsyncActionBase.h"
 #include "AsyncAction_PushModalScreen.generated.h"
@@ -21,13 +22,13 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (WorldContext = "WorldContextObject", HidePin = "WorldContextObject", BlueprintInternalUseOnly = "true", DisplayName = "Show Comfirmation Screen"))
 	static UAsyncAction_PushModalScreen* PushModalScreen(
 		const UObject* WorldContextObject,
-		APlayerController* PlayerController,
+		UPARAM(meta = (Categories = "Frontend.Widget.ModalScreen")) FGameplayTag WidgetTag,
 		EModalType ModalType,
-		const FText& ModalTitle = FText::GetEmpty(),
-		const FText& ModalSubtitle = FText::GetEmpty(),
-		const FText& ModalMessage = FText::GetEmpty(),
-		const FText& ModalDescription = FText::GetEmpty(),
-		const FSlateBrush& ModalIcon = FSlateBrush());
+		FText ModalTitle = FText::GetEmpty(),
+		FText ModalSubtitle = FText::GetEmpty(),
+		FText ModalMessage = FText::GetEmpty(),
+		FText ModalDescription = FText::GetEmpty(),
+		FSlateBrush ModalIcon = FSlateBrush());
 
 	virtual void Activate() override;
 
@@ -36,8 +37,8 @@ public:
 
 private:
 	TWeakObjectPtr<UWorld> CachedOwingWorld;							// 缓存的拥有世界的弱指针
-	TWeakObjectPtr<APlayerController> CachedPlayerController;			// 缓存的玩家控制器的弱指针
 	EModalType CachedModalType;											// 缓存的模态类型
+	FGameplayTag CachedWidgetTag;									// 缓存的小部件标签
 	FText CachedModalTitle;											// 缓存的模态标题
 	FText CachedModalSubtitle;										// 缓存的模态副标题
 	FText CachedModalMessage;										// 缓存的模态消息

@@ -236,7 +236,10 @@ namespace ArcaneGameplayTags
 	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_PressAnyKeyScreen, "Frontend.Widget.PressAnyKeyScreen", "前端：按任意键屏幕");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_MainMenuScreen, "Frontend.Widget.MainMenuScreen", "前端：主菜单屏幕");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_ModalScreen, "Frontend.Widget.ModalScreen", "前端：模态屏幕");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_ModalScreen_QuitScreen, "Frontend.Widget.ModalScreen.QuitScreen", "前端：模态屏幕-退出游戏");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_ModalScreen_ReturnBackToMainMenu, "Frontend.Widget.ModalScreen.ReturnBackToMainMenu", "前端：模态屏幕-返回主菜单");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_ModalScreen_More, "Frontend.Widget.ModalScreen.More", "前端：模态屏幕-更多");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_ModalScreen_Normal, "Frontend.Widget.ModalScreen.Normal", "前端：模态屏幕-普通");
 	
 	
 }
