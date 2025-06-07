@@ -126,5 +126,25 @@ enum class EArcaneGameDifficulty : uint8
 	Insane UMETA(DisplayName = "疯狂")
 };
 
+UENUM(BlueprintType)
+enum class EModalType : uint8
+{
+	Ok UMETA(DisplayName = "确定"),
+	OkCancel UMETA(DisplayName = "确定/取消"),
+	YesNo UMETA(DisplayName = "是/否"),
+	YesNoCancel UMETA(DisplayName = "是/否/取消"),
+	Unknow UMETA(Hidden)
+};
+
+UENUM(BlueprintType)
+enum class EModalButtonType : uint8
+{
+	Confirm UMETA(DisplayName = "确认"),
+	Cancel UMETA(DisplayName = "取消"),
+	Close UMETA(DisplayName = "关闭"),
+	Unknow UMETA(Hidden)
+};
+
+
 
 
