@@ -112,13 +112,6 @@ void UFrontendUISubsystem::PushModalScreenToModalStack(EModalType ModalType, con
 					ModalScreen->InitConfirmScreen(ConfirmScreenInfoObject, ButtonClickedCallback);
 				}
 			}
-			else if (State == EAsyncPushWidgetState::AfterPush)
-			{
-				if (UWidget_ModalScreen* ModalScreen = Cast<UWidget_ModalScreen>(PushedWidget))
-				{
-					ModalScreen->SetOwningPlayer(GetWorld()->GetFirstPlayerController());
-				}
-			}
 		}
 	);
 }

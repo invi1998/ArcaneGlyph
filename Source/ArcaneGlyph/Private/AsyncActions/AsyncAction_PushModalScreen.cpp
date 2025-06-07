@@ -1,0 +1,45 @@
+﻿// INVI_1998 All Rights Reserved.
+
+
+#include "AsyncActions/AsyncAction_PushModalScreen.h"
+
+#include "Subsystems/FrontendUISubsystem.h"
+
+UAsyncAction_PushModalScreen* UAsyncAction_PushModalScreen::PushModalScreen(const UObject* WorldContextObject,
+                                                                            APlayerController* PlayerController, EModalType ModalType, const FText& ModalTitle, const FText& ModalSubtitle,
+                                                                            const FText& ModalMessage, const FText& ModalDescription, const FSlateBrush& ModalIcon)
+{
+	if (GEngine)
+	{
+		if (UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
+		{
+			UAsyncAction_PushModalScreen* Action = NewObject<UAsyncAction_PushModalScreen>();
+			Action->CachedOwingWorld = World;
+			Action->CachedPlayerController = PlayerController;
+			Action->CachedModalType = ModalType;
+			Action->CachedModalTitle = ModalTitle;
+			Action->CachedModalSubtitle = ModalSubtitle;
+			Action->CachedModalMessage = ModalMessage;
+			Action->CachedModalDescription = ModalDescription;
+			Action->CachedModalIcon = ModalIcon;
+
+			Action->RegisterWithGameInstance(World);
+
+			return Action;
+		}
+	}
+	return nullptr;
+}
+
+void UAsyncAction_PushModalScreen::Activate()
+{
+	UFrontendUISubsystem::Get(CachedOwingWorld.Get())->PushModalScreenToModalStack(
+		CachedModalType, CachedModalTitle, CachedModalSubtitle, CachedModalMessage, CachedModalDescription, CachedModalIcon,
+		[this](EModalButtonType ButtonType)
+		{
+			OnModalScreenButtonClicked.Broadcast(ButtonType);
+
+			SetReadyToDestroy();
+		}
+	);
+}
