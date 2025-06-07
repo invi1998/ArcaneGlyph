@@ -239,5 +239,6 @@ namespace ArcaneGameplayTags
 
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_PressAnyKeyScreen);		// 前端标签：按任意键屏幕
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_MainMenuScreen);			// 前端标签：主菜单屏幕
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_ModalScreen);			// 前端标签：模态屏幕
 }
 

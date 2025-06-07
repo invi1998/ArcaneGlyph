@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ArcaneTypes/ArcaneEnumTypes.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "FrontendUISubsystem.generated.h"
 
@@ -37,6 +38,8 @@ public:
 
 	void PushSoftWidgetToStackAsync(const FGameplayTag& WidgetTag, TSoftClassPtr<UWidget_ActivatableBase> InSoftWidgetClass, TFunction<void(EAsyncPushWidgetState, UWidget_ActivatableBase*)> AsyncPushStateCallback);
 
+	void PushModalScreenToModalStack(EModalType ModalType, const FText& ModalTitle, const FText& ModalSubtitle, const FText& ModalMessage, const FText& ModalDescription, const FSlateBrush& ModalIcon, TFunction<void(EModalButtonType)> ButtonClickedCallback);
+	
 	UPROPERTY(BlueprintAssignable)
 	FOnButtonDescriptionTextUpdateDelegate OnButtonDescriptionTextUpdate;	// 按钮描述文本更新委托
 	

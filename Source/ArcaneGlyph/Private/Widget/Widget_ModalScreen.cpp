@@ -10,10 +10,11 @@
 #include "Widget/Component/FrontendCommonButtonBase.h"
 #include "ICommonInputModule.h"
 
-UConfirmScreenInfoObject* UConfirmScreenInfoObject::CreateOKScreen(const FText& InTitle, const FText& InMessage, const FText& InDescription, const FSlateBrush& InIcon)
+UConfirmScreenInfoObject* UConfirmScreenInfoObject::CreateOKScreen(const FText& InTitle, const FText& InSubTitle, const FText& InMessage, const FText& InDescription, const FSlateBrush& InIcon)
 {
 	UConfirmScreenInfoObject* NewScreen = NewObject<UConfirmScreenInfoObject>();
 	NewScreen->ModalTitle = InTitle;
+	NewScreen->ModalSubtitle = InSubTitle;
 	NewScreen->ModalMessage = InMessage;
 	NewScreen->ModalDescription = InDescription;
 	NewScreen->ModalIcon = InIcon;
@@ -28,10 +29,11 @@ UConfirmScreenInfoObject* UConfirmScreenInfoObject::CreateOKScreen(const FText& 
 
 }
 
-UConfirmScreenInfoObject* UConfirmScreenInfoObject::CreateOKCancelScreen(const FText& InTitle, const FText& InMessage, const FText& InDescription, const FSlateBrush& InIcon)
+UConfirmScreenInfoObject* UConfirmScreenInfoObject::CreateOKCancelScreen(const FText& InTitle, const FText& InSubTitle, const FText& InMessage, const FText& InDescription, const FSlateBrush& InIcon)
 {
 	UConfirmScreenInfoObject* NewScreen = NewObject<UConfirmScreenInfoObject>();
 	NewScreen->ModalTitle = InTitle;
+	NewScreen->ModalSubtitle = InSubTitle;
 	NewScreen->ModalMessage = InMessage;
 	NewScreen->ModalDescription = InDescription;
 	NewScreen->ModalIcon = InIcon;
@@ -50,10 +52,11 @@ UConfirmScreenInfoObject* UConfirmScreenInfoObject::CreateOKCancelScreen(const F
 	return NewScreen;
 }
 
-UConfirmScreenInfoObject* UConfirmScreenInfoObject::CreateYesNoScreen(const FText& InTitle, const FText& InMessage, const FText& InDescription, const FSlateBrush& InIcon)
+UConfirmScreenInfoObject* UConfirmScreenInfoObject::CreateYesNoScreen(const FText& InTitle, const FText& InSubTitle, const FText& InMessage, const FText& InDescription, const FSlateBrush& InIcon)
 {
 	UConfirmScreenInfoObject* NewScreen = NewObject<UConfirmScreenInfoObject>();
 	NewScreen->ModalTitle = InTitle;
+	NewScreen->ModalSubtitle = InSubTitle;
 	NewScreen->ModalMessage = InMessage;
 	NewScreen->ModalDescription = InDescription;
 	NewScreen->ModalIcon = InIcon;

@@ -12,7 +12,7 @@ UCommonActivatableWidgetContainerBase* UWidget_PrimaryLayout::FindWidgetStackByT
 
 void UWidget_PrimaryLayout::RegisterWidgetToStack(UPARAM(meta = (Categories = "Frontend.WidgetStack")) FGameplayTag WidgetTag, UCommonActivatableWidgetContainerBase* WidgetContainer)
 {
-	// 只有在设计时才会注册控件到栈中
+	// 只有不在设计时才会注册控件到栈中
 	if (!IsDesignTime())
 	{
 		if (!RegisteredWidgetsStackMap.Contains(WidgetTag))

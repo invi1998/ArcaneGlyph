@@ -236,6 +236,7 @@ namespace ArcaneGameplayTags
 	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_PressAnyKeyScreen, "Frontend.Widget.PressAnyKeyScreen", "前端：按任意键屏幕");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_MainMenuScreen, "Frontend.Widget.MainMenuScreen", "前端：主菜单屏幕");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_ModalScreen, "Frontend.Widget.ModalScreen", "前端：模态屏幕");
 	
 	
 }

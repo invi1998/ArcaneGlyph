@@ -3,8 +3,11 @@
 
 #include "Subsystems/FrontendUISubsystem.h"
 
+#include "ArcaneBlueprintFunctionLibrary.h"
+#include "ArcaneGameplayTags.h"
 #include "Engine/AssetManager.h"
 #include "Widget/Widget_ActivatableBase.h"
+#include "Widget/Widget_ModalScreen.h"
 #include "Widget/Widget_PrimaryLayout.h"
 #include "Widgets/CommonActivatableWidgetContainer.h"
 
@@ -72,5 +75,50 @@ void UFrontendUISubsystem::PushSoftWidgetToStackAsync(const FGameplayTag& Widget
 			}
 
 		})
+	);
+}
+
+void UFrontendUISubsystem::PushModalScreenToModalStack(EModalType ModalType, const FText& ModalTitle,
+	const FText& ModalSubtitle, const FText& ModalMessage, const FText& ModalDescription, const FSlateBrush& ModalIcon,
+	TFunction<void(EModalButtonType)> ButtonClickedCallback)
+{
+	UConfirmScreenInfoObject* ConfirmScreenInfoObject = nullptr;
+	switch (ModalType)
+	{
+	case EModalType::Ok:
+		ConfirmScreenInfoObject = UConfirmScreenInfoObject::CreateOKScreen(ModalTitle, ModalSubtitle, ModalMessage, ModalDescription, ModalIcon);
+		break;
+	case EModalType::OkCancel:
+		ConfirmScreenInfoObject = UConfirmScreenInfoObject::CreateOKCancelScreen(ModalTitle, ModalSubtitle, ModalMessage, ModalDescription, ModalIcon);
+		break;
+	case EModalType::YesNo:
+		ConfirmScreenInfoObject = UConfirmScreenInfoObject::CreateYesNoScreen(ModalTitle, ModalSubtitle, ModalMessage, ModalDescription, ModalIcon);
+		break;
+	case EModalType::Unknow:
+		break;
+	}
+
+	check(ConfirmScreenInfoObject);
+
+	PushSoftWidgetToStackAsync(
+		ArcaneGameplayTags::Frontend_WidgetStack_Modal,
+		UArcaneBlueprintFunctionLibrary::GetFrontendSoftWidgetClassByTag(ArcaneGameplayTags::Frontend_Widget_ModalScreen),
+		[this, ConfirmScreenInfoObject, ButtonClickedCallback](EAsyncPushWidgetState State, UWidget_ActivatableBase* PushedWidget)
+		{
+			if (State == EAsyncPushWidgetState::OnCreatedBeforePush)
+			{
+				if (UWidget_ModalScreen* ModalScreen = Cast<UWidget_ModalScreen>(PushedWidget))
+				{
+					ModalScreen->InitConfirmScreen(ConfirmScreenInfoObject, ButtonClickedCallback);
+				}
+			}
+			else if (State == EAsyncPushWidgetState::AfterPush)
+			{
+				if (UWidget_ModalScreen* ModalScreen = Cast<UWidget_ModalScreen>(PushedWidget))
+				{
+					ModalScreen->SetOwningPlayer(GetWorld()->GetFirstPlayerController());
+				}
+			}
+		}
 	);
 }
