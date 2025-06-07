@@ -25,6 +25,7 @@ public class ArcaneGlyph : ModuleRules
 			"Niagara",
 			"NavigationSystem",
 			"DeveloperSettings",
+			"CommonInput",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

@@ -63,6 +63,11 @@ class ARCANEGLYPH_API UWidget_ModalScreen : public UWidget_ActivatableBase
 {
 	GENERATED_BODY()
 
+public:
+	// 当这个控件被构建时，在类外部调用该函数，并且在该控件被推入modal栈之前执行
+	void InitConfirmScreen(const UConfirmScreenInfoObject* ConfirmScreenInfoObject, TFunction<void(EModalButtonType)> OnButtonClickedCallback);
+	
+
 private:
 	UPROPERTY(meta=(BindWidgetOptional))
 	UCommonTextBlock* Modal_Title;	// 模态框标题文本块（可选绑定）
