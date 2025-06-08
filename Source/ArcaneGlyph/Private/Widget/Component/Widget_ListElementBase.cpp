@@ -20,3 +20,11 @@ void UWidget_ListElementBase::SetElementText(const FText& InElementText)
 		CommonTextBlock_ElementText->SetText(ElementText);
 	}
 }
+
+void UWidget_ListElementBase::SetDisabled(bool bInDisabled)
+{
+	if (CommonTextBlock_ElementText)
+	{
+		CommonTextBlock_ElementText->SetIsEnabled(!bInDisabled);
+	}
+}

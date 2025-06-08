@@ -21,6 +21,8 @@ public:
 
 	void SetElementText(const FText& InElementText);
 
+	void SetDisabled(bool bInDisabled);
+
 	UPROPERTY(meta=(BindWidget))
 	UCommonTextBlock* CommonTextBlock_ElementText;	// 元素文本文本块（绑定的控件）
 

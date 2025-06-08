@@ -29,10 +29,17 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetDescriptionElementList(TArray<FText> InDescriptionLists);
 
+	UFUNCTION(BlueprintCallable)
+	void ToggleGridButtonLock(bool bLock);
+
 protected:
 	virtual void NativePreConstruct() override;
+	virtual void NativeOnCurrentTextStyleChanged() override;
 
 private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Frontend Button", meta = (AllowPrivateAccess = "true"))
+	bool bGridButtonLocked = false;	// 是否锁定网格按钮
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Frontend Button", meta = (AllowPrivateAccess = "true"))
 	FText CategoryText;
 
@@ -59,6 +66,15 @@ private:
 
 	UPROPERTY(meta=(BindWidgetOptional))
 	UVerticalBox* GridButton_SubDescriptionVerticalBox;		// 子描述垂直盒子（可选绑定）
-	
+
+	// Style
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Frontend Button", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UCommonTextStyle> CategoryTextStyle;	// 类别文本样式
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Frontend Button", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UCommonTextStyle> TitleTextStyle;		// 标题文本样式
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Frontend Button", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UCommonTextStyle> SubTitleTextStyle;	// 子标题文本样式
 	
 };

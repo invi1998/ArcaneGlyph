@@ -54,6 +54,19 @@ void UFrontendCommonGridButtonBase::SetDescriptionElementList(TArray<FText> InDe
 	
 }
 
+void UFrontendCommonGridButtonBase::ToggleGridButtonLock(bool bLock)
+{
+	bGridButtonLocked = bLock;
+	if (bGridButtonLocked)
+	{
+		SetIsEnabled(false);
+	}
+	else
+	{
+		SetIsEnabled(true);
+	}
+}
+
 void UFrontendCommonGridButtonBase::NativePreConstruct()
 {
 	Super::NativePreConstruct();
@@ -62,6 +75,19 @@ void UFrontendCommonGridButtonBase::NativePreConstruct()
 	SetTitleText(TitleText);
 	SetSubTitleText(SubTitleText);
 	SetDescriptionElementList(DescriptionLists);
+
+	ToggleGridButtonLock(bGridButtonLocked);
+}
+
+void UFrontendCommonGridButtonBase::NativeOnCurrentTextStyleChanged()
+{
+	Super::NativeOnCurrentTextStyleChanged();
+	
+	if (GridButton_TitleText && GetCurrentTextStyleClass())
+	{
+		GridButton_TitleText->SetStyle(GetCurrentTextStyleClass());
+	}
+	
 }
 
 
