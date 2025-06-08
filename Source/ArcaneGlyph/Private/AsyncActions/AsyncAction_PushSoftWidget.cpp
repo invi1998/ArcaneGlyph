@@ -6,7 +6,7 @@
 #include "Subsystems/FrontendUISubsystem.h"
 #include "Widget/Widget_ActivatableBase.h"
 
-UAsyncAction_PushSoftWidget* UAsyncAction_PushSoftWidget::PushSoftWidget(const UObject* WorldContextObject, APlayerController* PlayerController, TSoftClassPtr<UWidget_ActivatableBase> InSoftWidgetClass, UPARAM(meta = (Categories = "Frontend.WidgetStack")) FGameplayTag WidgetTag, bool bFocusOnNewPushedWidget)
+UAsyncAction_PushSoftWidget* UAsyncAction_PushSoftWidget::PushSoftWidget(const UObject* WorldContextObject, APlayerController* PlayerController, TSoftClassPtr<UWidget_ActivatableBase> InSoftWidgetClass, UPARAM(meta = (Categories = "Frontend.WidgetStack")) FGameplayTag WidgetStackTag, bool bFocusOnNewPushedWidget)
 {
 	checkf(!InSoftWidgetClass.IsNull(), TEXT("InSoftWidgetClass cannot be null!"));
 
@@ -18,7 +18,7 @@ UAsyncAction_PushSoftWidget* UAsyncAction_PushSoftWidget::PushSoftWidget(const U
 			AsyncAction->CachedOwingWorld = World;
 			AsyncAction->CachedPlayerController = PlayerController;
 			AsyncAction->CachedSoftWidgetClass = InSoftWidgetClass;
-			AsyncAction->CachedWidgetTag = WidgetTag;
+			AsyncAction->CachedWidgetTag = WidgetStackTag;
 			AsyncAction->bFocusOnWidget = bFocusOnNewPushedWidget;
 			
 			AsyncAction->RegisterWithGameInstance(World);

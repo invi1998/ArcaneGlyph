@@ -22,7 +22,7 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (WorldContext = "WorldContextObject", HidePin = "WorldContextObject", BlueprintInternalUseOnly = "true", DisplayName = "Show Comfirmation Screen"))
 	static UAsyncAction_PushModalScreen* PushModalScreen(
 		const UObject* WorldContextObject,
-		UPARAM(meta = (Categories = "Frontend.Widget.ModalScreen")) FGameplayTag WidgetTag,
+		UPARAM(meta = (Categories = "Frontend.Widget.ModalScreen")) FGameplayTag WidgetStackTag,
 		EModalType ModalType,
 		FText ModalTitle = FText::GetEmpty(),
 		FText ModalSubtitle = FText::GetEmpty(),
@@ -38,7 +38,7 @@ public:
 private:
 	TWeakObjectPtr<UWorld> CachedOwingWorld;							// 缓存的拥有世界的弱指针
 	EModalType CachedModalType;											// 缓存的模态类型
-	FGameplayTag CachedWidgetTag;									// 缓存的小部件标签
+	FGameplayTag CachedWidgetStackTag;									// 缓存的小部件应该入栈的标签
 	FText CachedModalTitle;											// 缓存的模态标题
 	FText CachedModalSubtitle;										// 缓存的模态副标题
 	FText CachedModalMessage;										// 缓存的模态消息

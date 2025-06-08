@@ -25,7 +25,7 @@ public:
 		const UObject* WorldContextObject,
 		APlayerController* PlayerController,
 		TSoftClassPtr<UWidget_ActivatableBase> InSoftWidgetClass,
-		UPARAM(meta = (Categories = "Frontend.WidgetStack")) FGameplayTag WidgetTag,
+		UPARAM(meta = (Categories = "Frontend.WidgetStack")) FGameplayTag WidgetStackTag,
 		bool bFocusOnNewPushedWidget = true);
 
 	UPROPERTY(BlueprintAssignable)

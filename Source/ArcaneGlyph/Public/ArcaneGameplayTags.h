@@ -237,11 +237,19 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_WidgetStack_HUD);			// 前端标签：HUD窗口栈
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_WidgetStack_Frontend);		// 前端标签：前端窗口栈
 
-	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_PressAnyKeyScreen);		// 前端标签：按任意键屏幕
-	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_MainMenuScreen);			// 前端标签：主菜单屏幕
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_Frontend_PressAnyKeyScreen);		// 前端标签：按任意键屏幕
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_Frontend_MainMenuScreen);			// 前端标签：主菜单屏幕
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_Frontend_SettingsScreen);		// 前端标签：设置
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_Frontend_AboutScreen);		// 前端标签：关于
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_Frontend_StoryScreen);			// 前端标签：故事
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_Frontend_DifficultyScreen);		// 前端标签：难度
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_Frontend_SaveLoadScreen);			// 前端标签：保存/加载
+	
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_ModalScreen_QuitScreen);		// 前端标签：模态框：退出屏幕
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_ModalScreen_ReturnBackToMainMenu);	// 前端标签：模态框：返回主菜单
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_ModalScreen_More);		// 前端标签：模态框：更多
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_ModalScreen_Normal);		// 前端标签：模态框：普通
+
+
 }
 
