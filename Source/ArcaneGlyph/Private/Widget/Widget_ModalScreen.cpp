@@ -136,7 +136,8 @@ void UWidget_ModalScreen::InitConfirmScreen(const UConfirmScreenInfoObject* Conf
 			// 设置按钮文本
 			AddButton->SetButtenText(ButtonInfo.ButtonText);
 			// 设置按钮的输入动作
-			AddButton->SetTriggeredInputAction(InputActionRowHandle);
+			// AddButton->SetTriggeredInputAction(InputActionRowHandle);
+			AddButton->SetTriggeringInputAction(InputActionRowHandle);
 			// 绑定按钮点击事件
 			AddButton->OnClicked().AddLambda(
 				[OnButtonClickedCallback, ButtonInfo, this]()
