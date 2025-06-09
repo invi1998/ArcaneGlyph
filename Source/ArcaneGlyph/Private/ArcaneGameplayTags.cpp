@@ -246,5 +246,6 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_ModalScreen_ReturnBackToMainMenu, "Frontend.Widget.ModalScreen.ReturnBackToMainMenu", "前端：模态屏幕-返回主菜单");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_ModalScreen_More, "Frontend.Widget.ModalScreen.More", "前端：模态屏幕-更多");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_ModalScreen_Normal, "Frontend.Widget.ModalScreen.Normal", "前端：模态屏幕-普通");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_ModalScreen_TimerConfirm, "Frontend.Widget.ModalScreen.TimerConfirm", "前端：模态屏幕-计时确认");
 	
 }

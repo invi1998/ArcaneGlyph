@@ -249,6 +249,7 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_ModalScreen_ReturnBackToMainMenu);	// 前端标签：模态框：返回主菜单
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_ModalScreen_More);		// 前端标签：模态框：更多
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_ModalScreen_Normal);		// 前端标签：模态框：普通
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_ModalScreen_TimerConfirm);		// 前端标签：模态框：计时器确认
 
 
 }
