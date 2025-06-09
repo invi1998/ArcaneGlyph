@@ -239,7 +239,7 @@ namespace ArcaneGameplayTags
 
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_Frontend_PressAnyKeyScreen);		// 前端标签：按任意键屏幕
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_Frontend_MainMenuScreen);			// 前端标签：主菜单屏幕
-	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_Frontend_SettingsScreen);		// 前端标签：设置
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_Frontend_OptionsScreen);		// 前端标签：选项屏幕
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_Frontend_AboutScreen);		// 前端标签：关于
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_Frontend_StoryScreen);			// 前端标签：故事
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_Frontend_DifficultyScreen);		// 前端标签：难度

@@ -236,7 +236,7 @@ namespace ArcaneGameplayTags
 	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_Frontend_PressAnyKeyScreen, "Frontend.Widget.Frontend.PressAnyKeyScreen", "前端：前端窗口-按任意键屏幕");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_Frontend_MainMenuScreen, "Frontend.Widget.Frontend.MainMenuScreen", "前端：前端窗口-主菜单屏幕");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_Frontend_SettingsScreen, "Frontend.Widget.Frontend.SettingsScreen", "前端：前端窗口-设置屏幕");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_Frontend_OptionsScreen, "Frontend.Widget.Frontend.OptionsScreen", "前端：前端窗口-选项屏幕");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_Frontend_AboutScreen, "Frontend.Widget.Frontend.AboutScreen", "前端：前端窗口-关于屏幕");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_Frontend_StoryScreen, "Frontend.Widget.Frontend.StoryScreen", "前端：前端窗口-故事屏幕");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_Frontend_DifficultyScreen, "Frontend.Widget.Frontend.DifficultyScreen", "前端：前端窗口-难度屏幕");
