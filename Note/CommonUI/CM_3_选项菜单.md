@@ -46,6 +46,84 @@
 
    了解这一点后，我们来看看如何在选项界面注册自定义按钮。
 
+   首先，我想在Option页面添加一个重设按钮，将选项设置恢复到默认值，所以我们在Widget中添加一个重设的操作的数据行句柄
+
+   ```c++
+   #include "CoreMinimal.h"
+   #include "Widget/Widget_ActivatableBase.h"
+   #include "Widget_OptionsBase.generated.h"
+   
+   /**
+    * 
+    */
+   UCLASS(Abstract, BlueprintType, meta=(DisabledNativeTick))
+   class ARCANEGLYPH_API UWidget_OptionsBase : public UWidget_ActivatableBase
+   {
+   	GENERATED_BODY()
+   
+   protected:
+   	
+   	// begin UWidget interface
+   	virtual void NativeOnInitialized() override;
+   	// end UWidget interface
+   
+   private:
+   	// 重设操作的行数据句柄
+   	UPROPERTY(EditDefaultsOnly, Category = "Frontend Options", meta = (RowType = "/Script/CommonUI.CommonInputActionDataBase"))
+   	FDataTableRowHandle ResetActions;
+   
+   	FUIActionBindingHandle ResetBindingHandle;	// 重设操作的绑定句柄
+   
+   	// 重设操作按钮点击事件 （由于我们不是绑定到动态多播委托，只是简单的委托绑定，所以该绑定函数不需要UFUNCTION）
+   	void OnResetBoundActionsTriggered();
+   	void OnBackBoundActionsTriggered();
+   };
+   
+   ```
+
+   
+
+   然后我们向绑定操作栏插入自定义绑定操作并保存绑定句柄（`RegisterUIActionBinding`），添加玩完成自定义绑定后，我们可以注册默认的返回操作，以便我们的Option页面也可以正常返回到上一个路由页面
+
+   ```c++
+   void UWidget_OptionsBase::NativeOnInitialized()
+   {
+   	Super::NativeOnInitialized();
+   
+   	if (!ResetActions.IsNull())
+   	{
+   		// 向绑定操作栏插入自定义绑定操作并保存绑定句柄
+   		ResetBindingHandle = RegisterUIActionBinding(
+   			FBindUIActionArgs(
+   				ResetActions,
+   				true, // 在操作栏中显示
+   				FSimpleDelegate::CreateUObject(this, &ThisClass::OnResetBoundActionsTriggered)
+   			)
+   		);
+   	}
+   
+   	// 完成自定义绑定后，我们可以注册默认的返回操作
+   	RegisterUIActionBinding(
+   		FBindUIActionArgs(
+   			ICommonInputModule::GetSettings().GetDefaultBackAction(),
+   			true, // 在操作栏中显示
+   			FSimpleDelegate::CreateUObject(this, &ThisClass::OnBackBoundActionsTriggered)
+   		)
+   	);
+   }
+   
+   void UWidget_OptionsBase::OnResetBoundActionsTriggered()
+   {
+   	Debug::Print(TEXT("Reset Bound Actions Triggered!"), FColor::Green);
+   }
+   
+   void UWidget_OptionsBase::OnBackBoundActionsTriggered()
+   {
+   	// 返回操作触发时，通常会关闭当前选项界面
+   	DeactivateWidget();
+   }
+   ```
+
    
 
    
