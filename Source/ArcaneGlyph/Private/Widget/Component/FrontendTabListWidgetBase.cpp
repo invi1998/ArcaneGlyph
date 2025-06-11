@@ -9,6 +9,7 @@
 
 void UFrontendTabListWidgetBase::RequestRegisterTab(const FName& InTabID, const FText& InTabDisplayName)
 {
+	// 只有调用了父类的RegisterTab，才能确保TabButtonEntryWidgetClass被正确设置，同时才能在蓝图中使用OnTabButtonCreation
 	RegisterTab(InTabID, TabButtonEntryWidgetClass, nullptr);
 
 	if (UFrontendCommonButtonBase* FoundButton = Cast<UFrontendCommonButtonBase>(GetTabButtonBaseByID(InTabID)))
