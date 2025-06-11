@@ -27,9 +27,22 @@ public:
 	LIST_DATA_ACCESSOR(TSoftObjectPtr<UTexture2D>, SoftDescriptionImage)
 	LIST_DATA_ACCESSOR(UListDataObject_Base*, ParentData)
 
-	virtual TArray<UListDataObject_Base*> GetChildSettingsData() const
+	void InitDataObject();
+
+	virtual TArray<UListDataObject_Base*> GetAllChildListData() const
 	{
 		return TArray<UListDataObject_Base*>();
+	}
+
+	virtual bool HasAnyChildListData() const
+	{
+		return false;
+	}
+
+protected:
+	virtual void OnDataObjectInitialized()
+	{
+		// 在数据对象初始化后可以执行一些额外的逻辑
 	}
 
 private:
