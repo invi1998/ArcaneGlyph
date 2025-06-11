@@ -15,6 +15,9 @@ class ARCANEGLYPH_API UFrontendTabListWidgetBase : public UCommonTabListWidgetBa
 {
 	GENERATED_BODY()
 
+public:
+	void RequestRegisterTab(const FName& InTabID, const FText& InTabDisplayName);
+
 private:
 	// ~ Begin UWidget interface
 #if WITH_EDITOR
