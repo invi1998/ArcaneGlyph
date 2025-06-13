@@ -6,6 +6,7 @@
 #include "Widget/Widget_ActivatableBase.h"
 #include "Widget_OptionsScreen.generated.h"
 
+class UFrontendCommonListView;
 class UFrontendTabListWidgetBase;
 class UOptionsDataRegistry;
 /**
@@ -46,6 +47,9 @@ private:
 	// ******** 绑定到选项数据注册表的控件 ********
 	UPROPERTY(meta = (BindWidget))
 	UFrontendTabListWidgetBase* TabListWidget_OptionsTabs;	// 选项卡列表小部件
+
+	UPROPERTY(meta=(BindWidget))
+	UFrontendCommonListView* CommonListView_OptionsList;	// 选项列表小部件
 
 	// ******** 绑定到选项数据注册表的控件 ********
 
