@@ -48,4 +48,7 @@ private:
 	UFrontendTabListWidgetBase* TabListWidget_OptionsTabs;	// 选项卡列表小部件
 
 	// ******** 绑定到选项数据注册表的控件 ********
+
+	UFUNCTION()
+	void OnOptionsTabSelected(FName InTabId);
 };

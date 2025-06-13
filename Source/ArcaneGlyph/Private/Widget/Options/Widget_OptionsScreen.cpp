@@ -34,6 +34,8 @@ void UWidget_OptionsScreen::NativeOnInitialized()
 			FSimpleDelegate::CreateUObject(this, &ThisClass::OnBackBoundActionsTriggered)
 		)
 	);
+
+	TabListWidget_OptionsTabs->OnTabSelected.AddUniqueDynamic(this, &ThisClass::OnOptionsTabSelected);
 }
 
 void UWidget_OptionsScreen::NativeOnActivated()
@@ -78,4 +80,9 @@ void UWidget_OptionsScreen::OnBackBoundActionsTriggered()
 {
 	// 返回操作触发时，通常会关闭当前选项界面
 	DeactivateWidget();
+}
+
+void UWidget_OptionsScreen::OnOptionsTabSelected(FName InTabId)
+{
+	
 }
