@@ -4,6 +4,7 @@
 #include "Widget/Options/OptionsDataRegistry.h"
 
 #include "Widget/Options/DataObject/ListDataObject_Collection.h"
+#include "Widget/Options/DataObject/ListDataObject_String.h"
 
 void UOptionsDataRegistry::InitOptionsDataRegistry(ULocalPlayer* InOwningLocalPlayer)
 {
@@ -18,6 +19,42 @@ void UOptionsDataRegistry::InitGameplayCollectionTab()
 	UListDataObject_Collection* GameplayCollectionDataObject = NewObject<UListDataObject_Collection>(this, UListDataObject_Collection::StaticClass());
 	GameplayCollectionDataObject->SetDataID(FName("GameplayTabCollection"));
 	GameplayCollectionDataObject->SetDataDisplayName(FText::FromString(TEXT("游戏")));
+
+	// 教学模式
+	{
+		UListDataObject_String* TutorialModeDataObject = NewObject<UListDataObject_String>(GameplayCollectionDataObject, UListDataObject_String::StaticClass());
+		TutorialModeDataObject->SetDataID(FName("TutorialMode"));
+		TutorialModeDataObject->SetDataDisplayName(FText::FromString(TEXT("教学模式")));
+
+		GameplayCollectionDataObject->AddChildListData(TutorialModeDataObject);
+	}
+
+	// 自动切换锁定目标
+	{
+		UListDataObject_String* AutoTargetLockDataObject = NewObject<UListDataObject_String>(GameplayCollectionDataObject, UListDataObject_String::StaticClass());
+		AutoTargetLockDataObject->SetDataID(FName("AutoTargetLock"));
+		AutoTargetLockDataObject->SetDataDisplayName(FText::FromString(TEXT("自动切换锁定目标")));
+
+		GameplayCollectionDataObject->AddChildListData(AutoTargetLockDataObject);
+	}
+
+	// 自动锁定攻击目标
+	{
+		UListDataObject_String* AutoAttackTargetLockDataObject = NewObject<UListDataObject_String>(GameplayCollectionDataObject, UListDataObject_String::StaticClass());
+		AutoAttackTargetLockDataObject->SetDataID(FName("AutoAttackTargetLock"));
+		AutoAttackTargetLockDataObject->SetDataDisplayName(FText::FromString(TEXT("自动锁定攻击目标")));
+
+		GameplayCollectionDataObject->AddChildListData(AutoAttackTargetLockDataObject);
+	}
+
+	// 角色状态信息
+	{
+		UListDataObject_String* CharacterStatusInfoDataObject = NewObject<UListDataObject_String>(GameplayCollectionDataObject, UListDataObject_String::StaticClass());
+		CharacterStatusInfoDataObject->SetDataID(FName("CharacterStatusInfo"));
+		CharacterStatusInfoDataObject->SetDataDisplayName(FText::FromString(TEXT("角色状态信息")));
+
+		GameplayCollectionDataObject->AddChildListData(CharacterStatusInfoDataObject);
+	}
 
 	RegisteredOptionsTabCollections.Add(GameplayCollectionDataObject);
 }
