@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class ARCANEGLYPH_API UListDataObject_Value : public UListDataObject_Base
 {
 	GENERATED_BODY()

@@ -12,9 +12,9 @@
 	void Set##PropertyName(DataObjectType In##PropertyName) { PropertyName = In##PropertyName; }
 
 /**
- * 
+ * 设置为Abstract（抽象）类型，这样在蓝图中就不能直接实例化该类，一些在蓝图需要设置的项目也不能直接检索到该类的实例，而只能通过子类进行设置
  */
-UCLASS()
+UCLASS(Abstract)
 class ARCANEGLYPH_API UListDataObject_Base : public UObject
 {
 	GENERATED_BODY()
