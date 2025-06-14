@@ -19,13 +19,13 @@ class ARCANEGLYPH_API UWidget_ListEntry_String : public UWidget_ListEntry_Base
 private:
 	// **** Bound Widgets **** //
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget, AllowPrivateAccess = "true"))
-	UFrontendCommonButtonBase* CommonButton_Decrease;	// 减少按钮
+	UFrontendCommonButtonBase* CommonButton_PreviousOption;	// 上一个选项按钮
 
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget, AllowPrivateAccess = "true"))
 	UFrontendCommonRotator* CommonRotator_AvailableOptions;	// 可用选项旋转器（选项选择器）
 
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget, AllowPrivateAccess = "true"))
-	UFrontendCommonButtonBase* CommonButton_Increase;	// 增加按钮
+	UFrontendCommonButtonBase* CommonButton_NextOption;	// 下一个选项按钮
 
 	// **** Bound Widgets **** //
 };
