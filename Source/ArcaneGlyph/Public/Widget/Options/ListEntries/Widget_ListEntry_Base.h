@@ -7,6 +7,7 @@
 #include "Blueprint/IUserObjectListEntry.h"
 #include "Widget_ListEntry_Base.generated.h"
 
+class UListDataObject_Base;
 class UCommonTextBlock;
 /**
  * 基础列表项小部件类
@@ -23,6 +24,9 @@ protected:
 	// Begin IUserObjectListEntry interface
 	virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;
 	// End IUserObjectListEntry interface
+
+	// 设置拥有的列表数据对象，在父类中，这里只被用于设置设置选项的显示名称文本，在子类中可以重写该函数来处理更多的逻辑（选项的选中文本等）
+	virtual void OnOwningListDataObjectSet(UListDataObject_Base* InOwningListDataObject);
 
 
 private:
