@@ -6,6 +6,7 @@
 #include "UObject/Object.h"
 #include "OptionsDataRegistry.generated.h"
 
+class UListDataObject_Base;
 class UListDataObject_Collection;
 /**
  * 
@@ -21,6 +22,7 @@ public:
 
 	const TArray<UListDataObject_Collection*>& GetRegisteredOptionsTabCollections() const { return RegisteredOptionsTabCollections; }
 
+	TArray<UListDataObject_Base*> GetListSourceItemBySelectedTabID(const FName& InTabID) const;
 
 private:
 	void InitGameplayCollectionTab();		// 游戏玩法

@@ -6,6 +6,7 @@
 #include "ArcaneDebugHelper.h"
 #include "ICommonInputModule.h"
 #include "Input/CommonUIInputTypes.h"
+#include "Widget/Component/FrontendCommonListView.h"
 #include "Widget/Component/FrontendTabListWidgetBase.h"
 #include "Widget/Options/OptionsDataRegistry.h"
 #include "Widget/Options/DataObject/ListDataObject_Collection.h"
@@ -84,5 +85,16 @@ void UWidget_OptionsScreen::OnBackBoundActionsTriggered()
 
 void UWidget_OptionsScreen::OnOptionsTabSelected(FName InTabId)
 {
+	const TArray<UListDataObject_Base*> FoundListSourceItems = GetOrCreateDataRegistry()->GetListSourceItemBySelectedTabID(InTabId);
+
+	CommonListView_OptionsList->SetListItems(FoundListSourceItems);
+	CommonListView_OptionsList->RequestRefresh();
+
+	if (CommonListView_OptionsList->GetNumItems() > 0)
+	{
+		// 如果列表中有项，则导航到第一个项
+		CommonListView_OptionsList->NavigateToIndex(0);
+		CommonListView_OptionsList->SetSelectedIndex(0);
+	}
 	
 }
