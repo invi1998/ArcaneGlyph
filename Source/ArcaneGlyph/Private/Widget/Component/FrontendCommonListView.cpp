@@ -19,9 +19,12 @@ UUserWidget& UFrontendCommonListView::OnGenerateEntryWidgetInternal(UObject* Ite
 	// 我们自己的ListView实现
 	// 因为原来的ListView他的Item只有一种控件类型，如果要实现多种数据类型的展示，就需要多个ListView或者其他方法
 	// 我们重写该函数，用于通过在我们的DataListEntryMapping数据资产中设定好的映射表中检索传入的Item匹配控件类型实现多种数据类型的展示
-	TSubclassOf<UWidget_ListEntry_Base> FoundWidgetClass = DataListEntryMapping->FindEntryWidgetClassByDataObject(CastChecked<UListDataObject_Base>(Item));
-	return GenerateTypedEntry<UWidget_ListEntry_Base>(FoundWidgetClass, OwnerTable);
-	
+	if (const TSubclassOf<UWidget_ListEntry_Base> FoundWidgetClass = DataListEntryMapping->FindEntryWidgetClassByDataObject(CastChecked<UListDataObject_Base>(Item)))
+	{
+		return GenerateTypedEntry<UWidget_ListEntry_Base>(FoundWidgetClass, OwnerTable);
+	}
+
+	return Super::OnGenerateEntryWidgetInternal(Item, DesiredEntryClass, OwnerTable);
 }
 
 #if WITH_EDITOR
