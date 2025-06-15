@@ -14,7 +14,13 @@ class ARCANEGLYPH_API UListDataObject_String : public UListDataObject_Value
 {
 	GENERATED_BODY()
 
+public:
+	void AddDynamicOptionsString(const FString& InStringValue, const FText& InDisplayText);
+
 protected:
+	FString CurrentStringValue;	// 当前字符串值
+	FText CurrentDisplayText;	// 当前显示文本
+	
 	TArray<FString> AvailableOptionsStringArray;	// 可用选项字符串数组
-	TArray<FString> AvailableValuesStringArray;
+	TArray<FText> AvailableOptionsTextArray;		// 可用选项文本数组
 };

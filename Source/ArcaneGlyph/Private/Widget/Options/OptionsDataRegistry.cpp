@@ -38,6 +38,8 @@ void UOptionsDataRegistry::InitGameplayCollectionTab()
 		UListDataObject_String* TutorialModeDataObject = NewObject<UListDataObject_String>(GameplayCollectionDataObject, UListDataObject_String::StaticClass());
 		TutorialModeDataObject->SetDataID(FName("TutorialMode"));
 		TutorialModeDataObject->SetDataDisplayName(FText::FromString(TEXT("教学模式")));
+		TutorialModeDataObject->AddDynamicOptionsString(TEXT("Enabled"), FText::FromString(TEXT("启用")));
+		TutorialModeDataObject->AddDynamicOptionsString(TEXT("Disabled"), FText::FromString(TEXT("禁用")));
 
 		GameplayCollectionDataObject->AddChildListData(TutorialModeDataObject);
 	}
