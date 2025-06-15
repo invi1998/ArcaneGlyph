@@ -26,6 +26,7 @@ public class ArcaneGlyph : ModuleRules
 			"NavigationSystem",
 			"DeveloperSettings",
 			"CommonInput",
+			"PropertyPath",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
