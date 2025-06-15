@@ -20,6 +20,9 @@ public:
 	FORCEINLINE const FText& GetCurrentDisplayText() const { return CurrentDisplayText; }
 	FORCEINLINE const TArray<FText>& GetAvailableOptionsTextArray() const { return AvailableOptionsTextArray; }
 	FORCEINLINE const TArray<FString>& GetAvailableOptionsStringArray() const { return AvailableOptionsStringArray; }
+
+	void AdvanceToNextOption();
+	void AdvanceToPreviousOption();
 	
 protected:
 	virtual void OnDataObjectInitialized() override;

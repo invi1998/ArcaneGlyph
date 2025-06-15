@@ -3,6 +3,7 @@
 
 #include "Widget/Options/ListEntries/Widget_ListEntry_String.h"
 
+#include "ArcaneDebugHelper.h"
 #include "Widget/Component/FrontendCommonButtonBase.h"
 #include "Widget/Component/FrontendCommonRotator.h"
 #include "Widget/Options/DataObject/ListDataObject_String.h"
@@ -42,10 +43,16 @@ void UWidget_ListEntry_String::OnOwningListDataObjectSet(UListDataObject_Base* I
 
 void UWidget_ListEntry_String::OnPreviousOptionClicked()
 {
-	CommonRotator_AvailableOptions->ShiftTextLeft();
+	if (OwningStringDataObject)
+	{
+		OwningStringDataObject->AdvanceToPreviousOption();
+	}
 }
 
 void UWidget_ListEntry_String::OnNextOptionClicked()
 {
-	CommonRotator_AvailableOptions->ShiftTextRight();
+	if (OwningStringDataObject)
+	{
+		OwningStringDataObject->AdvanceToNextOption();
+	}
 }
