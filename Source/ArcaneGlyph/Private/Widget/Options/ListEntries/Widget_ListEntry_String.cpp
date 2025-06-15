@@ -51,7 +51,6 @@ void UWidget_ListEntry_String::OnOwningListDataObjectSet(UListDataObject_Base* I
 
 void UWidget_ListEntry_String::OnPreviousOptionClicked()
 {
-	Debug::Print(TEXT("OnPreviousOptionClicked"));
 	if (OwningStringDataObject)
 	{
 		OwningStringDataObject->AdvanceToPreviousOption();
@@ -60,7 +59,6 @@ void UWidget_ListEntry_String::OnPreviousOptionClicked()
 
 void UWidget_ListEntry_String::OnNextOptionClicked()
 {
-	Debug::Print(TEXT("OnNextOptionClicked"));
 	if (OwningStringDataObject)
 	{
 		OwningStringDataObject->AdvanceToNextOption();
