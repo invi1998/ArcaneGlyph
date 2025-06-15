@@ -6,6 +6,7 @@
 #include "Widget_ListEntry_Base.h"
 #include "Widget_ListEntry_String.generated.h"
 
+class UListDataObject_String;
 class UFrontendCommonButtonBase;
 class UFrontendCommonRotator;
 /**
@@ -15,6 +16,9 @@ UCLASS(Abstract, BlueprintType, meta=(DisabledNativeTick))
 class ARCANEGLYPH_API UWidget_ListEntry_String : public UWidget_ListEntry_Base
 {
 	GENERATED_BODY()
+
+protected:
+	virtual void OnOwningListDataObjectSet(UListDataObject_Base* InOwningListDataObject) override;
 
 private:
 	// **** Bound Widgets **** //
@@ -26,6 +30,8 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget, AllowPrivateAccess = "true"))
 	UFrontendCommonButtonBase* CommonButton_NextOption;	// 下一个选项按钮
-
 	// **** Bound Widgets **** //
+
+	UPROPERTY(Transient)
+	UListDataObject_String* OwningStringDataObject;	// 拥有的字符串数据对象，用于处理选项的选中状态和显示文本等逻辑
 };

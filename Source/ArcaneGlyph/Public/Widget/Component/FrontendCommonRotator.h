@@ -13,5 +13,8 @@ UCLASS(Abstract, BlueprintType, meta=(DisabledNativeTick))
 class ARCANEGLYPH_API UFrontendCommonRotator : public UCommonRotator
 {
 	GENERATED_BODY()
+
+public:
+	void SetSelectedOptionByText(const FText& InOptionText);
 	
 };

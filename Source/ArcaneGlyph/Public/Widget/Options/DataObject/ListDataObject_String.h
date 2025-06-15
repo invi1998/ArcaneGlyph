@@ -16,7 +16,11 @@ class ARCANEGLYPH_API UListDataObject_String : public UListDataObject_Value
 
 public:
 	void AddDynamicOptionsString(const FString& InStringValue, const FText& InDisplayText);
-
+	FORCEINLINE const FString& GetCurrentStringValue() const { return CurrentStringValue; }
+	FORCEINLINE const FText& GetCurrentDisplayText() const { return CurrentDisplayText; }
+	FORCEINLINE const TArray<FText>& GetAvailableOptionsTextArray() const { return AvailableOptionsTextArray; }
+	FORCEINLINE const TArray<FString>& GetAvailableOptionsStringArray() const { return AvailableOptionsStringArray; }
+	
 protected:
 	virtual void OnDataObjectInitialized() override;
 
