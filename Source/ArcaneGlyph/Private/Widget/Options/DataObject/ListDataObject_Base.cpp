@@ -7,3 +7,8 @@ void UListDataObject_Base::InitDataObject()
 {
 	OnDataObjectInitialized();
 }
+
+void UListDataObject_Base::NotifyListDataModified(UListDataObject_Base* InListData, EOptionsListDataModifyReason InModifyReason)
+{
+	OnListDataModified.Broadcast(InListData, InModifyReason);
+}

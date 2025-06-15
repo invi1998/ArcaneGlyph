@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "CommonUserWidget.h"
+#include "ArcaneTypes/ArcaneEnumTypes.h"
 #include "Blueprint/IUserObjectListEntry.h"
 #include "Widget_ListEntry_Base.generated.h"
 
@@ -24,6 +25,9 @@ protected:
 	// Begin IUserObjectListEntry interface
 	virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;
 	// End IUserObjectListEntry interface
+
+	// 子类应当重写此函数，以便在数据对象更新后同步 UI 数值
+	virtual void OnOwningListDataObjectModified(UListDataObject_Base* InListDataObject, EOptionsListDataModifyReason InOptionsListDataModifyReason);
 
 	// 设置拥有的列表数据对象，在父类中，这里只被用于设置设置选项的显示名称文本，在子类中可以重写该函数来处理更多的逻辑（选项的选中文本等）
 	virtual void OnOwningListDataObjectSet(UListDataObject_Base* InOwningListDataObject);

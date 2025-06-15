@@ -15,10 +15,19 @@ void UWidget_ListEntry_Base::NativeOnListItemObjectSet(UObject* ListItemObject)
 	
 }
 
+void UWidget_ListEntry_Base::OnOwningListDataObjectModified(UListDataObject_Base* InListDataObject, EOptionsListDataModifyReason InOptionsListDataModifyReason)
+{
+}
+
 void UWidget_ListEntry_Base::OnOwningListDataObjectSet(UListDataObject_Base* InOwningListDataObject)
 {
 	if (CommonTextBlock_SettingDisplayName)
 	{
 		CommonTextBlock_SettingDisplayName->SetText(InOwningListDataObject->GetDataDisplayName());
+	}
+
+	if (!InOwningListDataObject->OnListDataModified.IsBoundToObject(this))
+	{
+		InOwningListDataObject->OnListDataModified.AddUObject(this, &UWidget_ListEntry_Base::OnOwningListDataObjectModified);
 	}
 }

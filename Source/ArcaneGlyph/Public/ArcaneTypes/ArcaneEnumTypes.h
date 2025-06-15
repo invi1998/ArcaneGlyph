@@ -144,6 +144,14 @@ enum class EModalButtonType : uint8
 	Unknow UMETA(Hidden)
 };
 
+UENUM(BlueprintType)
+enum class EOptionsListDataModifyReason : uint8
+{
+	DirectlyModified UMETA(DisplayName = "直接修改"),
+	DependencyModified UMETA(DisplayName = "依赖修改"),
+	ResetToDefault UMETA(DisplayName = "重置为默认"),
+};
+
 
 
 

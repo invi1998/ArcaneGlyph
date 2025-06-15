@@ -15,11 +15,19 @@ void UWidget_ListEntry_String::NativeOnInitialized()
 	// 绑定上一个选项按钮的点击事件
 	if (CommonButton_PreviousOption)
 	{
-		CommonButton_PreviousOption->OnClicked().AddUObject(this, &UWidget_ListEntry_String::OnPreviousOptionClicked);
+		CommonButton_PreviousOption->OnClicked().AddUObject(this, &ThisClass::OnPreviousOptionClicked);
 	}
 	if (CommonButton_NextOption)
 	{
-		CommonButton_NextOption->OnClicked().AddUObject(this, &UWidget_ListEntry_String::OnNextOptionClicked);
+		CommonButton_NextOption->OnClicked().AddUObject(this, &ThisClass::OnNextOptionClicked);
+	}
+}
+
+void UWidget_ListEntry_String::OnOwningListDataObjectModified(UListDataObject_Base* InListDataObject, EOptionsListDataModifyReason InOptionsListDataModifyReason)
+{
+	if (OwningStringDataObject)
+	{
+		CommonRotator_AvailableOptions->SetSelectedOptionByText(OwningStringDataObject->GetCurrentDisplayText());
 	}
 }
 
@@ -43,6 +51,7 @@ void UWidget_ListEntry_String::OnOwningListDataObjectSet(UListDataObject_Base* I
 
 void UWidget_ListEntry_String::OnPreviousOptionClicked()
 {
+	Debug::Print(TEXT("OnPreviousOptionClicked"));
 	if (OwningStringDataObject)
 	{
 		OwningStringDataObject->AdvanceToPreviousOption();
@@ -51,6 +60,7 @@ void UWidget_ListEntry_String::OnPreviousOptionClicked()
 
 void UWidget_ListEntry_String::OnNextOptionClicked()
 {
+	Debug::Print(TEXT("OnNextOptionClicked"));
 	if (OwningStringDataObject)
 	{
 		OwningStringDataObject->AdvanceToNextOption();

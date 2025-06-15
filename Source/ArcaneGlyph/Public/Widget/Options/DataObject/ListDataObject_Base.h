@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ArcaneTypes/ArcaneEnumTypes.h"
 #include "UObject/Object.h"
 #include "ListDataObject_Base.generated.h"
 
@@ -20,6 +21,9 @@ class ARCANEGLYPH_API UListDataObject_Base : public UObject
 	GENERATED_BODY()
 
 public:
+	DECLARE_MULTICAST_DELEGATE_TwoParams(FOnListDataModifiedDelegate, UListDataObject_Base*, EOptionsListDataModifyReason);
+	FOnListDataModifiedDelegate OnListDataModified;
+	
 	LIST_DATA_ACCESSOR(FName, DataID)
 	LIST_DATA_ACCESSOR(FText, DataDisplayName)
 	LIST_DATA_ACCESSOR(FText, DataDescriptionRichText)
@@ -44,6 +48,8 @@ protected:
 	{
 		// 在数据对象初始化后可以执行一些额外的逻辑
 	}
+
+	virtual void NotifyListDataModified(UListDataObject_Base* InListData, EOptionsListDataModifyReason InModifyReason = EOptionsListDataModifyReason::DirectlyModified);
 
 private:
 	FName DataID;	// 数据ID，用于唯一标识该数据对象
