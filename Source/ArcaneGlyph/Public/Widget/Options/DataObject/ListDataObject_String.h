@@ -18,6 +18,10 @@ public:
 	void AddDynamicOptionsString(const FString& InStringValue, const FText& InDisplayText);
 
 protected:
+	virtual void OnDataObjectInitialized() override;
+
+	bool TrySetDisplayTextFromStringValue(const FString& InStringValue);
+	
 	FString CurrentStringValue;	// 当前字符串值
 	FText CurrentDisplayText;	// 当前显示文本
 	
