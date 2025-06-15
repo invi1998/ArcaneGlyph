@@ -18,7 +18,12 @@ class ARCANEGLYPH_API UWidget_ListEntry_String : public UWidget_ListEntry_Base
 	GENERATED_BODY()
 
 protected:
+	virtual void NativeOnInitialized() override;
+	
 	virtual void OnOwningListDataObjectSet(UListDataObject_Base* InOwningListDataObject) override;
+	
+	void OnPreviousOptionClicked();
+	void OnNextOptionClicked();
 
 private:
 	// **** Bound Widgets **** //
