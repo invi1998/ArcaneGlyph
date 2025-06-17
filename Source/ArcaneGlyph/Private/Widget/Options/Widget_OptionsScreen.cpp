@@ -5,6 +5,7 @@
 
 #include "ArcaneDebugHelper.h"
 #include "ICommonInputModule.h"
+#include "FrontendSettings/FrontendGameUserSettings.h"
 #include "Input/CommonUIInputTypes.h"
 #include "Widget/Component/FrontendCommonListView.h"
 #include "Widget/Component/FrontendTabListWidgetBase.h"
@@ -56,6 +57,14 @@ void UWidget_OptionsScreen::NativeOnActivated()
 
 		TabListWidget_OptionsTabs->RequestRegisterTab(TabID, TabCollection->GetDataDisplayName());
 	}
+}
+
+void UWidget_OptionsScreen::NativeOnDeactivated()
+{
+	Super::NativeOnDeactivated();
+
+	// 在选项界面被关闭时，保存当前页面的设置
+	UFrontendGameUserSettings::Get()->ApplySettings(true); // true表示保存设置并应用
 }
 
 UOptionsDataRegistry* UWidget_OptionsScreen::GetOrCreateDataRegistry()

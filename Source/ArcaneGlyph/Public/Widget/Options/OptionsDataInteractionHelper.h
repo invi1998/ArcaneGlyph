@@ -15,7 +15,7 @@ public:
 	FOptionsDataInteractionHelper(const FString& InSetterOrGetterFuncPath);
 
 	FString GetValueAsString() const;
-	void SetValueFromString(const FString& InValue);
+	void SetValueFromString(const FString& InValue) const;
 
 private:
 	FCachedPropertyPath CachedDynamicFunctionPath;	// 缓存的动态函数路径，用于快速访问动态函数
