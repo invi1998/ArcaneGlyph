@@ -289,3 +289,142 @@ Unreal Engine 的核心基石：**`UObject`** 及其衍生知识。理解 `UObje
 | **`TWeakObjectPtr`**  | 对 UObject 的安全弱引用                | 打破循环引用；**访问前必须 `IsValid()`/`Get() != nullptr` 检查**；**可加 `UPROPERTY`** |
 
 理解并熟练运用 `UObject` 及其生态系统，是高效、稳定地开发 Unreal Engine 项目的核心能力。它定义了 UE 中对象的行为模式、交互方式和生命周期规则。
+
+
+
+# GET_FUNCTION_NAME_STRING_CHECKED
+
+在 Unreal Engine 中，`GET_FUNCTION_NAME_STRING_CHECKED` 是一个非常实用的调试宏，用于在运行时获取函数的完整名称（包括类名），并在开发版本中进行严格验证。以下是详细解析：
+
+---
+
+### **核心功能**
+```cpp
+FString FunctionName = GET_FUNCTION_NAME_STRING_CHECKED(ClassName, FunctionName);
+```
+1. **获取函数全名**  
+   生成格式为 `"ClassName::FunctionName"` 的字符串（如 `"AMyCharacter::Jump"`）
+
+2. **编译时验证**  
+   检查 `ClassName` 中是否存在 `FunctionName`，**若函数不存在则编译失败**
+
+3. **运行时验证（仅开发版本）**  
+   在非发布版本中，额外验证函数的可访问性（避免函数被重命名后遗留问题）
+
+---
+
+### **底层实现原理**
+在引擎源码中（通常位于 `UnrealString.h` 或 `NameTypes.h`），该宏类似这样实现：
+```cpp
+#define GET_FUNCTION_NAME_STRING_CHECKED(ClassName, FuncName) \
+    [&]() -> FString { \
+        static_assert(TFunctionTraits<decltype(&ClassName::FuncName)>::IsValid, "Function not found!"); \
+        if (GIsEditor || !FApp::IsGame()) { \
+            checkf(IsValid(&ClassName::FuncName), TEXT("Function %s::%s is invalid"), TEXT(#ClassName), TEXT(#FuncName)); \
+        } \
+        return FString::Printf(TEXT("%s::%s"), TEXT(#ClassName), TEXT(#FuncName)); \
+    }()
+```
+
+#### 关键组件：
+| 组件                             | 作用                         |
+| -------------------------------- | ---------------------------- |
+| `static_assert`                  | 编译时检查函数是否存在       |
+| `checkf`                         | 开发环境运行时验证函数有效性 |
+| `#ClassName`                     | 字符串化类名                 |
+| `decltype(&ClassName::FuncName)` | 获取函数指针类型             |
+
+---
+
+### **典型使用场景**
+#### 1. 调试日志（精准定位函数）
+```cpp
+void AMyActor::HandleDamage()
+{
+    UE_LOG(LogTemp, Warning, TEXT("Called from: %s"), 
+        *GET_FUNCTION_NAME_STRING_CHECKED(AMyActor, HandleDamage));
+    
+    // ...
+}
+```
+**输出**：  
+`LogTemp: Warning: Called from: AMyActor::HandleDamage`
+
+#### 2. 委托绑定验证
+```cpp
+// 安全绑定委托（避免函数名拼写错误）
+SomeDelegate.BindUObject(
+    this, 
+    &AMyActor::OnEvent,
+    GET_FUNCTION_NAME_STRING_CHECKED(AMyActor, OnEvent) // 显式传递函数名
+);
+```
+
+#### 3. 反射系统操作
+```cpp
+// 通过名称查找UFUNCTION
+FString TargetFunc = GET_FUNCTION_NAME_STRING_CHECKED(UMyObject, CalculateValue);
+UFunction* Func = FindField<UFunction>(MyObject->GetClass(), *TargetFunc);
+```
+
+---
+
+### **对比其他类似宏**
+| 宏                                     | 验证级别        | 输出格式                   | 适用场景     |
+| -------------------------------------- | --------------- | -------------------------- | ------------ |
+| `__FUNCTION__`                         | 无              | `"HandleDamage"`           | 基础调试     |
+| `FUNCTION_NAME_STRING`                 | 无              | `"AMyActor::HandleDamage"` | 无验证需求   |
+| **`GET_FUNCTION_NAME_STRING_CHECKED`** | **编译+运行时** | `"AMyActor::HandleDamage"` | 高可靠性场景 |
+| `GET_MEMBER_NAME_STRING`               | 编译时          | `"MyVariable"`             | 变量名获取   |
+
+---
+
+### **实际开发技巧**
+1. **错误预防**  
+   当函数被重命名时，所有使用该宏的地方会**立即编译失败**，避免运行时崩溃：
+   ```cpp
+   // 重命名后OldFunction会导致编译错误
+   GET_FUNCTION_NAME_STRING_CHECKED(AMyClass, OldFunction); // 编译失败
+   ```
+
+2. **性能优化**  
+   在发布版本中自动跳过运行时检查：
+   ```cpp
+   // Shipping版本中宏等效于：
+   #define GET_FUNCTION_NAME_STRING_CHECKED(Class,Func) \
+        FString(TEXT(#Class) + TEXT("::") + TEXT(#Func))
+   ```
+
+3. **结合UE反射系统**  
+   与蓝图暴露的函数协同工作：
+   ```cpp
+   UFUNCTION(BlueprintCallable)
+   void MyFunc();
+   
+   // 安全获取蓝图可调用函数名
+   FString FuncName = GET_FUNCTION_NAME_STRING_CHECKED(UMyClass, MyFunc);
+   ```
+
+---
+
+### **注意事项**
+1. **仅适用于成员函数**  
+   不能用于全局函数或静态函数（使用 `FUNCTION_NAME_STRING` 替代）
+
+2. **类名必须完整**  
+   需要包含命名空间（如 `GET_FUNCTION_NAME_STRING_CHECKED(UMyNamespace::MyClass, Func)`）
+
+3. **虚函数处理**  
+   对虚函数返回的是当前类中声明的函数名，非最终重写版本
+
+---
+
+### **替代方案推荐**
+```cpp
+// 需要运行时动态获取函数名时（无编译检查）
+FString FuncName = this->GetClass()->FindFunctionByName(GET_FUNCTION_NAME_CHECKED(AMyActor, Func))->GetName();
+
+// 获取当前函数名（无类名前缀）
+const FString CurrentFuncName = __FUNCTION__;
+```
+
