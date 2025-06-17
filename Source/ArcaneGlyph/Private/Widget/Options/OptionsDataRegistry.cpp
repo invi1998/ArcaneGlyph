@@ -3,8 +3,13 @@
 
 #include "Widget/Options/OptionsDataRegistry.h"
 
+#include "FrontendSettings/FrontendGameUserSettings.h"
+#include "Widget/Options/OptionsDataInteractionHelper.h"
 #include "Widget/Options/DataObject/ListDataObject_Collection.h"
 #include "Widget/Options/DataObject/ListDataObject_String.h"
+
+#define MAKE_OPTIONS_DATA_CONTROL(SetterOrGetterName) \
+	MakeShared<FOptionsDataInteractionHelper>(GET_FUNCTION_NAME_STRING_CHECKED(UFrontendGameUserSettings, SetterOrGetterName))
 
 void UOptionsDataRegistry::InitOptionsDataRegistry(ULocalPlayer* InOwningLocalPlayer)
 {
@@ -33,6 +38,9 @@ void UOptionsDataRegistry::InitGameplayCollectionTab()
 	GameplayCollectionDataObject->SetDataID(FName("GameplayTabCollection"));
 	GameplayCollectionDataObject->SetDataDisplayName(FText::FromString(TEXT("游戏")));
 
+	// 创建一个选项数据交互帮助器，用于获取和设置游戏设置中的教学模式启用状态
+	// const TSharedPtr<FOptionsDataInteractionHelper> ConstructedHelper = MakeShared<FOptionsDataInteractionHelper>(GET_FUNCTION_NAME_STRING_CHECKED(UFrontendGameUserSettings, GetCurrentGameplayTutorialModeEnabled));
+
 	// 教学模式
 	{
 		UListDataObject_String* TutorialModeDataObject = NewObject<UListDataObject_String>(GameplayCollectionDataObject, UListDataObject_String::StaticClass());
@@ -40,7 +48,9 @@ void UOptionsDataRegistry::InitGameplayCollectionTab()
 		TutorialModeDataObject->SetDataDisplayName(FText::FromString(TEXT("教学模式")));
 		TutorialModeDataObject->AddDynamicOptionsString(TEXT("Enabled"), FText::FromString(TEXT("启用")));
 		TutorialModeDataObject->AddDynamicOptionsString(TEXT("Disabled"), FText::FromString(TEXT("禁用")));
-
+		TutorialModeDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetCurrentGameplayTutorialModeEnabled));
+		TutorialModeDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetCurrentGameplayTutorialModeEnabled));
+		
 		GameplayCollectionDataObject->AddChildListData(TutorialModeDataObject);
 	}
 
