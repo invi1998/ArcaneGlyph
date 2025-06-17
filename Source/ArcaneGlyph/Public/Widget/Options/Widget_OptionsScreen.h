@@ -56,4 +56,7 @@ private:
 
 	UFUNCTION()
 	void OnOptionsTabSelected(FName InTabId);
+
+	void OnListViewItemHovered(UObject* Item, bool bIsHovered);
+	void OnListViewItemSelectionChanged(UObject* Item);
 };

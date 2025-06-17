@@ -38,6 +38,10 @@ void UWidget_OptionsScreen::NativeOnInitialized()
 	);
 
 	TabListWidget_OptionsTabs->OnTabSelected.AddUniqueDynamic(this, &ThisClass::OnOptionsTabSelected);
+
+	// 绑定选项列表视图的项悬停事件，选中事件
+	CommonListView_OptionsList->OnItemIsHoveredChanged().AddUObject(this, &ThisClass::OnListViewItemHovered);
+	CommonListView_OptionsList->OnItemSelectionChanged().AddUObject(this, &ThisClass::OnListViewItemSelectionChanged);
 }
 
 void UWidget_OptionsScreen::NativeOnActivated()
@@ -106,4 +110,16 @@ void UWidget_OptionsScreen::OnOptionsTabSelected(FName InTabId)
 		CommonListView_OptionsList->SetSelectedIndex(0);
 	}
 	
+}
+
+void UWidget_OptionsScreen::OnListViewItemHovered(UObject* Item, bool bIsHovered)
+{
+	if (!Item) return;
+
+	
+}
+
+void UWidget_OptionsScreen::OnListViewItemSelectionChanged(UObject* Item)
+{
+	if (!Item) return;
 }
