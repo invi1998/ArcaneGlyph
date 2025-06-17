@@ -12,3 +12,9 @@ UFrontendGameUserSettings* UFrontendGameUserSettings::Get()
 
 	return nullptr;
 }
+
+void UFrontendGameUserSettings::SetCurrentGameplayTutorialModeEnabled(const FString& InTutorialModeEnabled)
+{
+	TutorialModeEnabled = InTutorialModeEnabled;
+	SaveSettings(); // 保存设置到配置文件
+}

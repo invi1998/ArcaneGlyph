@@ -3,6 +3,8 @@
 
 #include "Widget/Options/DataObject/ListDataObject_String.h"
 
+#include "Widget/Options/OptionsDataInteractionHelper.h"
+
 void UListDataObject_String::AddDynamicOptionsString(const FString& InStringValue, const FText& InDisplayText)
 {
 	AvailableOptionsStringArray.Add(InStringValue);
@@ -31,7 +33,12 @@ void UListDataObject_String::AdvanceToNextOption()
 
 	TrySetDisplayTextFromStringValue(CurrentStringValue);
 
-	NotifyListDataModified(this);
+	// 将当前选项值设置到动态获取器或设置器中（进而保存到玩家游戏设置中GameUserSettings）
+	if (DataDynamicSetter)
+	{
+		DataDynamicSetter->SetValueFromString(CurrentStringValue);
+		NotifyListDataModified(this);
+	}
 }
 
 void UListDataObject_String::AdvanceToPreviousOption()
@@ -63,7 +70,14 @@ void UListDataObject_String::OnDataObjectInitialized()
 		CurrentStringValue = AvailableOptionsStringArray[0];
 	}
 
-	// TODO: 从设置存档中读取并设置选项
+	// 从玩家游戏设置中读取并设置选项
+	if (DataDynamicGetter)
+	{
+		if (!DataDynamicGetter->GetValueAsString().IsEmpty())
+		{
+			CurrentStringValue = DataDynamicGetter->GetValueAsString();
+		}
+	}
 
 	if (!TrySetDisplayTextFromStringValue(CurrentStringValue))
 	{
