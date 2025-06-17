@@ -50,6 +50,7 @@ void UOptionsDataRegistry::InitGameplayCollectionTab()
 		TutorialModeDataObject->AddDynamicOptionsString(TEXT("Disabled"), FText::FromString(TEXT("禁用")));
 		TutorialModeDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetCurrentGameplayTutorialModeEnabled));
 		TutorialModeDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetCurrentGameplayTutorialModeEnabled));
+		TutorialModeDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 		
 		GameplayCollectionDataObject->AddChildListData(TutorialModeDataObject);
 	}

@@ -33,15 +33,11 @@ public:
 
 	void InitDataObject();
 
-	virtual TArray<UListDataObject_Base*> GetAllChildListData() const
-	{
-		return TArray<UListDataObject_Base*>();
-	}
+	virtual TArray<UListDataObject_Base*> GetAllChildListData() const { return TArray<UListDataObject_Base*>(); }
 
-	virtual bool HasAnyChildListData() const
-	{
-		return false;
-	}
+	virtual bool HasAnyChildListData() const { return false; }
+
+	void SetShouldApplyChangeImmediately(bool bInShouldApplyChangeImmediately) { bShouldApplyChangeImmediately = bInShouldApplyChangeImmediately; }
 
 protected:
 	virtual void OnDataObjectInitialized()
@@ -60,4 +56,6 @@ private:
 
 	UPROPERTY(Transient)
 	UListDataObject_Base* ParentData;		// 父数据对象，用于实现数据对象的继承关系
+
+	bool bShouldApplyChangeImmediately = false;	// 是否立即应用更改，默认为false，不立即应用更改
 };
