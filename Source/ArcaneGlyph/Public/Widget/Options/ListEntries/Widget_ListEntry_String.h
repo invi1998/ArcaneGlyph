@@ -25,6 +25,7 @@ protected:
 	
 	void OnPreviousOptionClicked();
 	void OnNextOptionClicked();
+	void OnRotatorOptionClicked();
 
 private:
 	// **** Bound Widgets **** //

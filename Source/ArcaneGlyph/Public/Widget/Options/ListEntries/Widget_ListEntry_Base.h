@@ -38,6 +38,8 @@ protected:
 	// 设置拥有的列表数据对象，在父类中，这里只被用于设置设置选项的显示名称文本，在子类中可以重写该函数来处理更多的逻辑（选项的选中文本等）
 	virtual void OnOwningListDataObjectSet(UListDataObject_Base* InOwningListDataObject);
 
+	void SelectThisEntryWidget();
+
 
 private:
 	// **** Bound Widgets **** //
