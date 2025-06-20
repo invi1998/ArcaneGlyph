@@ -21,6 +21,12 @@ class ARCANEGLYPH_API UWidget_ListEntry_Base : public UCommonUserWidget, public 
 {
 	GENERATED_BODY()
 
+public:
+	UFUNCTION(BlueprintImplementableEvent, meta=(DisplayName="OnListEntryWidgetHovered"))
+	void BP_OnListEntryWidgetHovered(bool bIsHovered, bool bIsEntryWidgetStillSelected);
+	
+	void NativeOnListEntryWidgetHovered(bool bIsHovered);
+
 protected:
 	// Begin IUserObjectListEntry interface
 	virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;

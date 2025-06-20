@@ -11,6 +11,7 @@
 #include "Widget/Component/FrontendTabListWidgetBase.h"
 #include "Widget/Options/OptionsDataRegistry.h"
 #include "Widget/Options/DataObject/ListDataObject_Collection.h"
+#include "Widget/Options/ListEntries/Widget_ListEntry_Base.h"
 
 void UWidget_OptionsScreen::NativeOnInitialized()
 {
@@ -116,7 +117,10 @@ void UWidget_OptionsScreen::OnListViewItemHovered(UObject* Item, bool bIsHovered
 {
 	if (!Item) return;
 
-	
+	UWidget_ListEntry_Base* HoveredEntryWidget = CommonListView_OptionsList->GetEntryWidgetFromItem<UWidget_ListEntry_Base>(Item);
+	if (!HoveredEntryWidget) return;
+
+	HoveredEntryWidget->NativeOnListEntryWidgetHovered(bIsHovered);
 }
 
 void UWidget_OptionsScreen::OnListViewItemSelectionChanged(UObject* Item)
