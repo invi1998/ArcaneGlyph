@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Widget_OptionsDetailsView.generated.h"
 
+class UListDataObject_Base;
 class UCommonLazyImage;
 class UCommonTextBlock;
 class UCommonRichTextBlock;
@@ -16,6 +17,14 @@ UCLASS(Abstract, BlueprintType, meta=(DisabledNativeTick))
 class ARCANEGLYPH_API UWidget_OptionsDetailsView : public UUserWidget
 {
 	GENERATED_BODY()
+
+public:
+	void UpdateDetailsViewInfo(UListDataObject_Base* InListDataObject, const FString& InEntryWidgetClassName = TEXT(""));
+	void ClearDetailsViewInfo();
+
+
+protected:
+	virtual void NativeOnInitialized() override;
 
 private:
 	UPROPERTY(meta=(BindWidgetOptional))
