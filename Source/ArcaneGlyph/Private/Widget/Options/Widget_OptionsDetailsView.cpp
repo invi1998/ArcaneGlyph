@@ -6,6 +6,7 @@
 #include "CommonLazyImage.h"
 #include "CommonTextBlock.h"
 #include "CommonRichTextBlock.h"
+#include "Components/SizeBox.h"
 #include "Widget/Options/DataObject/ListDataObject_Base.h"
 
 void UWidget_OptionsDetailsView::UpdateDetailsViewInfo(UListDataObject_Base* InListDataObject, const FString& InEntryWidgetClassName)
@@ -23,8 +24,13 @@ void UWidget_OptionsDetailsView::UpdateDetailsViewInfo(UListDataObject_Base* InL
 	{
 		if (!InListDataObject->GetSoftDescriptionImage().IsNull())
 		{
+			ImageSizer->SetVisibility(ESlateVisibility::SelfHitTestInvisible);	// 显示图片
 			CommonLazyImage_OptionsDetailsImage->SetBrushFromLazyTexture(InListDataObject->GetSoftDescriptionImage());
 			CommonLazyImage_OptionsDetailsImage->SetVisibility(ESlateVisibility::SelfHitTestInvisible);		// 显示图片，但是不遮挡鼠标点击事件
+		}
+		else
+		{
+			ImageSizer->SetVisibility(ESlateVisibility::Collapsed);
 		}
 	}
 	if (CommonRichTextBlock_Description)
@@ -34,7 +40,7 @@ void UWidget_OptionsDetailsView::UpdateDetailsViewInfo(UListDataObject_Base* InL
 	
 	if (CommonRichTextBlock_DynamicDetails)
 	{
-		const FString DynamicDetailsText = FString::Printf(TEXT("数据对象类型: <Dynamic>%s</>\n数据ID: <Dynamic>%s</>\n数据类型控件名: <Dynamic>%s</>"),
+		const FString DynamicDetailsText = FString::Printf(TEXT("数据对象类型: <Dynamic>%s</>\n\n数据ID: <Dynamic>%s</>\n\n数据类型控件名: <Dynamic>%s</>"),
 			*InListDataObject->GetClass()->GetName(),
 			*InListDataObject->GetDataID().ToString(),
 			*InEntryWidgetClassName
@@ -57,6 +63,14 @@ void UWidget_OptionsDetailsView::ClearDetailsViewInfo()
 	if (CommonLazyImage_OptionsDetailsImage) 
 	{
 		CommonLazyImage_OptionsDetailsImage->SetVisibility(ESlateVisibility::Collapsed);
+	}
+	if (Image_Frame)
+	{
+		Image_Frame->SetVisibility(ESlateVisibility::Collapsed);
+	}
+	if (ImageSizer)
+	{
+		ImageSizer->SetVisibility(ESlateVisibility::Collapsed);
 	}
 	if (CommonRichTextBlock_Description) 
 	{

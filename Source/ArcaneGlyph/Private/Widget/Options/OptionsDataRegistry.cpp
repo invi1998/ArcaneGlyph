@@ -51,6 +51,8 @@ void UOptionsDataRegistry::InitGameplayCollectionTab()
 		TutorialModeDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetCurrentGameplayTutorialModeEnabled));
 		TutorialModeDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetCurrentGameplayTutorialModeEnabled));
 		TutorialModeDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
+
+		TutorialModeDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("游戏教学模式核心设置：\n\n<Bold>难度级别</>\n- 休闲：敌人攻击频率降低60%，资源生成率翻倍\n- 标准：预设平衡体验（推荐新玩家）\n- 硬核：<Warning>永久关闭所有辅助功能</>\n\n<Bold>引导系统</>\n* 开启时提供：\n  - <Bold>交互高亮</>\n  - <Bold>路径指引</>\n  - <Bold>实时操作提示</>\n* <Warning>关闭后不可重新启用教程</>\n\n<Bold>辅助套件</>\n1. <Bold>智能存档</>（每5分钟自动存档）\n2. <Bold>谜题辅助</>（30秒后显示初级提示）\n3. <Bold>战斗辅助</>（危险动作触发0.75倍速）\n\n<Warning>重要警告</>\n* 硬核模式将锁定所有设置选项\n* 禁用智能存档可能导致进度丢失\n* 首次游玩建议开启全部引导功能\n\n<Bold>进阶提示</>\n→ 完成教程后进入设置界面\n→ 先关闭战斗辅助适应节奏\n→ 最后关闭路径指引挑战探索\n\n<Warning>配置须知</>\n变更设置后需重启当前关卡才能生效")));
 		
 		GameplayCollectionDataObject->AddChildListData(TutorialModeDataObject);
 	}

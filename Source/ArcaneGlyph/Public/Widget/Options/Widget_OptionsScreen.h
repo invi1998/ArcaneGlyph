@@ -6,6 +6,7 @@
 #include "Widget/Widget_ActivatableBase.h"
 #include "Widget_OptionsScreen.generated.h"
 
+class UWidget_OptionsDetailsView;
 class UFrontendCommonListView;
 class UFrontendTabListWidgetBase;
 class UOptionsDataRegistry;
@@ -45,12 +46,17 @@ private:
 	void OnResetBoundActionsTriggered();
 	void OnBackBoundActionsTriggered();
 
+	FString TryGetEntryWidgetClassNameByDataObject(UObject* Item) const;
+
 	// ******** 绑定到选项数据注册表的控件 ********
 	UPROPERTY(meta = (BindWidget))
 	UFrontendTabListWidgetBase* TabListWidget_OptionsTabs;	// 选项卡列表小部件
 
 	UPROPERTY(meta=(BindWidget))
 	UFrontendCommonListView* CommonListView_OptionsList;	// 选项列表小部件
+
+	UPROPERTY(meta = (BindWidget))
+	UWidget_OptionsDetailsView* CommonDetailsView_ListDetailsView;	// 选项详情视图小部件
 
 	// ******** 绑定到选项数据注册表的控件 ********
 

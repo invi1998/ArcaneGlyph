@@ -10,6 +10,7 @@
 #include "Widget/Component/FrontendCommonListView.h"
 #include "Widget/Component/FrontendTabListWidgetBase.h"
 #include "Widget/Options/OptionsDataRegistry.h"
+#include "Widget/Options/Widget_OptionsDetailsView.h"
 #include "Widget/Options/DataObject/ListDataObject_Collection.h"
 #include "Widget/Options/ListEntries/Widget_ListEntry_Base.h"
 
@@ -97,6 +98,16 @@ void UWidget_OptionsScreen::OnBackBoundActionsTriggered()
 	DeactivateWidget();
 }
 
+FString UWidget_OptionsScreen::TryGetEntryWidgetClassNameByDataObject(UObject* Item) const
+{
+	UUserWidget* EntryWidget = CommonListView_OptionsList->GetEntryWidgetFromItem(Item);
+	if (!EntryWidget)
+	{
+		return FString();
+	}
+	return EntryWidget->GetClass()->GetName();
+}
+
 void UWidget_OptionsScreen::OnOptionsTabSelected(FName InTabId)
 {
 	const TArray<UListDataObject_Base*> FoundListSourceItems = GetOrCreateDataRegistry()->GetListSourceItemBySelectedTabID(InTabId);
@@ -121,9 +132,35 @@ void UWidget_OptionsScreen::OnListViewItemHovered(UObject* Item, bool bIsHovered
 	if (!HoveredEntryWidget) return;
 
 	HoveredEntryWidget->NativeOnListEntryWidgetHovered(bIsHovered);
+
+	if (bIsHovered)
+	{
+		// 如果鼠标悬停在该项上，则选中该项
+		CommonDetailsView_ListDetailsView->UpdateDetailsViewInfo(
+			CastChecked<UListDataObject_Base>(Item),
+			TryGetEntryWidgetClassNameByDataObject(Item)
+		);
+	}
+	else
+	{
+		// 鼠标离开时取消选中
+		if (UListDataObject_Base* SelectedItem = CommonListView_OptionsList->GetSelectedItem<UListDataObject_Base>())
+		{
+			CommonDetailsView_ListDetailsView->UpdateDetailsViewInfo(SelectedItem, TryGetEntryWidgetClassNameByDataObject(SelectedItem));
+		}
+		else
+		{
+			CommonDetailsView_ListDetailsView->ClearDetailsViewInfo();
+		}
+	}
 }
 
 void UWidget_OptionsScreen::OnListViewItemSelectionChanged(UObject* Item)
 {
 	if (!Item) return;
+
+	CommonDetailsView_ListDetailsView->UpdateDetailsViewInfo(
+			CastChecked<UListDataObject_Base>(Item),
+			TryGetEntryWidgetClassNameByDataObject(Item)
+		);
 }

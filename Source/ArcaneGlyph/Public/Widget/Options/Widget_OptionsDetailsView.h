@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Widget_OptionsDetailsView.generated.h"
 
+class USizeBox;
 class UListDataObject_Base;
 class UCommonLazyImage;
 class UCommonTextBlock;
@@ -30,8 +31,14 @@ private:
 	UPROPERTY(meta=(BindWidgetOptional))
 	UCommonTextBlock* CommonTextBlock_OptionsDetailsTitle;	// 选项详情标题文本块
 
+	UPROPERTY(meta=(BindWidget))
+	USizeBox* ImageSizer;	// 选项详情图片的大小盒子，用于控制图片的大小
+
 	UPROPERTY(meta=(BindWidgetOptional))
 	UCommonLazyImage* CommonLazyImage_OptionsDetailsImage;	// 选项详情图片
+
+	UPROPERTY(meta=(BindWidgetOptional))
+	UUserWidget* Image_Frame;	// 选项详情图片框架（用于构建图片边框）
 
 	UPROPERTY(meta=(BindWidgetOptional))
 	UCommonRichTextBlock* CommonRichTextBlock_Description;	// 选项详情描述文本块
