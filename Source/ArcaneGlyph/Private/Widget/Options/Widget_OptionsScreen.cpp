@@ -110,6 +110,8 @@ FString UWidget_OptionsScreen::TryGetEntryWidgetClassNameByDataObject(UObject* I
 
 void UWidget_OptionsScreen::OnOptionsTabSelected(FName InTabId)
 {
+	CommonDetailsView_ListDetailsView->ClearDetailsViewInfo();
+	
 	const TArray<UListDataObject_Base*> FoundListSourceItems = GetOrCreateDataRegistry()->GetListSourceItemBySelectedTabID(InTabId);
 
 	CommonListView_OptionsList->SetListItems(FoundListSourceItems);
