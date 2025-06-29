@@ -23,6 +23,7 @@ public:
 
 	void AdvanceToNextOption();
 	void AdvanceToPreviousOption();
+	void OnRotatorInitiatedValueChanged(const FText& InNewValue);
 	
 protected:
 	// Begin UListDataObject_Base interface

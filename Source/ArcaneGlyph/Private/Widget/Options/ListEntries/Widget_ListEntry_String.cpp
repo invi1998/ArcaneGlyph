@@ -4,6 +4,7 @@
 #include "Widget/Options/ListEntries/Widget_ListEntry_String.h"
 
 #include "ArcaneDebugHelper.h"
+#include "CommonInputSubsystem.h"
 #include "Widget/Component/FrontendCommonButtonBase.h"
 #include "Widget/Component/FrontendCommonRotator.h"
 #include "Widget/Options/DataObject/ListDataObject_String.h"
@@ -24,6 +25,9 @@ void UWidget_ListEntry_String::NativeOnInitialized()
 	if (CommonRotator_AvailableOptions)
 	{
 		CommonRotator_AvailableOptions->OnClicked().AddUObject(this, &ThisClass::OnRotatorOptionClicked);
+
+		// 绑定旋转器选项更改事件(CommonRotator_AvailableOptions会在选项更改时触发该事件，这样我们在使用手柄直接修改Rotator选项的时候就能像处理Pre和Next按钮一样处理选项切换了并保存结果）
+		CommonRotator_AvailableOptions->OnRotatedEvent.AddUObject(this, &ThisClass::OnRotatorOptionChanged);
 	}
 }
 
@@ -76,4 +80,19 @@ void UWidget_ListEntry_String::OnNextOptionClicked()
 void UWidget_ListEntry_String::OnRotatorOptionClicked()
 {
 	SelectThisEntryWidget();
+}
+
+void UWidget_ListEntry_String::OnRotatorOptionChanged(int32 InSelectedIndex, bool bUserInitiated)
+{
+	if (OwningStringDataObject)
+	{
+		UCommonInputSubsystem* CommonInputSubsystem = GetInputSubsystem();
+		if (!CommonInputSubsystem || !bUserInitiated) return;
+		
+		if (CommonInputSubsystem->GetCurrentInputType() == ECommonInputType::Gamepad)
+		{
+			// 如果是手柄输入，我们需要手动处理选项的切换，依据当前选项的索引位置来切换到下一个或上一个选项
+			OwningStringDataObject->OnRotatorInitiatedValueChanged(CommonRotator_AvailableOptions->GetSelectedText());
+		}
+	}
 }

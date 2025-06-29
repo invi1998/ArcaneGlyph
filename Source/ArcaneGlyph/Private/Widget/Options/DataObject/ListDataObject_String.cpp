@@ -63,6 +63,32 @@ void UListDataObject_String::AdvanceToPreviousOption()
 	NotifyListDataModified(this);
 }
 
+void UListDataObject_String::OnRotatorInitiatedValueChanged(const FText& InNewValue)
+{
+	// 该函数在Rotator组件的值改变时被调用，用于处理手柄模式下选项的切换
+	
+	// 找到当前选项值在可用选项字符串数组中的索引位置
+	const int32 CurrentOptionValueIndex = AvailableOptionsTextArray.IndexOfByPredicate(
+		[InNewValue](const FText& InStringValue)->bool
+		{
+			return InStringValue.EqualTo(InNewValue);
+		}
+	);
+
+	if (CurrentOptionValueIndex != INDEX_NONE && AvailableOptionsStringArray.IsValidIndex(CurrentOptionValueIndex))
+	{
+		// 如果找到了当前选项值，则将其设置为当前字符串值
+		CurrentDisplayText = InNewValue;
+		CurrentStringValue = AvailableOptionsStringArray[CurrentOptionValueIndex];
+
+		if (DataDynamicSetter)
+		{
+			DataDynamicSetter->SetValueFromString(CurrentStringValue);
+			NotifyListDataModified(this);
+		}
+	}
+}
+
 void UListDataObject_String::OnDataObjectInitialized()
 {
 	if (!AvailableOptionsStringArray.IsEmpty())
