@@ -76,6 +76,20 @@ void UWidget_OptionsScreen::NativeOnDeactivated()
 	UFrontendGameUserSettings::Get()->ApplySettings(true); // true表示保存设置并应用
 }
 
+UWidget* UWidget_OptionsScreen::NativeGetDesiredFocusTarget() const
+{
+	// 在手柄模式下，我们需要确保焦点正确地设置到选项列表的选中项上，否则的话，默认的焦点是选项页的第一个选项，在我们选择其他选项，遇到打开确认框后关闭时，会导致焦点不正确的（即焦点仍然在第一个选项上，而不是我们刚才选择的选项上）
+	if (UObject* SelectedObject = CommonListView_OptionsList->GetSelectedItem())
+	{
+		if (UUserWidget* SelectedWidget = CommonListView_OptionsList->GetEntryWidgetFromItem(SelectedObject))
+		{
+			return SelectedWidget;
+		}
+	}
+	
+	return Super::NativeGetDesiredFocusTarget();
+}
+
 UOptionsDataRegistry* UWidget_OptionsScreen::GetOrCreateDataRegistry()
 {
 	if (!CreatedOwningDataRegistry)

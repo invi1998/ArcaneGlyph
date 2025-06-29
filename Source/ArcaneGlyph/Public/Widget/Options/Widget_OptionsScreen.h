@@ -29,6 +29,7 @@ protected:
 	// begin UCommonActivatableWidget interface
 	virtual void NativeOnActivated() override;
 	virtual void NativeOnDeactivated() override;
+	virtual UWidget* NativeGetDesiredFocusTarget() const override;		// 获取期望的焦点目标，用于修复在手柄模式下模态框关闭时，当前焦点不正确的问题
 	// end UCommonActivatableWidget interface
 
 private:
