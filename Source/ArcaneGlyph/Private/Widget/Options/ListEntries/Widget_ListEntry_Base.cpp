@@ -3,6 +3,8 @@
 
 #include "Widget/Options/ListEntries/Widget_ListEntry_Base.h"
 
+#include "CommonInputSubsystem.h"
+#include "CommonInputTypeEnum.h"
 #include "CommonTextBlock.h"
 #include "Components/ListView.h"
 #include "Widget/Options/DataObject/ListDataObject_Base.h"
@@ -10,6 +12,24 @@
 void UWidget_ListEntry_Base::NativeOnListEntryWidgetHovered(bool bIsHovered)
 {
 	BP_OnListEntryWidgetHovered(bIsHovered, IsListItemSelected());
+}
+
+FReply UWidget_ListEntry_Base::NativeOnFocusReceived(const FGeometry& InGeometry, const FFocusEvent& InFocusEvent)
+{
+	// 如果当前项被选中，在手柄模式下，只聚焦到当前控件是不够的，我们还需要将聚焦点设置为选项切换控件上
+	UCommonInputSubsystem* InputSubsystem = GetInputSubsystem();
+	if (InputSubsystem && InputSubsystem->GetCurrentInputType() == ECommonInputType::Gamepad)
+	{
+		if (UWidget* WidgetToFocus = BP_GetWidgtToFocusOnGamepad())
+		{
+			if (TSharedPtr<SWidget> SlateWidgetToFocus =WidgetToFocus->GetCachedWidget())
+			{
+				return FReply::Handled().SetUserFocus(SlateWidgetToFocus.ToSharedRef(), EFocusCause::SetDirectly);
+			}
+		}
+	}
+	
+	return Super::NativeOnFocusReceived(InGeometry, InFocusEvent);
 }
 
 void UWidget_ListEntry_Base::NativeOnListItemObjectSet(UObject* ListItemObject)

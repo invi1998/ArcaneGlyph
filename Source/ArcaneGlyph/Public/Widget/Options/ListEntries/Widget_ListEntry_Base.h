@@ -28,6 +28,13 @@ public:
 	void NativeOnListEntryWidgetHovered(bool bIsHovered);
 
 protected:
+	UFUNCTION(BlueprintImplementableEvent, meta=(DisplayName="GetWidgtToFocusOnGamepad"))
+	UWidget* BP_GetWidgtToFocusOnGamepad() const;		// 获取在手柄模式下需要聚焦的控件，子类可以重写此函数来返回需要聚焦的控件
+
+	// Begin UUserWidget interface
+	virtual FReply NativeOnFocusReceived(const FGeometry& InGeometry, const FFocusEvent& InFocusEvent) override;
+	// End UUserWidget interface
+	
 	// Begin IUserObjectListEntry interface
 	virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;
 	// End IUserObjectListEntry interface
