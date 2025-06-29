@@ -3,6 +3,7 @@
 
 #include "Widget/Options/DataObject/ListDataObject_String.h"
 
+#include "Distributions/Distribution.h"
 #include "Widget/Options/OptionsDataInteractionHelper.h"
 
 void UListDataObject_String::AddDynamicOptionsString(const FString& InStringValue, const FText& InDisplayText)
@@ -68,6 +69,11 @@ void UListDataObject_String::OnDataObjectInitialized()
 	{
 		// 如果是第一个选项，则将当前选项设置为默认选项
 		CurrentStringValue = AvailableOptionsStringArray[0];
+	}
+
+	if (HasDefaultValue())
+	{
+		CurrentStringValue = GetDefaultValueAsString();
 	}
 
 	// 从玩家游戏设置中读取并设置选项

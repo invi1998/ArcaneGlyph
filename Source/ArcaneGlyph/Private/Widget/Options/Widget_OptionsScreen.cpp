@@ -4,9 +4,12 @@
 #include "Widget/Options/Widget_OptionsScreen.h"
 
 #include "ArcaneDebugHelper.h"
+#include "ArcaneGameplayTags.h"
 #include "ICommonInputModule.h"
 #include "FrontendSettings/FrontendGameUserSettings.h"
 #include "Input/CommonUIInputTypes.h"
+#include "Subsystems/FrontendUISubsystem.h"
+#include "Widget/Component/FrontendCommonButtonBase.h"
 #include "Widget/Component/FrontendCommonListView.h"
 #include "Widget/Component/FrontendTabListWidgetBase.h"
 #include "Widget/Options/OptionsDataRegistry.h"
@@ -89,7 +92,48 @@ UOptionsDataRegistry* UWidget_OptionsScreen::GetOrCreateDataRegistry()
 
 void UWidget_OptionsScreen::OnResetBoundActionsTriggered()
 {
-	Debug::Print(TEXT("Reset Bound Actions Triggered!"), FColor::Green);
+	if (ResetTableDataArray.IsEmpty()) return;
+
+	UCommonButtonBase* SelectedTabButton = TabListWidget_OptionsTabs->GetTabButtonBaseByID(TabListWidget_OptionsTabs->GetActiveTab());
+	if (!SelectedTabButton)
+	{
+		// 如果没有选中的选项卡按钮，则不执行重置操作
+		return;
+	}
+
+	UFrontendCommonButtonBase* FrontendSeletedTabButton = CastChecked<UFrontendCommonButtonBase>(SelectedTabButton);
+
+	FString ButtonDisplayString = FrontendSeletedTabButton->GetButtonDisplayText().ToString();
+	
+	UFrontendUISubsystem::Get(this)->PushModalScreenToModalStackAsync(
+		ArcaneGameplayTags::Frontend_Widget_ModalScreen_TimerConfirm,
+		EModalType::OkCancel,
+		FText::FromString(TEXT("")),
+		FText::FromString(TEXT("")),
+		FText::FromString(TEXT("是否重置当前 [") + ButtonDisplayString + ("] 选项列表中的所有设置到默认值？")),
+		FText::FromString(TEXT("")),
+		FSlateBrush(),
+		[](EArcaneConfirmType ClickButtonType, UObject* ModalScreenWidget)
+		{
+			if (ClickButtonType == EArcaneConfirmType::Yes)
+			{
+				// 如果点击了确认按钮，则重置所有设置到默认值
+				for (UListDataObject_Base* ResetDataObject : CastChecked<UWidget_OptionsScreen>(ModalScreenWidget)->ResetTableDataArray)
+				{
+					if (ResetDataObject)
+					{
+						ResetDataObject->ResetToDefault();
+					}
+				}
+			}
+			else if (ClickButtonType == EArcaneConfirmType::No)
+			{
+				// 如果点击了取消按钮，则不执行任何操作
+			}
+			CastChecked<UWidget_OptionsScreen>(ModalScreenWidget)->DeactivateWidget();
+		},
+	);
+	
 }
 
 void UWidget_OptionsScreen::OnBackBoundActionsTriggered()

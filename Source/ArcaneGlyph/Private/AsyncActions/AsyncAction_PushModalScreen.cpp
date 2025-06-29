@@ -34,7 +34,7 @@ UAsyncAction_PushModalScreen* UAsyncAction_PushModalScreen::PushModalScreen(cons
 
 void UAsyncAction_PushModalScreen::Activate()
 {
-	UFrontendUISubsystem::Get(CachedOwingWorld.Get())->PushModalScreenToModalStack(
+	UFrontendUISubsystem::Get(CachedOwingWorld.Get())->PushModalScreenToModalStackAsync(
 		CachedWidgetStackTag, CachedModalType, CachedModalTitle, CachedModalSubtitle, CachedModalMessage, CachedModalDescription, CachedModalIcon,
 		[this](EModalButtonType ButtonType)
 		{

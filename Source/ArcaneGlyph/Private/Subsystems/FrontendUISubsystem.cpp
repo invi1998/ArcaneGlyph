@@ -78,7 +78,7 @@ void UFrontendUISubsystem::PushSoftWidgetToStackAsync(const FGameplayTag& Widget
 	);
 }
 
-void UFrontendUISubsystem::PushModalScreenToModalStack(const FGameplayTag& WidgetTag, EModalType ModalType, const FText& ModalTitle,
+void UFrontendUISubsystem::PushModalScreenToModalStackAsync(const FGameplayTag& WidgetTag, EModalType ModalType, const FText& ModalTitle,
 	const FText& ModalSubtitle, const FText& ModalMessage, const FText& ModalDescription, const FSlateBrush& ModalIcon,
 	TFunction<void(EModalButtonType)> ButtonClickedCallback)
 {
