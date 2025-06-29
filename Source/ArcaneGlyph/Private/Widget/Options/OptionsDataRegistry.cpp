@@ -113,6 +113,15 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 		VolumeCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("音量")));
 
 		AudioCollectionDataObject->AddChildListData(VolumeCategoryCollection);
+
+		// test
+		{
+			UListDataObject_String* TestVolumeDataObject = NewObject<UListDataObject_String>(VolumeCategoryCollection, UListDataObject_String::StaticClass());
+			TestVolumeDataObject->SetDataID(FName("TestVolume"));
+			TestVolumeDataObject->SetDataDisplayName(FText::FromString(TEXT("测试音量")));
+
+			VolumeCategoryCollection->AddChildListData(TestVolumeDataObject);
+		}
 		
 	}
 
