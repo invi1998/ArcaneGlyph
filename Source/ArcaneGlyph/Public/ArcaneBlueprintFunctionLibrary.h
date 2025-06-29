@@ -127,6 +127,9 @@ public:
 	// Frontend UI Subsystem相关函数
 	UFUNCTION(BlueprintPure, Category = "FrontendUI | FunctionLibrary")
 	static TSoftClassPtr<UWidget_ActivatableBase> GetFrontendSoftWidgetClassByTag(UPARAM(meta = (Categories = "Frontend.Widget")) FGameplayTag WidgetTag);
+
+	UFUNCTION(BlueprintPure, Category = "FrontendUI | FunctionLibrary")
+	static TSoftObjectPtr<UTexture2D> GetOptionsSoftImageByTag(UPARAM(meta = (Categories = "Frontend.Image")) FGameplayTag ImageTag);
 };
 
 

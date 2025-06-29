@@ -20,4 +20,8 @@ class ARCANEGLYPH_API UFrontendDeveloperSettings : public UDeveloperSettings
 public:
 	UPROPERTY(Config, EditAnywhere, Category="Widget References", meta=(Categories = "Frontend.Widget", ForceInlineRow))
 	TMap<FGameplayTag, TSoftClassPtr<UWidget_ActivatableBase>> FrontendWidgetMap;	// 前端小部件映射
+
+	UPROPERTY(Config, EditAnywhere, Category="Options Image References", meta=(Categories = "Frontend.Image", ForceInlineRow))
+	TMap<FGameplayTag, TSoftObjectPtr<UTexture2D>> FrontendOptionsSoftImageMap;	// 前端选项图片映射
+
 };

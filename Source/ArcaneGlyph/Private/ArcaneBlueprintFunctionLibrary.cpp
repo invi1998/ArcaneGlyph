@@ -520,5 +520,14 @@ TSoftClassPtr<UWidget_ActivatableBase> UArcaneBlueprintFunctionLibrary::GetFront
 
 }
 
+TSoftObjectPtr<UTexture2D> UArcaneBlueprintFunctionLibrary::GetOptionsSoftImageByTag(FGameplayTag ImageTag)
+{
+	const UFrontendDeveloperSettings* FrontendDeveloperSettings = GetDefault<UFrontendDeveloperSettings>();
+	check(FrontendDeveloperSettings);
+	checkf(FrontendDeveloperSettings->FrontendOptionsSoftImageMap.Contains(ImageTag), TEXT("ImageTag %s not found in FrontendOptionsSoftImageMap!"), *ImageTag.ToString());
+
+	return FrontendDeveloperSettings->FrontendOptionsSoftImageMap.FindRef(ImageTag);	// 返回对应的软类
+}
+
 
 

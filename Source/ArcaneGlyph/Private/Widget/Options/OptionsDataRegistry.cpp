@@ -3,6 +3,8 @@
 
 #include "Widget/Options/OptionsDataRegistry.h"
 
+#include "ArcaneBlueprintFunctionLibrary.h"
+#include "ArcaneGameplayTags.h"
 #include "FrontendSettings/FrontendGameUserSettings.h"
 #include "Widget/Options/OptionsDataInteractionHelper.h"
 #include "Widget/Options/DataObject/ListDataObject_Collection.h"
@@ -81,6 +83,7 @@ void UOptionsDataRegistry::InitGameplayCollectionTab()
 		UListDataObject_String* CharacterStatusInfoDataObject = NewObject<UListDataObject_String>(GameplayCollectionDataObject, UListDataObject_String::StaticClass());
 		CharacterStatusInfoDataObject->SetDataID(FName("CharacterStatusInfo"));
 		CharacterStatusInfoDataObject->SetDataDisplayName(FText::FromString(TEXT("角色状态信息")));
+		CharacterStatusInfoDataObject->SetSoftDescriptionImage(UArcaneBlueprintFunctionLibrary::GetOptionsSoftImageByTag(ArcaneGameplayTags::Frontend_Image_TestImage));
 
 		GameplayCollectionDataObject->AddChildListData(CharacterStatusInfoDataObject);
 	}

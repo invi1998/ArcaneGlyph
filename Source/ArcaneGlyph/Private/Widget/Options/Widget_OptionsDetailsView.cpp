@@ -64,10 +64,6 @@ void UWidget_OptionsDetailsView::ClearDetailsViewInfo()
 	{
 		CommonLazyImage_OptionsDetailsImage->SetVisibility(ESlateVisibility::Collapsed);
 	}
-	if (Image_Frame)
-	{
-		Image_Frame->SetVisibility(ESlateVisibility::Collapsed);
-	}
 	if (ImageSizer)
 	{
 		ImageSizer->SetVisibility(ESlateVisibility::Collapsed);
