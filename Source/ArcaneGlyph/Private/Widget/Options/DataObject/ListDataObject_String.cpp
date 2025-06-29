@@ -86,6 +86,33 @@ void UListDataObject_String::OnDataObjectInitialized()
 	
 }
 
+bool UListDataObject_String::CanResetToDefault() const
+{
+	return HasDefaultValue() && CurrentStringValue != GetDefaultValueAsString();
+}
+
+bool UListDataObject_String::TryResetToDefault()
+{
+	if (CanResetToDefault())
+	{
+		CurrentStringValue = GetDefaultValueAsString();
+		if (!TrySetDisplayTextFromStringValue(CurrentStringValue))
+		{
+			CurrentDisplayText = FText::FromString(TEXT("无效选项"));
+		}
+
+		if (DataDynamicSetter)
+		{
+			DataDynamicSetter->SetValueFromString(CurrentStringValue);
+			NotifyListDataModified(this, EOptionsListDataModifyReason::ResetToDefault);
+		}
+		
+		return true;
+	}
+	return false;
+	
+}
+
 bool UListDataObject_String::TrySetDisplayTextFromStringValue(const FString& InStringValue)
 {
 	int32 Index = AvailableOptionsStringArray.IndexOfByKey(InStringValue);

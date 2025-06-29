@@ -42,7 +42,7 @@ public:
 	// 默认值与恢复默认函数，子类需要重写
 	virtual bool HasDefaultValue() const { return false; }
 	virtual bool CanResetToDefault() const { return false; }
-	virtual bool TryResetToDefault() const { return false; }
+	virtual bool TryResetToDefault() { return false; }
 	
 protected:
 	virtual void OnDataObjectInitialized()

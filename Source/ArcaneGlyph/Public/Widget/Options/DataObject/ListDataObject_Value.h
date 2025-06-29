@@ -23,7 +23,6 @@ public:
 
 	// **** Getter and Setter for DefaultStringValue **** //
 	virtual bool HasDefaultValue() const override { return DefaultStringValue.IsSet(); }
-	virtual bool CanResetToDefault() const override { return DefaultStringValue.IsSet(); }
 	
 
 protected:

@@ -48,6 +48,7 @@ void UOptionsDataRegistry::InitGameplayCollectionTab()
 		TutorialModeDataObject->SetDataDisplayName(FText::FromString(TEXT("教学模式")));
 		TutorialModeDataObject->AddDynamicOptionsString(TEXT("Enabled"), FText::FromString(TEXT("启用")));
 		TutorialModeDataObject->AddDynamicOptionsString(TEXT("Disabled"), FText::FromString(TEXT("禁用")));
+		TutorialModeDataObject->SetDefaultValueFromString(TEXT("Enabled")); // 设置默认值为启用
 		TutorialModeDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetCurrentGameplayTutorialModeEnabled));
 		TutorialModeDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetCurrentGameplayTutorialModeEnabled));
 		TutorialModeDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改

@@ -25,8 +25,13 @@ public:
 	void AdvanceToPreviousOption();
 	
 protected:
+	// Begin UListDataObject_Base interface
 	virtual void OnDataObjectInitialized() override;
-
+	
+	virtual bool CanResetToDefault() const override;
+	virtual bool TryResetToDefault() override;
+	// End UListDataObject_Base interface
+	
 	bool TrySetDisplayTextFromStringValue(const FString& InStringValue);
 	
 	FString CurrentStringValue;	// 当前字符串值
