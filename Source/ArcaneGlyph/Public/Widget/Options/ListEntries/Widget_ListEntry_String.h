@@ -18,10 +18,14 @@ class ARCANEGLYPH_API UWidget_ListEntry_String : public UWidget_ListEntry_Base
 	GENERATED_BODY()
 
 protected:
+	// Begin UUserWidget interface
 	virtual void NativeOnInitialized() override;
+	// End UUserWidget interface
 
+	// Begin UWidget_ListEntry_Base Interface
 	virtual void OnOwningListDataObjectModified(UListDataObject_Base* InListDataObject, EOptionsListDataModifyReason InOptionsListDataModifyReason) override;
 	virtual void OnOwningListDataObjectSet(UListDataObject_Base* InOwningListDataObject) override;
+	// End UWidget_ListEntry_Base Interface
 	
 	void OnPreviousOptionClicked();
 	void OnNextOptionClicked();
