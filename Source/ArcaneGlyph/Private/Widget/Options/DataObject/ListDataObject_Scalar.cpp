@@ -3,6 +3,8 @@
 
 #include "Widget/Options/DataObject/ListDataObject_Scalar.h"
 
+#include "Widget/Options/OptionsDataInteractionHelper.h"
+
 FCommonNumberFormattingOptions UListDataObject_Scalar::NoDecimal()
 {
 	FCommonNumberFormattingOptions Options;
@@ -20,4 +22,27 @@ FCommonNumberFormattingOptions UListDataObject_Scalar::WithDecimal(int32 NumDeci
 	Options.RoundingMode = ERoundingMode::HalfToEven;
 
 	return Options;
+}
+
+float UListDataObject_Scalar::GetCurrentScalarValue() const
+{
+	if (DataDynamicGetter)
+	{
+		// 如果有动态获取器，则从动态获取器中获取当前值
+		// 然后将其映射到显示范围内
+		return FMath::GetMappedRangeValueClamped(
+			OutputValueRange,
+			DisplayValueRange,
+			StringToFloat(DataDynamicGetter->GetValueAsString())
+		);
+	}
+
+	return 0.f;
+}
+
+float UListDataObject_Scalar::StringToFloat(const FString& InString)
+{
+	float OutFloat = 0.0f;
+	LexFromString(OutFloat, InString);
+	return OutFloat;
 }

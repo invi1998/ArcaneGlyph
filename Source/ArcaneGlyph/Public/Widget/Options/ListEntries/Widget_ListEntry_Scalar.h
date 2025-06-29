@@ -6,6 +6,7 @@
 #include "Widget_ListEntry_Base.h"
 #include "Widget_ListEntry_Scalar.generated.h"
 
+class UListDataObject_Scalar;
 class UCommonNumericTextBlock;
 class UAnalogSlider;
 
@@ -35,5 +36,8 @@ private:
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget, AllowPrivateAccess = "true"))
 	UAnalogSlider* AnalogSlider_SettingSlider;	// 滑条控件，用于调整数值（这个控件是CommonUI的滑条控件，要实现手柄控制就得用这个滑条）
 	// **** Bound Widgets **** //
+
+	UPROPERTY(Transient)
+	UListDataObject_Scalar* OwningScalarDataObject;	// 拥有的标量数据对象，用于处理选项的选中状态和显示文本等逻辑
 
 };

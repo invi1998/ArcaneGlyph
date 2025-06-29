@@ -24,6 +24,9 @@ public:
 
 	static FCommonNumberFormattingOptions NoDecimal();	// 无小数点格式化选项
 	static FCommonNumberFormattingOptions WithDecimal(int32 NumDecimalPlaces);	// 带小数点格式化选项，传入小数位数
+	static float StringToFloat(const FString& InString);
+
+	float GetCurrentScalarValue() const;
 
 protected:
 	
@@ -35,3 +38,4 @@ private:
 	ECommonNumericType DisplayNumericType = ECommonNumericType::Number;	// 显示数值类型，默认数字类型
 	FCommonNumberFormattingOptions NumberFormattingOptions;	// 数字格式化选项，用于控制数字的显示格式
 };
+
