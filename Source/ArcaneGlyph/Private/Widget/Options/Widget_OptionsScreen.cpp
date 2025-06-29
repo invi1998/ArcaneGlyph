@@ -110,28 +110,38 @@ void UWidget_OptionsScreen::OnResetBoundActionsTriggered()
 		EModalType::OkCancel,
 		FText::FromString(TEXT("")),
 		FText::FromString(TEXT("")),
-		FText::FromString(TEXT("是否重置当前 [") + ButtonDisplayString + ("] 选项列表中的所有设置到默认值？")),
+		FText::FromString(TEXT("是否重置当前 [") + ButtonDisplayString + TEXT("] 选项页中的所有设置到默认值？")),
 		FText::FromString(TEXT("")),
 		FSlateBrush(),
-		[](EArcaneConfirmType ClickButtonType, UObject* ModalScreenWidget)
+		[this](EModalButtonType ClickButtonType)
 		{
-			if (ClickButtonType == EArcaneConfirmType::Yes)
+			if (ClickButtonType == EModalButtonType::Confirm)
 			{
+				bIsResettingData = true; // 设置标志位，表示正在重置数据
+				bool bHasDataFailedToReset = false;
 				// 如果点击了确认按钮，则重置所有设置到默认值
-				for (UListDataObject_Base* ResetDataObject : CastChecked<UWidget_OptionsScreen>(ModalScreenWidget)->ResetTableDataArray)
+				for (UListDataObject_Base* ResetDataObject : ResetTableDataArray)
 				{
 					if (ResetDataObject)
 					{
-						ResetDataObject->ResetToDefault();
+						if (!ResetDataObject->TryResetToDefault())
+						{
+							bHasDataFailedToReset = true; // 如果重置失败，则标记为失败
+						}
 					}
 				}
+
+				if (!bHasDataFailedToReset)
+				{
+					// 只有当所有数据对象都成功重置后，才清空重设表格数据数组
+					ResetTableDataArray.Empty();
+					RemoveActionBinding(ResetActionBindingHandle); // 重置后移除重设操作的绑定
+				}
+
+				bIsResettingData = false; // 重置完成后，清除标志位
+				
 			}
-			else if (ClickButtonType == EArcaneConfirmType::No)
-			{
-				// 如果点击了取消按钮，则不执行任何操作
-			}
-			CastChecked<UWidget_OptionsScreen>(ModalScreenWidget)->DeactivateWidget();
-		},
+		}
 	);
 	
 }
@@ -155,7 +165,7 @@ FString UWidget_OptionsScreen::TryGetEntryWidgetClassNameByDataObject(UObject* I
 void UWidget_OptionsScreen::OnListViewListDataModified(UListDataObject_Base* ModifyData, EOptionsListDataModifyReason OptionsListDataModifyReason)
 {
 	// 当列表数据被修改时，更新默认值
-	if (!ModifyData) return;
+	if (!ModifyData || bIsResettingData) return;
 
 	if (ModifyData->CanResetToDefault())
 	{

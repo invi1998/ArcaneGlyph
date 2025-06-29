@@ -72,4 +72,7 @@ private:
 
 	UPROPERTY(Transient)
 	TArray<UListDataObject_Base*> ResetTableDataArray;	// 重设表格数据数组，用于存储当前选项列表中的数据对象
+
+	bool bIsResettingData = false;	// 是否正在重设数据的标志位，用于防止重复重设操作，因为我们重设默认值的操作会批量修改到当前页面里所有的设置项，
+									// 如果不加这个标志位的话，可能会导致在重设过程中触发多次数据修改事件，从而导致无限循环调用重设函数的问题
 };
