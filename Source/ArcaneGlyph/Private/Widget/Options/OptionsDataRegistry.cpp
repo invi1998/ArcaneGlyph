@@ -106,6 +106,16 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 	AudioCollectionDataObject->SetDataID(FName("AudioTabCollection"));
 	AudioCollectionDataObject->SetDataDisplayName(FText::FromString(TEXT("声音")));
 
+	// 声音类别
+	{
+		UListDataObject_Collection* VolumeCategoryCollection = NewObject<UListDataObject_Collection>(AudioCollectionDataObject);
+		VolumeCategoryCollection->SetDataID(FName("VolumeCategoryCollection"));
+		VolumeCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("音量")));
+
+		AudioCollectionDataObject->AddChildListData(VolumeCategoryCollection);
+		
+	}
+
 	RegisteredOptionsTabCollections.Add(AudioCollectionDataObject);
 }
 
