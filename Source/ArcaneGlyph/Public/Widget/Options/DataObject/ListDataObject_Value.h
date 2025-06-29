@@ -22,4 +22,10 @@ public:
 protected:
 	TSharedPtr<FOptionsDataInteractionHelper> DataDynamicGetter;
 	TSharedPtr<FOptionsDataInteractionHelper> DataDynamicSetter;
+
+
+private:
+
+	TOptional<FString> DefaultStringValue;
+	
 };
