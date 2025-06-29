@@ -158,4 +158,15 @@ void UWidget_ModalScreen::InitConfirmScreen(const UConfirmScreenInfoObject* Conf
 	}
 }
 
+UWidget* UWidget_ModalScreen::NativeGetDesiredFocusTarget() const
+{
+	if (DynamicEntryBox_Buttons && DynamicEntryBox_Buttons->GetNumEntries() > 0)
+	{
+		// 如果动态入口框中有按钮，就将最后一个按钮设置为焦点
+		return DynamicEntryBox_Buttons->GetAllEntries().Last();
+	}
+	
+	return Super::NativeGetDesiredFocusTarget();
+}
+
 

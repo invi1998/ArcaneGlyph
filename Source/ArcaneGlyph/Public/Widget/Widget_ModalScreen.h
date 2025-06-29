@@ -66,7 +66,10 @@ class ARCANEGLYPH_API UWidget_ModalScreen : public UWidget_ActivatableBase
 public:
 	// 当这个控件被构建时，在类外部调用该函数，并且在该控件被推入modal栈之前执行
 	void InitConfirmScreen(const UConfirmScreenInfoObject* ConfirmScreenInfoObject, TFunction<void(EModalButtonType)> OnButtonClickedCallback);
-	
+
+
+protected:
+	virtual UWidget* NativeGetDesiredFocusTarget() const override;
 
 private:
 	UPROPERTY(meta=(BindWidgetOptional))
