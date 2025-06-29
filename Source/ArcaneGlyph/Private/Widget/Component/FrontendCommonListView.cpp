@@ -6,7 +6,14 @@
 #include "Editor/WidgetCompilerLog.h"
 #include "Widget/Options/DataAsset_DataListEntryMapping.h"
 #include "Widget/Options/DataObject/ListDataObject_Base.h"
+#include "Widget/Options/DataObject/ListDataObject_Collection.h"
 #include "Widget/Options/ListEntries/Widget_ListEntry_Base.h"
+
+bool UFrontendCommonListView::OnIsSelectableOrNavigableInternal(UObject* FirstSelectedItem)
+{
+	// 如果是类别（Collection）数据对象，则不允许选择或导航
+	return !FirstSelectedItem->IsA<UListDataObject_Collection>();
+}
 
 UUserWidget& UFrontendCommonListView::OnGenerateEntryWidgetInternal(UObject* Item, TSubclassOf<UUserWidget> DesiredEntryClass, const TSharedRef<STableViewBase>& OwnerTable)
 {

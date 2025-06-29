@@ -16,6 +16,10 @@ class ARCANEGLYPH_API UFrontendCommonListView : public UCommonListView
 	GENERATED_BODY()
 
 protected:
+	// Begin UListView interface
+	virtual bool OnIsSelectableOrNavigableInternal(UObject* FirstSelectedItem) override;	// 检查列表项是否可选或可导航
+	// End UListView interface
+	
 	// Begin UCommonListView interface
 	virtual UUserWidget& OnGenerateEntryWidgetInternal(UObject* Item, TSubclassOf<UUserWidget> DesiredEntryClass, const TSharedRef<STableViewBase>& OwnerTable) override;
 	// End UCommonListView interface
