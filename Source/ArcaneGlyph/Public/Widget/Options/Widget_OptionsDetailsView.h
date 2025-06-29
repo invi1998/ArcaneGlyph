@@ -38,6 +38,9 @@ private:
 	UCommonLazyImage* CommonLazyImage_OptionsDetailsImage;	// 选项详情图片
 
 	UPROPERTY(meta=(BindWidgetOptional))
+	UUserWidget* Image_Frame;	// 选项详情图片框架（用于构建图片边框）
+
+	UPROPERTY(meta=(BindWidgetOptional))
 	UCommonRichTextBlock* CommonRichTextBlock_Description;	// 选项详情描述文本块
 
 	UPROPERTY(meta=(BindWidgetOptional))
