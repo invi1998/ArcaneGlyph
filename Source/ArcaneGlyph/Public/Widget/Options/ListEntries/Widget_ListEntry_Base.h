@@ -33,6 +33,7 @@ protected:
 
 	// Begin UUserWidget interface
 	virtual FReply NativeOnFocusReceived(const FGeometry& InGeometry, const FFocusEvent& InFocusEvent) override;
+	virtual void NativeOnEntryReleased() override;	// 当列表项被释放时调用
 	// End UUserWidget interface
 	
 	// Begin IUserObjectListEntry interface

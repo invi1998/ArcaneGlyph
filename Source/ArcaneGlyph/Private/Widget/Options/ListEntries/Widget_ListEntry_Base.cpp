@@ -32,6 +32,13 @@ FReply UWidget_ListEntry_Base::NativeOnFocusReceived(const FGeometry& InGeometry
 	return Super::NativeOnFocusReceived(InGeometry, InFocusEvent);
 }
 
+void UWidget_ListEntry_Base::NativeOnEntryReleased()
+{
+	IUserObjectListEntry::NativeOnEntryReleased();
+
+	NativeOnListEntryWidgetHovered(false); // 当条目被释放时，取消悬停状态
+}
+
 void UWidget_ListEntry_Base::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
 	IUserObjectListEntry::NativeOnListItemObjectSet(ListItemObject);
