@@ -31,7 +31,44 @@ TArray<UListDataObject_Base*> UOptionsDataRegistry::GetListSourceItemBySelectedT
 	);
 
 	checkf(FoundTabCollectionPoint, TEXT("UOptionsDataRegistry::GetListSourceItemBySelectedTabID - Could not find collection with ID: %s"), *InTabID.ToString());
-	return (*FoundTabCollectionPoint)->GetAllChildListData();
+	
+	UListDataObject_Collection* FoundTabCollection = *FoundTabCollectionPoint;
+	TArray<UListDataObject_Base*> AllChildListItems;
+	for (UListDataObject_Base* ChildDataObject : FoundTabCollection->GetAllChildListData())
+	{
+		if (ChildDataObject)
+		{
+			AllChildListItems.Add(ChildDataObject);
+			if (ChildDataObject->HasAnyChildListData())
+			{
+				// 如果该子数据对象还有子数据对象，则递归获取所有子数据对象
+				FindChildListDataRecursively(ChildDataObject, AllChildListItems);
+			}
+		}
+	}
+
+	return AllChildListItems;
+}
+
+void UOptionsDataRegistry::FindChildListDataRecursively(UListDataObject_Base* InParentData, TArray<UListDataObject_Base*>& OutChildListData) const
+{
+	if (!InParentData || !InParentData->HasAnyChildListData())
+	{
+		return; // 如果父数据对象为空或没有子数据对象，则直接返回
+	}
+
+	for (UListDataObject_Base* ChildDataObject : InParentData->GetAllChildListData())
+	{
+		if (ChildDataObject)
+		{
+			OutChildListData.Add(ChildDataObject);
+			if (ChildDataObject->HasAnyChildListData())
+			{
+				// 如果该子数据对象还有子数据对象，则递归获取所有子数据对象
+				FindChildListDataRecursively(ChildDataObject, OutChildListData);
+			}
+		}
+	}
 }
 
 void UOptionsDataRegistry::InitGameplayCollectionTab()
