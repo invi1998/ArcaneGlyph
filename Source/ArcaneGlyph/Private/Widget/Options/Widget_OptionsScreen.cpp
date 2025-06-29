@@ -21,7 +21,7 @@ void UWidget_OptionsScreen::NativeOnInitialized()
 	if (!ResetActions.IsNull())
 	{
 		// 向绑定操作栏插入自定义绑定操作并保存绑定句柄
-		ResetBindingHandle = RegisterUIActionBinding(
+		ResetActionBindingHandle = RegisterUIActionBinding(
 			FBindUIActionArgs(
 				ResetActions,
 				true, // 在操作栏中显示
@@ -108,6 +108,36 @@ FString UWidget_OptionsScreen::TryGetEntryWidgetClassNameByDataObject(UObject* I
 	return EntryWidget->GetClass()->GetName();
 }
 
+void UWidget_OptionsScreen::OnListViewListDataModified(UListDataObject_Base* ModifyData, EOptionsListDataModifyReason OptionsListDataModifyReason)
+{
+	// 当列表数据被修改时，更新默认值
+	if (!ModifyData) return;
+
+	if (ModifyData->CanResetToDefault())
+	{
+		ResetTableDataArray.AddUnique(ModifyData);
+		if (!GetActionBindings().Contains(ResetActionBindingHandle))
+		{
+			// 如果重设操作的绑定句柄不在当前操作绑定列表中，则添加它
+			AddActionBinding(ResetActionBindingHandle);
+		}
+	}
+	else
+	{
+		if (ResetTableDataArray.Contains(ModifyData))
+		{
+			// 如果该项已经在重设表格数据数组中，则将其移除
+			ResetTableDataArray.Remove(ModifyData);
+		}
+	}
+
+	// 如果重设表格数据数组为空，则移除重设操作的绑定
+	if (ResetTableDataArray.IsEmpty())
+	{
+		RemoveActionBinding(ResetActionBindingHandle);
+	}
+}
+
 void UWidget_OptionsScreen::OnOptionsTabSelected(FName InTabId)
 {
 	CommonDetailsView_ListDetailsView->ClearDetailsViewInfo();
@@ -122,6 +152,43 @@ void UWidget_OptionsScreen::OnOptionsTabSelected(FName InTabId)
 		// 如果列表中有项，则导航到第一个项
 		CommonListView_OptionsList->NavigateToIndex(0);
 		CommonListView_OptionsList->SetSelectedIndex(0);
+	}
+
+	ResetTableDataArray.Empty();
+
+	for (UListDataObject_Base* FoundListSourceItem : FoundListSourceItems)
+	{
+		if (!FoundListSourceItem)
+		{
+			continue; // 如果项为空，则跳过
+		}
+
+		if (!FoundListSourceItem->OnListDataModified.IsBoundToObject(this))
+		{
+			// 如果该项的OnListDataModified事件已经绑定到当前对象，则不需要重复绑定，没有的话就进行绑定
+			FoundListSourceItem->OnListDataModified.AddUObject(this, &ThisClass::OnListViewListDataModified);
+		}
+		
+		if (FoundListSourceItem->CanResetToDefault())
+		{
+			// 如果该项有默认值并且可以重置到默认值，则将其添加到重设表格数据数组中
+			// 这样我们就可以在需要时重置这些项
+			ResetTableDataArray.Add(FoundListSourceItem);
+		}
+	}
+
+	// 将页面的重置为默认选项的按钮打开
+	if (ResetTableDataArray.IsEmpty())
+	{
+		RemoveActionBinding(ResetActionBindingHandle);
+	}
+	else
+	{
+		if (!GetActionBindings().Contains(ResetActionBindingHandle))
+		{
+			// 如果重设操作的绑定句柄不在当前操作绑定列表中，则添加它
+			AddActionBinding(ResetActionBindingHandle);
+		}
 	}
 	
 }

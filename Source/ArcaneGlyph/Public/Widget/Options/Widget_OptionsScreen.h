@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ArcaneTypes/ArcaneEnumTypes.h"
 #include "Widget/Widget_ActivatableBase.h"
 #include "Widget_OptionsScreen.generated.h"
 
+class UListDataObject_Base;
 class UWidget_OptionsDetailsView;
 class UFrontendCommonListView;
 class UFrontendTabListWidgetBase;
@@ -36,7 +38,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Frontend Options", meta = (RowType = "/Script/CommonUI.CommonInputActionDataBase"))
 	FDataTableRowHandle ResetActions;
 
-	FUIActionBindingHandle ResetBindingHandle;	// 重设操作的绑定句柄
+	FUIActionBindingHandle ResetActionBindingHandle;	// 重设操作的绑定句柄
 
 	// 拥有的数据注册表 通过该变量我们可以处理选项页面的数据，同时在该页面也是禁止直接访问该变量
 	UPROPERTY(Transient)
@@ -60,9 +62,14 @@ private:
 
 	// ******** 绑定到选项数据注册表的控件 ********
 
+	void OnListViewListDataModified(UListDataObject_Base* ModifyData, EOptionsListDataModifyReason OptionsListDataModifyReason);
+	
 	UFUNCTION()
 	void OnOptionsTabSelected(FName InTabId);
 
 	void OnListViewItemHovered(UObject* Item, bool bIsHovered);
 	void OnListViewItemSelectionChanged(UObject* Item);
+
+	UPROPERTY(Transient)
+	TArray<UListDataObject_Base*> ResetTableDataArray;	// 重设表格数据数组，用于存储当前选项列表中的数据对象
 };
