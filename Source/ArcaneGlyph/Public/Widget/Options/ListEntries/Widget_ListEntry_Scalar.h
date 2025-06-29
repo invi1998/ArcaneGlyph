@@ -33,7 +33,7 @@ private:
 	UCommonNumericTextBlock* CommonNumeric_SettingValue;	// 数值文本块，用于显示滑条当前数值
 
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget, AllowPrivateAccess = "true"))
-	UAnalogSlider* AnalogSlider_SettingValue;	// 滑条控件，用于调整数值（这个控件是CommonUI的滑条控件，要实现手柄控制就得用这个滑条）
+	UAnalogSlider* AnalogSlider_SettingSlider;	// 滑条控件，用于调整数值（这个控件是CommonUI的滑条控件，要实现手柄控制就得用这个滑条）
 	// **** Bound Widgets **** //
 
 };
