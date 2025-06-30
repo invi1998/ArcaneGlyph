@@ -51,9 +51,11 @@ void UListDataObject_Scalar::SetCurrentScalarValue(float Value)
 			OutputValueRange,
 			Value
 		);
+
+		NotifyListDataModified(this);
 		
 		DataDynamicSetter->SetValueFromString(LexToString(MappedValue));
-		NotifyListDataModified(this);
+		
 	}
 }
 

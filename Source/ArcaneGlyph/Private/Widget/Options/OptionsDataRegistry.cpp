@@ -168,7 +168,7 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 			// 设置动态获取器和设置器
 			MasterVolumeDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetMasterVolume));
 			MasterVolumeDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetMasterVolume));
-			MasterVolumeDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
+			MasterVolumeDataObject->SetShouldApplyChangeImmediately(false); // 设置为立即应用更改
 
 			VolumeCategoryCollection->AddChildListData(MasterVolumeDataObject);
 		}

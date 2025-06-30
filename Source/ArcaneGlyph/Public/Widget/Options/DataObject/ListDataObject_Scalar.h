@@ -38,5 +38,6 @@ private:
 	float SliderStepSize = 0.1f;	// 滑条步进大小，默认0.1
 	ECommonNumericType DisplayNumericType = ECommonNumericType::Number;	// 显示数值类型，默认数字类型
 	FCommonNumberFormattingOptions NumberFormattingOptions;	// 数字格式化选项，用于控制数字的显示格式
+	
 };
 
