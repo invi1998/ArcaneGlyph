@@ -96,3 +96,4 @@ void UWidget_ListEntry_String::OnRotatorOptionChanged(int32 InSelectedIndex, boo
 		}
 	}
 }
+

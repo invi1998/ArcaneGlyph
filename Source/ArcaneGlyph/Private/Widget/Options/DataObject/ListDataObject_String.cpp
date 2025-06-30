@@ -159,3 +159,52 @@ bool UListDataObject_String::TrySetDisplayTextFromStringValue(const FString& InS
 
 	return false;
 }
+
+// *********************** String Bool Start ***********************
+
+void UListDataObject_StringBool::OverrideDisplayTrueText(const FText& InDisplayText)
+{
+	if (!AvailableOptionsStringArray.Contains(TrueString))
+	{
+		AddDynamicOptionsString(TrueString, InDisplayText);
+	}
+}
+
+void UListDataObject_StringBool::OverrideDisplayFalseText(const FText& InDisplayText)
+{
+	if (!AvailableOptionsStringArray.Contains(FalseString))
+	{
+		AddDynamicOptionsString(FalseString, InDisplayText);
+	}
+}
+
+void UListDataObject_StringBool::SetTrueAsDefaultValue()
+{
+	SetDefaultValueFromString(TrueString);
+}
+
+void UListDataObject_StringBool::SetFalseAsDefaultValue()
+{
+	SetDefaultValueFromString(FalseString);
+}
+
+void UListDataObject_StringBool::OnDataObjectInitialized()
+{
+	TryInitializeBoolValue();
+	Super::OnDataObjectInitialized();
+}
+
+void UListDataObject_StringBool::TryInitializeBoolValue()
+{
+	if (!AvailableOptionsStringArray.Contains(TrueString))
+	{
+		AddDynamicOptionsString(TrueString, FText::FromString(TEXT("启用")));
+	}
+
+	if (!AvailableOptionsStringArray.Contains(FalseString))
+	{
+		AddDynamicOptionsString(FalseString, FText::FromString(TEXT("关闭")));
+	}
+}
+
+// *********************** String Bool End ***********************

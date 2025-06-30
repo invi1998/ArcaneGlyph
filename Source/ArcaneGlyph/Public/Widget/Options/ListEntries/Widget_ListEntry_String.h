@@ -47,3 +47,4 @@ private:
 	UPROPERTY(Transient)
 	UListDataObject_String* OwningStringDataObject;	// 拥有的字符串数据对象，用于处理选项的选中状态和显示文本等逻辑
 };
+
