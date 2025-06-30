@@ -86,8 +86,8 @@ void UOptionsDataRegistry::InitGameplayCollectionTab()
 		UListDataObject_StringBool* TutorialModeDataObject = NewObject<UListDataObject_StringBool>(GameplayCollectionDataObject, UListDataObject_StringBool::StaticClass());
 		TutorialModeDataObject->SetDataID(FName("TutorialMode"));
 		TutorialModeDataObject->SetDataDisplayName(FText::FromString(TEXT("教学模式")));
-		TutorialModeDataObject->OverrideDisplayTrueText(FText::FromString(TEXT("启用"))); // 设置启用状态的显示文本
-		TutorialModeDataObject->OverrideDisplayFalseText(FText::FromString(TEXT("禁用"))); // 设置禁用状态的显示文本
+		TutorialModeDataObject->OverrideDisplayTrueText(FText::FromString(TEXT("开启"))); // 设置启用状态的显示文本
+		TutorialModeDataObject->OverrideDisplayFalseText(FText::FromString(TEXT("关闭"))); // 设置禁用状态的显示文本
 		TutorialModeDataObject->SetTrueAsDefaultValue(); // 设置默认值为启用状态
 		TutorialModeDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetCurrentGameplayTutorialModeEnabled));
 		TutorialModeDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetCurrentGameplayTutorialModeEnabled));
@@ -175,7 +175,7 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 			MasterVolumeDataObject->SetDisplayValueRange(TRange<float>(0.f, 1.f));
 			MasterVolumeDataObject->SetOutputValueRange(TRange<float>(0.f, 2.f));
 			MasterVolumeDataObject->SetSliderStepSize(0.01f);
-			MasterVolumeDataObject->SetDefaultValueFromString(LexToString(1.f)); // 默认值为1.0（100%）
+			MasterVolumeDataObject->SetDefaultValueFromString(LexToString(1.f)); // 默认值为1.0（50%）
 			MasterVolumeDataObject->SetDisplayNumericType(ECommonNumericType::Percentage);		// 显示为百分比
 			MasterVolumeDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal());	// 不显示小数点
 
@@ -195,7 +195,7 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 			MusicVolumeDataObject->SetDisplayValueRange(TRange<float>(0.f, 1.f));
 			MusicVolumeDataObject->SetOutputValueRange(TRange<float>(0.f, 2.f));
 			MusicVolumeDataObject->SetSliderStepSize(0.01f);
-			MusicVolumeDataObject->SetDefaultValueFromString(LexToString(0.8f)); // 默认值为0.8（80%）
+			MusicVolumeDataObject->SetDefaultValueFromString(LexToString(1.f)); // 默认值为1.0（50%）
 			MusicVolumeDataObject->SetDisplayNumericType(ECommonNumericType::Percentage);	// 显示为百分比
 			MusicVolumeDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal()); // 不显示小数点
 			MusicVolumeDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>音乐音量控制</>\n独立调节背景音乐(BGM)强度，与主音量联动：\n* 基准音量为主音量的<Number>100%</>\n* 可通过此选项在<Number>-50%</>~<Number>+30%</>范围内偏移\n\n<Bold>特殊场景适配</>\n* 战斗状态：自动提升<Number>15%</>音量（可关闭）\n* 剧情过场：强制降低至<Number>80%</>避免台词覆盖\n\n<Warning>动态压缩警告</>\n当总音量超过<Number>95</>时：\n* 音乐将被压缩<Number>20%</>以保护听力\n* 压缩后最低保留<Number>40%</>原始音量\n\n<Bold>推荐设置</>\n→ 日常探索：保持<Number>0%</>偏移\n→ 音乐鉴赏：开启<Bold>独占模式</>（禁用动态压缩）\n→ 竞技对战：启用战斗增益\n\n<Warning>注意</>：开启独占模式可能触发音频过载")));
@@ -216,7 +216,7 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 			EffectsVolumeDataObject->SetDisplayValueRange(TRange<float>(0.f, 1.f));
 			EffectsVolumeDataObject->SetOutputValueRange(TRange<float>(0.f, 2.f));
 			EffectsVolumeDataObject->SetSliderStepSize(0.01f);
-			EffectsVolumeDataObject->SetDefaultValueFromString(LexToString(0.7f)); // 默认值为0.7（70%）
+			EffectsVolumeDataObject->SetDefaultValueFromString(LexToString(1.0f)); // 默认值为1.0（50%）
 			EffectsVolumeDataObject->SetDisplayNumericType(ECommonNumericType::Percentage); // 显示为百分比
 			EffectsVolumeDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal()); // 不显示小数点
 			EffectsVolumeDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>特效音量控制</>\n调节所有游戏内特效音频（如爆炸、技能等）的整体音量：\n* 范围：<Number>0%</>（静音）至<Number>100%</>（全开）\n* 默认值：<Number>70%</>\n\n<Bold>动态适配</>\n* 战斗状态下自动提升<Number>10%</>\n* 剧情过场时降低至<Number>50%</>\n\n<Warning>注意</>\n开启后可能导致某些高频特效过载，建议：\n1. 日常游玩保持<Number>60%</>\n2. 特效爱好者可尝试<Number>80%</>\n3. 竞技对战建议降低至<Number>40%</>\n\n<Bold>推荐设置</>\n→ 日常游玩：<Number>60%</>\n→ 特效爱好者：<Number>80%</>\n→ 竞技对战：<Number>40%</>\n\n<Warning>注意</>：开启后可能导致某些高频特效过载，建议：\n1. 日常游玩保持<Number>60%</>\n2. 特效爱好者可尝试<Number>80%</>\n3. 竞技对战建议降低至<Number>40%</>")));
@@ -238,7 +238,7 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 			UserInterfaceVolumeDataObject->SetDisplayValueRange(TRange<float>(0.f, 1.f));
 			UserInterfaceVolumeDataObject->SetOutputValueRange(TRange<float>(0.f, 2.f));
 			UserInterfaceVolumeDataObject->SetSliderStepSize(0.01f);
-			UserInterfaceVolumeDataObject->SetDefaultValueFromString(LexToString(0.5f)); // 默认值为0.5（50%）
+			UserInterfaceVolumeDataObject->SetDefaultValueFromString(LexToString(1.0f)); // 默认值为1.f（50%）
 			UserInterfaceVolumeDataObject->SetDisplayNumericType(ECommonNumericType::Percentage); // 显示为百分比
 			UserInterfaceVolumeDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal()); // 不显示小数点
 			UserInterfaceVolumeDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>用户界面音量控制</>\n调节所有游戏内用户界面元素（如按钮、提示音等）的音量：\n* 范围：<Number>0%</>（静音）至<Number>100%</>（全开）\n* 默认值：<Number>50%</>\n\n<Bold>动态适配</>\n* 战斗状态下自动提升<Number>10%</>\n* 剧情过场时降低至<Number>30%</>\n\n<Warning>注意</>\n开启后可能导致某些高频特效过载，建议：\n1. 日常游玩保持<Number>40%</>\n2. 特效爱好者可尝试<Number>60%</>\n3. 竞技对战建议降低至<Number>30%</>\n\n<Bold>推荐设置</>\n→ 日常游玩：<Number>40%</>\n→ 特效爱好者：<Number>60%</>\n→ 竞技对战：<Number>30%</>\n\n<Warning>注意</>：开启后可能导致某些高频特效过载，建议：\n1. 日常游玩保持<Number>40%</>\n2. 特效爱好者可尝试<Number>60%</>\n3. 竞技对战建议降低至<Number>30%</>")));
@@ -257,7 +257,7 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 			InGameMusicVolumeDataObject->SetDisplayValueRange(TRange<float>(0.f, 1.f));
 			InGameMusicVolumeDataObject->SetOutputValueRange(TRange<float>(0.f, 2.f));
 			InGameMusicVolumeDataObject->SetSliderStepSize(0.01f);
-			InGameMusicVolumeDataObject->SetDefaultValueFromString(LexToString(0.6f)); // 默认值为0.6（60%）
+			InGameMusicVolumeDataObject->SetDefaultValueFromString(LexToString(1.0f)); // 默认值为1.f（50%）
 			InGameMusicVolumeDataObject->SetDisplayNumericType(ECommonNumericType::Percentage); // 显示为百分比
 			InGameMusicVolumeDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal()); // 不显示小数点
 			InGameMusicVolumeDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>游戏内音乐音量控制</>\n调节游戏内背景音乐的音量：\n* 范围：<Number>0%</>（静音）至<Number>100%</>（全开）\n* 默认值：<Number>60%</>\n\n<Bold>动态适配</>\n* 战斗状态下自动提升<Number>10%</>\n* 剧情过场时降低至<Number>50%</>\n\n<Warning>注意</>\n开启后可能导致某些高频特效过载，建议：\n1. 日常游玩保持<Number>50%</>\n2. 特效爱好者可尝试<Number>70%</>\n3. 竞技对战建议降低至<Number>40%</>\n\n<Bold>推荐设置</>\n→ 日常游玩：<Number>50%</>\n→ 特效爱好者：<Number>70%</>\n→ 竞技对战：<Number>40%</>\n\n<Warning>注意</>：开启后可能导致某些高频特效过载，建议：\n1. 日常游玩保持<Number>50%</>\n2. 特效爱好者可尝试<Number>70%</>\n3. 竞技对战建议降低至<Number>40%</>")));
@@ -276,7 +276,7 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 			MenuMusicVolumeDataObject->SetDisplayValueRange(TRange<float>(0.f, 1.f));
 			MenuMusicVolumeDataObject->SetOutputValueRange(TRange<float>(0.f, 2.f));
 			MenuMusicVolumeDataObject->SetSliderStepSize(0.01f);
-			MenuMusicVolumeDataObject->SetDefaultValueFromString(LexToString(0.5f)); // 默认值为0.5（50%）
+			MenuMusicVolumeDataObject->SetDefaultValueFromString(LexToString(1.0f)); // 默认值为1.f（50%）
 			MenuMusicVolumeDataObject->SetDisplayNumericType(ECommonNumericType::Percentage); // 显示为百分比
 			MenuMusicVolumeDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal()); // 不显示小数点
 			MenuMusicVolumeDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>菜单音乐音量控制</>\n调节游戏主菜单背景音乐的音量：\n* 范围：<Number>0%</>（静音）至<Number>100%</>（全开）\n* 默认值：<Number>50%</>\n\n<Bold>动态适配</>\n* 战斗状态下自动提升<Number>10%</>\n* 剧情过场时降低至<Number>30%</>\n\n<Warning>注意</>\n开启后可能导致某些高频特效过载，建议：\n1. 日常游玩保持<Number>40%</>\n2. 特效爱好者可尝试<Number>60%</>\n3. 竞技对战建议降低至<Number>30%</>\n\n<Bold>推荐设置</>\n→ 日常游玩：<Number>40%</>\n→ 特效爱好者：<Number>60%</>\n→ 竞技对战：<Number>30%</>\n\n<Warning>注意</>：开启后可能导致某些高频特效过载，建议：\n1. 日常游玩保持<Number>40%</>\n2. 特效爱好者可尝试<Number>60%</>\n3. 竞技对战建议降低至<Number>30%</>")));
@@ -312,6 +312,25 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 
 			AudioCollectionDataObject->AddChildListData(BackgroundMusicDataObject);
 		}
+
+		// 使用 HDR 音频模式
+		{
+			UListDataObject_StringBool* UseHDRAudioDataObject = NewObject<UListDataObject_StringBool>(SoundCategoryCollection, UListDataObject_StringBool::StaticClass());
+			UseHDRAudioDataObject->SetDataID(FName("UseHDRAudio"));
+			UseHDRAudioDataObject->SetDataDisplayName(FText::FromString(TEXT("使用 HDR 音频模式")));
+			UseHDRAudioDataObject->OverrideDisplayTrueText(FText::FromString(TEXT("启用")));
+			UseHDRAudioDataObject->OverrideDisplayFalseText(FText::FromString(TEXT("禁用")));
+			UseHDRAudioDataObject->SetFalseAsDefaultValue();	// 设置默认值为禁用
+			UseHDRAudioDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetUseHDRAudio));
+			UseHDRAudioDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetUseHDRAudio));
+			UseHDRAudioDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
+			UseHDRAudioDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>HDR音频模式</>\n启用高动态范围音频处理技术：\n* 动态范围扩展至<Number>144</>dB（标准模式<Number>96</>dB）\n* 细节分离度提升<Number>300%</>\n* 支持<Number>32</>位浮点音频处理\n\n<Bold>核心优势</>\n* 环境音效：可识别<Number>5</>米内细微声响\n* 空间定位：方向精度提升至<Number>5</>°\n* 动态响应：枪声等突发音压衰减快<Number>50%</>\n\n<Bold>硬件要求</>\n* 必需：支持<Bold>杜比全景声</>或<Bold>DTS:X</>\n* 推荐：<Number>7.1</>声道以上环绕系统\n* 耳机需开启<Bold>虚拟环绕</>功能\n\n<Warning>兼容性说明</>\n* 旧版DirectX可能造成音频撕裂\n* 启用时内存占用增加<Number>400</>MB\n* 部分蓝牙设备仅支持<Number>48</>kHz采样率\n\n<Bold>校准建议</>\n→ 首次使用运行<Bold>音频向导</>\n→ 安静环境下设置基准音量<Number>65</>\n→ 动态范围压缩保持<Number>30%</>\n\n<Warning>重要提示</>\n禁用后需重启游戏才能关闭HDR音频管线")));
+
+			UseHDRAudioDataObject->SetDisabledRichText(FText::FromString(TEXT("<Warning>HDR音频模式已禁用</>\n\n<Bold>注意</>\n* 禁用后无法恢复HDR音频处理\n* 需重启游戏才能关闭HDR音频管线\n* 建议仅在高端音频设备上使用\n\n<Warning>警告</>：禁用后无法恢复，请谨慎操作！")));
+			
+			SoundCategoryCollection->AddChildListData(UseHDRAudioDataObject);
+		}
+		
 	}
 
 	

@@ -18,7 +18,8 @@ UFrontendGameUserSettings::UFrontendGameUserSettings()
 		UserInterfaceVolume(1.f),
 		InGameMusicVolume(1.f),
 		MenuMusicVolume(1.f),
-		bAllowBackgroundAudio(true)
+		bAllowBackgroundAudio(true),
+		bUseHDRAudio(false)
 {
 }
 
@@ -87,6 +88,11 @@ void UFrontendGameUserSettings::SetMenuMusicVolume(float InMenuMusicVolume)
 void UFrontendGameUserSettings::SetAllowBackgroundAudio(bool bInAllowBackgroundAudio)
 {
 	bAllowBackgroundAudio = bInAllowBackgroundAudio;
+}
+
+void UFrontendGameUserSettings::SetUseHDRAudio(bool bInUseHDRAudio)
+{
+	bUseHDRAudio = bInUseHDRAudio;
 }
 
 // 添加一个通用的私有函数

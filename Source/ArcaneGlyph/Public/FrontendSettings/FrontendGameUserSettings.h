@@ -80,8 +80,14 @@ public:
 	UFUNCTION()
 	bool GetAllowBackgroundAudio() const { return bAllowBackgroundAudio; }
 
+	UFUNCTION()
 	void SetAllowBackgroundAudio(bool bInAllowBackgroundAudio);
-	
+
+	UFUNCTION()
+	bool GetUseHDRAudio() const { return bUseHDRAudio; }
+
+	UFUNCTION()
+	void SetUseHDRAudio(bool bInUseHDRAudio);
 
 private:
 	void SetVolume(float InVolume, const FSoftObjectPath& SoundClassPath, float& VolumeVariable);
@@ -119,6 +125,9 @@ private:
 	// Sound
 	UPROPERTY(Config)
 	bool bAllowBackgroundAudio;	// 是否允许后台音频播放
+
+	UPROPERTY(Config)
+	bool bUseHDRAudio;	// 是否使用高动态范围音频(HDR)
 
 	//***** Audio Collection Settings *****//
 };
