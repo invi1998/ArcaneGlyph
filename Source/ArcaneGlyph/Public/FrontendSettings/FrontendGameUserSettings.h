@@ -41,6 +41,12 @@ public:
 
 	UFUNCTION()
 	void SetMusicVolume(float InMusicVolume);
+
+	UFUNCTION()
+	float GetSFXVolume() const { return SFXVolume; }
+
+	UFUNCTION()
+	void SetSFXVolume(float InSFXVolume);
 	
 
 private:
@@ -54,4 +60,7 @@ private:
 
 	UPROPERTY(Config)
 	float MusicVolume;		// 音乐音量
+
+	UPROPERTY(Config)
+	float SFXVolume;		// 音效音量
 };

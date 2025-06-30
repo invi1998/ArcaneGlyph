@@ -106,3 +106,40 @@ void UFrontendGameUserSettings::SetMusicVolume(float InMusicVolume)
 	);
 	UGameplayStatics::PushSoundMixModifier(InAudioWorld, MasterSoundMix);
 }
+
+void UFrontendGameUserSettings::SetSFXVolume(float InSFXVolume)
+{
+	UWorld* InAudioWorld = nullptr;
+	const UFrontendDeveloperSettings* FrontendSettings = GetDefault<UFrontendDeveloperSettings>();
+	if (GEngine)
+	{
+		InAudioWorld = GEngine->GetCurrentPlayWorld();
+	}
+	if (!InAudioWorld || !FrontendSettings)
+	{
+		return; // 如果没有音频世界或前端设置，则直接返回
+	}
+	USoundClass* SFXSoundClass = nullptr;
+	if (UObject* SFXSoundClassObject = FrontendSettings->SFXSoundClassPath.TryLoad())
+	{
+		SFXSoundClass = Cast<USoundClass>(SFXSoundClassObject);
+	}
+
+	USoundMix* SFXSoundMix = nullptr;
+	if (UObject* SFXSoundMixObject = FrontendSettings->DefaultSoundMixPath.TryLoad())
+	{
+		SFXSoundMix = Cast<USoundMix>(SFXSoundMixObject);
+	}
+
+	SFXVolume = InSFXVolume;
+	UGameplayStatics::SetSoundMixClassOverride(
+		InAudioWorld,
+		SFXSoundMix,
+		SFXSoundClass,
+		InSFXVolume,
+		1.f, // 音量衰减
+		0.2f  // 混响衰减
+	);
+	UGameplayStatics::PushSoundMixModifier(InAudioWorld, SFXSoundMix);
+	
+}

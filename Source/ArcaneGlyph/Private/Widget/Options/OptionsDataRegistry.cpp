@@ -193,7 +193,28 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 
 			VolumeCategoryCollection->AddChildListData(MusicVolumeDataObject);
 		}
-		
+
+		// 特效音量
+		{
+			UListDataObject_Scalar* EffectsVolumeDataObject = NewObject<UListDataObject_Scalar>(VolumeCategoryCollection, UListDataObject_Scalar::StaticClass());
+			EffectsVolumeDataObject->SetDataID(FName("EffectsVolume"));
+			EffectsVolumeDataObject->SetDataDisplayName(FText::FromString(TEXT("特效音量")));
+			EffectsVolumeDataObject->SetDisplayValueRange(TRange<float>(0.f, 1.f));
+			EffectsVolumeDataObject->SetOutputValueRange(TRange<float>(0.f, 2.f));
+			EffectsVolumeDataObject->SetSliderStepSize(0.01f);
+			EffectsVolumeDataObject->SetDefaultValueFromString(LexToString(0.7f)); // 默认值为0.7（70%）
+			EffectsVolumeDataObject->SetDisplayNumericType(ECommonNumericType::Percentage); // 显示为百分比
+			EffectsVolumeDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal()); // 不显示小数点
+			EffectsVolumeDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>特效音量控制</>\n调节所有游戏内特效音频（如爆炸、技能等）的整体音量：\n* 范围：<Number>0%</>（静音）至<Number>100%</>（全开）\n* 默认值：<Number>70%</>\n\n<Bold>动态适配</>\n* 战斗状态下自动提升<Number>10%</>\n* 剧情过场时降低至<Number>50%</>\n\n<Warning>注意</>\n开启后可能导致某些高频特效过载，建议：\n1. 日常游玩保持<Number>60%</>\n2. 特效爱好者可尝试<Number>80%</>\n3. 竞技对战建议降低至<Number>40%</>\n\n<Bold>推荐设置</>\n→ 日常游玩：<Number>60%</>\n→ 特效爱好者：<Number>80%</>\n→ 竞技对战：<Number>40%</>\n\n<Warning>注意</>：开启后可能导致某些高频特效过载，建议：\n1. 日常游玩保持<Number>60%</>\n2. 特效爱好者可尝试<Number>80%</>\n3. 竞技对战建议降低至<Number>40%</>")));
+
+			// 设置动态获取器和设置器
+			EffectsVolumeDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetSFXVolume));
+			EffectsVolumeDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetSFXVolume));
+			EffectsVolumeDataObject->SetShouldApplyChangeImmediately(false); // 设置为不用立即应用更改
+
+			VolumeCategoryCollection->AddChildListData(EffectsVolumeDataObject);
+
+		}
 	}
 
 	RegisteredOptionsTabCollections.Add(AudioCollectionDataObject);
