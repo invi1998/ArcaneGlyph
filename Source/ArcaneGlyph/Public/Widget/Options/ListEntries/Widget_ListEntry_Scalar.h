@@ -19,7 +19,6 @@ class ARCANEGLYPH_API UWidget_ListEntry_Scalar : public UWidget_ListEntry_Base
 	GENERATED_BODY()
 
 protected:
-
 	// Begin UUserWidget interface
 	virtual void NativeOnInitialized() override;
 	// End UUserWidget interface
@@ -31,6 +30,12 @@ protected:
 
 	UFUNCTION()
 	void OnSettingSliderValueChanged(float Value);
+
+	UFUNCTION()
+	void OnSettingSliderMouseCaptureBegin();
+
+	UFUNCTION()
+	void OnSettingSliderMouseCaptureEnd();
 
 private:
 	// **** Bound Widgets **** //

@@ -11,8 +11,8 @@ void UWidget_ListEntry_Scalar::NativeOnInitialized()
 	Super::NativeOnInitialized();
 
 	AnalogSlider_SettingSlider->OnValueChanged.AddUniqueDynamic(this, &ThisClass::OnSettingSliderValueChanged);
-	// AnalogSlider_SettingSlider->OnMouseCaptureBegin.AddUniqueDynamic(this, &ThisClass::OnSettingSliderMouseCaptureBegin);
-	// AnalogSlider_SettingSlider->OnMouseCaptureEnd.AddUniqueDynamic(this, &ThisClass::OnSettingSliderMouseCaptureEnd);
+	AnalogSlider_SettingSlider->OnMouseCaptureBegin.AddUniqueDynamic(this, &ThisClass::OnSettingSliderMouseCaptureBegin);
+	AnalogSlider_SettingSlider->OnMouseCaptureEnd.AddUniqueDynamic(this, &ThisClass::OnSettingSliderMouseCaptureEnd);
 }
 
 void UWidget_ListEntry_Scalar::OnOwningListDataObjectModified(UListDataObject_Base* InListDataObject, EOptionsListDataModifyReason InOptionsListDataModifyReason)
@@ -54,5 +54,14 @@ void UWidget_ListEntry_Scalar::OnSettingSliderValueChanged(float Value)
 		// 更新当前值
 		OwningScalarDataObject->SetCurrentScalarValue(Value);
 	}
+}
+
+void UWidget_ListEntry_Scalar::OnSettingSliderMouseCaptureBegin()
+{
+	SelectThisEntryWidget();
+}
+
+void UWidget_ListEntry_Scalar::OnSettingSliderMouseCaptureEnd()
+{
 }
 
