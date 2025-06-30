@@ -152,23 +152,25 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 
 		AudioCollectionDataObject->AddChildListData(VolumeCategoryCollection);
 
-		// 整体音量
+		// 主音量
 		{
-			UListDataObject_Scalar* OverallVolumeDataObject = NewObject<UListDataObject_Scalar>(VolumeCategoryCollection, UListDataObject_Scalar::StaticClass());
-			OverallVolumeDataObject->SetDataID(FName("OverallVolume"));
-			OverallVolumeDataObject->SetDataDisplayName(FText::FromString(TEXT("整体音量")));
-			OverallVolumeDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("音频设置中心：\n<Bold>主音量控制</> - 通过滑块调整所有声音元素的基准音量（范围：<Number>0</>~<Number>100</>），默认值<Number>75</>。\n\n特殊联动机制：\n• 背景音乐音量上限为主音量的<Number>80%</>\n• 环境音效受<Bold>动态压缩</>影响（高音量时自动降低<Number>15%</>）\n• 语音聊天独立增益上限<Number>+20%</>\n\n<Warning>听力保护提示</>\n持续暴露在<Number>85</>分贝以上可能造成听力损伤，建议：\n1. 日常游玩保持主音量≤<Number>70</>\n2. 佩戴耳机时启用<Bold>音量限制器</>（强制锁定≤<Number>60</>）\n\n<Bold>校准指南</>\n→ 在安静环境中播放测试音效\n→ 调整至刚好清晰听到<Number>20</>分贝提示音\n→ 保存后重启游戏使设置全局生效\n\n<Warning>注意</>：超过<Number>90</>将触发高频保护（自动过滤<Number>16000</>Hz以上音频）")));
-			OverallVolumeDataObject->SetDisplayValueRange(TRange<float>(0.f, 1.f));
-			OverallVolumeDataObject->SetOutputValueRange(TRange<float>(0.f, 2.f));
-			OverallVolumeDataObject->SetSliderStepSize(0.01f);
-			OverallVolumeDataObject->SetDefaultValueFromString(LexToString(1.f)); // 默认值为1.0（100%）
-			OverallVolumeDataObject->SetDisplayNumericType(ECommonNumericType::Percentage);		// 显示为百分比
-			OverallVolumeDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal());	// 不显示小数点
+			UListDataObject_Scalar* MasterVolumeDataObject = NewObject<UListDataObject_Scalar>(VolumeCategoryCollection, UListDataObject_Scalar::StaticClass());
+			MasterVolumeDataObject->SetDataID(FName("MasterVolume"));
+			MasterVolumeDataObject->SetDataDisplayName(FText::FromString(TEXT("主音量")));
+			MasterVolumeDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("音频设置中心：\n<Bold>主音量控制</> - 通过滑块调整所有声音元素的基准音量（范围：<Number>0</>~<Number>100</>），默认值<Number>75</>。\n\n特殊联动机制：\n• 背景音乐音量上限为主音量的<Number>80%</>\n• 环境音效受<Bold>动态压缩</>影响（高音量时自动降低<Number>15%</>）\n• 语音聊天独立增益上限<Number>+20%</>\n\n<Warning>听力保护提示</>\n持续暴露在<Number>85</>分贝以上可能造成听力损伤，建议：\n1. 日常游玩保持主音量≤<Number>70</>\n2. 佩戴耳机时启用<Bold>音量限制器</>（强制锁定≤<Number>60</>）\n\n<Bold>校准指南</>\n→ 在安静环境中播放测试音效\n→ 调整至刚好清晰听到<Number>20</>分贝提示音\n→ 保存后重启游戏使设置全局生效\n\n<Warning>注意</>：超过<Number>90</>将触发高频保护（自动过滤<Number>16000</>Hz以上音频）")));
+			MasterVolumeDataObject->SetDisplayValueRange(TRange<float>(0.f, 1.f));
+			MasterVolumeDataObject->SetOutputValueRange(TRange<float>(0.f, 2.f));
+			MasterVolumeDataObject->SetSliderStepSize(0.01f);
+			MasterVolumeDataObject->SetDefaultValueFromString(LexToString(1.f)); // 默认值为1.0（100%）
+			MasterVolumeDataObject->SetDisplayNumericType(ECommonNumericType::Percentage);		// 显示为百分比
+			MasterVolumeDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal());	// 不显示小数点
 
 			// 设置动态获取器和设置器
+			MasterVolumeDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetMasterVolume));
+			MasterVolumeDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetMasterVolume));
+			MasterVolumeDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 
-
-			VolumeCategoryCollection->AddChildListData(OverallVolumeDataObject);
+			VolumeCategoryCollection->AddChildListData(MasterVolumeDataObject);
 		}
 		
 	}

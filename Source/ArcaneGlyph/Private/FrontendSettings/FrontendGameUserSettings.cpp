@@ -3,6 +3,11 @@
 
 #include "FrontendSettings/FrontendGameUserSettings.h"
 
+UFrontendGameUserSettings::UFrontendGameUserSettings()
+	: MasterVolume(1.f)
+{
+}
+
 UFrontendGameUserSettings* UFrontendGameUserSettings::Get()
 {
 	if (GEngine)
@@ -16,4 +21,10 @@ UFrontendGameUserSettings* UFrontendGameUserSettings::Get()
 void UFrontendGameUserSettings::SetCurrentGameplayTutorialModeEnabled(const FString& InTutorialModeEnabled)
 {
 	TutorialModeEnabled = InTutorialModeEnabled;
+}
+
+void UFrontendGameUserSettings::SetMasterVolume(float InMasterVolume)
+{
+	MasterVolume = InMasterVolume;
+
 }

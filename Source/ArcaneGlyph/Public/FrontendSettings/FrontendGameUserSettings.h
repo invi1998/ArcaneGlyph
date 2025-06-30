@@ -15,6 +15,8 @@ class ARCANEGLYPH_API UFrontendGameUserSettings : public UGameUserSettings
 	GENERATED_BODY()
 
 public:
+	UFrontendGameUserSettings();
+	
 	static UFrontendGameUserSettings* Get();
 
 	//***** GamePlay Settings *****//
@@ -26,8 +28,21 @@ public:
 	void SetCurrentGameplayTutorialModeEnabled(const FString& InTutorialModeEnabled);
 
 	
+	//***** Audio Collection Settings *****//
+	// 获取主音量
+	UFUNCTION()
+	float GetMasterVolume() const { return MasterVolume; }
+
+	UFUNCTION()
+	void SetMasterVolume(float InMasterVolume);
+	
 
 private:
+	//***** GamePlay Settings *****//
 	UPROPERTY(Config)
 	FString TutorialModeEnabled;	// 教程模式启用状态，存储在配置文件中
+
+	//***** Audio Collection Settings *****//
+	UPROPERTY(Config)
+	float MasterVolume;		// 主音量
 };
