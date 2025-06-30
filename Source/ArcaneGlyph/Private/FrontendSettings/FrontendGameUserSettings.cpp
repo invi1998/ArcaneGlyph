@@ -9,12 +9,16 @@
 #include "Sound/SoundMix.h"
 
 UFrontendGameUserSettings::UFrontendGameUserSettings()
-	: MasterVolume(1.f), 
-	  MusicVolume(1.f), 
-	  SFXVolume(1.f),
-	  UserInterfaceVolume(1.f),
-	  InGameMusicVolume(1.f),
-	  MenuMusicVolume(1.f)
+		: bTutorialModeEnabled(true),
+		bAutoTargetLock(true),
+		bAutoAttackTargetLock(true),
+		MasterVolume(1.f), 
+		MusicVolume(1.f), 
+		SFXVolume(1.f),
+		UserInterfaceVolume(1.f),
+		InGameMusicVolume(1.f),
+		MenuMusicVolume(1.f),
+		bAllowBackgroundAudio(true)
 {
 }
 
@@ -28,9 +32,19 @@ UFrontendGameUserSettings* UFrontendGameUserSettings::Get()
 	return nullptr;
 }
 
-void UFrontendGameUserSettings::SetCurrentGameplayTutorialModeEnabled(const FString& InTutorialModeEnabled)
+void UFrontendGameUserSettings::SetCurrentGameplayTutorialModeEnabled(bool InTutorialModeEnabled)
 {
-	TutorialModeEnabled = InTutorialModeEnabled;
+	bTutorialModeEnabled = InTutorialModeEnabled;
+}
+
+void UFrontendGameUserSettings::SetCurrentGameplayAutoTargetLock(bool InAutoTargetLock)
+{
+	bAutoTargetLock = InAutoTargetLock;
+}
+
+void UFrontendGameUserSettings::SetCurrentGameplayAutoAttackTargetLock(bool InAutoAttackTargetLock)
+{
+	bAutoAttackTargetLock = InAutoAttackTargetLock;
 }
 
 // 修改原有的音量设置函数
@@ -68,6 +82,11 @@ void UFrontendGameUserSettings::SetMenuMusicVolume(float InMenuMusicVolume)
 {
     const UFrontendDeveloperSettings* FrontendSettings = GetDefault<UFrontendDeveloperSettings>();
     SetVolume(InMenuMusicVolume, FrontendSettings->MenuMusicSoundClassPath, MenuMusicVolume);
+}
+
+void UFrontendGameUserSettings::SetAllowBackgroundAudio(bool bInAllowBackgroundAudio)
+{
+	bAllowBackgroundAudio = bInAllowBackgroundAudio;
 }
 
 // 添加一个通用的私有函数

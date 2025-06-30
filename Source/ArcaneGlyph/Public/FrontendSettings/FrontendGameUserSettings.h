@@ -22,10 +22,22 @@ public:
 	//***** GamePlay Settings *****//
 	// 获取教程模式启用状态
 	UFUNCTION()
-	FString GetCurrentGameplayTutorialModeEnabled() const { return TutorialModeEnabled; }
+	bool GetCurrentGameplayTutorialModeEnabled() const { return bTutorialModeEnabled; }
 
 	UFUNCTION()
-	void SetCurrentGameplayTutorialModeEnabled(const FString& InTutorialModeEnabled);
+	void SetCurrentGameplayTutorialModeEnabled(bool InTutorialModeEnabled);
+
+	UFUNCTION()
+	bool GetCurrentGameplayAutoTargetLock() const { return bAutoTargetLock; }
+
+	UFUNCTION()
+	void SetCurrentGameplayAutoTargetLock(bool InAutoTargetLock);
+
+	UFUNCTION()
+	bool GetCurrentGameplayAutoAttackTargetLock() const { return bAutoAttackTargetLock; }
+
+	UFUNCTION()
+	void SetCurrentGameplayAutoAttackTargetLock(bool InAutoAttackTargetLock);
 	
 	//***** Audio Collection Settings *****//
 	// 获取主音量
@@ -64,6 +76,11 @@ public:
 
 	UFUNCTION()
 	void SetMenuMusicVolume(float InMenuMusicVolume);
+
+	UFUNCTION()
+	bool GetAllowBackgroundAudio() const { return bAllowBackgroundAudio; }
+
+	void SetAllowBackgroundAudio(bool bInAllowBackgroundAudio);
 	
 
 private:
@@ -71,7 +88,14 @@ private:
 
 	//***** GamePlay Settings *****//
 	UPROPERTY(Config)
-	FString TutorialModeEnabled;	// 教程模式启用状态，存储在配置文件中
+	bool bTutorialModeEnabled;	// 教程模式启用状态，存储在配置文件中
+
+	UPROPERTY(Config)
+	bool bAutoTargetLock;	// 自动锁定目标
+
+	UPROPERTY(Config)
+	bool bAutoAttackTargetLock;		// 自动攻击目标锁定
+	
 
 	//***** Audio Collection Settings *****//
 	UPROPERTY(Config)
@@ -91,4 +115,10 @@ private:
 
 	UPROPERTY(Config)
 	float MenuMusicVolume;		// 菜单音乐音量
+
+	// Sound
+	UPROPERTY(Config)
+	bool bAllowBackgroundAudio;	// 是否允许后台音频播放
+
+	//***** Audio Collection Settings *****//
 };

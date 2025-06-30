@@ -83,12 +83,12 @@ void UOptionsDataRegistry::InitGameplayCollectionTab()
 
 	// 教学模式
 	{
-		UListDataObject_String* TutorialModeDataObject = NewObject<UListDataObject_String>(GameplayCollectionDataObject, UListDataObject_String::StaticClass());
+		UListDataObject_StringBool* TutorialModeDataObject = NewObject<UListDataObject_StringBool>(GameplayCollectionDataObject, UListDataObject_StringBool::StaticClass());
 		TutorialModeDataObject->SetDataID(FName("TutorialMode"));
 		TutorialModeDataObject->SetDataDisplayName(FText::FromString(TEXT("教学模式")));
-		TutorialModeDataObject->AddDynamicOptionsString(TEXT("Enabled"), FText::FromString(TEXT("启用")));
-		TutorialModeDataObject->AddDynamicOptionsString(TEXT("Disabled"), FText::FromString(TEXT("禁用")));
-		TutorialModeDataObject->SetDefaultValueFromString(TEXT("Enabled")); // 设置默认值为启用
+		TutorialModeDataObject->OverrideDisplayTrueText(FText::FromString(TEXT("启用"))); // 设置启用状态的显示文本
+		TutorialModeDataObject->OverrideDisplayFalseText(FText::FromString(TEXT("禁用"))); // 设置禁用状态的显示文本
+		TutorialModeDataObject->SetTrueAsDefaultValue(); // 设置默认值为启用状态
 		TutorialModeDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetCurrentGameplayTutorialModeEnabled));
 		TutorialModeDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetCurrentGameplayTutorialModeEnabled));
 		TutorialModeDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
@@ -100,18 +100,32 @@ void UOptionsDataRegistry::InitGameplayCollectionTab()
 
 	// 自动切换锁定目标
 	{
-		UListDataObject_String* AutoTargetLockDataObject = NewObject<UListDataObject_String>(GameplayCollectionDataObject, UListDataObject_String::StaticClass());
+		UListDataObject_StringBool* AutoTargetLockDataObject = NewObject<UListDataObject_StringBool>(GameplayCollectionDataObject, UListDataObject_StringBool::StaticClass());
 		AutoTargetLockDataObject->SetDataID(FName("AutoTargetLock"));
 		AutoTargetLockDataObject->SetDataDisplayName(FText::FromString(TEXT("自动切换锁定目标")));
+
+		AutoTargetLockDataObject->SetTrueAsDefaultValue();
+		AutoTargetLockDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetCurrentGameplayAutoTargetLock));
+		AutoTargetLockDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetCurrentGameplayAutoTargetLock));
+		AutoTargetLockDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
+
+		AutoTargetLockDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>自动切换锁定目标</>\n启用后自动追踪新进入视野的敌人：\n* 检测范围：<Number>15</>米锥形区域\n* 切换条件：目标进入视野<Number>0.5</>秒后\n* 优先级：距离最近>威胁值最高\n* 可调角度：<Number>30</>°~<Number>120</>°\n\n<Bold>工作机制</>\n* 目标死亡后<Number>0.3</>秒自动切换\n* 群战自动过滤血量<Number>10%</>以下目标\n* 镜头转动速度提升<Number>25%</>\n\n<Warning>使用注意</>\n* 开启后手动锁定需长按<Bold>LT键</>\n* 复杂地形可能意外切换目标\n* PvP场景禁用避免<Bold>锁定预测错误</>")));
 
 		GameplayCollectionDataObject->AddChildListData(AutoTargetLockDataObject);
 	}
 
 	// 自动锁定攻击目标
 	{
-		UListDataObject_String* AutoAttackTargetLockDataObject = NewObject<UListDataObject_String>(GameplayCollectionDataObject, UListDataObject_String::StaticClass());
+		UListDataObject_StringBool* AutoAttackTargetLockDataObject = NewObject<UListDataObject_StringBool>(GameplayCollectionDataObject, UListDataObject_StringBool::StaticClass());
 		AutoAttackTargetLockDataObject->SetDataID(FName("AutoAttackTargetLock"));
 		AutoAttackTargetLockDataObject->SetDataDisplayName(FText::FromString(TEXT("自动锁定攻击目标")));
+
+		AutoAttackTargetLockDataObject->SetTrueAsDefaultValue();
+		AutoAttackTargetLockDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetCurrentGameplayAutoAttackTargetLock));
+		AutoAttackTargetLockDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetCurrentGameplayAutoAttackTargetLock));
+		AutoAttackTargetLockDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
+
+		AutoAttackTargetLockDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>自动锁定攻击目标</>\n持续锁定当前目标直至脱离：\n* 视线丢失后维持<Number>3</>秒\n* 穿墙锁定：允许<Number>1.5</>米障碍物\n* 自动修正攻击方向偏移<Number>15</>°\n\n<Bold>高级设置</>\n* 锁定优先级：当前目标>仇恨最高\n* 切换冷却：<Number>1.2</>秒\n* Boss战锁定距离延长<Number>50%</>\n\n<Warning>平衡机制</>\n启用时：\n* 暴击率降低<Number>10%</>\n* 技能冷却增加<Number>0.5</>秒\n* 闪避消耗耐力增加<Number>20%</>\n\n<Warning>推荐配置</>\n* 单人游玩：建议开启\n* 团队副本：关闭避免OT\n* 竞技场：禁用保持操作自主性")));
 
 		GameplayCollectionDataObject->AddChildListData(AutoAttackTargetLockDataObject);
 	}
@@ -144,7 +158,7 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 	AudioCollectionDataObject->SetDataID(FName("AudioTabCollection"));
 	AudioCollectionDataObject->SetDataDisplayName(FText::FromString(TEXT("声音")));
 
-	// 声音类别
+	// 声音音量类别
 	{
 		UListDataObject_Collection* VolumeCategoryCollection = NewObject<UListDataObject_Collection>(AudioCollectionDataObject);
 		VolumeCategoryCollection->SetDataID(FName("VolumeCategoryCollection"));
@@ -275,6 +289,32 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 		
 	}
 
+	// 音频类别
+	{
+		UListDataObject_Collection* SoundCategoryCollection = NewObject<UListDataObject_Collection>(AudioCollectionDataObject);
+		SoundCategoryCollection->SetDataID(FName("SoundCategoryCollection"));
+		SoundCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("音频")));
+
+		AudioCollectionDataObject->AddChildListData(SoundCategoryCollection);
+
+		// 开启背景音乐
+		{
+			UListDataObject_StringBool* BackgroundMusicDataObject = NewObject<UListDataObject_StringBool>(SoundCategoryCollection, UListDataObject_StringBool::StaticClass());
+			BackgroundMusicDataObject->SetDataID(FName("BackgroundMusic"));
+			BackgroundMusicDataObject->SetDataDisplayName(FText::FromString(TEXT("开启背景音乐")));
+			BackgroundMusicDataObject->OverrideDisplayTrueText(FText::FromString(TEXT("启用")));
+			BackgroundMusicDataObject->OverrideDisplayFalseText(FText::FromString(TEXT("禁用")));
+			BackgroundMusicDataObject->SetTrueAsDefaultValue();	// 设置默认值为启用
+			BackgroundMusicDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetAllowBackgroundAudio));
+			BackgroundMusicDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetAllowBackgroundAudio));
+			BackgroundMusicDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
+			BackgroundMusicDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>背景音乐控制</>\n启用后游戏将播放背景音乐，禁用则静音所有背景音乐。\n\n<Bold>注意</>\n* 禁用后无法听到任何背景音乐\n* 建议新玩家开启以获得更好的沉浸感\n* 竞技玩家可选择禁用以减少干扰\n\n<Warning>警告</>\n禁用后无法恢复，请谨慎操作！")));
+
+			AudioCollectionDataObject->AddChildListData(BackgroundMusicDataObject);
+		}
+	}
+
+	
 	RegisteredOptionsTabCollections.Add(AudioCollectionDataObject);
 }
 
