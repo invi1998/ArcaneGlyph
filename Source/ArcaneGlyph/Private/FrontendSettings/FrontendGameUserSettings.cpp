@@ -11,7 +11,10 @@
 UFrontendGameUserSettings::UFrontendGameUserSettings()
 	: MasterVolume(1.f), 
 	  MusicVolume(1.f), 
-	  SFXVolume(1.f)
+	  SFXVolume(1.f),
+	  UserInterfaceVolume(1.f),
+	  InGameMusicVolume(1.f),
+	  MenuMusicVolume(1.f)
 {
 }
 
@@ -30,118 +33,82 @@ void UFrontendGameUserSettings::SetCurrentGameplayTutorialModeEnabled(const FStr
 	TutorialModeEnabled = InTutorialModeEnabled;
 }
 
+// 修改原有的音量设置函数
 void UFrontendGameUserSettings::SetMasterVolume(float InMasterVolume)
 {
-	UWorld* InAudioWorld = nullptr;
-	const UFrontendDeveloperSettings* FrontendSettings = GetDefault<UFrontendDeveloperSettings>();
-
-	if (GEngine)
-	{
-		InAudioWorld = GEngine->GetCurrentPlayWorld();
-	}
-
-	if (!InAudioWorld || !FrontendSettings)
-	{
-		return; // 如果没有音频世界或前端设置，则直接返回
-	}
-
-	USoundClass* MasterSoundClass = nullptr;
-	if (UObject* MasterSoundClassObject = FrontendSettings->MasterSoundClassPath.TryLoad())
-	{
-		MasterSoundClass = Cast<USoundClass>(MasterSoundClassObject);
-	}
-
-	USoundMix* MasterSoundMix = nullptr;
-	if (UObject* MasterSoundMixObject = FrontendSettings->DefaultSoundMixPath.TryLoad())
-	{
-		MasterSoundMix = Cast<USoundMix>(MasterSoundMixObject);
-	}
-
-	MasterVolume = InMasterVolume;
-
-	UGameplayStatics::SetSoundMixClassOverride(
-		InAudioWorld,
-		MasterSoundMix,
-		MasterSoundClass,
-		InMasterVolume,
-		1.f, // 音量衰减
-		0.2f  // 混响衰减
-	);
-
-	UGameplayStatics::PushSoundMixModifier(InAudioWorld, MasterSoundMix);
-
+    const UFrontendDeveloperSettings* FrontendSettings = GetDefault<UFrontendDeveloperSettings>();
+    SetVolume(InMasterVolume, FrontendSettings->MasterSoundClassPath, MasterVolume);
 }
 
 void UFrontendGameUserSettings::SetMusicVolume(float InMusicVolume)
 {
-	UWorld* InAudioWorld = nullptr;
-	const UFrontendDeveloperSettings* FrontendSettings = GetDefault<UFrontendDeveloperSettings>();
-	if (GEngine)
-	{
-		InAudioWorld = GEngine->GetCurrentPlayWorld();
-	}
-	if (!InAudioWorld || !FrontendSettings)
-	{
-		return; // 如果没有音频世界或前端设置，则直接返回
-	}
-	USoundClass* MusicSoundClass = nullptr;
-	if (UObject* MusicSoundClassObject = FrontendSettings->MusicSoundClassPath.TryLoad())
-	{
-		MusicSoundClass = Cast<USoundClass>(MusicSoundClassObject);
-	}
-
-	USoundMix* MasterSoundMix = nullptr;
-	if (UObject* MasterSoundMixObject = FrontendSettings->DefaultSoundMixPath.TryLoad())
-	{
-		MasterSoundMix = Cast<USoundMix>(MasterSoundMixObject);
-	}
-
-	MusicVolume = InMusicVolume;
-	
-	UGameplayStatics::SetSoundMixClassOverride(
-		InAudioWorld,
-		MasterSoundMix,
-		MusicSoundClass,
-		InMusicVolume,
-		1.f, // 音量衰减
-		0.2f  // 混响衰减
-	);
-	UGameplayStatics::PushSoundMixModifier(InAudioWorld, MasterSoundMix);
+    const UFrontendDeveloperSettings* FrontendSettings = GetDefault<UFrontendDeveloperSettings>();
+    SetVolume(InMusicVolume, FrontendSettings->MusicSoundClassPath, MusicVolume);
 }
 
 void UFrontendGameUserSettings::SetSFXVolume(float InSFXVolume)
 {
+    const UFrontendDeveloperSettings* FrontendSettings = GetDefault<UFrontendDeveloperSettings>();
+    SetVolume(InSFXVolume, FrontendSettings->SFXSoundClassPath, SFXVolume);
+}
+
+void UFrontendGameUserSettings::SetUserInterfaceVolume(float InUserInterfaceVolume)
+{
+    const UFrontendDeveloperSettings* FrontendSettings = GetDefault<UFrontendDeveloperSettings>();
+    SetVolume(InUserInterfaceVolume, FrontendSettings->UserInterfaceSoundClassPath, UserInterfaceVolume);
+}
+
+void UFrontendGameUserSettings::SetInGameMusicVolume(float InInGameMusicVolume)
+{
+    const UFrontendDeveloperSettings* FrontendSettings = GetDefault<UFrontendDeveloperSettings>();
+    SetVolume(InInGameMusicVolume, FrontendSettings->InGameMusicSoundClassPath, InGameMusicVolume);
+}
+
+void UFrontendGameUserSettings::SetMenuMusicVolume(float InMenuMusicVolume)
+{
+    const UFrontendDeveloperSettings* FrontendSettings = GetDefault<UFrontendDeveloperSettings>();
+    SetVolume(InMenuMusicVolume, FrontendSettings->MenuMusicSoundClassPath, MenuMusicVolume);
+}
+
+// 添加一个通用的私有函数
+void UFrontendGameUserSettings::SetVolume(float InVolume, const FSoftObjectPath& SoundClassPath, float& VolumeVariable)
+{
 	UWorld* InAudioWorld = nullptr;
 	const UFrontendDeveloperSettings* FrontendSettings = GetDefault<UFrontendDeveloperSettings>();
+
 	if (GEngine)
 	{
 		InAudioWorld = GEngine->GetCurrentPlayWorld();
 	}
+
 	if (!InAudioWorld || !FrontendSettings)
 	{
 		return; // 如果没有音频世界或前端设置，则直接返回
 	}
-	USoundClass* SFXSoundClass = nullptr;
-	if (UObject* SFXSoundClassObject = FrontendSettings->SFXSoundClassPath.TryLoad())
+
+	USoundClass* SoundClass = nullptr;
+	if (UObject* SoundClassObject = SoundClassPath.TryLoad())
 	{
-		SFXSoundClass = Cast<USoundClass>(SFXSoundClassObject);
+		SoundClass = Cast<USoundClass>(SoundClassObject);
 	}
 
-	USoundMix* SFXSoundMix = nullptr;
-	if (UObject* SFXSoundMixObject = FrontendSettings->DefaultSoundMixPath.TryLoad())
+	USoundMix* SoundMix = nullptr;
+	if (UObject* SoundMixObject = FrontendSettings->DefaultSoundMixPath.TryLoad())
 	{
-		SFXSoundMix = Cast<USoundMix>(SFXSoundMixObject);
+		SoundMix = Cast<USoundMix>(SoundMixObject);
 	}
 
-	SFXVolume = InSFXVolume;
+	VolumeVariable = InVolume;
+
 	UGameplayStatics::SetSoundMixClassOverride(
 		InAudioWorld,
-		SFXSoundMix,
-		SFXSoundClass,
-		InSFXVolume,
+		SoundMix,
+		SoundClass,
+		InVolume,
 		1.f, // 音量衰减
 		0.2f  // 混响衰减
 	);
-	UGameplayStatics::PushSoundMixModifier(InAudioWorld, SFXSoundMix);
-	
+
+	UGameplayStatics::PushSoundMixModifier(InAudioWorld, SoundMix);
 }
+

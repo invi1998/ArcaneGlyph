@@ -26,7 +26,6 @@ public:
 
 	UFUNCTION()
 	void SetCurrentGameplayTutorialModeEnabled(const FString& InTutorialModeEnabled);
-
 	
 	//***** Audio Collection Settings *****//
 	// 获取主音量
@@ -47,9 +46,29 @@ public:
 
 	UFUNCTION()
 	void SetSFXVolume(float InSFXVolume);
+
+	UFUNCTION()
+	float GetUserInterfaceVolume() const { return UserInterfaceVolume; }
+
+	UFUNCTION()
+	void SetUserInterfaceVolume(float InUserInterfaceVolume);
+
+	UFUNCTION()
+	float GetInGameMusicVolume() const { return InGameMusicVolume; }
+
+	UFUNCTION()
+	void SetInGameMusicVolume(float InInGameMusicVolume);
+
+	UFUNCTION()
+	float GetMenuMusicVolume() const { return MenuMusicVolume; }
+
+	UFUNCTION()
+	void SetMenuMusicVolume(float InMenuMusicVolume);
 	
 
 private:
+	void SetVolume(float InVolume, const FSoftObjectPath& SoundClassPath, float& VolumeVariable);
+
 	//***** GamePlay Settings *****//
 	UPROPERTY(Config)
 	FString TutorialModeEnabled;	// 教程模式启用状态，存储在配置文件中
@@ -63,4 +82,13 @@ private:
 
 	UPROPERTY(Config)
 	float SFXVolume;		// 音效音量
+
+	UPROPERTY(Config)
+	float UserInterfaceVolume;	// 用户界面音量
+
+	UPROPERTY(Config)
+	float InGameMusicVolume;	// 游戏内音乐音量
+
+	UPROPERTY(Config)
+	float MenuMusicVolume;		// 菜单音乐音量
 };

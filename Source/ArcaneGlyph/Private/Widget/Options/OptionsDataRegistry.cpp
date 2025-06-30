@@ -215,6 +215,64 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 			VolumeCategoryCollection->AddChildListData(EffectsVolumeDataObject);
 
 		}
+
+		// 用户界面音量
+		{
+			UListDataObject_Scalar* UserInterfaceVolumeDataObject = NewObject<UListDataObject_Scalar>(VolumeCategoryCollection, UListDataObject_Scalar::StaticClass());
+			UserInterfaceVolumeDataObject->SetDataID(FName("UserInterfaceVolume"));
+			UserInterfaceVolumeDataObject->SetDataDisplayName(FText::FromString(TEXT("用户界面音量")));
+			UserInterfaceVolumeDataObject->SetDisplayValueRange(TRange<float>(0.f, 1.f));
+			UserInterfaceVolumeDataObject->SetOutputValueRange(TRange<float>(0.f, 2.f));
+			UserInterfaceVolumeDataObject->SetSliderStepSize(0.01f);
+			UserInterfaceVolumeDataObject->SetDefaultValueFromString(LexToString(0.5f)); // 默认值为0.5（50%）
+			UserInterfaceVolumeDataObject->SetDisplayNumericType(ECommonNumericType::Percentage); // 显示为百分比
+			UserInterfaceVolumeDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal()); // 不显示小数点
+			UserInterfaceVolumeDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>用户界面音量控制</>\n调节所有游戏内用户界面元素（如按钮、提示音等）的音量：\n* 范围：<Number>0%</>（静音）至<Number>100%</>（全开）\n* 默认值：<Number>50%</>\n\n<Bold>动态适配</>\n* 战斗状态下自动提升<Number>10%</>\n* 剧情过场时降低至<Number>30%</>\n\n<Warning>注意</>\n开启后可能导致某些高频特效过载，建议：\n1. 日常游玩保持<Number>40%</>\n2. 特效爱好者可尝试<Number>60%</>\n3. 竞技对战建议降低至<Number>30%</>\n\n<Bold>推荐设置</>\n→ 日常游玩：<Number>40%</>\n→ 特效爱好者：<Number>60%</>\n→ 竞技对战：<Number>30%</>\n\n<Warning>注意</>：开启后可能导致某些高频特效过载，建议：\n1. 日常游玩保持<Number>40%</>\n2. 特效爱好者可尝试<Number>60%</>\n3. 竞技对战建议降低至<Number>30%</>")));
+			// 设置动态获取器和设置器
+			UserInterfaceVolumeDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetUserInterfaceVolume));
+			UserInterfaceVolumeDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetUserInterfaceVolume));
+			UserInterfaceVolumeDataObject->SetShouldApplyChangeImmediately(false); // 设置为不用立即应用更改
+			VolumeCategoryCollection->AddChildListData(UserInterfaceVolumeDataObject);
+		}
+
+		// 游戏内音乐音量
+		{
+			UListDataObject_Scalar* InGameMusicVolumeDataObject = NewObject<UListDataObject_Scalar>(VolumeCategoryCollection, UListDataObject_Scalar::StaticClass());
+			InGameMusicVolumeDataObject->SetDataID(FName("InGameMusicVolume"));
+			InGameMusicVolumeDataObject->SetDataDisplayName(FText::FromString(TEXT("游戏内音乐音量")));
+			InGameMusicVolumeDataObject->SetDisplayValueRange(TRange<float>(0.f, 1.f));
+			InGameMusicVolumeDataObject->SetOutputValueRange(TRange<float>(0.f, 2.f));
+			InGameMusicVolumeDataObject->SetSliderStepSize(0.01f);
+			InGameMusicVolumeDataObject->SetDefaultValueFromString(LexToString(0.6f)); // 默认值为0.6（60%）
+			InGameMusicVolumeDataObject->SetDisplayNumericType(ECommonNumericType::Percentage); // 显示为百分比
+			InGameMusicVolumeDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal()); // 不显示小数点
+			InGameMusicVolumeDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>游戏内音乐音量控制</>\n调节游戏内背景音乐的音量：\n* 范围：<Number>0%</>（静音）至<Number>100%</>（全开）\n* 默认值：<Number>60%</>\n\n<Bold>动态适配</>\n* 战斗状态下自动提升<Number>10%</>\n* 剧情过场时降低至<Number>50%</>\n\n<Warning>注意</>\n开启后可能导致某些高频特效过载，建议：\n1. 日常游玩保持<Number>50%</>\n2. 特效爱好者可尝试<Number>70%</>\n3. 竞技对战建议降低至<Number>40%</>\n\n<Bold>推荐设置</>\n→ 日常游玩：<Number>50%</>\n→ 特效爱好者：<Number>70%</>\n→ 竞技对战：<Number>40%</>\n\n<Warning>注意</>：开启后可能导致某些高频特效过载，建议：\n1. 日常游玩保持<Number>50%</>\n2. 特效爱好者可尝试<Number>70%</>\n3. 竞技对战建议降低至<Number>40%</>")));
+			// 设置动态获取器和设置器
+			InGameMusicVolumeDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetInGameMusicVolume));
+			InGameMusicVolumeDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetInGameMusicVolume));
+			InGameMusicVolumeDataObject->SetShouldApplyChangeImmediately(false); // 设置为不用立即应用更改
+			VolumeCategoryCollection->AddChildListData(InGameMusicVolumeDataObject);
+		}
+
+		// 菜单音乐音量
+		{
+			UListDataObject_Scalar* MenuMusicVolumeDataObject = NewObject<UListDataObject_Scalar>(VolumeCategoryCollection, UListDataObject_Scalar::StaticClass());
+			MenuMusicVolumeDataObject->SetDataID(FName("MenuMusicVolume"));
+			MenuMusicVolumeDataObject->SetDataDisplayName(FText::FromString(TEXT("菜单音乐音量")));
+			MenuMusicVolumeDataObject->SetDisplayValueRange(TRange<float>(0.f, 1.f));
+			MenuMusicVolumeDataObject->SetOutputValueRange(TRange<float>(0.f, 2.f));
+			MenuMusicVolumeDataObject->SetSliderStepSize(0.01f);
+			MenuMusicVolumeDataObject->SetDefaultValueFromString(LexToString(0.5f)); // 默认值为0.5（50%）
+			MenuMusicVolumeDataObject->SetDisplayNumericType(ECommonNumericType::Percentage); // 显示为百分比
+			MenuMusicVolumeDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal()); // 不显示小数点
+			MenuMusicVolumeDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>菜单音乐音量控制</>\n调节游戏主菜单背景音乐的音量：\n* 范围：<Number>0%</>（静音）至<Number>100%</>（全开）\n* 默认值：<Number>50%</>\n\n<Bold>动态适配</>\n* 战斗状态下自动提升<Number>10%</>\n* 剧情过场时降低至<Number>30%</>\n\n<Warning>注意</>\n开启后可能导致某些高频特效过载，建议：\n1. 日常游玩保持<Number>40%</>\n2. 特效爱好者可尝试<Number>60%</>\n3. 竞技对战建议降低至<Number>30%</>\n\n<Bold>推荐设置</>\n→ 日常游玩：<Number>40%</>\n→ 特效爱好者：<Number>60%</>\n→ 竞技对战：<Number>30%</>\n\n<Warning>注意</>：开启后可能导致某些高频特效过载，建议：\n1. 日常游玩保持<Number>40%</>\n2. 特效爱好者可尝试<Number>60%</>\n3. 竞技对战建议降低至<Number>30%</>")));
+			// 设置动态获取器和设置器
+			MenuMusicVolumeDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetMenuMusicVolume));
+			MenuMusicVolumeDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetMenuMusicVolume));
+			MenuMusicVolumeDataObject->SetShouldApplyChangeImmediately(false); // 设置为不用立即应用更改
+			VolumeCategoryCollection->AddChildListData(MenuMusicVolumeDataObject);
+		}
+		
 	}
 
 	RegisteredOptionsTabCollections.Add(AudioCollectionDataObject);
