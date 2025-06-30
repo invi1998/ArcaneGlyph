@@ -157,7 +157,7 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 			UListDataObject_Scalar* MasterVolumeDataObject = NewObject<UListDataObject_Scalar>(VolumeCategoryCollection, UListDataObject_Scalar::StaticClass());
 			MasterVolumeDataObject->SetDataID(FName("MasterVolume"));
 			MasterVolumeDataObject->SetDataDisplayName(FText::FromString(TEXT("主音量")));
-			MasterVolumeDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("音频设置中心：\n<Bold>主音量控制</> - 通过滑块调整所有声音元素的基准音量（范围：<Number>0</>~<Number>100</>），默认值<Number>75</>。\n\n特殊联动机制：\n• 背景音乐音量上限为主音量的<Number>80%</>\n• 环境音效受<Bold>动态压缩</>影响（高音量时自动降低<Number>15%</>）\n• 语音聊天独立增益上限<Number>+20%</>\n\n<Warning>听力保护提示</>\n持续暴露在<Number>85</>分贝以上可能造成听力损伤，建议：\n1. 日常游玩保持主音量≤<Number>70</>\n2. 佩戴耳机时启用<Bold>音量限制器</>（强制锁定≤<Number>60</>）\n\n<Bold>校准指南</>\n→ 在安静环境中播放测试音效\n→ 调整至刚好清晰听到<Number>20</>分贝提示音\n→ 保存后重启游戏使设置全局生效\n\n<Warning>注意</>：超过<Number>90</>将触发高频保护（自动过滤<Number>16000</>Hz以上音频）")));
+			MasterVolumeDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("音频设置中心：\n<Bold>主音量控制</> - 通过滑块调整所有声音元素的基准音量（范围：<Number>0</>~<Number>100</>），默认值<Number>75</>。\n\n特殊联动机制：\n* 背景音乐音量上限为主音量的<Number>80%</>\n* 环境音效受<Bold>动态压缩</>影响（高音量时自动降低<Number>15%</>）\n* 语音聊天独立增益上限<Number>+20%</>\n\n<Warning>听力保护提示</>\n持续暴露在<Number>85</>分贝以上可能造成听力损伤，建议：\n1. 日常游玩保持主音量≤<Number>70</>\n2. 佩戴耳机时启用<Bold>音量限制器</>（强制锁定≤<Number>60</>）\n\n<Bold>校准指南</>\n→ 在安静环境中播放测试音效\n→ 调整至刚好清晰听到<Number>20</>分贝提示音\n→ 保存后重启游戏使设置全局生效\n\n<Warning>注意</>：超过<Number>90</>将触发高频保护（自动过滤<Number>16000</>Hz以上音频）")));
 			MasterVolumeDataObject->SetDisplayValueRange(TRange<float>(0.f, 1.f));
 			MasterVolumeDataObject->SetOutputValueRange(TRange<float>(0.f, 2.f));
 			MasterVolumeDataObject->SetSliderStepSize(0.01f);
@@ -168,9 +168,30 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 			// 设置动态获取器和设置器
 			MasterVolumeDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetMasterVolume));
 			MasterVolumeDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetMasterVolume));
-			MasterVolumeDataObject->SetShouldApplyChangeImmediately(false); // 设置为立即应用更改
+			MasterVolumeDataObject->SetShouldApplyChangeImmediately(false); // 设置为不用立即应用更改
 
 			VolumeCategoryCollection->AddChildListData(MasterVolumeDataObject);
+		}
+
+		// 音乐音量
+		{
+			UListDataObject_Scalar* MusicVolumeDataObject = NewObject<UListDataObject_Scalar>(VolumeCategoryCollection, UListDataObject_Scalar::StaticClass());
+			MusicVolumeDataObject->SetDataID(FName("MusicVolume"));
+			MusicVolumeDataObject->SetDataDisplayName(FText::FromString(TEXT("音乐音量")));
+			MusicVolumeDataObject->SetDisplayValueRange(TRange<float>(0.f, 1.f));
+			MusicVolumeDataObject->SetOutputValueRange(TRange<float>(0.f, 2.f));
+			MusicVolumeDataObject->SetSliderStepSize(0.01f);
+			MusicVolumeDataObject->SetDefaultValueFromString(LexToString(0.8f)); // 默认值为0.8（80%）
+			MusicVolumeDataObject->SetDisplayNumericType(ECommonNumericType::Percentage);	// 显示为百分比
+			MusicVolumeDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal()); // 不显示小数点
+			MusicVolumeDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>音乐音量控制</>\n独立调节背景音乐(BGM)强度，与主音量联动：\n* 基准音量为主音量的<Number>100%</>\n* 可通过此选项在<Number>-50%</>~<Number>+30%</>范围内偏移\n\n<Bold>特殊场景适配</>\n* 战斗状态：自动提升<Number>15%</>音量（可关闭）\n* 剧情过场：强制降低至<Number>80%</>避免台词覆盖\n\n<Warning>动态压缩警告</>\n当总音量超过<Number>95</>时：\n* 音乐将被压缩<Number>20%</>以保护听力\n* 压缩后最低保留<Number>40%</>原始音量\n\n<Bold>推荐设置</>\n→ 日常探索：保持<Number>0%</>偏移\n→ 音乐鉴赏：开启<Bold>独占模式</>（禁用动态压缩）\n→ 竞技对战：启用战斗增益\n\n<Warning>注意</>：开启独占模式可能触发音频过载")));
+			
+			// 设置动态获取器和设置器
+			MusicVolumeDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetMusicVolume));
+			MusicVolumeDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetMusicVolume));
+			MusicVolumeDataObject->SetShouldApplyChangeImmediately(false); // 设置为不用立即应用更改
+
+			VolumeCategoryCollection->AddChildListData(MusicVolumeDataObject);
 		}
 		
 	}

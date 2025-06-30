@@ -35,6 +35,12 @@ public:
 
 	UFUNCTION()
 	void SetMasterVolume(float InMasterVolume);
+
+	UFUNCTION()
+	float GetMusicVolume() const { return MusicVolume; }
+
+	UFUNCTION()
+	void SetMusicVolume(float InMusicVolume);
 	
 
 private:
@@ -45,4 +51,7 @@ private:
 	//***** Audio Collection Settings *****//
 	UPROPERTY(Config)
 	float MasterVolume;		// 主音量
+
+	UPROPERTY(Config)
+	float MusicVolume;		// 音乐音量
 };
