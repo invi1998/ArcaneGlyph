@@ -30,7 +30,10 @@ public:
 	void SetCurrentScalarValue(float Value);
 
 protected:
-	
+	// Begin UListDataObject_Base interface
+	virtual bool CanResetToDefault() const override;
+	virtual bool TryResetToDefault() override;
+	// End UListDataObject_Base interface
 
 private:
 	TRange<float> DisplayValueRange = TRange<float>(0.0f, 1.0f);	// 显示值范围，默认从0到1

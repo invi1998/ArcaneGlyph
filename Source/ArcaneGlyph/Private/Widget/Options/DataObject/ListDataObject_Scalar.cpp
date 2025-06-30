@@ -59,6 +59,27 @@ void UListDataObject_Scalar::SetCurrentScalarValue(float Value)
 	}
 }
 
+bool UListDataObject_Scalar::CanResetToDefault() const
+{
+	return HasDefaultValue() && DataDynamicGetter && !FMath::IsNearlyEqual(GetCurrentScalarValue(), StringToFloat(GetDefaultValueAsString()), 0.01f);
+}
+
+bool UListDataObject_Scalar::TryResetToDefault()
+{
+	if (CanResetToDefault())
+	{
+		if (DataDynamicSetter)
+		{
+			// 将当前值设置为默认值
+			DataDynamicSetter->SetValueFromString(GetDefaultValueAsString());
+			NotifyListDataModified(this, EOptionsListDataModifyReason::ResetToDefault);
+			return true;
+		}
+	}
+
+	return false;
+}
+
 float UListDataObject_Scalar::StringToFloat(const FString& InString)
 {
 	float OutFloat = 0.0f;

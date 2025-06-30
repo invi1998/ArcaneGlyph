@@ -124,7 +124,7 @@ void UWidget_OptionsScreen::OnResetBoundActionsTriggered()
 		EModalType::OkCancel,
 		FText::FromString(TEXT("")),
 		FText::FromString(TEXT("")),
-		FText::FromString(TEXT("是否重置当前 [") + ButtonDisplayString + TEXT("] 选项页中的所有设置到默认值？")),
+		FText::FromString(TEXT("是否恢复当前 [") + ButtonDisplayString + TEXT("] 选项页中的所有设置到默认值？")),
 		FText::FromString(TEXT("")),
 		FSlateBrush(),
 		[this](EModalButtonType ClickButtonType)
