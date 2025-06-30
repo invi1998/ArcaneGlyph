@@ -40,6 +40,23 @@ float UListDataObject_Scalar::GetCurrentScalarValue() const
 	return 0.f;
 }
 
+void UListDataObject_Scalar::SetCurrentScalarValue(float Value)
+{
+	if (DataDynamicSetter)
+	{
+		// 如果有动态设置器，则将当前值设置到动态设置器中
+		// 这里需要将值映射到输出范围内
+		const float MappedValue = FMath::GetMappedRangeValueClamped(
+			DisplayValueRange,
+			OutputValueRange,
+			Value
+		);
+		
+		DataDynamicSetter->SetValueFromString(LexToString(MappedValue));
+		NotifyListDataModified(this);
+	}
+}
+
 float UListDataObject_Scalar::StringToFloat(const FString& InString)
 {
 	float OutFloat = 0.0f;

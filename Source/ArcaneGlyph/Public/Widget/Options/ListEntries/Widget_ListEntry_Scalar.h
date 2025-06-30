@@ -28,6 +28,9 @@ protected:
 	virtual void OnOwningListDataObjectSet(UListDataObject_Base* InOwningListDataObject) override;
 	// End UWidget_ListEntry_Base Interface
 
+	UFUNCTION()
+	void OnSettingSliderValueChanged(float Value);
+
 private:
 	// **** Bound Widgets **** //
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget, AllowPrivateAccess = "true"))

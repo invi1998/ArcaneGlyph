@@ -21,12 +21,13 @@ public:
 	LIST_DATA_ACCESSOR(float, SliderStepSize)
 	LIST_DATA_ACCESSOR(ECommonNumericType, DisplayNumericType)
 	LIST_DATA_ACCESSOR(FCommonNumberFormattingOptions, NumberFormattingOptions)
-
+	
 	static FCommonNumberFormattingOptions NoDecimal();	// 无小数点格式化选项
 	static FCommonNumberFormattingOptions WithDecimal(int32 NumDecimalPlaces);	// 带小数点格式化选项，传入小数位数
 	static float StringToFloat(const FString& InString);
 
 	float GetCurrentScalarValue() const;
+	void SetCurrentScalarValue(float Value);
 
 protected:
 	
