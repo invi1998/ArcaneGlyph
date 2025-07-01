@@ -67,3 +67,43 @@ private:
 	const FString FalseString = TEXT("false");
 };
 
+// String Enum
+UCLASS()
+class ARCANEGLYPH_API UListDataObject_StringEnum : public UListDataObject_String
+{
+	GENERATED_BODY()
+
+public:
+	template<typename EnumType>
+	void AddEnumOption(EnumType EnumValue, const FText& DisplayText)
+	{
+		const UEnum* StaticEnumOption = StaticEnum<EnumType>();		//	获取枚举类型的静态枚举对象
+		const FString EnumString = StaticEnumOption->GetNameStringByValue(EnumValue);	// 获取枚举值对应的字符串表示
+		AddDynamicOptionsString(EnumString, DisplayText);
+	}
+
+	template<typename EnumType>
+	EnumType GetCurrentValueAsEnum() const
+	{
+		if (const UEnum* StaticEnumOption = StaticEnum<EnumType>())
+		{
+			return static_cast<EnumType>(StaticEnumOption->GetValueByNameString(CurrentStringValue));
+		}
+		return EnumType::None; // 返回默认值或错误值
+	}
+
+	template<typename EnumType>
+	void SetDefaultValueFromEnum(EnumType EnumValue)
+	{
+		if (const UEnum* StaticEnumOption = StaticEnum<EnumType>())
+		{
+			const FString EnumString = StaticEnumOption->GetNameStringByValue(EnumValue);
+			SetDefaultValueFromString(EnumString);
+		}
+	}
+	
+
+private:
+	
+};
+
