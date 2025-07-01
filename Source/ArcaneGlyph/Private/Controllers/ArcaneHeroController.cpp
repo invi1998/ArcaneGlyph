@@ -4,6 +4,7 @@
 #include "ArcaneGlyph/Public/Controllers/ArcaneHeroController.h"
 
 #include "Camera/CameraActor.h"
+#include "FrontendSettings/FrontendGameUserSettings.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -37,6 +38,17 @@ void AArcaneHeroController::OnPossess(APawn* InPawn)
 	{
 		// 如果没有找到摄像机，就使用默认的视角
 		SetViewTarget(InPawn);
+	}
+
+	UFrontendGameUserSettings* GameUserSettings = UFrontendGameUserSettings::Get();
+	if (GameUserSettings && (
+		GameUserSettings->GetLastCPUBenchmarkResult() == -1.f || // 如果没有进行过 CPU 性能测试
+		GameUserSettings->GetLastGPUBenchmarkResult() == -1.f	// 如果没有进行过 GPU 性能测试
+		)) 
+	{
+		// 开始性能测试等
+		GameUserSettings->RunHardwareBenchmark();	// 运行硬件性能测试
+		GameUserSettings->ApplyHardwareBenchmarkResults();	// 应用硬件性能测试结果
 	}
 
 }
