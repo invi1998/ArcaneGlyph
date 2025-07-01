@@ -89,6 +89,8 @@ public:
 	UFUNCTION()
 	void SetUseHDRAudio(bool bInUseHDRAudio);
 
+	// ***** Audio Collection Settings *****//
+
 private:
 	void SetVolume(float InVolume, const FSoftObjectPath& SoundClassPath, float& VolumeVariable);
 
@@ -129,5 +131,5 @@ private:
 	UPROPERTY(Config)
 	bool bUseHDRAudio;	// 是否使用高动态范围音频(HDR)
 
-	//***** Audio Collection Settings *****//
+	//***** Video Settings *****//
 };

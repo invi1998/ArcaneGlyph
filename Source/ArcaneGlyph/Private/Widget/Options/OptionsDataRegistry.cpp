@@ -343,5 +343,34 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 	VideoCollectionDataObject->SetDataID(FName("VideoTabCollection"));
 	VideoCollectionDataObject->SetDataDisplayName(FText::FromString(TEXT("显示")));
 
+	// 屏幕显示类别
+	{
+		UListDataObject_Collection* DisplayCategoryCollection = NewObject<UListDataObject_Collection>(VideoCollectionDataObject);
+		DisplayCategoryCollection->SetDataID(FName("DisplayCategoryCollection"));
+		DisplayCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("屏幕显示")));
+		
+		VideoCollectionDataObject->AddChildListData(DisplayCategoryCollection);
+
+		// 窗口模式
+		{
+			UListDataObject_StringEnum* WindowModeDataObject = NewObject<UListDataObject_StringEnum>(DisplayCategoryCollection, UListDataObject_StringEnum::StaticClass());
+			WindowModeDataObject->SetDataID(FName("WindowMode"));
+			WindowModeDataObject->SetDataDisplayName(FText::FromString(TEXT("窗口模式")));
+			WindowModeDataObject->AddEnumOption<EWindowMode::Type>(EWindowMode::Fullscreen, FText::FromString(TEXT("全屏")));
+			WindowModeDataObject->AddEnumOption<EWindowMode::Type>(EWindowMode::WindowedFullscreen, FText::FromString(TEXT("无边框窗口")));
+			WindowModeDataObject->AddEnumOption<EWindowMode::Type>(EWindowMode::Windowed, FText::FromString(TEXT("窗口")));
+			WindowModeDataObject->SetDefaultValueFromEnum<EWindowMode::Type>(EWindowMode::WindowedFullscreen); // 默认值为无边框窗口模式
+			// 注意：这里的 EWindowMode 枚举类型因为使用的是 Unreal Engine 内置的 EWindowMode，而且该枚举已经提供了默认的Getter和Setter方法，所以我们可以直接使用 MAKE_OPTIONS_DATA_CONTROL 宏来绑定它们。
+			// 而不需要像其他类型那样手动实现 Getter 和 Setter 方法。
+			WindowModeDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetFullscreenMode));
+			WindowModeDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetFullscreenMode));
+			WindowModeDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
+			WindowModeDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>窗口模式</>\n调整游戏画面显示方式：\n* <Bold>全屏</>：独占显示输出（推荐竞技玩家）\n* <Bold>无边框窗口</>：无缝切换应用（默认选择）\n* <Bold>窗口</>：可自由调整尺寸（适合多屏操作）\n\n<Bold>性能影响</>\n* 全屏：帧率提升<Number>10-15%</>\n* 无边框：多屏渲染延迟<Number>3</>ms\n* 窗口：GPU利用率降低<Number>8%</>\n\n<Bold>分辨率联动</>\n* 全屏：强制使用显示器原生分辨率\n* 无边框：自动匹配桌面分辨率\n* 窗口：可自定义<Number>16:9</>/<Number>21:9</>比例\n\n<Warning>切换注意</>\n* 全屏切换可能造成<Number>1-2</>秒黑屏\n* 窗口模式禁用<Bold>G-Sync/FreeSync</>\n* 无边框模式需关闭<Bold>HDR</>防撕裂\n\n<Bold>多屏配置</>\n→ 主屏游戏：全屏模式\n→ 副屏操作：无边框窗口\n→ 窗口录制：固定<Number>1280×720</>尺寸\n\n<Warning>驱动要求</>\nNVIDIA/AMD显卡需更新至<Number>2023</>年后驱动版本")));
+
+			DisplayCategoryCollection->AddChildListData(WindowModeDataObject);
+			
+		}
+	}
+
 	RegisteredOptionsTabCollections.Add(VideoCollectionDataObject);
 }
