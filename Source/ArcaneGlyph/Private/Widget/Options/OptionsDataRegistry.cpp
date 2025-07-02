@@ -10,6 +10,7 @@
 #include "Widget/Options/DataObject/ListDataObject_Collection.h"
 #include "Widget/Options/DataObject/ListDataObject_Scalar.h"
 #include "Widget/Options/DataObject/ListDataObject_String.h"
+#include "Widget/Options/DataObject/ListDataObject_StringResolution.h"
 
 #define MAKE_OPTIONS_DATA_CONTROL(SetterOrGetterName) \
 	MakeShared<FOptionsDataInteractionHelper>(GET_FUNCTION_NAME_STRING_CHECKED(UFrontendGameUserSettings, SetterOrGetterName))
@@ -369,6 +370,24 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 
 			DisplayCategoryCollection->AddChildListData(WindowModeDataObject);
 			
+		}
+
+		// 屏幕分辨率
+		{
+			UListDataObject_StringResolution* ScreenResolutionDataObject = NewObject<UListDataObject_StringResolution>(DisplayCategoryCollection, UListDataObject_StringResolution::StaticClass());
+			ScreenResolutionDataObject->SetDataID(FName("ScreenResolution"));
+			ScreenResolutionDataObject->SetDataDisplayName(FText::FromString(TEXT("屏幕分辨率")));
+
+			ScreenResolutionDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>屏幕分辨率</>\n调整游戏渲染像素数量：\n* 标准比例：<Number>16:9</>（<Number>1920×1080</>/<Number>2560×1440</>）\n* 超宽屏比例：<Number>21:9</>（<Number>2560×1080</>/<Number>3440×1440</>）\n* 专业比例：<Number>32:9</>（<Number>3840×1080</>）\n\n<Bold>性能影响</>\n每提升一档分辨率：\n* GPU负载增加<Number>35-40%</>\n* 显存占用增加<Number>1.5</>倍\n* 帧率下降约<Number>25%</>\n\n<Bold>显示技术</>\n* 原生分辨率：最佳清晰度（推荐）\n* DLSS/FSR：<Number>4K</>下性能提升<Number>70%</>\n* 动态分辨率：范围<Number>75-100%</>\n\n<Warning>配置警告</>\n* 超过显示器原生分辨率将启用虚拟超采样\n* <Number>4K</>分辨率需至少<Number>8GB</>显存\n* 宽屏模式可能造成UI拉伸\n\n<Bold>推荐设置</>\n→ 竞技玩家：<Number>1920×1080</>@<Number>144</>Hz\n→ 画质玩家：<Number>2560×1440</>@<Number>90</>Hz\n→ 电影体验：<Number>3440×1440</>带鱼屏\n\n<Warning>重要提示</>\n变更分辨率后需：\n1. 重新校准HUD界面比例\n2. 调整字体大小防止溢出\n3. 测试<Number>30</>秒确保帧率稳定")));
+
+			ScreenResolutionDataObject->InitResolutionValues();
+
+			// 同样，对于屏幕分辨率，我们可以直接使用 Unreal Engine 内置的 UListDataObject_StringResolution 类来处理分辨率的获取和设置。
+			ScreenResolutionDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetScreenResolution));
+			ScreenResolutionDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetScreenResolution));
+			ScreenResolutionDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
+
+			DisplayCategoryCollection->AddChildListData(ScreenResolutionDataObject);
 		}
 	}
 
