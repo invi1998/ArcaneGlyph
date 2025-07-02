@@ -352,6 +352,16 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 		
 		VideoCollectionDataObject->AddChildListData(DisplayCategoryCollection);
 
+		FOptionDataEditConditionDescriptor PackagedBuildOnlyCondition;	// 打包版本专用条件
+		PackagedBuildOnlyCondition.SetEditConditionFunction(
+			[]()->bool
+			{
+				const bool bIsInEditor = GIsEditor || GIsPlayInEditorWorld;
+				return !bIsInEditor; // 仅在打包版本中生效
+			}
+		);
+		PackagedBuildOnlyCondition.SetDisabledRichReason(TEXT("<Warning>打包版本专用</>\n<Warning>此选项仅在打包后的游戏中生效，编辑器模式下不可用。</>"));
+
 		// 窗口模式
 		{
 			UListDataObject_StringEnum* WindowModeDataObject = NewObject<UListDataObject_StringEnum>(DisplayCategoryCollection, UListDataObject_StringEnum::StaticClass());
@@ -368,6 +378,9 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			WindowModeDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 			WindowModeDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>窗口模式</>\n调整游戏画面显示方式：\n* <Bold>全屏</>：独占显示输出（推荐竞技玩家）\n* <Bold>无边框窗口</>：无缝切换应用（默认选择）\n* <Bold>窗口</>：可自由调整尺寸（适合多屏操作）\n\n<Bold>性能影响</>\n* 全屏：帧率提升<Number>10-15%</>\n* 无边框：多屏渲染延迟<Number>3</>ms\n* 窗口：GPU利用率降低<Number>8%</>\n\n<Bold>分辨率联动</>\n* 全屏：强制使用显示器原生分辨率\n* 无边框：自动匹配桌面分辨率\n* 窗口：可自定义<Number>16:9</>/<Number>21:9</>比例\n\n<Warning>切换注意</>\n* 全屏切换可能造成<Number>1-2</>秒黑屏\n* 窗口模式禁用<Bold>G-Sync/FreeSync</>\n* 无边框模式需关闭<Bold>HDR</>防撕裂\n\n<Bold>多屏配置</>\n→ 主屏游戏：全屏模式\n→ 副屏操作：无边框窗口\n→ 窗口录制：固定<Number>1280×720</>尺寸\n\n<Warning>驱动要求</>\nNVIDIA/AMD显卡需更新至<Number>2023</>年后驱动版本")));
 
+			// 编辑器状态下当前设置项不可用
+			WindowModeDataObject->AddEditCondition(PackagedBuildOnlyCondition);
+			
 			DisplayCategoryCollection->AddChildListData(WindowModeDataObject);
 			
 		}
@@ -386,6 +399,9 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			ScreenResolutionDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetScreenResolution));
 			ScreenResolutionDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetScreenResolution));
 			ScreenResolutionDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
+
+			// 编辑器状态下当前设置项不可用
+			ScreenResolutionDataObject->AddEditCondition(PackagedBuildOnlyCondition);
 
 			DisplayCategoryCollection->AddChildListData(ScreenResolutionDataObject);
 		}
