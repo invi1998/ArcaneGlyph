@@ -415,6 +415,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 				}
 			);
 			WindowModeEditCondition.SetDisabledRichReason(TEXT("<Warning>无边框窗口模式下不可编辑</>\n<Warning>当前窗口模式为无边框窗口，屏幕分辨率选项将被禁用。"));
+			WindowModeEditCondition.SetForcedStringValue(ScreenResolutionDataObject->GetMaxAllowedResolution()); // 强制设置为当前最大分辨率值
 			ScreenResolutionDataObject->AddEditCondition(WindowModeEditCondition);
 
 			DisplayCategoryCollection->AddChildListData(ScreenResolutionDataObject);

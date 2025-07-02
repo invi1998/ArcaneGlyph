@@ -16,6 +16,7 @@ class ARCANEGLYPH_API UListDataObject_StringResolution : public UListDataObject_
 
 public:
 	void InitResolutionValues();
+	FString GetMaxAllowedResolution() const { return MaximumAllowedResolution; }
 
 protected:
 	// Begin UListDataObject_Base interface
