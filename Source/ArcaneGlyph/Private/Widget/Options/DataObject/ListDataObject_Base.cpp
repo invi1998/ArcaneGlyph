@@ -15,6 +15,14 @@ void UListDataObject_Base::AddEditCondition(const FOptionDataEditConditionDescri
 	EditConditions.Add(InEditCondition);
 }
 
+void UListDataObject_Base::AddEditDependencyData(UListDataObject_Base* InDependencyDataObject)
+{
+	if (!InDependencyDataObject->OnListDataModified.IsBoundToObject(this))
+	{
+		InDependencyDataObject->OnListDataModified.AddUObject(this, &ThisClass::OnEditDependencyDataModified);
+	}
+}
+
 bool UListDataObject_Base::IsDataCurrentlyEditable()
 {
 	bool bIsDataCurrentlyEditable = true;
@@ -54,4 +62,9 @@ void UListDataObject_Base::NotifyListDataModified(UListDataObject_Base* InListDa
 	{
 		UFrontendGameUserSettings::Get()->ApplySettings(true); // 立即应用设置
 	}
+}
+
+void UListDataObject_Base::OnEditDependencyDataModified(UListDataObject_Base* InDependencyDataObject, EOptionsListDataModifyReason InModifyReason)
+{
+	OnDependencyDataModified.Broadcast(InDependencyDataObject, InModifyReason);
 }

@@ -24,6 +24,7 @@ class ARCANEGLYPH_API UListDataObject_Base : public UObject
 public:
 	DECLARE_MULTICAST_DELEGATE_TwoParams(FOnListDataModifiedDelegate, UListDataObject_Base*, EOptionsListDataModifyReason);
 	FOnListDataModifiedDelegate OnListDataModified;
+	FOnListDataModifiedDelegate OnDependencyDataModified;
 	
 	LIST_DATA_ACCESSOR(FName, DataID)
 	LIST_DATA_ACCESSOR(FText, DataDisplayName)
@@ -48,6 +49,9 @@ public:
 	// 这个函数将被在构造函数中列出数据对象调用来注册添加条件的选项（添加当前数据项的编辑评估条件）
 	void AddEditCondition(const FOptionDataEditConditionDescriptor& InEditCondition);
 
+	// 该函数将通过注册表中创建的选项调用，用于添加依赖数据
+	void AddEditDependencyData(UListDataObject_Base* InDependencyDataObject);
+
 	// 评估当前数据对象是否满足编辑条件
 	bool IsDataCurrentlyEditable();
 	
@@ -58,7 +62,8 @@ protected:
 	}
 
 	virtual void NotifyListDataModified(UListDataObject_Base* InListData, EOptionsListDataModifyReason InModifyReason = EOptionsListDataModifyReason::DirectlyModified);
-
+	virtual void OnEditDependencyDataModified(UListDataObject_Base* InDependencyDataObject, EOptionsListDataModifyReason InModifyReason = EOptionsListDataModifyReason::DependencyModified);
+	
 	virtual bool CanSetToForcedStringValue(const FString& InForcedStringValue) const
 	{
 		// 默认情况下，不能设置为强制禁用的字符串值

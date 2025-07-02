@@ -418,6 +418,9 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			WindowModeEditCondition.SetForcedStringValue(ScreenResolutionDataObject->GetMaxAllowedResolution()); // 强制设置为当前最大分辨率值
 			ScreenResolutionDataObject->AddEditCondition(WindowModeEditCondition);
 
+			// 添加依赖关系（窗口模式变更时自动更新屏幕分辨率的编辑状态）
+			ScreenResolutionDataObject->AddEditDependencyData(CreatedWindowModeDataObject);
+
 			DisplayCategoryCollection->AddChildListData(ScreenResolutionDataObject);
 		}
 	}
