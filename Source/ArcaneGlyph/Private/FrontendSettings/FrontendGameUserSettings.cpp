@@ -95,6 +95,24 @@ void UFrontendGameUserSettings::SetUseHDRAudio(bool bInUseHDRAudio)
 	bUseHDRAudio = bInUseHDRAudio;
 }
 
+float UFrontendGameUserSettings::GetDisplayGama() const
+{
+	if (GEngine)
+	{
+		return GEngine->GetDisplayGamma();
+	}
+
+	return 0.f;
+}
+
+void UFrontendGameUserSettings::SetDisplayGama(float InDisplayGama)
+{
+	if (GEngine)
+	{
+		GEngine->DisplayGamma = InDisplayGama;
+	}
+}
+
 // 添加一个通用的私有函数
 void UFrontendGameUserSettings::SetVolume(float InVolume, const FSoftObjectPath& SoundClassPath, float& VolumeVariable)
 {

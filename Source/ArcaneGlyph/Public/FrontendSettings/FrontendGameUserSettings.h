@@ -91,6 +91,13 @@ public:
 
 	// ***** Audio Collection Settings *****//
 
+	// ***** Video Settings *****//
+	UFUNCTION()
+	float GetDisplayGama() const;
+
+	UFUNCTION()
+	void SetDisplayGama(float InDisplayGama);
+
 private:
 	void SetVolume(float InVolume, const FSoftObjectPath& SoundClassPath, float& VolumeVariable);
 

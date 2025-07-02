@@ -425,5 +425,32 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 		}
 	}
 
+	// 图形设置
+	{
+		UListDataObject_Collection* GraphicsCategoryCollection = NewObject<UListDataObject_Collection>(VideoCollectionDataObject);
+		GraphicsCategoryCollection->SetDataID(FName("GraphicsCategoryCollection"));
+		GraphicsCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("图形设置")));
+		VideoCollectionDataObject->AddChildListData(GraphicsCategoryCollection);
+
+		// 亮度
+		{
+			UListDataObject_Scalar* BrightnessDataObject = NewObject<UListDataObject_Scalar>(GraphicsCategoryCollection, UListDataObject_Scalar::StaticClass());
+			BrightnessDataObject->SetDataID(FName("Brightness"));
+			BrightnessDataObject->SetDataDisplayName(FText::FromString(TEXT("亮度（Gama值）")));
+			BrightnessDataObject->SetDisplayValueRange(TRange<float>(0.f, 1.f));
+			BrightnessDataObject->SetOutputValueRange(TRange<float>(1.7f, 2.7f));	// 虚幻引擎的默认亮度为2.2f，
+			BrightnessDataObject->SetSliderStepSize(0.1f);
+			BrightnessDataObject->SetDefaultValueFromString(LexToString(2.2f)); // 默认值为0.5（2.2f）
+			BrightnessDataObject->SetDisplayNumericType(ECommonNumericType::Percentage); // 显示为百分比
+			BrightnessDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal()); // 不显示小数点
+			BrightnessDataObject->SetShouldApplyChangeImmediately(false); // 设置为立即应用更改
+			BrightnessDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetDisplayGama));
+			BrightnessDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetDisplayGama));
+			BrightnessDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>亮度调整</>\n调节游戏画面的整体亮度：\n* 范围：<Number>0%</>（最暗）至<Number>100%</>（最亮）\n* 默认值：<Number>50%</>\n\n<Bold>使用建议</>\n* 日间场景：<Number>60%</>\n* 夜间场景：<Number>40%</>\n* 高对比度显示器：<Number>30%</>\n\n<Warning>注意</>\n过高的亮度可能导致视觉疲劳，建议定期休息！")));
+
+			GraphicsCategoryCollection->AddChildListData(BrightnessDataObject);
+		}
+	}
+
 	RegisteredOptionsTabCollections.Add(VideoCollectionDataObject);
 }
