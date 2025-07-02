@@ -21,4 +21,10 @@ protected:
 	// Begin UListDataObject_Base interface
 	virtual void OnDataObjectInitialized() override;
 	// End UListDataObject_Base interface
+
+private:
+	FString ResToValueString(const FIntPoint& Resolution) const;
+	FText ResToDisplayText(const FIntPoint& Resolution) const;
+
+	FString MaximumAllowedResolution;	// 最大允许的分辨率值字符串
 };
