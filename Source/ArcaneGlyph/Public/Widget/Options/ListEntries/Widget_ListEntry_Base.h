@@ -43,6 +43,9 @@ protected:
 	// 子类应当重写此函数，以便在数据对象更新后同步 UI 数值
 	virtual void OnOwningListDataObjectModified(UListDataObject_Base* InListDataObject, EOptionsListDataModifyReason InOptionsListDataModifyReason);
 
+	// 处理依赖数据对象的修改事件，即当拥有的列表数据对象的依赖数据发生变化时调用（父类就是在依赖发生变化是，重新评估当前数据对象的编辑状态）
+	virtual void OnOwningListDataDependencyModified(UListDataObject_Base* InDependencyDataObject, EOptionsListDataModifyReason InOptionsListDataModifyReason);
+	
 	// 设置拥有的列表数据对象，在父类中，这里只被用于设置设置选项的显示名称文本，在子类中可以重写该函数来处理更多的逻辑（选项的选中文本等）
 	virtual void OnOwningListDataObjectSet(UListDataObject_Base* InOwningListDataObject);
 
@@ -58,5 +61,8 @@ private:
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidgetOptional, AllowPrivateAccess = "true"))
 	UCommonTextBlock* CommonTextBlock_SettingDisplayName;	// 设置显示名称文本块
 	// **** Bound Widgets **** //
+
+	UPROPERTY(Transient)
+	UListDataObject_Base* CachedOwningListDataObject;	// 缓存拥有的列表数据对象
 	
 };

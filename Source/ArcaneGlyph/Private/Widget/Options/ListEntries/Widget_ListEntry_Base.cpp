@@ -52,8 +52,18 @@ void UWidget_ListEntry_Base::OnOwningListDataObjectModified(UListDataObject_Base
 {
 }
 
+void UWidget_ListEntry_Base::OnOwningListDataDependencyModified(UListDataObject_Base* InDependencyDataObject, EOptionsListDataModifyReason InOptionsListDataModifyReason)
+{
+	if (CachedOwningListDataObject)
+	{
+		OnToggleEditableState(CachedOwningListDataObject->IsDataCurrentlyEditable());
+	}
+}
+
 void UWidget_ListEntry_Base::OnOwningListDataObjectSet(UListDataObject_Base* InOwningListDataObject)
 {
+	CachedOwningListDataObject = InOwningListDataObject;
+	
 	if (CommonTextBlock_SettingDisplayName)
 	{
 		CommonTextBlock_SettingDisplayName->SetText(InOwningListDataObject->GetDataDisplayName());
@@ -62,6 +72,12 @@ void UWidget_ListEntry_Base::OnOwningListDataObjectSet(UListDataObject_Base* InO
 	if (!InOwningListDataObject->OnListDataModified.IsBoundToObject(this))
 	{
 		InOwningListDataObject->OnListDataModified.AddUObject(this, &UWidget_ListEntry_Base::OnOwningListDataObjectModified);
+	}
+
+	if (!InOwningListDataObject->OnDependencyDataModified.IsBoundToObject(this))
+	{
+		// 如果当前数据对象有依赖数据对象，则绑定依赖数据对象的修改事件
+		InOwningListDataObject->OnDependencyDataModified.AddUObject(this, &UWidget_ListEntry_Base::OnOwningListDataDependencyModified);
 	}
 
 	// 设置完数据对象后，评估当前数据对象是否可编辑
