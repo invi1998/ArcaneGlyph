@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "ArcaneTypes/ArcaneEnumTypes.h"
+#include "ArcaneTypes/FrontendStructTypes.h"
 #include "UObject/Object.h"
 #include "ListDataObject_Base.generated.h"
 
@@ -43,6 +44,12 @@ public:
 	virtual bool HasDefaultValue() const { return false; }
 	virtual bool CanResetToDefault() const { return false; }
 	virtual bool TryResetToDefault() { return false; }
+
+	// 这个函数将被在构造函数中列出数据对象调用来注册添加条件的选项（添加当前数据项的编辑评估条件）
+	void AddEditCondition(const FOptionDataEditConditionDescriptor& InEditCondition);
+
+	// 评估当前数据对象是否满足编辑条件
+	bool IsDataCurrentlyEditable();
 	
 protected:
 	virtual void OnDataObjectInitialized()
@@ -52,6 +59,17 @@ protected:
 
 	virtual void NotifyListDataModified(UListDataObject_Base* InListData, EOptionsListDataModifyReason InModifyReason = EOptionsListDataModifyReason::DirectlyModified);
 
+	virtual bool CanSetToForcedStringValue(const FString& InForcedStringValue) const
+	{
+		// 默认情况下，不能设置为强制禁用的字符串值
+		return false;
+	}
+
+	virtual void OnSetToForcedStringValue(const FString& InForcedStringValue)
+	{
+		// 如果子类需要处理强制禁用的字符串值，可以在这里实现
+	}
+	
 private:
 	FName DataID;	// 数据ID，用于唯一标识该数据对象
 	FText DataDisplayName;	// 数据显示名称，用于在UI中显示该数据对象的名称
@@ -63,4 +81,7 @@ private:
 	UListDataObject_Base* ParentData;		// 父数据对象，用于实现数据对象的继承关系
 
 	bool bShouldApplyChangeImmediately = false;	// 是否立即应用更改，默认为false，不立即应用更改
+
+	UPROPERTY(Transient)
+	TArray<FOptionDataEditConditionDescriptor> EditConditions;	// 编辑条件描述符数组，用于描述该数据对象的编辑条件
 };
