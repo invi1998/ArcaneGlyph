@@ -344,6 +344,8 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 	VideoCollectionDataObject->SetDataID(FName("VideoTabCollection"));
 	VideoCollectionDataObject->SetDataDisplayName(FText::FromString(TEXT("显示")));
 
+	UListDataObject_StringEnum* CreatedWindowModeDataObject = nullptr;
+	
 	// 屏幕显示类别
 	{
 		UListDataObject_Collection* DisplayCategoryCollection = NewObject<UListDataObject_Collection>(VideoCollectionDataObject);
@@ -361,7 +363,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			}
 		);
 		PackagedBuildOnlyCondition.SetDisabledRichReason(TEXT("<Warning>打包版本专用</>\n<Warning>此选项仅在打包后的游戏中生效，编辑器模式下不可用。</>"));
-
+		
 		// 窗口模式
 		{
 			UListDataObject_StringEnum* WindowModeDataObject = NewObject<UListDataObject_StringEnum>(DisplayCategoryCollection, UListDataObject_StringEnum::StaticClass());
@@ -380,7 +382,8 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 
 			// 编辑器状态下当前设置项不可用
 			WindowModeDataObject->AddEditCondition(PackagedBuildOnlyCondition);
-			
+
+			CreatedWindowModeDataObject = WindowModeDataObject; // 保存创建的窗口模式数据对象
 			DisplayCategoryCollection->AddChildListData(WindowModeDataObject);
 			
 		}
@@ -402,6 +405,17 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 
 			// 编辑器状态下当前设置项不可用
 			ScreenResolutionDataObject->AddEditCondition(PackagedBuildOnlyCondition);
+
+			// 当窗口模式设置为无边框窗口时，屏幕分辨率选项将变为不可编辑状态
+			FOptionDataEditConditionDescriptor WindowModeEditCondition;
+			WindowModeEditCondition.SetEditConditionFunction(
+				[CreatedWindowModeDataObject]() -> bool
+				{
+					return CreatedWindowModeDataObject->GetCurrentValueAsEnum<EWindowMode::Type>() != EWindowMode::WindowedFullscreen;
+				}
+			);
+			WindowModeEditCondition.SetDisabledRichReason(TEXT("<Warning>无边框窗口模式下不可编辑</>\n<Warning>当前窗口模式为无边框窗口，屏幕分辨率选项将被禁用。"));
+			ScreenResolutionDataObject->AddEditCondition(WindowModeEditCondition);
 
 			DisplayCategoryCollection->AddChildListData(ScreenResolutionDataObject);
 		}
