@@ -31,6 +31,9 @@ protected:
 	
 	virtual bool CanResetToDefault() const override;
 	virtual bool TryResetToDefault() override;
+
+	virtual bool CanSetToForcedStringValue(const FString& InForcedStringValue) const override;
+	virtual void OnSetToForcedStringValue(const FString& InForcedStringValue) override;
 	// End UListDataObject_Base interface
 	
 	bool TrySetDisplayTextFromStringValue(const FString& InStringValue);
@@ -85,11 +88,8 @@ public:
 	template<typename EnumType>
 	EnumType GetCurrentValueAsEnum() const
 	{
-		if (const UEnum* StaticEnumOption = StaticEnum<EnumType>())
-		{
-			return static_cast<EnumType>(StaticEnumOption->GetValueByNameString(CurrentStringValue));
-		}
-		return EnumType::None; // 返回默认值或错误值
+		const UEnum* StaticEnumOption = StaticEnum<EnumType>();
+		return static_cast<EnumType>(StaticEnumOption->GetValueByNameString(CurrentStringValue));
 	}
 
 	template<typename EnumType>

@@ -145,6 +145,23 @@ bool UListDataObject_String::TryResetToDefault()
 	
 }
 
+bool UListDataObject_String::CanSetToForcedStringValue(const FString& InForcedStringValue) const
+{
+	return AvailableOptionsStringArray.Contains(InForcedStringValue) && CurrentStringValue != InForcedStringValue;
+}
+
+void UListDataObject_String::OnSetToForcedStringValue(const FString& InForcedStringValue)
+{
+	CurrentStringValue = InForcedStringValue;
+	TrySetDisplayTextFromStringValue(CurrentStringValue);
+
+	if (DataDynamicSetter)
+	{
+		DataDynamicSetter->SetValueFromString(CurrentStringValue);
+		NotifyListDataModified(this, EOptionsListDataModifyReason::DependencyModified);
+	}
+}
+
 bool UListDataObject_String::TrySetDisplayTextFromStringValue(const FString& InStringValue)
 {
 	int32 Index = AvailableOptionsStringArray.IndexOfByKey(InStringValue);

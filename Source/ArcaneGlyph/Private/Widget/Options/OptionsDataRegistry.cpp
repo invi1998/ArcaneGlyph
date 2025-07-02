@@ -362,7 +362,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 				return !bIsInEditor; // 仅在打包版本中生效
 			}
 		);
-		PackagedBuildOnlyCondition.SetDisabledRichReason(TEXT("<Warning>打包版本专用</>\n<Warning>此选项仅在打包后的游戏中生效，编辑器模式下不可用。</>"));
+		PackagedBuildOnlyCondition.SetDisabledRichReason(TEXT("\n\n<Warning>打包版本专用</>\n<Warning>此选项仅在打包后的游戏中生效，编辑器模式下不可用。</>"));
 		
 		// 窗口模式
 		{
@@ -414,7 +414,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 					return CreatedWindowModeDataObject->GetCurrentValueAsEnum<EWindowMode::Type>() != EWindowMode::WindowedFullscreen;
 				}
 			);
-			WindowModeEditCondition.SetDisabledRichReason(TEXT("<Warning>无边框窗口模式下不可编辑</>\n<Warning>当前窗口模式为无边框窗口，屏幕分辨率选项将被禁用。"));
+			WindowModeEditCondition.SetDisabledRichReason(TEXT("\n\n<Warning>无边框窗口模式下不可编辑</>\n<Warning>当前窗口模式为无边框窗口，屏幕分辨率选项将被禁用。</>"));
 			WindowModeEditCondition.SetForcedStringValue(ScreenResolutionDataObject->GetMaxAllowedResolution()); // 强制设置为当前最大分辨率值
 			ScreenResolutionDataObject->AddEditCondition(WindowModeEditCondition);
 
