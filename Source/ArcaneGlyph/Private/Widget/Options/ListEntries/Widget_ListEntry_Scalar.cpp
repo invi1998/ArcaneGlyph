@@ -46,6 +46,13 @@ void UWidget_ListEntry_Scalar::OnOwningListDataObjectSet(UListDataObject_Base* I
 
 }
 
+void UWidget_ListEntry_Scalar::OnToggleEditableState(bool bIsEditable)
+{
+	Super::OnToggleEditableState(bIsEditable);
+
+	AnalogSlider_SettingSlider->SetIsEnabled(bIsEditable);
+}
+
 
 void UWidget_ListEntry_Scalar::OnSettingSliderValueChanged(float Value)
 {

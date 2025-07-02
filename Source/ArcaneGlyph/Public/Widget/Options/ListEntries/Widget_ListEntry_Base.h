@@ -46,6 +46,10 @@ protected:
 	// 设置拥有的列表数据对象，在父类中，这里只被用于设置设置选项的显示名称文本，在子类中可以重写该函数来处理更多的逻辑（选项的选中文本等）
 	virtual void OnOwningListDataObjectSet(UListDataObject_Base* InOwningListDataObject);
 
+	// 当列表项的编辑状态发生变化时调用（可编辑和不可编辑状态）
+	// 子类应该重写此函数来处理编辑状态的变化（因为父类只处理了选项的显示名称文本的可编辑和不可编辑状态，子类还有其他控件需要处理编辑状态变化）
+	virtual void OnToggleEditableState(bool bIsEditable);
+
 	void SelectThisEntryWidget();
 
 

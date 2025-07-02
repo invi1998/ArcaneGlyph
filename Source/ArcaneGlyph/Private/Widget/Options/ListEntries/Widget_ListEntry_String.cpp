@@ -56,6 +56,24 @@ void UWidget_ListEntry_String::OnOwningListDataObjectSet(UListDataObject_Base* I
 	CommonRotator_AvailableOptions->SetSelectedOptionByText(OwningStringDataObject->GetCurrentDisplayText());
 }
 
+void UWidget_ListEntry_String::OnToggleEditableState(bool bIsEditable)
+{
+	Super::OnToggleEditableState(bIsEditable);
+
+	if (CommonButton_PreviousOption)
+	{
+		CommonButton_PreviousOption->SetIsEnabled(bIsEditable);
+	}
+	if (CommonButton_NextOption)
+	{
+		CommonButton_NextOption->SetIsEnabled(bIsEditable);
+	}
+	if (CommonRotator_AvailableOptions)
+	{
+		CommonRotator_AvailableOptions->SetIsEnabled(bIsEditable);
+	}
+}
+
 void UWidget_ListEntry_String::OnPreviousOptionClicked()
 {
 	if (OwningStringDataObject)

@@ -50,7 +50,10 @@ void UWidget_OptionsDetailsView::UpdateDetailsViewInfo(UListDataObject_Base* InL
 
 	if (CommonRichTextBlock_AdditionalDetails)
 	{
-		CommonRichTextBlock_AdditionalDetails->SetText(InListDataObject->GetDisabledRichText());
+		CommonRichTextBlock_AdditionalDetails->SetText(InListDataObject->IsDataCurrentlyEditable() ? 
+			FText::GetEmpty() :
+			InListDataObject->GetDisabledRichText()
+		);
 	}
 }
 

@@ -63,6 +63,17 @@ void UWidget_ListEntry_Base::OnOwningListDataObjectSet(UListDataObject_Base* InO
 	{
 		InOwningListDataObject->OnListDataModified.AddUObject(this, &UWidget_ListEntry_Base::OnOwningListDataObjectModified);
 	}
+
+	// 设置完数据对象后，评估当前数据对象是否可编辑
+	OnToggleEditableState(InOwningListDataObject->IsDataCurrentlyEditable());
+}
+
+void UWidget_ListEntry_Base::OnToggleEditableState(bool bIsEditable)
+{
+	if (CommonTextBlock_SettingDisplayName)
+	{
+		CommonTextBlock_SettingDisplayName->SetIsEnabled(bIsEditable);
+	}
 }
 
 void UWidget_ListEntry_Base::SelectThisEntryWidget()
