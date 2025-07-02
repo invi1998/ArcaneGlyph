@@ -348,7 +348,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 	{
 		UListDataObject_Collection* DisplayCategoryCollection = NewObject<UListDataObject_Collection>(VideoCollectionDataObject);
 		DisplayCategoryCollection->SetDataID(FName("DisplayCategoryCollection"));
-		DisplayCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("屏幕显示")));
+		DisplayCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("显示设置")));
 		
 		VideoCollectionDataObject->AddChildListData(DisplayCategoryCollection);
 
