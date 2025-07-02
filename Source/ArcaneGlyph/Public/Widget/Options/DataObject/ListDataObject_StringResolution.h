@@ -16,4 +16,9 @@ class ARCANEGLYPH_API UListDataObject_StringResolution : public UListDataObject_
 
 public:
 	void InitResolutionValues();
+
+protected:
+	// Begin UListDataObject_Base interface
+	virtual void OnDataObjectInitialized() override;
+	// End UListDataObject_Base interface
 };
