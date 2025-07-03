@@ -583,18 +583,41 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			ViewDistanceDataObject->AddIntegerOption(2, FText::FromString(TEXT("高")));
 			ViewDistanceDataObject->AddIntegerOption(3, FText::FromString(TEXT("极高")));
 			ViewDistanceDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
-			ViewDistanceDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("")));
+			ViewDistanceDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>视野距离</>\n控制场景中物体的渲染距离：\n* 等级：<Bold>近</>→<Bold>中</>→<Bold>远</>→<Bold>超远</>→<Bold>极限</>\n* 默认：<Bold>远</>（平衡性能与沉浸感）\n\n<Bold>视觉影响</>\n* 物体加载距离：<Number>200</>m→<Number>2000</>m\n* 地形细节：<Number>1</>km→<Number>5</>km\n* 植被密度：<Number>50%</>→<Number>300%</>\n\n<Bold>性能影响</>\n每提升一档：\n* CPU负载增加<Number>15-25%</>\n* GPU负载增加<Number>10-15%</>\n* 内存占用增长<Number>40%</>\n* 帧率下降约<Number>12-18%</>\n\n<Bold>核心技术</>\n* 层次细节（LOD）：<Number>8</>级动态降模\n* 分块加载：<Number>500</>m区块流式传输\n* 视锥剔除：排除视野外<Number>90%</>物体\n\n<Warning>硬件要求</>\n* 极限距离需：<Number>16GB</>内存+<Number>6核</>CPU\n* <Number>2000m</>+：SSD必需（<Number>2GB/s</>读取）\n* 超远距离显存占用：<Number>4GB</>+\n\n<Bold>智能优化</>\n* 动态调整：高速移动时+<Number>30%</>距离\n* 焦点区域：视野中心保持<Number>100%</>精度\n* 垂直优化：天空/地面降低<Number>50%</>细节\n\n<Bold>场景推荐</>\n→ 竞技游戏：<Bold>中</>（<Number>500m</>）@最高帧率\n→ 开放世界：<Bold>超远</>（<Number>1500m</>）+动态加载\n→ 飞行模拟：<Bold>极限</>（<Number>2000m</>）\n→ 旧硬件：<Bold>远</>+关闭<Bold>远景阴影</>\n\n<Warning>使用注意</>\n* ><Number>1500m</>可能导致<Bold>物体弹出</>\n* 内存<Number><8GB</>建议≤<Bold>远</>\n* 多人在线时强制同步为<Bold>中</>")));
 			ViewDistanceDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
 			// 同样，对于视野距离，我们可以直接使用 Unreal Engine 内置的 UListDataObject_StringInteger 类来处理视野距离的获取和设置。
 			ViewDistanceDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetViewDistanceQuality));
 			ViewDistanceDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetViewDistanceQuality));
 			ViewDistanceDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 
-			VideoCollectionDataObject->AddEditDependencyData(CreatedOverallQualityDataObject);
+			ViewDistanceDataObject->AddEditDependencyData(CreatedOverallQualityDataObject);
 			CreatedOverallQualityDataObject->AddEditDependencyData(ViewDistanceDataObject);
 
 			GraphicsCategoryCollection->AddChildListData(ViewDistanceDataObject);
 			
+		}
+
+		// 纹理质量
+		{
+			UListDataObject_StringInteger* TextureQualityDataObject = NewObject<UListDataObject_StringInteger>(GraphicsCategoryCollection, UListDataObject_StringInteger::StaticClass());
+			TextureQualityDataObject->SetDataID(FName("TextureQuality"));
+			TextureQualityDataObject->SetDataDisplayName(FText::FromString(TEXT("纹理质量")));
+			TextureQualityDataObject->AddIntegerOption(0, FText::FromString(TEXT("低")));
+			TextureQualityDataObject->AddIntegerOption(1, FText::FromString(TEXT("中")));
+			TextureQualityDataObject->AddIntegerOption(2, FText::FromString(TEXT("高")));
+			TextureQualityDataObject->AddIntegerOption(3, FText::FromString(TEXT("极高")));
+			TextureQualityDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
+			TextureQualityDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("")));
+			TextureQualityDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
+			// 同样，对于纹理质量，我们可以直接使用 Unreal Engine 内置的 UListDataObject_StringInteger 类来处理纹理质量的获取和设置。
+			TextureQualityDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetTextureQuality));
+			TextureQualityDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetTextureQuality));
+			TextureQualityDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
+
+			TextureQualityDataObject->AddEditDependencyData(CreatedOverallQualityDataObject);
+			CreatedOverallQualityDataObject->AddEditDependencyData(TextureQualityDataObject);
+
+			GraphicsCategoryCollection->AddChildListData(CreatedOverallQualityDataObject);
 		}
 			
 	}
