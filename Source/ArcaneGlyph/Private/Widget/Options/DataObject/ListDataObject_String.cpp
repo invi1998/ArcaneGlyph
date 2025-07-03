@@ -60,7 +60,11 @@ void UListDataObject_String::AdvanceToPreviousOption()
 
 	TrySetDisplayTextFromStringValue(CurrentStringValue);
 
-	NotifyListDataModified(this);
+	if (DataDynamicSetter)
+	{
+		DataDynamicSetter->SetValueFromString(CurrentStringValue);
+		NotifyListDataModified(this);
+	}
 }
 
 void UListDataObject_String::OnRotatorInitiatedValueChanged(const FText& InNewValue)
