@@ -115,6 +115,7 @@ class ARCANEGLYPH_API UListDataObject_StringInteger : public UListDataObject_Str
 
 public:
 	void AddIntegerOption(int32 IntegerValue, const FText& DisplayText);
+	void SetDefaultValueFromInteger(int IntegerValue);
 
 protected:
 	// Begin UListDataObject_Base interface

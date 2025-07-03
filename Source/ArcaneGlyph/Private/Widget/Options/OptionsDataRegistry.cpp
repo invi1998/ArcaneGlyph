@@ -443,7 +443,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			BrightnessDataObject->SetDefaultValueFromString(LexToString(2.2f)); // 默认值为0.5（2.2f）
 			BrightnessDataObject->SetDisplayNumericType(ECommonNumericType::Percentage); // 显示为百分比
 			BrightnessDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal()); // 不显示小数点
-			BrightnessDataObject->SetShouldApplyChangeImmediately(false); // 设置为立即应用更改
+			BrightnessDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 			BrightnessDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetDisplayGama));
 			BrightnessDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetDisplayGama));
 			BrightnessDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>亮度调整</>\n调节游戏画面的整体亮度：\n* 范围：<Number>0%</>（最暗）至<Number>100%</>（最亮）\n* 默认值：<Number>50%</>\n\n<Bold>使用建议</>\n* 日间场景：<Number>60%</>\n* 夜间场景：<Number>40%</>\n* 高对比度显示器：<Number>30%</>\n\n<Warning>注意</>\n过高的亮度可能导致视觉疲劳，建议定期休息！")));
@@ -451,9 +451,23 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			GraphicsCategoryCollection->AddChildListData(BrightnessDataObject);
 		}
 
-		// 画质
+		// 画质等级
 		{
-			
+			UListDataObject_StringInteger* QualityLevelDataObject = NewObject<UListDataObject_StringInteger>(GraphicsCategoryCollection, UListDataObject_StringInteger::StaticClass());
+			QualityLevelDataObject->SetDataID(FName("QualityLevel"));
+			QualityLevelDataObject->SetDataDisplayName(FText::FromString(TEXT("画质等级")));
+			QualityLevelDataObject->AddIntegerOption(0, FText::FromString(TEXT("低")));
+			QualityLevelDataObject->AddIntegerOption(1, FText::FromString(TEXT("中")));
+			QualityLevelDataObject->AddIntegerOption(2, FText::FromString(TEXT("高")));
+			QualityLevelDataObject->AddIntegerOption(3, FText::FromString(TEXT("极高")));
+			QualityLevelDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
+			QualityLevelDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
+			// 同样，对于画质等级，我们可以直接使用 Unreal Engine 内置的 UListDataObject_StringInteger 类来处理画质等级的获取和设置。
+			QualityLevelDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetOverallScalabilityLevel));
+			QualityLevelDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetOverallScalabilityLevel));
+			QualityLevelDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
+
+			GraphicsCategoryCollection->AddChildListData(QualityLevelDataObject);
 		}
 	}
 

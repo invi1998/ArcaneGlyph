@@ -233,6 +233,11 @@ void UListDataObject_StringInteger::AddIntegerOption(int32 IntegerValue, const F
 	AddDynamicOptionsString(LexToString(IntegerValue), DisplayText);
 }
 
+void UListDataObject_StringInteger::SetDefaultValueFromInteger(int IntegerValue)
+{
+	SetDefaultValueFromString(LexToString(IntegerValue));
+}
+
 void UListDataObject_StringInteger::OnDataObjectInitialized()
 {
 	Super::OnDataObjectInitialized();
