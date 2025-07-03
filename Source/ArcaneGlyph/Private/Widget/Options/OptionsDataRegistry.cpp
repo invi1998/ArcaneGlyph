@@ -527,6 +527,29 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			GraphicsCategoryCollection->AddChildListData(GlobalIlluminationDataObject);
 			
 		}
+
+		// 阴影质量
+		{
+			UListDataObject_StringInteger* ShadowQualityDataObject = NewObject<UListDataObject_StringInteger>(GraphicsCategoryCollection, UListDataObject_StringInteger::StaticClass());
+			ShadowQualityDataObject->SetDataID(FName("ShadowQuality"));
+			ShadowQualityDataObject->SetDataDisplayName(FText::FromString(TEXT("阴影质量")));
+			ShadowQualityDataObject->AddIntegerOption(0, FText::FromString(TEXT("低")));
+			ShadowQualityDataObject->AddIntegerOption(1, FText::FromString(TEXT("中")));
+			ShadowQualityDataObject->AddIntegerOption(2, FText::FromString(TEXT("高")));
+			ShadowQualityDataObject->AddIntegerOption(3, FText::FromString(TEXT("极高")));
+			ShadowQualityDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
+			ShadowQualityDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>阴影质量</>\n控制场景阴影的精度和复杂度：\n* 等级：<Bold>关闭</>→<Bold>低</>→<Bold>中</>→<Bold>高</>→<Bold>超高</>→<Bold>光追</>\n* 默认：<Bold>高</>（平衡性能与质量）\n\n<Bold>技术差异</>\n* 分辨率：低(<Number>512</>p)→超高(<Number>4K</>)\n* 投射距离：<Number>50</>m→<Number>500</>m\n* 软阴影：无→<Bold>PCSS</>→<Bold>光线追踪软阴影</>\n\n<Bold>性能影响</>\n每提升一档：\n* GPU负载增加<Number>15-20%</>\n* 帧率下降约<Number>8-12%</>\n* 显存占用增长<Number>25%</>\n\n<Bold>核心参数</>\n* 级联阴影：<Number>4</>层→<Number>16</>层\n* 接触硬化：<Number>关闭</>→<Bold>高质量</>\n* 半影角度：<Number>0.5</>°→<Number>0.1</>°\n\n<Warning>光追阴影要求</>\n* 必需：RTX<Number>2060</>/RX<Number>6000</>系列+\n* 显存：≥<Number>6GB</>\n* 驱动：<Number>2022</>年后版本\n\n<Bold>优化技术</>\n* 动态调整：快速移动时降级<Number>50%</>\n* 视距剔除：屏幕外阴影精度减半\n* 虚拟阴影贴图：节省<Number>40%</>显存\n\n<Bold>场景推荐</>\n→ 竞技游戏：<Bold>低</>@最高帧率\n→ 开放世界：<Bold>高</>+级联阴影\n→ 摄影模式：<Bold>光追</>+<Number>16K</>分辨率\n→ 旧硬件：<Bold>中</>+虚拟阴影\n\n<Warning>使用注意</>\n* 光追阴影功耗增加<Number>60%</>\n* 低于<Bold>中</>设置可能造成\"阴影弹出\"\n* 植被密集区建议<Bold>高</>级以上")));
+			ShadowQualityDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
+			// 同样，对于阴影质量，我们可以直接使用 Unreal Engine 内置的 UListDataObject_StringInteger 类来处理阴影质量的获取和设置。
+			ShadowQualityDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetShadowQuality));
+			ShadowQualityDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetShadowQuality));
+			ShadowQualityDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
+
+			ShadowQualityDataObject->AddEditDependencyData(CreatedOverallQualityDataObject);
+			CreatedOverallQualityDataObject->AddEditDependencyData(ShadowQualityDataObject);
+
+			GraphicsCategoryCollection->AddChildListData(ShadowQualityDataObject);
+		}
 	}
 
 	// 帧率设置
