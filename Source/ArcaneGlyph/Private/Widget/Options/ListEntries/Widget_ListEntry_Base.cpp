@@ -11,7 +11,8 @@
 
 void UWidget_ListEntry_Base::NativeOnListEntryWidgetHovered(bool bIsHovered)
 {
-	BP_OnListEntryWidgetHovered(bIsHovered, IsListItemSelected());
+	// GetListItem 确保我们在悬停时获取到正确的列表项
+	BP_OnListEntryWidgetHovered(bIsHovered, GetListItem() ? IsListItemSelected() : false);
 }
 
 FReply UWidget_ListEntry_Base::NativeOnFocusReceived(const FGeometry& InGeometry, const FFocusEvent& InFocusEvent)
