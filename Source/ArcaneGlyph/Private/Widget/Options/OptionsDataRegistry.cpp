@@ -694,8 +694,34 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 
 		// 垂直同步
 		{
+			UListDataObject_StringBool* VSyncDataObject = NewObject<UListDataObject_StringBool>(FrameRateCategoryCollection, UListDataObject_StringBool::StaticClass());
+			VSyncDataObject->SetDataID(FName("VSync"));
+			VSyncDataObject->SetDataDisplayName(FText::FromString(TEXT("垂直同步")));
+			VSyncDataObject->OverrideDisplayTrueText(FText::FromString(TEXT("开启")));
+			VSyncDataObject->OverrideDisplayFalseText(FText::FromString(TEXT("关闭")));
+			VSyncDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>垂直同步</>\n控制帧率与显示器刷新率同步：\n* 选项：<Bold>关闭</>→<Bold>开启</>→<Bold>自适应</>→<Bold>增强</>\n* 默认：<Bold>自适应</>（平衡画面与响应）\n\n<Bold>技术原理</>\n* 基础同步：强制帧率≤刷新率（<Number>60/144</>Hz）\n* 自适应：帧率<刷新率时自动关闭\n* 增强：三重缓冲+帧率限制\n\n<Bold>性能影响</>\n* 开启后：\n* 输入延迟增加<Number>15-30ms</>\n* 帧率波动减少<Number>90%</>\n* GPU利用率降低<Number>10%</>\n\n<Bold>视觉差异</>\n* <Bold>关闭</>：可能画面撕裂（高速移动时）\n* <Bold>开启</>：完全平滑但迟滞\n* <Bold>自适应</>：无撕裂+低延迟\n* <Bold>增强</>：<Number>G-Sync</>/<Bold>FreeSync</>等效效果\n\n<Warning>硬件要求</>\n* 自适应：需<Number>DX11</>+\n* 增强：兼容显示器+<Number>HDMI 2.1</>/<Bold>DP 1.4</>\n* <Number>4K</>高刷需<Bold>DSC</>压缩\n\n<Bold>输入延迟对比</>\n* 关闭：<Number>10ms</>（竞技最优）\n* 开启：<Number>40ms</>\n* 自适应：<Number>25ms</>\n* 增强：<Number>18ms</>\n\n<Bold>场景推荐</>\n→ 竞技FPS：<Bold>关闭</>@<Number>240</>Hz+\n→ 剧情游戏：<Bold>自适应</>或<Bold>增强</>\n→ 旧显示器：<Bold>开启</>防撕裂\n→ HDR体验：<Bold>增强</>+<Bold>VRR</>\n\n<Warning>使用注意</>\n* 帧率<刷新率时可能卡顿\n* 多屏设置需主显示器支持\n* 增强模式禁用<Bold>截图工具</>")));
+			VSyncDataObject->SetFalseAsDefaultValue();
+			VSyncDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(IsVSyncEnabled));
+			VSyncDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetVSyncEnabled));
+			VSyncDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
+
+			// 垂直同步选项应该只在全屏模式下可用，因此我们添加一个依赖关系到全屏模式选项。
+			FOptionDataEditConditionDescriptor FullScreenCondition;
+			FullScreenCondition.SetEditConditionFunction(
+				[CreatedWindowModeDataObject]()->bool
+				{
+					return CreatedWindowModeDataObject->GetCurrentValueAsEnum<EWindowMode::Type>() == EWindowMode::Fullscreen;
+				}
+			);
+			FullScreenCondition.SetDisabledRichReason(TEXT("\n\n<Warning>仅在全屏模式下可用</>\n<Warning>垂直同步选项仅在全屏模式下可用</>"));
+			FullScreenCondition.SetForcedStringValue(TEXT("false"));
+			VSyncDataObject->AddEditCondition(FullScreenCondition);
+			
+			FrameRateCategoryCollection->AddChildListData(VSyncDataObject);
 			
 		}
+
+		// 
 		
 	}
 
