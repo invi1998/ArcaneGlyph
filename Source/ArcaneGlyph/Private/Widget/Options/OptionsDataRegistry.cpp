@@ -691,6 +691,11 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 		FrameRateCategoryCollection->SetDataID(FName("FrameRateCategoryCollection"));
 		FrameRateCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("帧率设置")));
 		VideoCollectionDataObject->AddChildListData(FrameRateCategoryCollection);
+
+		// 垂直同步
+		{
+			
+		}
 		
 	}
 
