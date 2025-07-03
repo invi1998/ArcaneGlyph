@@ -398,7 +398,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 
 			ScreenResolutionDataObject->InitResolutionValues();
 
-			// 同样，对于屏幕分辨率，我们可以直接使用 Unreal Engine 内置的 UListDataObject_StringResolution 类来处理分辨率的获取和设置。
+			// 同样，对于屏幕分辨率，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理分辨率的获取和设置。
 			ScreenResolutionDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetScreenResolution));
 			ScreenResolutionDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetScreenResolution));
 			ScreenResolutionDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
@@ -465,7 +465,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			QualityLevelDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
 			QualityLevelDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>画质等级</>\n五档预设优化游戏视觉效果：\n* <Bold>低</>：性能优先（帧率提升<Number>150%</>）\n* <Bold>中</>：平衡选择（推荐<Number>GTX 1060</>）\n* <Bold>高</>：画质增强（启用<Number>PBR</>材质）\n* <Bold>极高</>：次世代效果（需<Number>RTX 3060</>+）\n* <Bold>影视级</>：电影规格（<Number>8K</>纹理+<Number>64x</>抗锯齿）\n\n<Bold>核心技术差异</>\n* 阴影质量：低(<Number>512</>p)→影视级(<Number>16K</>光线追踪)\n* 纹理过滤：双线性→<Number>16x</>各向异性\n* 粒子效果：<Number>50%</>削减→<Number>200%</>增强\n\n<Bold>性能影响</>\n每提升一档：\n* GPU负载增加<Number>35-40%</>\n* 显存占用增长<Number>1.8</>倍\n* 帧率下降约<Number>30%</>\n\n<Warning>硬件要求</>\n* 影视级：需<Number>12GB</>显存+<Number>DLSS 3</>\n* 极高：<Number>8GB</>显存+光追支持\n* 高：<Number>6GB</>显存\n\n<Bold>智能优化</>\n* 动态降级：帧率<Number><45</>时自动降档\n* 内存保护：超限时压缩<Number>4K</>纹理\n* 焦点渲染：非视野区降低<Number>50%</>精度\n\n<Bold>推荐配置</>\n→ 竞技玩家：低@<Number>144</>Hz\n→ 开放世界：高+<Bold>DLSS质量</>\n→ 截图摄影：影视级+<Bold>无帧率限制</>\n\n<Warning>影视级警告</>\n启用后：\n* 功耗增加<Number>80%</>\n* 显存温度升<Number>20</>℃\n* 需关闭<Bold>Windows HDR</>防冲突")));
 			QualityLevelDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
-			// 同样，对于画质等级，我们可以直接使用 Unreal Engine 内置的 UListDataObject_StringInteger 类来处理画质等级的获取和设置。
+			// 同样，对于画质等级，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理画质等级的获取和设置。
 			QualityLevelDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetOverallScalabilityLevel));
 			QualityLevelDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetOverallScalabilityLevel));
 			QualityLevelDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
@@ -490,7 +490,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 
 			ResolutionScaleDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>分辨率缩放等级</>\n动态调整3D场景渲染精度：\n* 范围：<Number>50%</>（性能模式）~<Number>200%</>（超采样）\n* 默认：<Number>100%</>（原生分辨率）\n\n<Bold>性能影响</>\n每降低<Number>25%</>：\n* 帧率提升<Number>30-40%</>\n* GPU负载降低<Number>45%</>\n* 显存占用减少<Number>35%</>\n\n<Bold>视觉质量</>\n* <Number>50-75%</>：明显锯齿（移动端适用）\n* <Number>100%</>：原生清晰度\n* <Number>125-150%</>：边缘锐化+细节增强\n* <Number>200%</>：<Bold>8xSSAA</>等效效果\n\n<Bold>智能模式</>\n* 动态缩放：帧率<Number><45</>时自动降级\n* 焦点渲染：视野中心保持<Number>100%</>\n* 边缘优化：外围区域降至<Number>75%</>\n\n<Bold>技术协同</>\n* 开启DLSS/FSR时：缩放基于<Bold>输入分辨率</>\n* 与抗锯齿叠加：<Number>TAA</>+<Number>150%</>缩放=<Bold>超采样抗锯齿</>\n* VR模式：强制<Number>120-140%</>消除纱窗效应\n\n<Warning>使用注意</>\n* <Number>200%</>缩放需<Number>2.5</>倍GPU算力\n* 低于<Number>70%</>可能造成UI模糊\n* HDR模式下建议保持<Number>100-125%</>\n\n<Bold>场景推荐</>\n→ 竞技游戏：<Number>85%</>@最高帧率\n→ 开放世界：<Number>100%</>+DLSS质量\n→ 截图摄影：<Number>150-200%</>超采样\n→ VR设备：固定<Number>130%</>")));
 
-			// 同样，对于分辨率缩放等级，我们可以直接使用 Unreal Engine 内置的 UListDataObject_Scalar 类来处理分辨率缩放的获取和设置。
+			// 同样，对于分辨率缩放等级，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理分辨率缩放的获取和设置。
 			ResolutionScaleDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetResolutionScaleNormalized));
 			ResolutionScaleDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetResolutionScaleNormalized));
 			
@@ -513,7 +513,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			GlobalIlluminationDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
 			GlobalIlluminationDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>全局光照</>\n控制场景光照计算精度：\n* <Bold>低</>：快速近似（适合低端设备）\n* <Bold>中</>：标准光照（推荐<Number>GTX 1060</>）\n* <Bold>高</>：精细光照（启用<Number>PBR</>材质）\n* <Bold>极高</>：次世代效果（需<Number>RTX 3060</>+）\n* <Bold>影视级</>：电影规格（<Number>8K</>纹理+<Number>64x</>抗锯齿）\n\n<Bold>核心技术差异</>\n* 阴影质量：低(<Number>512</>p)→影视级(<Number>16K</>光线追踪)\n* 纹理过滤：双线性→<Number>16x</>各向异性\n* 粒子效果：<Number>50%</>削减→<Number>200%</>增强\n\n<Bold>性能影响</>\n每提升一档：\n* GPU负载增加<Number>35-40%</>\n* 显存占用增长<Number>1.8</>倍\n* 帧率下降约<Number>30%</>\n\n<Warning>硬件要求</>\n* 影视级：需<Number>12GB</>显存+<Number>DLSS 3</>\n* 极高：<Number>8GB</>显存+光追支持\n* 高：<Number>6GB</>显存\n\n<Bold>智能优化</>\n* 动态降级：帧率<Number><45</>时自动降档\n* 内存保护：超限时压缩<Number>4K</>纹理\n* 焦点渲染：非视野区降低<Number>50%</>\n\n<Bold>推荐配置</>\n→ 竞技玩家：低@<Number>144</>Hz\n→ 开放世界：高+<Bold>DLSS质量</>\n→ 截图摄影：影视级+<Bold>无帧率限制</>\n\n<Warning>影视级警告</>\n启用后：\n* 功耗增加<Number>80%</>\n* 显存温度升<Number>20</>℃\n* 需关闭<Bold>Windows HDR</>防冲突")));
 			GlobalIlluminationDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
-			// 同样，对于全局光照，我们可以直接使用 Unreal Engine 内置的 UListDataObject_StringInteger 类来处理全局光照的获取和设置。
+			// 同样，对于全局光照，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理全局光照的获取和设置。
 			GlobalIlluminationDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetGlobalIlluminationQuality));
 			GlobalIlluminationDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetGlobalIlluminationQuality));
 			GlobalIlluminationDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
@@ -540,7 +540,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			ShadowQualityDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
 			ShadowQualityDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>阴影质量</>\n控制场景阴影的精度和复杂度：\n* 等级：<Bold>关闭</>→<Bold>低</>→<Bold>中</>→<Bold>高</>→<Bold>超高</>→<Bold>光追</>\n* 默认：<Bold>高</>（平衡性能与质量）\n\n<Bold>技术差异</>\n* 分辨率：低(<Number>512</>p)→超高(<Number>4K</>)\n* 投射距离：<Number>50</>m→<Number>500</>m\n* 软阴影：无→<Bold>PCSS</>→<Bold>光线追踪软阴影</>\n\n<Bold>性能影响</>\n每提升一档：\n* GPU负载增加<Number>15-20%</>\n* 帧率下降约<Number>8-12%</>\n* 显存占用增长<Number>25%</>\n\n<Bold>核心参数</>\n* 级联阴影：<Number>4</>层→<Number>16</>层\n* 接触硬化：<Number>关闭</>→<Bold>高质量</>\n* 半影角度：<Number>0.5</>°→<Number>0.1</>°\n\n<Warning>光追阴影要求</>\n* 必需：RTX<Number>2060</>/RX<Number>6000</>系列+\n* 显存：≥<Number>6GB</>\n* 驱动：<Number>2022</>年后版本\n\n<Bold>优化技术</>\n* 动态调整：快速移动时降级<Number>50%</>\n* 视距剔除：屏幕外阴影精度减半\n* 虚拟阴影贴图：节省<Number>40%</>显存\n\n<Bold>场景推荐</>\n→ 竞技游戏：<Bold>低</>@最高帧率\n→ 开放世界：<Bold>高</>+级联阴影\n→ 摄影模式：<Bold>光追</>+<Number>16K</>分辨率\n→ 旧硬件：<Bold>中</>+虚拟阴影\n\n<Warning>使用注意</>\n* 光追阴影功耗增加<Number>60%</>\n* 低于<Bold>中</>设置可能造成\"阴影弹出\"\n* 植被密集区建议<Bold>高</>级以上")));
 			ShadowQualityDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
-			// 同样，对于阴影质量，我们可以直接使用 Unreal Engine 内置的 UListDataObject_StringInteger 类来处理阴影质量的获取和设置。
+			// 同样，对于阴影质量，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理阴影质量的获取和设置。
 			ShadowQualityDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetShadowQuality));
 			ShadowQualityDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetShadowQuality));
 			ShadowQualityDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
@@ -563,7 +563,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			AntiAliasingDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
 			AntiAliasingDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>抗锯齿</>\n消除3D场景中的锯齿状边缘：\n* 技术选项：<Bold>FXAA</>→<Bold>SMAA</>→<Bold>TAA</>→<Bold>MSAA</>→<Bold>DLSS/FSR</>\n* 默认：<Bold>TAA</>（平衡质量与性能）\n\n<Bold>技术原理</>\n* FXAA：后处理快速近似（性能最优）\n* TAA：时域采样（<Number>4-8</>帧累积）\n* MSAA：多重采样（<Number>2/4/8</>倍）\n* DLSS/FSR：AI超分（<Number>4K</>下性能+<Number>70%</>）\n\n<Bold>视觉质量</>\n* 静态场景：<Bold>MSAA 8x</>最佳\n* 动态场景：<Bold>TAA</>最稳定\n* 性能模式：<Bold>DLSS性能</>\n* 画质模式：<Bold>DLSS质量</>+<Bold>锐化</>\n\n<Bold>性能影响</>\n* FXAA：帧率损失<Number><3%</>\n* TAA：帧率损失<Number>5-8%</>\n* MSAA 4x：帧率损失<Number>20-25%</>\n* DLSS：帧率提升<Number>40-70%</>\n\n<Warning>技术限制</>\n* MSAA：不适用延迟渲染/消耗显存（<Number>4x</>需+<Number>2GB</>）\n* TAA：可能造成<Bold>动态模糊</>\n* FXAA：文本模糊（禁用UI处理）\n* DLSS：需<Bold>RTX 20</>系列+\n\n<Bold>推荐配置</>\n→ 竞技玩家：<Bold>FXAA</>@最高帧率\n→ 开放世界：<Bold>TAA</>+锐化<Number>30%</>\n→ 高端PC：<Bold>DLSS质量</>+<Bold>DLAA</>\n→ 截图摄影：<Bold>MSAA 8x</>+<Bold>200%</>缩放\n\n<Bold>高级选项</>\n* 锐化强度：<Number>0-100%</>（抵消TAA模糊）\n* 运动补偿：减少动态残影\n* 亚像素检测：提升毛发/栅栏质量\n\n<Warning>兼容性说明</>\n* HDR+DLSS需Windows<Number>11</>\n* FSR<Number>2.1</>支持<Bold>所有显卡</>\n* MSAA在<Bold>植被透明</>表面效果有限")));
 			AntiAliasingDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
-			// 同样，对于抗锯齿，我们可以直接使用 Unreal Engine 内置的 UListDataObject_StringInteger 类来处理抗锯齿的获取和设置。
+			// 同样，对于抗锯齿，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理抗锯齿的获取和设置。
 			AntiAliasingDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetAntiAliasingQuality));
 			AntiAliasingDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetAntiAliasingQuality));
 			AntiAliasingDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
@@ -585,7 +585,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			ViewDistanceDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
 			ViewDistanceDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>视野距离</>\n控制场景中物体的渲染距离：\n* 等级：<Bold>近</>→<Bold>中</>→<Bold>远</>→<Bold>超远</>→<Bold>极限</>\n* 默认：<Bold>远</>（平衡性能与沉浸感）\n\n<Bold>视觉影响</>\n* 物体加载距离：<Number>200</>m→<Number>2000</>m\n* 地形细节：<Number>1</>km→<Number>5</>km\n* 植被密度：<Number>50%</>→<Number>300%</>\n\n<Bold>性能影响</>\n每提升一档：\n* CPU负载增加<Number>15-25%</>\n* GPU负载增加<Number>10-15%</>\n* 内存占用增长<Number>40%</>\n* 帧率下降约<Number>12-18%</>\n\n<Bold>核心技术</>\n* 层次细节（LOD）：<Number>8</>级动态降模\n* 分块加载：<Number>500</>m区块流式传输\n* 视锥剔除：排除视野外<Number>90%</>物体\n\n<Warning>硬件要求</>\n* 极限距离需：<Number>16GB</>内存+<Number>6核</>CPU\n* <Number>2000m</>+：SSD必需（<Number>2GB/s</>读取）\n* 超远距离显存占用：<Number>4GB</>+\n\n<Bold>智能优化</>\n* 动态调整：高速移动时+<Number>30%</>距离\n* 焦点区域：视野中心保持<Number>100%</>精度\n* 垂直优化：天空/地面降低<Number>50%</>细节\n\n<Bold>场景推荐</>\n→ 竞技游戏：<Bold>中</>（<Number>500m</>）@最高帧率\n→ 开放世界：<Bold>超远</>（<Number>1500m</>）+动态加载\n→ 飞行模拟：<Bold>极限</>（<Number>2000m</>）\n→ 旧硬件：<Bold>远</>+关闭<Bold>远景阴影</>\n\n<Warning>使用注意</>\n* ><Number>1500m</>可能导致<Bold>物体弹出</>\n* 内存<Number><8GB</>建议≤<Bold>远</>\n* 多人在线时强制同步为<Bold>中</>")));
 			ViewDistanceDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
-			// 同样，对于视野距离，我们可以直接使用 Unreal Engine 内置的 UListDataObject_StringInteger 类来处理视野距离的获取和设置。
+			// 同样，对于视野距离，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理视野距离的获取和设置。
 			ViewDistanceDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetViewDistanceQuality));
 			ViewDistanceDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetViewDistanceQuality));
 			ViewDistanceDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
@@ -607,9 +607,9 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			TextureQualityDataObject->AddIntegerOption(2, FText::FromString(TEXT("高")));
 			TextureQualityDataObject->AddIntegerOption(3, FText::FromString(TEXT("极高")));
 			TextureQualityDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
-			TextureQualityDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("")));
+			TextureQualityDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>纹理质量</>\n控制物体表面材质的精细度：\n* 等级：<Bold>极低</>→<Bold>低</>→<Bold>中</>→<Bold>高</>→<Bold>超高</>→<Bold>影视级</>\n* 默认：<Bold>高</>（平衡显存与细节）\n\n<Bold>技术差异</>\n* 纹理分辨率：<Number>512</>p→<Number>8K</>\n* Mipmap层级：<Number>4</>级→<Number>12</>级\n* 各向异性过滤：<Number>2x</>→<Number>16x</>\n\n<Bold>性能影响</>\n每提升一档：\n* 显存占用增加<Number>40-50%</>\n* 内存占用增长<Number>30%</>\n* 加载时间延长<Number>20%</>\n* 帧率影响：<Number><5%</>（非瓶颈时）\n\n<Bold>核心参数</>\n* 贴图流送池：<Number>1GB</>→<Number>8GB</>\n* 虚拟纹理：<Bold>开启</>可节省<Number>30%</>显存\n* 材质LOD：<Number>0</>（全细节）→<Number>4</>（简化）\n\n<Warning>硬件要求</>\n* 影视级：需<Number>10GB</>+显存\n* <Number>4K</>纹理：GTX<Number>1080</>+/RX<Number>5700</>+\n* <Number>8K</>纹理：RTX<Number>3080</>+/RX<Number>6800XT</>+\n\n<Bold>优化技术</>\n* 动态流送：按需加载<Bold>8K</>纹理\n* 纹理压缩：BC1→BC7（质量+<Number>50%</>）\n* 智能降级：显存不足时自动降为<Number>4K</>\n\n<Bold>视觉对比</>\n* <Bold>低</>：材质模糊（<Number>20</>m外细节丢失）\n* <Bold>高</>：清晰纹路（可辨<Number>5</>mm细节）\n* <Bold>影视级</>：亚表面散射+物理磨损\n\n<Bold>场景推荐</>\n→ 竞技游戏：<Bold>中</>@最高帧率\n→ 开放世界：<Bold>高</>+虚拟纹理\n→ 截图摄影：<Bold>影视级</>+<Number>8K</>\n→ 旧硬件：<Bold>低</>+关闭<Bold>各向异性过滤</>\n\n<Warning>使用注意</>\n* ><Bold>高</>设置需<Number>6GB</>+显存\n* 降低质量可减少<Number>50%</>加载时间\n* 变更后需<Bold>重启关卡</>生效")));
 			TextureQualityDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
-			// 同样，对于纹理质量，我们可以直接使用 Unreal Engine 内置的 UListDataObject_StringInteger 类来处理纹理质量的获取和设置。
+			// 同样，对于纹理质量，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理纹理质量的获取和设置。
 			TextureQualityDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetTextureQuality));
 			TextureQualityDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetTextureQuality));
 			TextureQualityDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
@@ -618,6 +618,33 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			CreatedOverallQualityDataObject->AddEditDependencyData(TextureQualityDataObject);
 
 			GraphicsCategoryCollection->AddChildListData(CreatedOverallQualityDataObject);
+		}
+
+		// 视觉效果
+		{
+			UListDataObject_StringInteger* VisualEffectDataObject = NewObject<UListDataObject_StringInteger>(GraphicsCategoryCollection, UListDataObject_StringInteger::StaticClass());
+			VisualEffectDataObject->SetDataID(FName("VisualEffect"));
+			VisualEffectDataObject->SetDataDisplayName(FText::FromString(TEXT("视觉效果")));
+			VisualEffectDataObject->AddIntegerOption(0, FText::FromString(TEXT("低")));
+			VisualEffectDataObject->AddIntegerOption(1, FText::FromString(TEXT("中")));
+			VisualEffectDataObject->AddIntegerOption(2, FText::FromString(TEXT("高")));
+			VisualEffectDataObject->AddIntegerOption(3, FText::FromString(TEXT("极高")));
+			VisualEffectDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
+			VisualEffectDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>视觉效果</>\n控制场景后处理特效的强度与质量：\n* 核心特效：<Bold>环境光遮蔽</>→<Bold>屏幕空间反射</>→<Bold>体积光</>→<Bold>景深</>→<Bold>动态模糊</>\n* 预设等级：<Bold>关闭</>→<Bold>低</>→<Bold>中</>→<Bold>高</>→<Bold>电影级</>\n\n<Bold>技术解析</>\n* <Bold>SSAO</>：基础遮蔽（性能消耗<Number>5%</>）\n* <Bold>HBAO+</>：高精度环境光（+<Number>3%</>消耗）\n* <Bold>SSR</>：屏幕反射（<Number>1080p</>精度）\n* <Bold>光线追踪反射</>：物理精确（消耗<Number>25%</>帧率）\n\n<Bold>性能影响</>\n每提升一档：\n* GPU负载增加<Number>12-18%</>\n* 显存占用增长<Number>20%</>\n* 帧率下降约<Number>10-15%</>\n\n<Bold>视觉对比</>\n* <Bold>关闭</>：平面光照/无反射\n* <Bold>低</>：基本遮蔽/模糊反射\n* <Bold>高</>：动态体积雾/表面湿滑效果\n* <Bold>电影级</>：<Number>64</>样本全局光照\n\n<Warning>硬件需求</>\n* 光线追踪：RTX<Number>2060</>+/RX<Number>6000</>+\n* <Number>4K</>体积光需<Number>8GB</>显存\n* 电影级景深需DLSS/FSR辅助\n\n<Bold>智能优化</>\n* 动态降级：战斗时关闭<Bold>景深</>\n* 焦点渲染：主体<Number>100%</>精度/背景<Number>50%</>\n* 时序重建：<Number>4</>帧合成替代实时计算\n\n<Bold>场景推荐</>\n→ 竞技游戏：<Bold>低</>@最高帧率\n→ RPG探索：<Bold>高</>+<Bold>动态模糊</>\n→ 截图摄影：<Bold>电影级</>+<Bold>光线追踪</>\n→ 旧硬件：<Bold>中</>+关闭<Bold>体积光</>\n\n<Warning>使用注意</>\n* 动态模糊可能引发<Bold>3D眩晕</>\n* 景深>50%造成UI模糊\n* 变更后需<Bold>重载着色器</>")));
+			// 同样，对于视觉效果，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理视觉效果的获取和设置。
+			VisualEffectDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetVisualEffectQuality));
+			VisualEffectDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetVisualEffectQuality));
+			VisualEffectDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
+			VisualEffectDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
+			VisualEffectDataObject->AddEditDependencyData(CreatedOverallQualityDataObject);
+			CreatedOverallQualityDataObject->AddEditDependencyData(VisualEffectDataObject);
+			GraphicsCategoryCollection->AddChildListData(VisualEffectDataObject);
+			
+		}
+
+		// 反射质量
+		{
+			
 		}
 			
 	}
