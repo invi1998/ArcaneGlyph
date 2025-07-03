@@ -572,6 +572,30 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			CreatedOverallQualityDataObject->AddEditDependencyData(AntiAliasingDataObject);
 			GraphicsCategoryCollection->AddChildListData(AntiAliasingDataObject);
 		}
+
+		// 视野距离
+		{
+			UListDataObject_StringInteger* ViewDistanceDataObject = NewObject<UListDataObject_StringInteger>(GraphicsCategoryCollection, UListDataObject_StringInteger::StaticClass());
+			ViewDistanceDataObject->SetDataID(FName("ViewDistance"));
+			ViewDistanceDataObject->SetDataDisplayName(FText::FromString(TEXT("视野距离")));
+			ViewDistanceDataObject->AddIntegerOption(0, FText::FromString(TEXT("低")));
+			ViewDistanceDataObject->AddIntegerOption(1, FText::FromString(TEXT("中")));
+			ViewDistanceDataObject->AddIntegerOption(2, FText::FromString(TEXT("高")));
+			ViewDistanceDataObject->AddIntegerOption(3, FText::FromString(TEXT("极高")));
+			ViewDistanceDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
+			ViewDistanceDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("")));
+			ViewDistanceDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
+			// 同样，对于视野距离，我们可以直接使用 Unreal Engine 内置的 UListDataObject_StringInteger 类来处理视野距离的获取和设置。
+			ViewDistanceDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetViewDistanceQuality));
+			ViewDistanceDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetViewDistanceQuality));
+			ViewDistanceDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
+
+			VideoCollectionDataObject->AddEditDependencyData(CreatedOverallQualityDataObject);
+			CreatedOverallQualityDataObject->AddEditDependencyData(ViewDistanceDataObject);
+
+			GraphicsCategoryCollection->AddChildListData(ViewDistanceDataObject);
+			
+		}
 			
 	}
 
