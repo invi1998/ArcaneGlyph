@@ -644,7 +644,23 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 
 		// 反射质量
 		{
-			
+			UListDataObject_StringInteger* ReflectionQualityDataObject = NewObject<UListDataObject_StringInteger>(GraphicsCategoryCollection, UListDataObject_StringInteger::StaticClass());
+			ReflectionQualityDataObject->SetDataID(FName("ReflectionQuality"));
+			ReflectionQualityDataObject->SetDataDisplayName(FText::FromString(TEXT("反射质量")));
+			ReflectionQualityDataObject->AddIntegerOption(0, FText::FromString(TEXT("低")));
+			ReflectionQualityDataObject->AddIntegerOption(1, FText::FromString(TEXT("中")));
+			ReflectionQualityDataObject->AddIntegerOption(2, FText::FromString(TEXT("高")));
+			ReflectionQualityDataObject->AddIntegerOption(3, FText::FromString(TEXT("极高")));
+			ReflectionQualityDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
+			ReflectionQualityDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("")));
+			// 同样，对于反射质量，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理反射质量的获取和设置。
+			ReflectionQualityDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetReflectionQuality));
+			ReflectionQualityDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetReflectionQuality));
+			ReflectionQualityDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
+			ReflectionQualityDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
+			ReflectionQualityDataObject->AddEditDependencyData(CreatedOverallQualityDataObject);
+			CreatedOverallQualityDataObject->AddEditDependencyData(ReflectionQualityDataObject);
+			GraphicsCategoryCollection->AddChildListData(ReflectionQualityDataObject);
 		}
 			
 	}
