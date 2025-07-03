@@ -450,6 +450,19 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 
 			GraphicsCategoryCollection->AddChildListData(BrightnessDataObject);
 		}
+
+		// 画质
+		{
+			
+		}
+	}
+
+	// 帧率设置
+	{
+		UListDataObject_Collection* FrameRateCategoryCollection = NewObject<UListDataObject_Collection>(VideoCollectionDataObject);
+		FrameRateCategoryCollection->SetDataID(FName("FrameRateCategoryCollection"));
+		FrameRateCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("帧率设置")));
+		VideoCollectionDataObject->AddChildListData(FrameRateCategoryCollection);
 	}
 
 	RegisteredOptionsTabCollections.Add(VideoCollectionDataObject);

@@ -107,3 +107,21 @@ private:
 	
 };
 
+// String Integer
+UCLASS()
+class ARCANEGLYPH_API UListDataObject_StringInteger : public UListDataObject_String
+{
+	GENERATED_BODY()
+
+public:
+	void AddIntegerOption(int32 IntegerValue, const FText& DisplayText);
+
+protected:
+	// Begin UListDataObject_Base interface
+	virtual void OnDataObjectInitialized() override;
+	virtual void OnEditDependencyDataModified(UListDataObject_Base* InDependencyDataObject, EOptionsListDataModifyReason InModifyReason = EOptionsListDataModifyReason::DependencyModified) override;
+	
+	// End UListDataObject_Base interface
+	
+};
+

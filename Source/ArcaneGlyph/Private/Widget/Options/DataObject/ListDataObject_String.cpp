@@ -225,3 +225,39 @@ void UListDataObject_StringBool::TryInitializeBoolValue()
 }
 
 // *********************** String Bool End ***********************
+
+// *********************** String Integer Start ***********************
+
+void UListDataObject_StringInteger::AddIntegerOption(int32 IntegerValue, const FText& DisplayText)
+{
+	AddDynamicOptionsString(LexToString(IntegerValue), DisplayText);
+}
+
+void UListDataObject_StringInteger::OnDataObjectInitialized()
+{
+	Super::OnDataObjectInitialized();
+
+	if (!TrySetDisplayTextFromStringValue(CurrentStringValue))
+	{
+		CurrentDisplayText = FText::FromString(TEXT("自定义"));
+	}
+}
+
+void UListDataObject_StringInteger::OnEditDependencyDataModified(UListDataObject_Base* InDependencyDataObject, EOptionsListDataModifyReason InModifyReason)
+{
+	if (DataDynamicGetter)
+	{
+		CurrentStringValue = DataDynamicGetter->GetValueAsString();
+		if (!TrySetDisplayTextFromStringValue(CurrentStringValue))
+		{
+			CurrentDisplayText = FText::FromString(TEXT("自定义"));
+		}
+
+		NotifyListDataModified(this, InModifyReason);
+	}
+
+	Super::OnEditDependencyDataModified(InDependencyDataObject, InModifyReason);
+}
+
+
+// ************************* String Integer End ***********************
