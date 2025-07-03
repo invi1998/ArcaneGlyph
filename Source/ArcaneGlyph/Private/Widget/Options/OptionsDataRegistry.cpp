@@ -652,7 +652,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			ReflectionQualityDataObject->AddIntegerOption(2, FText::FromString(TEXT("高")));
 			ReflectionQualityDataObject->AddIntegerOption(3, FText::FromString(TEXT("极高")));
 			ReflectionQualityDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
-			ReflectionQualityDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("")));
+			ReflectionQualityDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>反射质量</>\n控制场景中反射效果的精度与类型：\n* 技术选项：<Bold>平面反射</>→<Bold>SSR</>→<Bold>混合反射</>→<Bold>光追反射</>→<Bold>路径追踪</>\n* 预设等级：<Bold>关闭</>→<Bold>低</>→<Bold>中</>→<Bold>高</>→<Bold>超高</>\n\n<Bold>技术解析</>\n* <Bold>SSR</>：屏幕空间反射（<Number>1080p</>精度）\n* <Bold>立方体贴图</>：静态环境捕捉（更新间隔<Number>30</>秒）\n* <Bold>光追反射</>：物理精确（<Number>1-16</>样本）\n* <Bold>路径追踪</>：<Number>64</>样本全局光照\n\n<Bold>性能影响</>\n每提升一档：\n* GPU负载增加<Number>15-25%</>\n* 显存占用增长<Number>30%</>\n* 帧率下降约<Number>12-20%</>\n\n<Bold>视觉对比</>\n* <Bold>关闭</>：无反射/简单镜面\n* <Bold>低</>：模糊反射（<Number>5</>m内物体）\n* <Bold>高</>：清晰反射+动态波纹\n* <Bold>光追</>：完美镜面/粗糙表面散射\n\n<Warning>硬件需求</>\n* 光追反射：RTX<Number>2060</>+/RX<Number>6000</>+\n* <Number>4K</>反射需<Number>8GB</>显存\n* 路径追踪需<Number>24GB</>显存+\n\n<Bold>智能优化</>\n* 动态降级：快速移动时降为<Bold>SSR</>\n* 距离衰减：<Number>20</>m外精度减半\n* 重要性采样：焦点物体<Number>2x</>精度\n\n<Bold>场景推荐</>\n→ 竞技游戏：<Bold>低</>@最高帧率\n→ 城市探索：<Bold>高</>+<Bold>立方体贴图</>\n→ 水面场景：<Bold>光追</>+<Number>8</>样本\n→ 截图摄影：<Bold>路径追踪</>+<Number>64</>样本\n\n<Warning>使用注意</>\n* SSR可能产生<Bold>边缘断裂</>\n* 光追反射功耗增加<Number>50%</>\n* 变更后需<Bold>重载反射捕获</>")));
 			// 同样，对于反射质量，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理反射质量的获取和设置。
 			ReflectionQualityDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetReflectionQuality));
 			ReflectionQualityDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetReflectionQuality));
@@ -661,6 +661,27 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			ReflectionQualityDataObject->AddEditDependencyData(CreatedOverallQualityDataObject);
 			CreatedOverallQualityDataObject->AddEditDependencyData(ReflectionQualityDataObject);
 			GraphicsCategoryCollection->AddChildListData(ReflectionQualityDataObject);
+		}
+
+		// 后处理质量
+		{
+			UListDataObject_StringInteger* PostProcessingQualityDataObject = NewObject<UListDataObject_StringInteger>(GraphicsCategoryCollection, UListDataObject_StringInteger::StaticClass());
+			PostProcessingQualityDataObject->SetDataID(FName("PostProcessingQuality"));
+			PostProcessingQualityDataObject->SetDataDisplayName(FText::FromString(TEXT("后处理质量")));
+			PostProcessingQualityDataObject->AddIntegerOption(0, FText::FromString(TEXT("低")));
+			PostProcessingQualityDataObject->AddIntegerOption(1, FText::FromString(TEXT("中")));
+			PostProcessingQualityDataObject->AddIntegerOption(2, FText::FromString(TEXT("高")));
+			PostProcessingQualityDataObject->AddIntegerOption(3, FText::FromString(TEXT("极高")));
+			PostProcessingQualityDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
+			PostProcessingQualityDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>后处理质量</>\n控制画面最终呈现的视觉特效：\n* 核心特效：<Bold>环境光遮蔽</>→<Bold>色彩分级</>→<Bold>镜头效果</>→<Bold>景深</>→<Bold>动态模糊</>\n* 预设等级：<Bold>关闭</>→<Bold>低</>→<Bold>中</>→<Bold>高</>→<Bold>电影级</>\n\n<Bold>技术解析</>\n* <Bold>LUT调色</>：<Number>3D</>色彩映射（<Number>32</>位精度）\n* <Bold>光晕眩光</>：物理镜头模拟（<Number>11</>种光学元件）\n* <Bold>胶片颗粒</>：<Number>4K</>电影级噪点\n* <Bold>色差</>：色散模拟（<Number>RGB</>通道分离）\n\n<Bold>性能影响</>\n每提升一档：\n* GPU负载增加<Number>10-15%</>\n* 显存占用增长<Number>15%</>\n* 帧率下降约<Number>8-12%</>\n\n<Bold>视觉差异</>\n* <Bold>关闭</>：原始画面/无特效\n* <Bold>低</>：基础调色/无镜头效果\n* <Bold>高</>：电影级调色+动态光晕\n* <Bold>电影级</>：<Number>HDR</>色彩映射+<Bold>物理散景</>\n\n<Warning>硬件需求</>\n* 电影级：需<Number>RTX 3060</>+\n* <Number>4K</>后处理需<Number>6GB</>显存\n* 色差特效禁用<Bold>DLSS/FSR</>\n\n<Bold>智能优化</>\n* 动态降级：战斗时关闭<Bold>景深</>\n* 焦点渲染：中心<Number>100%</>精度/边缘<Number>50%</>\n* 时序重建：<Number>4</>帧合成替代实时计算\n\n<Bold>场景推荐</>\n→ 竞技游戏：<Bold>低</>@最高帧率\n→ 剧情体验：<Bold>高</>+<Bold>动态模糊</>\n→ 截图摄影：<Bold>电影级</>+<Bold>物理散景</>\n→ 怀旧风格：<Bold>胶片颗粒</>+<Bold>VHS</>滤镜\n\n<Warning>健康提示</>\n* 镜头眩光>50%可能引发<Bold>光敏不适</>\n* 动态模糊强度>30%造成<Bold>3D眩晕</>\n* 色差特效禁用<Bold>阅读模式</>")));
+			// 同样，对于后处理质量，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理后处理质量的获取和设置。
+			PostProcessingQualityDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetPostProcessingQuality));
+			PostProcessingQualityDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetPostProcessingQuality));
+			PostProcessingQualityDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
+			PostProcessingQualityDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
+			PostProcessingQualityDataObject->AddEditDependencyData(CreatedOverallQualityDataObject);
+			CreatedOverallQualityDataObject->AddEditDependencyData(PostProcessingQualityDataObject);
+			GraphicsCategoryCollection->AddChildListData(PostProcessingQualityDataObject);
 		}
 			
 	}
