@@ -23,9 +23,6 @@ public:
 
 	UPROPERTY(Config, EditAnywhere, Category="Options Image References", meta=(Categories = "Frontend.Image", ForceInlineRow))
 	TMap<FGameplayTag, TSoftObjectPtr<UTexture2D>> FrontendOptionsSoftImageMap;	// 前端选项图片映射
-
-	UPROPERTY(Config, EditAnywhere, Category="Options Description ST", meta = (AllowedClasses = "/Script/Engine.StringTable", ForceInlineRow))
-	FSoftObjectPath OptionsDescriptionSTPath;	// 选项描述文本资源路径，用于设置选项描述文本
 	
 	UPROPERTY(Config, EditAnywhere, Category="Audio Settings", meta=(AllowedClasses = "/Script/Engine.SoundClass", ForceInlineRow))
 	FSoftObjectPath MasterSoundClassPath;	// 主音效类路径，用于设置主音量

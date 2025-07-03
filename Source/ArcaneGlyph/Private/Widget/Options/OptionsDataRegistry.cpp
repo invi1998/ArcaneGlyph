@@ -6,6 +6,7 @@
 #include "ArcaneBlueprintFunctionLibrary.h"
 #include "ArcaneGameplayTags.h"
 #include "FrontendSettings/FrontendGameUserSettings.h"
+#include "Internationalization/StringTableRegistry.h"
 #include "Widget/Options/OptionsDataInteractionHelper.h"
 #include "Widget/Options/DataObject/ListDataObject_Collection.h"
 #include "Widget/Options/DataObject/ListDataObject_Scalar.h"
@@ -81,7 +82,7 @@ void UOptionsDataRegistry::InitGameplayCollectionTab()
 
 	// 创建一个选项数据交互帮助器，用于获取和设置游戏设置中的教学模式启用状态
 	// const TSharedPtr<FOptionsDataInteractionHelper> ConstructedHelper = MakeShared<FOptionsDataInteractionHelper>(GET_FUNCTION_NAME_STRING_CHECKED(UFrontendGameUserSettings, GetCurrentGameplayTutorialModeEnabled));
-
+	
 	// 教学模式
 	{
 		UListDataObject_StringBool* TutorialModeDataObject = NewObject<UListDataObject_StringBool>(GameplayCollectionDataObject, UListDataObject_StringBool::StaticClass());
@@ -94,7 +95,9 @@ void UOptionsDataRegistry::InitGameplayCollectionTab()
 		TutorialModeDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetCurrentGameplayTutorialModeEnabled));
 		TutorialModeDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 
-		TutorialModeDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("游戏教学模式核心设置：\n\n<Bold>难度级别</>\n- 休闲：敌人攻击频率降低60%，资源生成率翻倍\n- 标准：预设平衡体验（推荐新玩家）\n- 硬核：<Warning>永久关闭所有辅助功能</>\n\n<Bold>引导系统</>\n* 开启时提供：\n  - <Bold>交互高亮</>\n  - <Bold>路径指引</>\n  - <Bold>实时操作提示</>\n* <Warning>关闭后不可重新启用教程</>\n\n<Bold>辅助套件</>\n1. <Bold>智能存档</>（每5分钟自动存档）\n2. <Bold>谜题辅助</>（30秒后显示初级提示）\n3. <Bold>战斗辅助</>（危险动作触发0.75倍速）\n\n<Warning>重要警告</>\n* 硬核模式将锁定所有设置选项\n* 禁用智能存档可能导致进度丢失\n* 首次游玩建议开启全部引导功能\n\n<Bold>进阶提示</>\n→ 完成教程后进入设置界面\n→ 先关闭战斗辅助适应节奏\n→ 最后关闭路径指引挑战探索\n\n<Warning>配置须知</>\n变更设置后需重启当前关卡才能生效")));
+		const FText TutorialModeDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "TutorialModeDescKey");
+		
+		TutorialModeDataObject->SetDataDescriptionRichText(TutorialModeDescription);
 		
 		GameplayCollectionDataObject->AddChildListData(TutorialModeDataObject);
 	}
@@ -110,8 +113,9 @@ void UOptionsDataRegistry::InitGameplayCollectionTab()
 		AutoTargetLockDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetCurrentGameplayAutoTargetLock));
 		AutoTargetLockDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 
-		AutoTargetLockDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>自动切换锁定目标</>\n启用后自动追踪新进入视野的敌人：\n* 检测范围：<Number>15</>米锥形区域\n* 切换条件：目标进入视野<Number>0.5</>秒后\n* 优先级：距离最近>威胁值最高\n* 可调角度：<Number>30</>°~<Number>120</>°\n\n<Bold>工作机制</>\n* 目标死亡后<Number>0.3</>秒自动切换\n* 群战自动过滤血量<Number>10%</>以下目标\n* 镜头转动速度提升<Number>25%</>\n\n<Warning>使用注意</>\n* 开启后手动锁定需长按<Bold>LT键</>\n* 复杂地形可能意外切换目标\n* PvP场景禁用避免<Bold>锁定预测错误</>")));
-
+		const FText AutoTargetLockDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "AutoTargetLockDescKey");
+		AutoTargetLockDataObject->SetDataDescriptionRichText(AutoTargetLockDescription);
+		
 		GameplayCollectionDataObject->AddChildListData(AutoTargetLockDataObject);
 	}
 
@@ -126,8 +130,9 @@ void UOptionsDataRegistry::InitGameplayCollectionTab()
 		AutoAttackTargetLockDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetCurrentGameplayAutoAttackTargetLock));
 		AutoAttackTargetLockDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 
-		AutoAttackTargetLockDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>自动锁定攻击目标</>\n持续锁定当前目标直至脱离：\n* 视线丢失后维持<Number>3</>秒\n* 穿墙锁定：允许<Number>1.5</>米障碍物\n* 自动修正攻击方向偏移<Number>15</>°\n\n<Bold>高级设置</>\n* 锁定优先级：当前目标>仇恨最高\n* 切换冷却：<Number>1.2</>秒\n* Boss战锁定距离延长<Number>50%</>\n\n<Warning>平衡机制</>\n启用时：\n* 暴击率降低<Number>10%</>\n* 技能冷却增加<Number>0.5</>秒\n* 闪避消耗耐力增加<Number>20%</>\n\n<Warning>推荐配置</>\n* 单人游玩：建议开启\n* 团队副本：关闭避免OT\n* 竞技场：禁用保持操作自主性")));
-
+		const FText AutoAttackTargetLockDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "AutoAttackTargetLockDescKey");
+		AutoAttackTargetLockDataObject->SetDataDescriptionRichText(AutoAttackTargetLockDescription);
+		
 		GameplayCollectionDataObject->AddChildListData(AutoAttackTargetLockDataObject);
 	}
 
@@ -172,13 +177,15 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 			UListDataObject_Scalar* MasterVolumeDataObject = NewObject<UListDataObject_Scalar>(VolumeCategoryCollection, UListDataObject_Scalar::StaticClass());
 			MasterVolumeDataObject->SetDataID(FName("MasterVolume"));
 			MasterVolumeDataObject->SetDataDisplayName(FText::FromString(TEXT("主音量")));
-			MasterVolumeDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("音频设置中心：\n<Bold>主音量控制</> - 通过滑块调整所有声音元素的基准音量（范围：<Number>0</>~<Number>100</>），默认值<Number>75</>。\n\n特殊联动机制：\n* 背景音乐音量上限为主音量的<Number>80%</>\n* 环境音效受<Bold>动态压缩</>影响（高音量时自动降低<Number>15%</>）\n* 语音聊天独立增益上限<Number>+20%</>\n\n<Warning>听力保护提示</>\n持续暴露在<Number>85</>分贝以上可能造成听力损伤，建议：\n1. 日常游玩保持主音量≤<Number>70</>\n2. 佩戴耳机时启用<Bold>音量限制器</>（强制锁定≤<Number>60</>）\n\n<Bold>校准指南</>\n→ 在安静环境中播放测试音效\n→ 调整至刚好清晰听到<Number>20</>分贝提示音\n→ 保存后重启游戏使设置全局生效\n\n<Warning>注意</>：超过<Number>90</>将触发高频保护（自动过滤<Number>16000</>Hz以上音频）")));
 			MasterVolumeDataObject->SetDisplayValueRange(TRange<float>(0.f, 1.f));
 			MasterVolumeDataObject->SetOutputValueRange(TRange<float>(0.f, 2.f));
 			MasterVolumeDataObject->SetSliderStepSize(0.01f);
 			MasterVolumeDataObject->SetDefaultValueFromString(LexToString(1.f)); // 默认值为1.0（50%）
 			MasterVolumeDataObject->SetDisplayNumericType(ECommonNumericType::Percentage);		// 显示为百分比
 			MasterVolumeDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal());	// 不显示小数点
+
+			const FText MasterVolumeDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "MasterVolumeDescKey");
+			MasterVolumeDataObject->SetDataDescriptionRichText(MasterVolumeDescription);
 
 			// 设置动态获取器和设置器
 			MasterVolumeDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetMasterVolume));
@@ -199,7 +206,9 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 			MusicVolumeDataObject->SetDefaultValueFromString(LexToString(1.f)); // 默认值为1.0（50%）
 			MusicVolumeDataObject->SetDisplayNumericType(ECommonNumericType::Percentage);	// 显示为百分比
 			MusicVolumeDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal()); // 不显示小数点
-			MusicVolumeDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>音乐音量控制</>\n独立调节背景音乐(BGM)强度，与主音量联动：\n* 基准音量为主音量的<Number>100%</>\n* 可通过此选项在<Number>-50%</>~<Number>+30%</>范围内偏移\n\n<Bold>特殊场景适配</>\n* 战斗状态：自动提升<Number>15%</>音量（可关闭）\n* 剧情过场：强制降低至<Number>80%</>避免台词覆盖\n\n<Warning>动态压缩警告</>\n当总音量超过<Number>95</>时：\n* 音乐将被压缩<Number>20%</>以保护听力\n* 压缩后最低保留<Number>40%</>原始音量\n\n<Bold>推荐设置</>\n→ 日常探索：保持<Number>0%</>偏移\n→ 音乐鉴赏：开启<Bold>独占模式</>（禁用动态压缩）\n→ 竞技对战：启用战斗增益\n\n<Warning>注意</>：开启独占模式可能触发音频过载")));
+
+			const FText MusicVolumeDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "MusicVolumeDescKey");
+			MusicVolumeDataObject->SetDataDescriptionRichText(MusicVolumeDescription);
 			
 			// 设置动态获取器和设置器
 			MusicVolumeDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetMusicVolume));
@@ -220,8 +229,10 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 			EffectsVolumeDataObject->SetDefaultValueFromString(LexToString(1.0f)); // 默认值为1.0（50%）
 			EffectsVolumeDataObject->SetDisplayNumericType(ECommonNumericType::Percentage); // 显示为百分比
 			EffectsVolumeDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal()); // 不显示小数点
-			EffectsVolumeDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>特效音量控制</>\n调节所有游戏内特效音频（如爆炸、技能等）的整体音量：\n* 范围：<Number>0%</>（静音）至<Number>100%</>（全开）\n* 默认值：<Number>70%</>\n\n<Bold>动态适配</>\n* 战斗状态下自动提升<Number>10%</>\n* 剧情过场时降低至<Number>50%</>\n\n<Warning>注意</>\n开启后可能导致某些高频特效过载，建议：\n1. 日常游玩保持<Number>60%</>\n2. 特效爱好者可尝试<Number>80%</>\n3. 竞技对战建议降低至<Number>40%</>\n\n<Bold>推荐设置</>\n→ 日常游玩：<Number>60%</>\n→ 特效爱好者：<Number>80%</>\n→ 竞技对战：<Number>40%</>\n\n<Warning>注意</>：开启后可能导致某些高频特效过载，建议：\n1. 日常游玩保持<Number>60%</>\n2. 特效爱好者可尝试<Number>80%</>\n3. 竞技对战建议降低至<Number>40%</>")));
 
+			const FText EffectsVolumeDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "EffectsVolumeDescKey");
+			EffectsVolumeDataObject->SetDataDescriptionRichText(EffectsVolumeDescription);
+			
 			// 设置动态获取器和设置器
 			EffectsVolumeDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetSFXVolume));
 			EffectsVolumeDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetSFXVolume));
@@ -242,7 +253,10 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 			UserInterfaceVolumeDataObject->SetDefaultValueFromString(LexToString(1.0f)); // 默认值为1.f（50%）
 			UserInterfaceVolumeDataObject->SetDisplayNumericType(ECommonNumericType::Percentage); // 显示为百分比
 			UserInterfaceVolumeDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal()); // 不显示小数点
-			UserInterfaceVolumeDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>用户界面音量控制</>\n调节所有游戏内用户界面元素（如按钮、提示音等）的音量：\n* 范围：<Number>0%</>（静音）至<Number>100%</>（全开）\n* 默认值：<Number>50%</>\n\n<Bold>动态适配</>\n* 战斗状态下自动提升<Number>10%</>\n* 剧情过场时降低至<Number>30%</>\n\n<Warning>注意</>\n开启后可能导致某些高频特效过载，建议：\n1. 日常游玩保持<Number>40%</>\n2. 特效爱好者可尝试<Number>60%</>\n3. 竞技对战建议降低至<Number>30%</>\n\n<Bold>推荐设置</>\n→ 日常游玩：<Number>40%</>\n→ 特效爱好者：<Number>60%</>\n→ 竞技对战：<Number>30%</>\n\n<Warning>注意</>：开启后可能导致某些高频特效过载，建议：\n1. 日常游玩保持<Number>40%</>\n2. 特效爱好者可尝试<Number>60%</>\n3. 竞技对战建议降低至<Number>30%</>")));
+
+			const FText UserInterfaceVolumeDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "UserInterfaceVolumeDescKey");
+			UserInterfaceVolumeDataObject->SetDataDescriptionRichText(UserInterfaceVolumeDescription);
+			
 			// 设置动态获取器和设置器
 			UserInterfaceVolumeDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetUserInterfaceVolume));
 			UserInterfaceVolumeDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetUserInterfaceVolume));
@@ -261,7 +275,10 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 			InGameMusicVolumeDataObject->SetDefaultValueFromString(LexToString(1.0f)); // 默认值为1.f（50%）
 			InGameMusicVolumeDataObject->SetDisplayNumericType(ECommonNumericType::Percentage); // 显示为百分比
 			InGameMusicVolumeDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal()); // 不显示小数点
-			InGameMusicVolumeDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>游戏内音乐音量控制</>\n调节游戏内背景音乐的音量：\n* 范围：<Number>0%</>（静音）至<Number>100%</>（全开）\n* 默认值：<Number>60%</>\n\n<Bold>动态适配</>\n* 战斗状态下自动提升<Number>10%</>\n* 剧情过场时降低至<Number>50%</>\n\n<Warning>注意</>\n开启后可能导致某些高频特效过载，建议：\n1. 日常游玩保持<Number>50%</>\n2. 特效爱好者可尝试<Number>70%</>\n3. 竞技对战建议降低至<Number>40%</>\n\n<Bold>推荐设置</>\n→ 日常游玩：<Number>50%</>\n→ 特效爱好者：<Number>70%</>\n→ 竞技对战：<Number>40%</>\n\n<Warning>注意</>：开启后可能导致某些高频特效过载，建议：\n1. 日常游玩保持<Number>50%</>\n2. 特效爱好者可尝试<Number>70%</>\n3. 竞技对战建议降低至<Number>40%</>")));
+
+			const FText InGameMusicVolumeDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "InGameMusicVolumeDescKey");
+			InGameMusicVolumeDataObject->SetDataDescriptionRichText(InGameMusicVolumeDescription);
+			
 			// 设置动态获取器和设置器
 			InGameMusicVolumeDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetInGameMusicVolume));
 			InGameMusicVolumeDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetInGameMusicVolume));
@@ -280,7 +297,10 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 			MenuMusicVolumeDataObject->SetDefaultValueFromString(LexToString(1.0f)); // 默认值为1.f（50%）
 			MenuMusicVolumeDataObject->SetDisplayNumericType(ECommonNumericType::Percentage); // 显示为百分比
 			MenuMusicVolumeDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal()); // 不显示小数点
-			MenuMusicVolumeDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>菜单音乐音量控制</>\n调节游戏主菜单背景音乐的音量：\n* 范围：<Number>0%</>（静音）至<Number>100%</>（全开）\n* 默认值：<Number>50%</>\n\n<Bold>动态适配</>\n* 战斗状态下自动提升<Number>10%</>\n* 剧情过场时降低至<Number>30%</>\n\n<Warning>注意</>\n开启后可能导致某些高频特效过载，建议：\n1. 日常游玩保持<Number>40%</>\n2. 特效爱好者可尝试<Number>60%</>\n3. 竞技对战建议降低至<Number>30%</>\n\n<Bold>推荐设置</>\n→ 日常游玩：<Number>40%</>\n→ 特效爱好者：<Number>60%</>\n→ 竞技对战：<Number>30%</>\n\n<Warning>注意</>：开启后可能导致某些高频特效过载，建议：\n1. 日常游玩保持<Number>40%</>\n2. 特效爱好者可尝试<Number>60%</>\n3. 竞技对战建议降低至<Number>30%</>")));
+
+			const FText MenuMusicVolumeDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "MenuMusicVolumeDescKey");
+			MenuMusicVolumeDataObject->SetDataDescriptionRichText(MenuMusicVolumeDescription);
+			
 			// 设置动态获取器和设置器
 			MenuMusicVolumeDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetMenuMusicVolume));
 			MenuMusicVolumeDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetMenuMusicVolume));
@@ -309,8 +329,10 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 			BackgroundMusicDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetAllowBackgroundAudio));
 			BackgroundMusicDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetAllowBackgroundAudio));
 			BackgroundMusicDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
-			BackgroundMusicDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>背景音乐控制</>\n启用后游戏将播放背景音乐，禁用则静音所有背景音乐。\n\n<Bold>注意</>\n* 禁用后无法听到任何背景音乐\n* 建议新玩家开启以获得更好的沉浸感\n* 竞技玩家可选择禁用以减少干扰\n\n<Warning>警告</>\n禁用后无法恢复，请谨慎操作！")));
 
+			const FText BackgroundMusicDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "BackgroundMusicDescKey");
+			BackgroundMusicDataObject->SetDataDescriptionRichText(BackgroundMusicDescription);
+			
 			AudioCollectionDataObject->AddChildListData(BackgroundMusicDataObject);
 		}
 
@@ -325,7 +347,9 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 			UseHDRAudioDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetUseHDRAudio));
 			UseHDRAudioDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetUseHDRAudio));
 			UseHDRAudioDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
-			UseHDRAudioDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>HDR音频模式</>\n启用高动态范围音频处理技术：\n* 动态范围扩展至<Number>144</>dB（标准模式<Number>96</>dB）\n* 细节分离度提升<Number>300%</>\n* 支持<Number>32</>位浮点音频处理\n\n<Bold>核心优势</>\n* 环境音效：可识别<Number>5</>米内细微声响\n* 空间定位：方向精度提升至<Number>5</>°\n* 动态响应：枪声等突发音压衰减快<Number>50%</>\n\n<Bold>硬件要求</>\n* 必需：支持<Bold>杜比全景声</>或<Bold>DTS:X</>\n* 推荐：<Number>7.1</>声道以上环绕系统\n* 耳机需开启<Bold>虚拟环绕</>功能\n\n<Warning>兼容性说明</>\n* 旧版DirectX可能造成音频撕裂\n* 启用时内存占用增加<Number>400</>MB\n* 部分蓝牙设备仅支持<Number>48</>kHz采样率\n\n<Bold>校准建议</>\n→ 首次使用运行<Bold>音频向导</>\n→ 安静环境下设置基准音量<Number>65</>\n→ 动态范围压缩保持<Number>30%</>\n\n<Warning>重要提示</>\n禁用后需重启游戏才能关闭HDR音频管线")));
+
+			const FText UseHDRAudioDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "UseHDRAudioDescKey");
+			UseHDRAudioDataObject->SetDataDescriptionRichText(UseHDRAudioDescription);
 
 			UseHDRAudioDataObject->SetDisabledRichText(FText::FromString(TEXT("<Warning>HDR音频模式已禁用</>\n\n<Bold>注意</>\n* 禁用后无法恢复HDR音频处理\n* 需重启游戏才能关闭HDR音频管线\n* 建议仅在高端音频设备上使用\n\n<Warning>警告</>：禁用后无法恢复，请谨慎操作！")));
 			
@@ -378,7 +402,9 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			WindowModeDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetFullscreenMode));
 			WindowModeDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetFullscreenMode));
 			WindowModeDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
-			WindowModeDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>窗口模式</>\n调整游戏画面显示方式：\n* <Bold>全屏</>：独占显示输出（推荐竞技玩家）\n* <Bold>无边框窗口</>：无缝切换应用（默认选择）\n* <Bold>窗口</>：可自由调整尺寸（适合多屏操作）\n\n<Bold>性能影响</>\n* 全屏：帧率提升<Number>10-15%</>\n* 无边框：多屏渲染延迟<Number>3</>ms\n* 窗口：GPU利用率降低<Number>8%</>\n\n<Bold>分辨率联动</>\n* 全屏：强制使用显示器原生分辨率\n* 无边框：自动匹配桌面分辨率\n* 窗口：可自定义<Number>16:9</>/<Number>21:9</>比例\n\n<Warning>切换注意</>\n* 全屏切换可能造成<Number>1-2</>秒黑屏\n* 窗口模式禁用<Bold>G-Sync/FreeSync</>\n* 无边框模式需关闭<Bold>HDR</>防撕裂\n\n<Bold>多屏配置</>\n→ 主屏游戏：全屏模式\n→ 副屏操作：无边框窗口\n→ 窗口录制：固定<Number>1280×720</>尺寸\n\n<Warning>驱动要求</>\nNVIDIA/AMD显卡需更新至<Number>2023</>年后驱动版本")));
+
+			const FText WindowModeDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "WindowModeDescKey");
+			WindowModeDataObject->SetDataDescriptionRichText(WindowModeDescription);
 
 			// 编辑器状态下当前设置项不可用
 			WindowModeDataObject->AddEditCondition(PackagedBuildOnlyCondition);
@@ -394,8 +420,9 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			ScreenResolutionDataObject->SetDataID(FName("ScreenResolution"));
 			ScreenResolutionDataObject->SetDataDisplayName(FText::FromString(TEXT("屏幕分辨率")));
 
-			ScreenResolutionDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>屏幕分辨率</>\n调整游戏渲染像素数量：\n* 标准比例：<Number>16:9</>（<Number>1920×1080</>/<Number>2560×1440</>）\n* 超宽屏比例：<Number>21:9</>（<Number>2560×1080</>/<Number>3440×1440</>）\n* 专业比例：<Number>32:9</>（<Number>3840×1080</>）\n\n<Bold>性能影响</>\n每提升一档分辨率：\n* GPU负载增加<Number>35-40%</>\n* 显存占用增加<Number>1.5</>倍\n* 帧率下降约<Number>25%</>\n\n<Bold>显示技术</>\n* 原生分辨率：最佳清晰度（推荐）\n* DLSS/FSR：<Number>4K</>下性能提升<Number>70%</>\n* 动态分辨率：范围<Number>75-100%</>\n\n<Warning>配置警告</>\n* 超过显示器原生分辨率将启用虚拟超采样\n* <Number>4K</>分辨率需至少<Number>8GB</>显存\n* 宽屏模式可能造成UI拉伸\n\n<Bold>推荐设置</>\n→ 竞技玩家：<Number>1920×1080</>@<Number>144</>Hz\n→ 画质玩家：<Number>2560×1440</>@<Number>90</>Hz\n→ 电影体验：<Number>3440×1440</>带鱼屏\n\n<Warning>重要提示</>\n变更分辨率后需：\n1. 重新校准HUD界面比例\n2. 调整字体大小防止溢出\n3. 测试<Number>30</>秒确保帧率稳定")));
-
+			const FText ScreenResolutionDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "ScreenResolutionDescKey");
+			ScreenResolutionDataObject->SetDataDescriptionRichText(ScreenResolutionDescription);
+			
 			ScreenResolutionDataObject->InitResolutionValues();
 
 			// 同样，对于屏幕分辨率，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理分辨率的获取和设置。
@@ -448,7 +475,9 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			BrightnessDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 			BrightnessDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetDisplayGama));
 			BrightnessDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetDisplayGama));
-			BrightnessDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>亮度调整</>\n调节游戏画面的整体亮度：\n* 范围：<Number>0%</>（最暗）至<Number>100%</>（最亮）\n* 默认值：<Number>50%</>\n\n<Bold>使用建议</>\n* 日间场景：<Number>60%</>\n* 夜间场景：<Number>40%</>\n* 高对比度显示器：<Number>30%</>\n\n<Warning>注意</>\n过高的亮度可能导致视觉疲劳，建议定期休息！")));
+
+			const FText BrightnessDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "BrightnessDescKey");
+			BrightnessDataObject->SetDataDescriptionRichText(BrightnessDescription);
 			
 			GraphicsCategoryCollection->AddChildListData(BrightnessDataObject);
 		}
@@ -463,7 +492,10 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			QualityLevelDataObject->AddIntegerOption(2, FText::FromString(TEXT("高")));
 			QualityLevelDataObject->AddIntegerOption(3, FText::FromString(TEXT("极高")));
 			QualityLevelDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
-			QualityLevelDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>画质等级</>\n五档预设优化游戏视觉效果：\n* <Bold>低</>：性能优先（帧率提升<Number>150%</>）\n* <Bold>中</>：平衡选择（推荐<Number>GTX 1060</>）\n* <Bold>高</>：画质增强（启用<Number>PBR</>材质）\n* <Bold>极高</>：次世代效果（需<Number>RTX 3060</>+）\n* <Bold>影视级</>：电影规格（<Number>8K</>纹理+<Number>64x</>抗锯齿）\n\n<Bold>核心技术差异</>\n* 阴影质量：低(<Number>512</>p)→影视级(<Number>16K</>光线追踪)\n* 纹理过滤：双线性→<Number>16x</>各向异性\n* 粒子效果：<Number>50%</>削减→<Number>200%</>增强\n\n<Bold>性能影响</>\n每提升一档：\n* GPU负载增加<Number>35-40%</>\n* 显存占用增长<Number>1.8</>倍\n* 帧率下降约<Number>30%</>\n\n<Warning>硬件要求</>\n* 影视级：需<Number>12GB</>显存+<Number>DLSS 3</>\n* 极高：<Number>8GB</>显存+光追支持\n* 高：<Number>6GB</>显存\n\n<Bold>智能优化</>\n* 动态降级：帧率<Number><45</>时自动降档\n* 内存保护：超限时压缩<Number>4K</>纹理\n* 焦点渲染：非视野区降低<Number>50%</>精度\n\n<Bold>推荐配置</>\n→ 竞技玩家：低@<Number>144</>Hz\n→ 开放世界：高+<Bold>DLSS质量</>\n→ 截图摄影：影视级+<Bold>无帧率限制</>\n\n<Warning>影视级警告</>\n启用后：\n* 功耗增加<Number>80%</>\n* 显存温度升<Number>20</>℃\n* 需关闭<Bold>Windows HDR</>防冲突")));
+
+			const FText QualityLevelDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "QualityLevelDescKey");
+			QualityLevelDataObject->SetDataDescriptionRichText(QualityLevelDescription);
+			
 			QualityLevelDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
 			// 同样，对于画质等级，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理画质等级的获取和设置。
 			QualityLevelDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetOverallScalabilityLevel));
@@ -488,8 +520,9 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			ResolutionScaleDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal()); // 不显示小数点
 			ResolutionScaleDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 
-			ResolutionScaleDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>分辨率缩放等级</>\n动态调整3D场景渲染精度：\n* 范围：<Number>50%</>（性能模式）~<Number>200%</>（超采样）\n* 默认：<Number>100%</>（原生分辨率）\n\n<Bold>性能影响</>\n每降低<Number>25%</>：\n* 帧率提升<Number>30-40%</>\n* GPU负载降低<Number>45%</>\n* 显存占用减少<Number>35%</>\n\n<Bold>视觉质量</>\n* <Number>50-75%</>：明显锯齿（移动端适用）\n* <Number>100%</>：原生清晰度\n* <Number>125-150%</>：边缘锐化+细节增强\n* <Number>200%</>：<Bold>8xSSAA</>等效效果\n\n<Bold>智能模式</>\n* 动态缩放：帧率<Number><45</>时自动降级\n* 焦点渲染：视野中心保持<Number>100%</>\n* 边缘优化：外围区域降至<Number>75%</>\n\n<Bold>技术协同</>\n* 开启DLSS/FSR时：缩放基于<Bold>输入分辨率</>\n* 与抗锯齿叠加：<Number>TAA</>+<Number>150%</>缩放=<Bold>超采样抗锯齿</>\n* VR模式：强制<Number>120-140%</>消除纱窗效应\n\n<Warning>使用注意</>\n* <Number>200%</>缩放需<Number>2.5</>倍GPU算力\n* 低于<Number>70%</>可能造成UI模糊\n* HDR模式下建议保持<Number>100-125%</>\n\n<Bold>场景推荐</>\n→ 竞技游戏：<Number>85%</>@最高帧率\n→ 开放世界：<Number>100%</>+DLSS质量\n→ 截图摄影：<Number>150-200%</>超采样\n→ VR设备：固定<Number>130%</>")));
-
+			const FText ResolutionScaleDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "ResolutionScaleDescKey");
+			ResolutionScaleDataObject->SetDataDescriptionRichText(ResolutionScaleDescription);
+			
 			// 同样，对于分辨率缩放等级，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理分辨率缩放的获取和设置。
 			ResolutionScaleDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetResolutionScaleNormalized));
 			ResolutionScaleDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetResolutionScaleNormalized));
@@ -511,12 +544,14 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			GlobalIlluminationDataObject->AddIntegerOption(2, FText::FromString(TEXT("高")));
 			GlobalIlluminationDataObject->AddIntegerOption(3, FText::FromString(TEXT("极高")));
 			GlobalIlluminationDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
-			GlobalIlluminationDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>全局光照</>\n控制场景光照计算精度：\n* <Bold>低</>：快速近似（适合低端设备）\n* <Bold>中</>：标准光照（推荐<Number>GTX 1060</>）\n* <Bold>高</>：精细光照（启用<Number>PBR</>材质）\n* <Bold>极高</>：次世代效果（需<Number>RTX 3060</>+）\n* <Bold>影视级</>：电影规格（<Number>8K</>纹理+<Number>64x</>抗锯齿）\n\n<Bold>核心技术差异</>\n* 阴影质量：低(<Number>512</>p)→影视级(<Number>16K</>光线追踪)\n* 纹理过滤：双线性→<Number>16x</>各向异性\n* 粒子效果：<Number>50%</>削减→<Number>200%</>增强\n\n<Bold>性能影响</>\n每提升一档：\n* GPU负载增加<Number>35-40%</>\n* 显存占用增长<Number>1.8</>倍\n* 帧率下降约<Number>30%</>\n\n<Warning>硬件要求</>\n* 影视级：需<Number>12GB</>显存+<Number>DLSS 3</>\n* 极高：<Number>8GB</>显存+光追支持\n* 高：<Number>6GB</>显存\n\n<Bold>智能优化</>\n* 动态降级：帧率<Number><45</>时自动降档\n* 内存保护：超限时压缩<Number>4K</>纹理\n* 焦点渲染：非视野区降低<Number>50%</>\n\n<Bold>推荐配置</>\n→ 竞技玩家：低@<Number>144</>Hz\n→ 开放世界：高+<Bold>DLSS质量</>\n→ 截图摄影：影视级+<Bold>无帧率限制</>\n\n<Warning>影视级警告</>\n启用后：\n* 功耗增加<Number>80%</>\n* 显存温度升<Number>20</>℃\n* 需关闭<Bold>Windows HDR</>防冲突")));
 			GlobalIlluminationDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
 			// 同样，对于全局光照，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理全局光照的获取和设置。
 			GlobalIlluminationDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetGlobalIlluminationQuality));
 			GlobalIlluminationDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetGlobalIlluminationQuality));
 			GlobalIlluminationDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
+
+			const FText GlobalIlluminationDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "GlobalIlluminationDescKey");
+			GlobalIlluminationDataObject->SetDataDescriptionRichText(GlobalIlluminationDescription);
 
 			// 添加依赖，整体画质变更时自动更新全局光照的编辑状态
 			GlobalIlluminationDataObject->AddEditDependencyData(CreatedOverallQualityDataObject);
@@ -538,12 +573,14 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			ShadowQualityDataObject->AddIntegerOption(2, FText::FromString(TEXT("高")));
 			ShadowQualityDataObject->AddIntegerOption(3, FText::FromString(TEXT("极高")));
 			ShadowQualityDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
-			ShadowQualityDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>阴影质量</>\n控制场景阴影的精度和复杂度：\n* 等级：<Bold>关闭</>→<Bold>低</>→<Bold>中</>→<Bold>高</>→<Bold>超高</>→<Bold>光追</>\n* 默认：<Bold>高</>（平衡性能与质量）\n\n<Bold>技术差异</>\n* 分辨率：低(<Number>512</>p)→超高(<Number>4K</>)\n* 投射距离：<Number>50</>m→<Number>500</>m\n* 软阴影：无→<Bold>PCSS</>→<Bold>光线追踪软阴影</>\n\n<Bold>性能影响</>\n每提升一档：\n* GPU负载增加<Number>15-20%</>\n* 帧率下降约<Number>8-12%</>\n* 显存占用增长<Number>25%</>\n\n<Bold>核心参数</>\n* 级联阴影：<Number>4</>层→<Number>16</>层\n* 接触硬化：<Number>关闭</>→<Bold>高质量</>\n* 半影角度：<Number>0.5</>°→<Number>0.1</>°\n\n<Warning>光追阴影要求</>\n* 必需：RTX<Number>2060</>/RX<Number>6000</>系列+\n* 显存：≥<Number>6GB</>\n* 驱动：<Number>2022</>年后版本\n\n<Bold>优化技术</>\n* 动态调整：快速移动时降级<Number>50%</>\n* 视距剔除：屏幕外阴影精度减半\n* 虚拟阴影贴图：节省<Number>40%</>显存\n\n<Bold>场景推荐</>\n→ 竞技游戏：<Bold>低</>@最高帧率\n→ 开放世界：<Bold>高</>+级联阴影\n→ 摄影模式：<Bold>光追</>+<Number>16K</>分辨率\n→ 旧硬件：<Bold>中</>+虚拟阴影\n\n<Warning>使用注意</>\n* 光追阴影功耗增加<Number>60%</>\n* 低于<Bold>中</>设置可能造成\"阴影弹出\"\n* 植被密集区建议<Bold>高</>级以上")));
 			ShadowQualityDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
 			// 同样，对于阴影质量，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理阴影质量的获取和设置。
 			ShadowQualityDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetShadowQuality));
 			ShadowQualityDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetShadowQuality));
 			ShadowQualityDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
+
+			const FText ShadowQualityDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "ShadowQualityDescKey");
+			ShadowQualityDataObject->SetDataDescriptionRichText(ShadowQualityDescription);
 
 			ShadowQualityDataObject->AddEditDependencyData(CreatedOverallQualityDataObject);
 			CreatedOverallQualityDataObject->AddEditDependencyData(ShadowQualityDataObject);
@@ -561,12 +598,14 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			AntiAliasingDataObject->AddIntegerOption(2, FText::FromString(TEXT("高")));
 			AntiAliasingDataObject->AddIntegerOption(3, FText::FromString(TEXT("极高")));
 			AntiAliasingDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
-			AntiAliasingDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>抗锯齿</>\n消除3D场景中的锯齿状边缘：\n* 技术选项：<Bold>FXAA</>→<Bold>SMAA</>→<Bold>TAA</>→<Bold>MSAA</>→<Bold>DLSS/FSR</>\n* 默认：<Bold>TAA</>（平衡质量与性能）\n\n<Bold>技术原理</>\n* FXAA：后处理快速近似（性能最优）\n* TAA：时域采样（<Number>4-8</>帧累积）\n* MSAA：多重采样（<Number>2/4/8</>倍）\n* DLSS/FSR：AI超分（<Number>4K</>下性能+<Number>70%</>）\n\n<Bold>视觉质量</>\n* 静态场景：<Bold>MSAA 8x</>最佳\n* 动态场景：<Bold>TAA</>最稳定\n* 性能模式：<Bold>DLSS性能</>\n* 画质模式：<Bold>DLSS质量</>+<Bold>锐化</>\n\n<Bold>性能影响</>\n* FXAA：帧率损失<Number><3%</>\n* TAA：帧率损失<Number>5-8%</>\n* MSAA 4x：帧率损失<Number>20-25%</>\n* DLSS：帧率提升<Number>40-70%</>\n\n<Warning>技术限制</>\n* MSAA：不适用延迟渲染/消耗显存（<Number>4x</>需+<Number>2GB</>）\n* TAA：可能造成<Bold>动态模糊</>\n* FXAA：文本模糊（禁用UI处理）\n* DLSS：需<Bold>RTX 20</>系列+\n\n<Bold>推荐配置</>\n→ 竞技玩家：<Bold>FXAA</>@最高帧率\n→ 开放世界：<Bold>TAA</>+锐化<Number>30%</>\n→ 高端PC：<Bold>DLSS质量</>+<Bold>DLAA</>\n→ 截图摄影：<Bold>MSAA 8x</>+<Bold>200%</>缩放\n\n<Bold>高级选项</>\n* 锐化强度：<Number>0-100%</>（抵消TAA模糊）\n* 运动补偿：减少动态残影\n* 亚像素检测：提升毛发/栅栏质量\n\n<Warning>兼容性说明</>\n* HDR+DLSS需Windows<Number>11</>\n* FSR<Number>2.1</>支持<Bold>所有显卡</>\n* MSAA在<Bold>植被透明</>表面效果有限")));
 			AntiAliasingDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
 			// 同样，对于抗锯齿，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理抗锯齿的获取和设置。
 			AntiAliasingDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetAntiAliasingQuality));
 			AntiAliasingDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetAntiAliasingQuality));
 			AntiAliasingDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
+
+			const FText AntiAliasingDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "AntiAliasingDescKey");
+			AntiAliasingDataObject->SetDataDescriptionRichText(AntiAliasingDescription);
 
 			AntiAliasingDataObject->AddEditDependencyData(CreatedOverallQualityDataObject);
 			CreatedOverallQualityDataObject->AddEditDependencyData(AntiAliasingDataObject);
@@ -583,12 +622,14 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			ViewDistanceDataObject->AddIntegerOption(2, FText::FromString(TEXT("高")));
 			ViewDistanceDataObject->AddIntegerOption(3, FText::FromString(TEXT("极高")));
 			ViewDistanceDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
-			ViewDistanceDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>视野距离</>\n控制场景中物体的渲染距离：\n* 等级：<Bold>近</>→<Bold>中</>→<Bold>远</>→<Bold>超远</>→<Bold>极限</>\n* 默认：<Bold>远</>（平衡性能与沉浸感）\n\n<Bold>视觉影响</>\n* 物体加载距离：<Number>200</>m→<Number>2000</>m\n* 地形细节：<Number>1</>km→<Number>5</>km\n* 植被密度：<Number>50%</>→<Number>300%</>\n\n<Bold>性能影响</>\n每提升一档：\n* CPU负载增加<Number>15-25%</>\n* GPU负载增加<Number>10-15%</>\n* 内存占用增长<Number>40%</>\n* 帧率下降约<Number>12-18%</>\n\n<Bold>核心技术</>\n* 层次细节（LOD）：<Number>8</>级动态降模\n* 分块加载：<Number>500</>m区块流式传输\n* 视锥剔除：排除视野外<Number>90%</>物体\n\n<Warning>硬件要求</>\n* 极限距离需：<Number>16GB</>内存+<Number>6核</>CPU\n* <Number>2000m</>+：SSD必需（<Number>2GB/s</>读取）\n* 超远距离显存占用：<Number>4GB</>+\n\n<Bold>智能优化</>\n* 动态调整：高速移动时+<Number>30%</>距离\n* 焦点区域：视野中心保持<Number>100%</>精度\n* 垂直优化：天空/地面降低<Number>50%</>细节\n\n<Bold>场景推荐</>\n→ 竞技游戏：<Bold>中</>（<Number>500m</>）@最高帧率\n→ 开放世界：<Bold>超远</>（<Number>1500m</>）+动态加载\n→ 飞行模拟：<Bold>极限</>（<Number>2000m</>）\n→ 旧硬件：<Bold>远</>+关闭<Bold>远景阴影</>\n\n<Warning>使用注意</>\n* ><Number>1500m</>可能导致<Bold>物体弹出</>\n* 内存<Number><8GB</>建议≤<Bold>远</>\n* 多人在线时强制同步为<Bold>中</>")));
 			ViewDistanceDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
 			// 同样，对于视野距离，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理视野距离的获取和设置。
 			ViewDistanceDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetViewDistanceQuality));
 			ViewDistanceDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetViewDistanceQuality));
 			ViewDistanceDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
+
+			const FText ViewDistanceDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "ViewDistanceDescKey");
+			ViewDistanceDataObject->SetDataDescriptionRichText(ViewDistanceDescription);
 
 			ViewDistanceDataObject->AddEditDependencyData(CreatedOverallQualityDataObject);
 			CreatedOverallQualityDataObject->AddEditDependencyData(ViewDistanceDataObject);
@@ -607,12 +648,14 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			TextureQualityDataObject->AddIntegerOption(2, FText::FromString(TEXT("高")));
 			TextureQualityDataObject->AddIntegerOption(3, FText::FromString(TEXT("极高")));
 			TextureQualityDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
-			TextureQualityDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>纹理质量</>\n控制物体表面材质的精细度：\n* 等级：<Bold>极低</>→<Bold>低</>→<Bold>中</>→<Bold>高</>→<Bold>超高</>→<Bold>影视级</>\n* 默认：<Bold>高</>（平衡显存与细节）\n\n<Bold>技术差异</>\n* 纹理分辨率：<Number>512</>p→<Number>8K</>\n* Mipmap层级：<Number>4</>级→<Number>12</>级\n* 各向异性过滤：<Number>2x</>→<Number>16x</>\n\n<Bold>性能影响</>\n每提升一档：\n* 显存占用增加<Number>40-50%</>\n* 内存占用增长<Number>30%</>\n* 加载时间延长<Number>20%</>\n* 帧率影响：<Number><5%</>（非瓶颈时）\n\n<Bold>核心参数</>\n* 贴图流送池：<Number>1GB</>→<Number>8GB</>\n* 虚拟纹理：<Bold>开启</>可节省<Number>30%</>显存\n* 材质LOD：<Number>0</>（全细节）→<Number>4</>（简化）\n\n<Warning>硬件要求</>\n* 影视级：需<Number>10GB</>+显存\n* <Number>4K</>纹理：GTX<Number>1080</>+/RX<Number>5700</>+\n* <Number>8K</>纹理：RTX<Number>3080</>+/RX<Number>6800XT</>+\n\n<Bold>优化技术</>\n* 动态流送：按需加载<Bold>8K</>纹理\n* 纹理压缩：BC1→BC7（质量+<Number>50%</>）\n* 智能降级：显存不足时自动降为<Number>4K</>\n\n<Bold>视觉对比</>\n* <Bold>低</>：材质模糊（<Number>20</>m外细节丢失）\n* <Bold>高</>：清晰纹路（可辨<Number>5</>mm细节）\n* <Bold>影视级</>：亚表面散射+物理磨损\n\n<Bold>场景推荐</>\n→ 竞技游戏：<Bold>中</>@最高帧率\n→ 开放世界：<Bold>高</>+虚拟纹理\n→ 截图摄影：<Bold>影视级</>+<Number>8K</>\n→ 旧硬件：<Bold>低</>+关闭<Bold>各向异性过滤</>\n\n<Warning>使用注意</>\n* ><Bold>高</>设置需<Number>6GB</>+显存\n* 降低质量可减少<Number>50%</>加载时间\n* 变更后需<Bold>重启关卡</>生效")));
 			TextureQualityDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
 			// 同样，对于纹理质量，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理纹理质量的获取和设置。
 			TextureQualityDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetTextureQuality));
 			TextureQualityDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetTextureQuality));
 			TextureQualityDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
+
+			const FText TextureQualityDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "TextureQualityDescKey");
+			TextureQualityDataObject->SetDataDescriptionRichText(TextureQualityDescription);
 
 			TextureQualityDataObject->AddEditDependencyData(CreatedOverallQualityDataObject);
 			CreatedOverallQualityDataObject->AddEditDependencyData(TextureQualityDataObject);
@@ -630,12 +673,15 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			VisualEffectDataObject->AddIntegerOption(2, FText::FromString(TEXT("高")));
 			VisualEffectDataObject->AddIntegerOption(3, FText::FromString(TEXT("极高")));
 			VisualEffectDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
-			VisualEffectDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>视觉效果</>\n控制场景后处理特效的强度与质量：\n* 核心特效：<Bold>环境光遮蔽</>→<Bold>屏幕空间反射</>→<Bold>体积光</>→<Bold>景深</>→<Bold>动态模糊</>\n* 预设等级：<Bold>关闭</>→<Bold>低</>→<Bold>中</>→<Bold>高</>→<Bold>电影级</>\n\n<Bold>技术解析</>\n* <Bold>SSAO</>：基础遮蔽（性能消耗<Number>5%</>）\n* <Bold>HBAO+</>：高精度环境光（+<Number>3%</>消耗）\n* <Bold>SSR</>：屏幕反射（<Number>1080p</>精度）\n* <Bold>光线追踪反射</>：物理精确（消耗<Number>25%</>帧率）\n\n<Bold>性能影响</>\n每提升一档：\n* GPU负载增加<Number>12-18%</>\n* 显存占用增长<Number>20%</>\n* 帧率下降约<Number>10-15%</>\n\n<Bold>视觉对比</>\n* <Bold>关闭</>：平面光照/无反射\n* <Bold>低</>：基本遮蔽/模糊反射\n* <Bold>高</>：动态体积雾/表面湿滑效果\n* <Bold>电影级</>：<Number>64</>样本全局光照\n\n<Warning>硬件需求</>\n* 光线追踪：RTX<Number>2060</>+/RX<Number>6000</>+\n* <Number>4K</>体积光需<Number>8GB</>显存\n* 电影级景深需DLSS/FSR辅助\n\n<Bold>智能优化</>\n* 动态降级：战斗时关闭<Bold>景深</>\n* 焦点渲染：主体<Number>100%</>精度/背景<Number>50%</>\n* 时序重建：<Number>4</>帧合成替代实时计算\n\n<Bold>场景推荐</>\n→ 竞技游戏：<Bold>低</>@最高帧率\n→ RPG探索：<Bold>高</>+<Bold>动态模糊</>\n→ 截图摄影：<Bold>电影级</>+<Bold>光线追踪</>\n→ 旧硬件：<Bold>中</>+关闭<Bold>体积光</>\n\n<Warning>使用注意</>\n* 动态模糊可能引发<Bold>3D眩晕</>\n* 景深>50%造成UI模糊\n* 变更后需<Bold>重载着色器</>")));
 			// 同样，对于视觉效果，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理视觉效果的获取和设置。
 			VisualEffectDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetVisualEffectQuality));
 			VisualEffectDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetVisualEffectQuality));
 			VisualEffectDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 			VisualEffectDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
+
+			const FText VisualEffectDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "VisualEffectDescKey");
+			VisualEffectDataObject->SetDataDescriptionRichText(VisualEffectDescription);
+			
 			VisualEffectDataObject->AddEditDependencyData(CreatedOverallQualityDataObject);
 			CreatedOverallQualityDataObject->AddEditDependencyData(VisualEffectDataObject);
 			GraphicsCategoryCollection->AddChildListData(VisualEffectDataObject);
@@ -652,12 +698,15 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			ReflectionQualityDataObject->AddIntegerOption(2, FText::FromString(TEXT("高")));
 			ReflectionQualityDataObject->AddIntegerOption(3, FText::FromString(TEXT("极高")));
 			ReflectionQualityDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
-			ReflectionQualityDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>反射质量</>\n控制场景中反射效果的精度与类型：\n* 技术选项：<Bold>平面反射</>→<Bold>SSR</>→<Bold>混合反射</>→<Bold>光追反射</>→<Bold>路径追踪</>\n* 预设等级：<Bold>关闭</>→<Bold>低</>→<Bold>中</>→<Bold>高</>→<Bold>超高</>\n\n<Bold>技术解析</>\n* <Bold>SSR</>：屏幕空间反射（<Number>1080p</>精度）\n* <Bold>立方体贴图</>：静态环境捕捉（更新间隔<Number>30</>秒）\n* <Bold>光追反射</>：物理精确（<Number>1-16</>样本）\n* <Bold>路径追踪</>：<Number>64</>样本全局光照\n\n<Bold>性能影响</>\n每提升一档：\n* GPU负载增加<Number>15-25%</>\n* 显存占用增长<Number>30%</>\n* 帧率下降约<Number>12-20%</>\n\n<Bold>视觉对比</>\n* <Bold>关闭</>：无反射/简单镜面\n* <Bold>低</>：模糊反射（<Number>5</>m内物体）\n* <Bold>高</>：清晰反射+动态波纹\n* <Bold>光追</>：完美镜面/粗糙表面散射\n\n<Warning>硬件需求</>\n* 光追反射：RTX<Number>2060</>+/RX<Number>6000</>+\n* <Number>4K</>反射需<Number>8GB</>显存\n* 路径追踪需<Number>24GB</>显存+\n\n<Bold>智能优化</>\n* 动态降级：快速移动时降为<Bold>SSR</>\n* 距离衰减：<Number>20</>m外精度减半\n* 重要性采样：焦点物体<Number>2x</>精度\n\n<Bold>场景推荐</>\n→ 竞技游戏：<Bold>低</>@最高帧率\n→ 城市探索：<Bold>高</>+<Bold>立方体贴图</>\n→ 水面场景：<Bold>光追</>+<Number>8</>样本\n→ 截图摄影：<Bold>路径追踪</>+<Number>64</>样本\n\n<Warning>使用注意</>\n* SSR可能产生<Bold>边缘断裂</>\n* 光追反射功耗增加<Number>50%</>\n* 变更后需<Bold>重载反射捕获</>")));
 			// 同样，对于反射质量，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理反射质量的获取和设置。
 			ReflectionQualityDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetReflectionQuality));
 			ReflectionQualityDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetReflectionQuality));
 			ReflectionQualityDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 			ReflectionQualityDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
+
+			const FText ReflectionQualityDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "ReflectionQualityDescKey");
+			ReflectionQualityDataObject->SetDataDescriptionRichText(ReflectionQualityDescription);
+			
 			ReflectionQualityDataObject->AddEditDependencyData(CreatedOverallQualityDataObject);
 			CreatedOverallQualityDataObject->AddEditDependencyData(ReflectionQualityDataObject);
 			GraphicsCategoryCollection->AddChildListData(ReflectionQualityDataObject);
@@ -673,12 +722,15 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			PostProcessingQualityDataObject->AddIntegerOption(2, FText::FromString(TEXT("高")));
 			PostProcessingQualityDataObject->AddIntegerOption(3, FText::FromString(TEXT("极高")));
 			PostProcessingQualityDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
-			PostProcessingQualityDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>后处理质量</>\n控制画面最终呈现的视觉特效：\n* 核心特效：<Bold>环境光遮蔽</>→<Bold>色彩分级</>→<Bold>镜头效果</>→<Bold>景深</>→<Bold>动态模糊</>\n* 预设等级：<Bold>关闭</>→<Bold>低</>→<Bold>中</>→<Bold>高</>→<Bold>电影级</>\n\n<Bold>技术解析</>\n* <Bold>LUT调色</>：<Number>3D</>色彩映射（<Number>32</>位精度）\n* <Bold>光晕眩光</>：物理镜头模拟（<Number>11</>种光学元件）\n* <Bold>胶片颗粒</>：<Number>4K</>电影级噪点\n* <Bold>色差</>：色散模拟（<Number>RGB</>通道分离）\n\n<Bold>性能影响</>\n每提升一档：\n* GPU负载增加<Number>10-15%</>\n* 显存占用增长<Number>15%</>\n* 帧率下降约<Number>8-12%</>\n\n<Bold>视觉差异</>\n* <Bold>关闭</>：原始画面/无特效\n* <Bold>低</>：基础调色/无镜头效果\n* <Bold>高</>：电影级调色+动态光晕\n* <Bold>电影级</>：<Number>HDR</>色彩映射+<Bold>物理散景</>\n\n<Warning>硬件需求</>\n* 电影级：需<Number>RTX 3060</>+\n* <Number>4K</>后处理需<Number>6GB</>显存\n* 色差特效禁用<Bold>DLSS/FSR</>\n\n<Bold>智能优化</>\n* 动态降级：战斗时关闭<Bold>景深</>\n* 焦点渲染：中心<Number>100%</>精度/边缘<Number>50%</>\n* 时序重建：<Number>4</>帧合成替代实时计算\n\n<Bold>场景推荐</>\n→ 竞技游戏：<Bold>低</>@最高帧率\n→ 剧情体验：<Bold>高</>+<Bold>动态模糊</>\n→ 截图摄影：<Bold>电影级</>+<Bold>物理散景</>\n→ 怀旧风格：<Bold>胶片颗粒</>+<Bold>VHS</>滤镜\n\n<Warning>健康提示</>\n* 镜头眩光>50%可能引发<Bold>光敏不适</>\n* 动态模糊强度>30%造成<Bold>3D眩晕</>\n* 色差特效禁用<Bold>阅读模式</>")));
 			// 同样，对于后处理质量，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理后处理质量的获取和设置。
 			PostProcessingQualityDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetPostProcessingQuality));
 			PostProcessingQualityDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetPostProcessingQuality));
 			PostProcessingQualityDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 			PostProcessingQualityDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
+
+			const FText PostProcessingQualityDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "PostProcessingQualityDescKey");
+			PostProcessingQualityDataObject->SetDataDescriptionRichText(PostProcessingQualityDescription);
+			
 			PostProcessingQualityDataObject->AddEditDependencyData(CreatedOverallQualityDataObject);
 			CreatedOverallQualityDataObject->AddEditDependencyData(PostProcessingQualityDataObject);
 			GraphicsCategoryCollection->AddChildListData(PostProcessingQualityDataObject);
@@ -699,11 +751,13 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			VSyncDataObject->SetDataDisplayName(FText::FromString(TEXT("垂直同步")));
 			VSyncDataObject->OverrideDisplayTrueText(FText::FromString(TEXT("开启")));
 			VSyncDataObject->OverrideDisplayFalseText(FText::FromString(TEXT("关闭")));
-			VSyncDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>垂直同步</>\n控制帧率与显示器刷新率同步：\n* 选项：<Bold>关闭</>→<Bold>开启</>→<Bold>自适应</>→<Bold>增强</>\n* 默认：<Bold>自适应</>（平衡画面与响应）\n\n<Bold>技术原理</>\n* 基础同步：强制帧率≤刷新率（<Number>60/144</>Hz）\n* 自适应：帧率<刷新率时自动关闭\n* 增强：三重缓冲+帧率限制\n\n<Bold>性能影响</>\n* 开启后：\n* 输入延迟增加<Number>15-30ms</>\n* 帧率波动减少<Number>90%</>\n* GPU利用率降低<Number>10%</>\n\n<Bold>视觉差异</>\n* <Bold>关闭</>：可能画面撕裂（高速移动时）\n* <Bold>开启</>：完全平滑但迟滞\n* <Bold>自适应</>：无撕裂+低延迟\n* <Bold>增强</>：<Number>G-Sync</>/<Bold>FreeSync</>等效效果\n\n<Warning>硬件要求</>\n* 自适应：需<Number>DX11</>+\n* 增强：兼容显示器+<Number>HDMI 2.1</>/<Bold>DP 1.4</>\n* <Number>4K</>高刷需<Bold>DSC</>压缩\n\n<Bold>输入延迟对比</>\n* 关闭：<Number>10ms</>（竞技最优）\n* 开启：<Number>40ms</>\n* 自适应：<Number>25ms</>\n* 增强：<Number>18ms</>\n\n<Bold>场景推荐</>\n→ 竞技FPS：<Bold>关闭</>@<Number>240</>Hz+\n→ 剧情游戏：<Bold>自适应</>或<Bold>增强</>\n→ 旧显示器：<Bold>开启</>防撕裂\n→ HDR体验：<Bold>增强</>+<Bold>VRR</>\n\n<Warning>使用注意</>\n* 帧率<刷新率时可能卡顿\n* 多屏设置需主显示器支持\n* 增强模式禁用<Bold>截图工具</>")));
 			VSyncDataObject->SetFalseAsDefaultValue();
 			VSyncDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(IsVSyncEnabled));
 			VSyncDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetVSyncEnabled));
 			VSyncDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
+
+			const FText VSyncDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "VSyncDescKey");
+			VSyncDataObject->SetDataDescriptionRichText(VSyncDescription);
 
 			// 垂直同步选项应该只在全屏模式下可用，因此我们添加一个依赖关系到全屏模式选项。
 			FOptionDataEditConditionDescriptor FullScreenCondition;
@@ -731,8 +785,11 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			FrameRateLimitDataObject->AddDynamicOptionsString(LexToString(90.f), FText::FromString(TEXT("90 FPS")));
 			FrameRateLimitDataObject->AddDynamicOptionsString(LexToString(120.f), FText::FromString(TEXT("120 FPS")));
 			FrameRateLimitDataObject->AddDynamicOptionsString(LexToString(0.f), FText::FromString(TEXT("无限制")));
-			FrameRateLimitDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>帧率限制</>\n控制游戏运行的最大帧率：\n* 选项：<Bold>30 FPS</>→<Bold>60 FPS</>→<Bold>90 FPS</>→<Bold>120 FPS</>→<Bold>无限制</>\n* 默认：<Bold>60 FPS</>（平衡性能与流畅度）\n\n<Bold>技术原理</>\n* 限制帧率可减少GPU负载\n* 防止过热/功耗过高\n* 提高稳定性和兼容性\n\n<Bold>性能影响</>\n* 限制后：\n* GPU利用率降低<Number>20-30%</>\n* 功耗减少<Number>15-25%</>\n* 发热降低<Number>10-20%</>\n\n<Bold>视觉差异</>\n* <Bold>30 FPS</>：适合慢节奏游戏\n* <Bold>60 FPS</>：标准流畅体验\n* <Bold>90 FPS</>：适合竞技游戏\n* <Bold>120 FPS</>：超流畅体验（需高刷新率显示器）\n* <Bold>无限制</>：仅限高端硬件（RTX 3080+）\n\n<Bold>场景推荐</>\n→ 竞技FPS：<Bold>120 FPS</>@最高帧率\n→ 剧情游戏：<Bold>60 FPS</>\n→ 旧硬件：<Bold>30 FPS</>\n→ 高刷新率显示器：<Bold>120 FPS+</>\n\n<Warning>使用注意</>\n* 帧率限制不影响输入延迟\n* 无限制模式需高端显卡支持")));
 			FrameRateLimitDataObject->SetDefaultValueFromString(LexToString(60.f)); // 默认值为60 FPS
+
+			const FText FrameRateLimitDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "FrameRateLimitDescKey");
+			FrameRateLimitDataObject->SetDataDescriptionRichText(FrameRateLimitDescription);
+			
 			// 帧率限制选项可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理帧率限制的获取和设置。
 			FrameRateLimitDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetFrameRateLimit));
 			FrameRateLimitDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetFrameRateLimit));
