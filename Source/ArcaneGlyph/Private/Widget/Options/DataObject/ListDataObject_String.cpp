@@ -252,13 +252,15 @@ void UListDataObject_StringInteger::OnEditDependencyDataModified(UListDataObject
 {
 	if (DataDynamicGetter)
 	{
+		if (CurrentStringValue == DataDynamicGetter->GetValueAsString()) return;
+		
 		CurrentStringValue = DataDynamicGetter->GetValueAsString();
 		if (!TrySetDisplayTextFromStringValue(CurrentStringValue))
 		{
 			CurrentDisplayText = FText::FromString(TEXT("自定义"));
 		}
 
-		NotifyListDataModified(this, InModifyReason);
+		NotifyListDataModified(this, EOptionsListDataModifyReason::DependencyModified);
 	}
 
 	Super::OnEditDependencyDataModified(InDependencyDataObject, InModifyReason);

@@ -496,8 +496,36 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			
 			// 添加依赖
 			ResolutionScaleDataObject->AddEditDependencyData(CreatedOverallQualityDataObject); // 依赖于画质等级设置
+			CreatedOverallQualityDataObject->AddEditDependencyData(ResolutionScaleDataObject); // 画质等级设置依赖于分辨率缩放
 
 			GraphicsCategoryCollection->AddChildListData(ResolutionScaleDataObject);
+		}
+
+		// 全局光照
+		{
+			UListDataObject_StringInteger* GlobalIlluminationDataObject = NewObject<UListDataObject_StringInteger>(GraphicsCategoryCollection, UListDataObject_StringInteger::StaticClass());
+			GlobalIlluminationDataObject->SetDataID(FName("GlobalIllumination"));
+			GlobalIlluminationDataObject->SetDataDisplayName(FText::FromString(TEXT("全局光照")));
+			GlobalIlluminationDataObject->AddIntegerOption(0, FText::FromString(TEXT("低")));
+			GlobalIlluminationDataObject->AddIntegerOption(1, FText::FromString(TEXT("中")));
+			GlobalIlluminationDataObject->AddIntegerOption(2, FText::FromString(TEXT("高")));
+			GlobalIlluminationDataObject->AddIntegerOption(3, FText::FromString(TEXT("极高")));
+			GlobalIlluminationDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
+			GlobalIlluminationDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>全局光照</>\n控制场景光照计算精度：\n* <Bold>低</>：快速近似（适合低端设备）\n* <Bold>中</>：标准光照（推荐<Number>GTX 1060</>）\n* <Bold>高</>：精细光照（启用<Number>PBR</>材质）\n* <Bold>极高</>：次世代效果（需<Number>RTX 3060</>+）\n* <Bold>影视级</>：电影规格（<Number>8K</>纹理+<Number>64x</>抗锯齿）\n\n<Bold>核心技术差异</>\n* 阴影质量：低(<Number>512</>p)→影视级(<Number>16K</>光线追踪)\n* 纹理过滤：双线性→<Number>16x</>各向异性\n* 粒子效果：<Number>50%</>削减→<Number>200%</>增强\n\n<Bold>性能影响</>\n每提升一档：\n* GPU负载增加<Number>35-40%</>\n* 显存占用增长<Number>1.8</>倍\n* 帧率下降约<Number>30%</>\n\n<Warning>硬件要求</>\n* 影视级：需<Number>12GB</>显存+<Number>DLSS 3</>\n* 极高：<Number>8GB</>显存+光追支持\n* 高：<Number>6GB</>显存\n\n<Bold>智能优化</>\n* 动态降级：帧率<Number><45</>时自动降档\n* 内存保护：超限时压缩<Number>4K</>纹理\n* 焦点渲染：非视野区降低<Number>50%</>\n\n<Bold>推荐配置</>\n→ 竞技玩家：低@<Number>144</>Hz\n→ 开放世界：高+<Bold>DLSS质量</>\n→ 截图摄影：影视级+<Bold>无帧率限制</>\n\n<Warning>影视级警告</>\n启用后：\n* 功耗增加<Number>80%</>\n* 显存温度升<Number>20</>℃\n* 需关闭<Bold>Windows HDR</>防冲突")));
+			GlobalIlluminationDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
+			// 同样，对于全局光照，我们可以直接使用 Unreal Engine 内置的 UListDataObject_StringInteger 类来处理全局光照的获取和设置。
+			GlobalIlluminationDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetGlobalIlluminationQuality));
+			GlobalIlluminationDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetGlobalIlluminationQuality));
+			GlobalIlluminationDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
+
+			// 添加依赖，整体画质变更时自动更新全局光照的编辑状态
+			GlobalIlluminationDataObject->AddEditDependencyData(CreatedOverallQualityDataObject);
+
+			// 同样，全局光照也能反向影响整体画质设置，所以我们也需要添加反向依赖
+			CreatedOverallQualityDataObject->AddEditDependencyData(GlobalIlluminationDataObject);
+			
+			GraphicsCategoryCollection->AddChildListData(GlobalIlluminationDataObject);
+			
 		}
 	}
 
