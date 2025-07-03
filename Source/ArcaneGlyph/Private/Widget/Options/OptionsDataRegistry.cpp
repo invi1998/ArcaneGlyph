@@ -617,7 +617,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			TextureQualityDataObject->AddEditDependencyData(CreatedOverallQualityDataObject);
 			CreatedOverallQualityDataObject->AddEditDependencyData(TextureQualityDataObject);
 
-			GraphicsCategoryCollection->AddChildListData(CreatedOverallQualityDataObject);
+			GraphicsCategoryCollection->AddChildListData(TextureQualityDataObject);
 		}
 
 		// 视觉效果
@@ -683,7 +683,6 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			CreatedOverallQualityDataObject->AddEditDependencyData(PostProcessingQualityDataObject);
 			GraphicsCategoryCollection->AddChildListData(PostProcessingQualityDataObject);
 		}
-			
 	}
 
 	// 帧率设置
