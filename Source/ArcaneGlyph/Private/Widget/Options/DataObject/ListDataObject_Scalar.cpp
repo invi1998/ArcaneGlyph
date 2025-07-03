@@ -61,7 +61,7 @@ void UListDataObject_Scalar::SetCurrentScalarValue(float Value)
 
 bool UListDataObject_Scalar::CanResetToDefault() const
 {
-	return HasDefaultValue() && DataDynamicGetter && !FMath::IsNearlyEqual(GetCurrentScalarValue(), StringToFloat(GetDefaultValueAsString()), 0.01f);
+	return HasDefaultValue() && DataDynamicGetter && !FMath::IsNearlyEqual(StringToFloat(DataDynamicGetter->GetValueAsString()), StringToFloat(GetDefaultValueAsString()), 0.01f);
 }
 
 bool UListDataObject_Scalar::TryResetToDefault()
