@@ -550,6 +550,29 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 
 			GraphicsCategoryCollection->AddChildListData(ShadowQualityDataObject);
 		}
+
+		// 抗锯齿
+		{
+			UListDataObject_StringInteger* AntiAliasingDataObject = NewObject<UListDataObject_StringInteger>(GraphicsCategoryCollection, UListDataObject_StringInteger::StaticClass());
+			AntiAliasingDataObject->SetDataID(FName("AntiAliasing"));
+			AntiAliasingDataObject->SetDataDisplayName(FText::FromString(TEXT("抗锯齿")));
+			AntiAliasingDataObject->AddIntegerOption(0, FText::FromString(TEXT("低")));
+			AntiAliasingDataObject->AddIntegerOption(1, FText::FromString(TEXT("中")));
+			AntiAliasingDataObject->AddIntegerOption(2, FText::FromString(TEXT("高")));
+			AntiAliasingDataObject->AddIntegerOption(3, FText::FromString(TEXT("极高")));
+			AntiAliasingDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
+			AntiAliasingDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>抗锯齿</>\n消除3D场景中的锯齿状边缘：\n* 技术选项：<Bold>FXAA</>→<Bold>SMAA</>→<Bold>TAA</>→<Bold>MSAA</>→<Bold>DLSS/FSR</>\n* 默认：<Bold>TAA</>（平衡质量与性能）\n\n<Bold>技术原理</>\n* FXAA：后处理快速近似（性能最优）\n* TAA：时域采样（<Number>4-8</>帧累积）\n* MSAA：多重采样（<Number>2/4/8</>倍）\n* DLSS/FSR：AI超分（<Number>4K</>下性能+<Number>70%</>）\n\n<Bold>视觉质量</>\n* 静态场景：<Bold>MSAA 8x</>最佳\n* 动态场景：<Bold>TAA</>最稳定\n* 性能模式：<Bold>DLSS性能</>\n* 画质模式：<Bold>DLSS质量</>+<Bold>锐化</>\n\n<Bold>性能影响</>\n* FXAA：帧率损失<Number><3%</>\n* TAA：帧率损失<Number>5-8%</>\n* MSAA 4x：帧率损失<Number>20-25%</>\n* DLSS：帧率提升<Number>40-70%</>\n\n<Warning>技术限制</>\n* MSAA：不适用延迟渲染/消耗显存（<Number>4x</>需+<Number>2GB</>）\n* TAA：可能造成<Bold>动态模糊</>\n* FXAA：文本模糊（禁用UI处理）\n* DLSS：需<Bold>RTX 20</>系列+\n\n<Bold>推荐配置</>\n→ 竞技玩家：<Bold>FXAA</>@最高帧率\n→ 开放世界：<Bold>TAA</>+锐化<Number>30%</>\n→ 高端PC：<Bold>DLSS质量</>+<Bold>DLAA</>\n→ 截图摄影：<Bold>MSAA 8x</>+<Bold>200%</>缩放\n\n<Bold>高级选项</>\n* 锐化强度：<Number>0-100%</>（抵消TAA模糊）\n* 运动补偿：减少动态残影\n* 亚像素检测：提升毛发/栅栏质量\n\n<Warning>兼容性说明</>\n* HDR+DLSS需Windows<Number>11</>\n* FSR<Number>2.1</>支持<Bold>所有显卡</>\n* MSAA在<Bold>植被透明</>表面效果有限")));
+			AntiAliasingDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
+			// 同样，对于抗锯齿，我们可以直接使用 Unreal Engine 内置的 UListDataObject_StringInteger 类来处理抗锯齿的获取和设置。
+			AntiAliasingDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetAntiAliasingQuality));
+			AntiAliasingDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetAntiAliasingQuality));
+			AntiAliasingDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
+
+			AntiAliasingDataObject->AddEditDependencyData(CreatedOverallQualityDataObject);
+			CreatedOverallQualityDataObject->AddEditDependencyData(AntiAliasingDataObject);
+			GraphicsCategoryCollection->AddChildListData(AntiAliasingDataObject);
+		}
+			
 	}
 
 	// 帧率设置
@@ -558,6 +581,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 		FrameRateCategoryCollection->SetDataID(FName("FrameRateCategoryCollection"));
 		FrameRateCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("帧率设置")));
 		VideoCollectionDataObject->AddChildListData(FrameRateCategoryCollection);
+		
 	}
 
 	RegisteredOptionsTabCollections.Add(VideoCollectionDataObject);
