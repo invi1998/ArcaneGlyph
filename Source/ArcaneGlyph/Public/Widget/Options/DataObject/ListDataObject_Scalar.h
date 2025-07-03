@@ -33,6 +33,8 @@ protected:
 	// Begin UListDataObject_Base interface
 	virtual bool CanResetToDefault() const override;
 	virtual bool TryResetToDefault() override;
+
+	virtual void OnEditDependencyDataModified(UListDataObject_Base* InDependencyDataObject, EOptionsListDataModifyReason InModifyReason = EOptionsListDataModifyReason::DependencyModified) override;
 	// End UListDataObject_Base interface
 
 private:

@@ -432,6 +432,8 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 		GraphicsCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("图形设置")));
 		VideoCollectionDataObject->AddChildListData(GraphicsCategoryCollection);
 
+		UListDataObject_StringInteger* CreatedOverallQualityDataObject = nullptr;
+
 		// 亮度
 		{
 			UListDataObject_Scalar* BrightnessDataObject = NewObject<UListDataObject_Scalar>(GraphicsCategoryCollection, UListDataObject_Scalar::StaticClass());
@@ -447,7 +449,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			BrightnessDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetDisplayGama));
 			BrightnessDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetDisplayGama));
 			BrightnessDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>亮度调整</>\n调节游戏画面的整体亮度：\n* 范围：<Number>0%</>（最暗）至<Number>100%</>（最亮）\n* 默认值：<Number>50%</>\n\n<Bold>使用建议</>\n* 日间场景：<Number>60%</>\n* 夜间场景：<Number>40%</>\n* 高对比度显示器：<Number>30%</>\n\n<Warning>注意</>\n过高的亮度可能导致视觉疲劳，建议定期休息！")));
-
+			
 			GraphicsCategoryCollection->AddChildListData(BrightnessDataObject);
 		}
 
@@ -468,12 +470,34 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			QualityLevelDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetOverallScalabilityLevel));
 			QualityLevelDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 
+			CreatedOverallQualityDataObject = QualityLevelDataObject; // 保存创建的画质等级数据对象
+
 			GraphicsCategoryCollection->AddChildListData(QualityLevelDataObject);
 		}
 
 		// 分辨率缩放等级
 		{
-			UListDataObject_StringInteger* ResolutionScaleDataObject = NewObject<UListDataObject_StringInteger>(GraphicsCategoryCollection, UListDataObject_StringInteger::StaticClass());
+			UListDataObject_Scalar* ResolutionScaleDataObject = NewObject<UListDataObject_Scalar>(GraphicsCategoryCollection, UListDataObject_Scalar::StaticClass());
+			ResolutionScaleDataObject->SetDataID(FName("ResolutionScale"));
+			ResolutionScaleDataObject->SetDataDisplayName(FText::FromString(TEXT("3D 分辨率缩放等级")));
+			ResolutionScaleDataObject->SetDisplayValueRange(TRange<float>(0.f, 1.0f));
+			ResolutionScaleDataObject->SetOutputValueRange(TRange<float>(0.f, 1.f)); // 输出范围为0%到100%
+			ResolutionScaleDataObject->SetSliderStepSize(0.01f); // 步长为1%
+			ResolutionScaleDataObject->SetDefaultValueFromString(LexToString(1.0f)); // 默认值为1.0（100%）
+			ResolutionScaleDataObject->SetDisplayNumericType(ECommonNumericType::Percentage); // 显示为百分比
+			ResolutionScaleDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal()); // 不显示小数点
+			ResolutionScaleDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
+
+			ResolutionScaleDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>分辨率缩放等级</>\n动态调整3D场景渲染精度：\n* 范围：<Number>50%</>（性能模式）~<Number>200%</>（超采样）\n* 默认：<Number>100%</>（原生分辨率）\n\n<Bold>性能影响</>\n每降低<Number>25%</>：\n* 帧率提升<Number>30-40%</>\n* GPU负载降低<Number>45%</>\n* 显存占用减少<Number>35%</>\n\n<Bold>视觉质量</>\n* <Number>50-75%</>：明显锯齿（移动端适用）\n* <Number>100%</>：原生清晰度\n* <Number>125-150%</>：边缘锐化+细节增强\n* <Number>200%</>：<Bold>8xSSAA</>等效效果\n\n<Bold>智能模式</>\n* 动态缩放：帧率<Number><45</>时自动降级\n* 焦点渲染：视野中心保持<Number>100%</>\n* 边缘优化：外围区域降至<Number>75%</>\n\n<Bold>技术协同</>\n* 开启DLSS/FSR时：缩放基于<Bold>输入分辨率</>\n* 与抗锯齿叠加：<Number>TAA</>+<Number>150%</>缩放=<Bold>超采样抗锯齿</>\n* VR模式：强制<Number>120-140%</>消除纱窗效应\n\n<Warning>使用注意</>\n* <Number>200%</>缩放需<Number>2.5</>倍GPU算力\n* 低于<Number>70%</>可能造成UI模糊\n* HDR模式下建议保持<Number>100-125%</>\n\n<Bold>场景推荐</>\n→ 竞技游戏：<Number>85%</>@最高帧率\n→ 开放世界：<Number>100%</>+DLSS质量\n→ 截图摄影：<Number>150-200%</>超采样\n→ VR设备：固定<Number>130%</>")));
+
+			// 同样，对于分辨率缩放等级，我们可以直接使用 Unreal Engine 内置的 UListDataObject_Scalar 类来处理分辨率缩放的获取和设置。
+			ResolutionScaleDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetResolutionScaleNormalized));
+			ResolutionScaleDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetResolutionScaleNormalized));
+			
+			// 添加依赖
+			ResolutionScaleDataObject->AddEditDependencyData(CreatedOverallQualityDataObject); // 依赖于画质等级设置
+
+			GraphicsCategoryCollection->AddChildListData(ResolutionScaleDataObject);
 		}
 	}
 

@@ -80,6 +80,15 @@ bool UListDataObject_Scalar::TryResetToDefault()
 	return false;
 }
 
+void UListDataObject_Scalar::OnEditDependencyDataModified(UListDataObject_Base* InDependencyDataObject, EOptionsListDataModifyReason InModifyReason)
+{
+
+	NotifyListDataModified(this, EOptionsListDataModifyReason::DependencyModified);
+	
+	Super::OnEditDependencyDataModified(InDependencyDataObject, InModifyReason);
+	
+}
+
 float UListDataObject_Scalar::StringToFloat(const FString& InString)
 {
 	float OutFloat = 0.0f;
