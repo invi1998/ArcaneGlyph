@@ -721,7 +721,24 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			
 		}
 
-		// 
+		// 帧率限制
+		{
+			UListDataObject_String* FrameRateLimitDataObject = NewObject<UListDataObject_String>(FrameRateCategoryCollection, UListDataObject_String::StaticClass());
+			FrameRateLimitDataObject->SetDataID(FName("FrameRateLimit"));
+			FrameRateLimitDataObject->SetDataDisplayName(FText::FromString(TEXT("帧率限制")));
+			FrameRateLimitDataObject->AddDynamicOptionsString(LexToString(30.f), FText::FromString(TEXT("30 FPS")));
+			FrameRateLimitDataObject->AddDynamicOptionsString(LexToString(60.f), FText::FromString(TEXT("60 FPS")));
+			FrameRateLimitDataObject->AddDynamicOptionsString(LexToString(90.f), FText::FromString(TEXT("90 FPS")));
+			FrameRateLimitDataObject->AddDynamicOptionsString(LexToString(120.f), FText::FromString(TEXT("120 FPS")));
+			FrameRateLimitDataObject->AddDynamicOptionsString(LexToString(0.f), FText::FromString(TEXT("无限制")));
+			FrameRateLimitDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>帧率限制</>\n控制游戏运行的最大帧率：\n* 选项：<Bold>30 FPS</>→<Bold>60 FPS</>→<Bold>90 FPS</>→<Bold>120 FPS</>→<Bold>无限制</>\n* 默认：<Bold>60 FPS</>（平衡性能与流畅度）\n\n<Bold>技术原理</>\n* 限制帧率可减少GPU负载\n* 防止过热/功耗过高\n* 提高稳定性和兼容性\n\n<Bold>性能影响</>\n* 限制后：\n* GPU利用率降低<Number>20-30%</>\n* 功耗减少<Number>15-25%</>\n* 发热降低<Number>10-20%</>\n\n<Bold>视觉差异</>\n* <Bold>30 FPS</>：适合慢节奏游戏\n* <Bold>60 FPS</>：标准流畅体验\n* <Bold>90 FPS</>：适合竞技游戏\n* <Bold>120 FPS</>：超流畅体验（需高刷新率显示器）\n* <Bold>无限制</>：仅限高端硬件（RTX 3080+）\n\n<Bold>场景推荐</>\n→ 竞技FPS：<Bold>120 FPS</>@最高帧率\n→ 剧情游戏：<Bold>60 FPS</>\n→ 旧硬件：<Bold>30 FPS</>\n→ 高刷新率显示器：<Bold>120 FPS+</>\n\n<Warning>使用注意</>\n* 帧率限制不影响输入延迟\n* 无限制模式需高端显卡支持")));
+			FrameRateLimitDataObject->SetDefaultValueFromString(LexToString(60.f)); // 默认值为60 FPS
+			// 帧率限制选项可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理帧率限制的获取和设置。
+			FrameRateLimitDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetFrameRateLimit));
+			FrameRateLimitDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetFrameRateLimit));
+			FrameRateLimitDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
+			FrameRateCategoryCollection->AddChildListData(FrameRateLimitDataObject);
+		}
 		
 	}
 
