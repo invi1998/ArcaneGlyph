@@ -471,7 +471,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			BrightnessDataObject->SetDataDisplayName(FText::FromString(TEXT("亮度（Gama值）")));
 			BrightnessDataObject->SetDisplayValueRange(TRange<float>(0.f, 1.f));
 			BrightnessDataObject->SetOutputValueRange(TRange<float>(1.7f, 2.7f));	// 虚幻引擎的默认亮度为2.2f，
-			BrightnessDataObject->SetSliderStepSize(0.1f);
+			BrightnessDataObject->SetSliderStepSize(0.01f);
 			BrightnessDataObject->SetDefaultValueFromString(LexToString(2.2f)); // 默认值为0.5（2.2f）
 			BrightnessDataObject->SetDisplayNumericType(ECommonNumericType::Percentage); // 显示为百分比
 			BrightnessDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal()); // 不显示小数点
@@ -499,7 +499,6 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			const FText QualityLevelDescription = GET_DESCRIPTION_TEXT("QualityLevelDescKey");
 			QualityLevelDataObject->SetDataDescriptionRichText(QualityLevelDescription);
 			
-			QualityLevelDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
 			// 同样，对于画质等级，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理画质等级的获取和设置。
 			QualityLevelDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetOverallScalabilityLevel));
 			QualityLevelDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetOverallScalabilityLevel));
@@ -518,7 +517,6 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			ResolutionScaleDataObject->SetDisplayValueRange(TRange<float>(0.f, 1.0f));
 			ResolutionScaleDataObject->SetOutputValueRange(TRange<float>(0.f, 1.f)); // 输出范围为0%到100%
 			ResolutionScaleDataObject->SetSliderStepSize(0.01f); // 步长为1%
-			ResolutionScaleDataObject->SetDefaultValueFromString(LexToString(1.0f)); // 默认值为1.0（100%）
 			ResolutionScaleDataObject->SetDisplayNumericType(ECommonNumericType::Percentage); // 显示为百分比
 			ResolutionScaleDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal()); // 不显示小数点
 			ResolutionScaleDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
@@ -547,7 +545,6 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			GlobalIlluminationDataObject->AddIntegerOption(2, FText::FromString(TEXT("高")));
 			GlobalIlluminationDataObject->AddIntegerOption(3, FText::FromString(TEXT("极高")));
 			GlobalIlluminationDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
-			GlobalIlluminationDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
 			// 同样，对于全局光照，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理全局光照的获取和设置。
 			GlobalIlluminationDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetGlobalIlluminationQuality));
 			GlobalIlluminationDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetGlobalIlluminationQuality));
@@ -576,7 +573,6 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			ShadowQualityDataObject->AddIntegerOption(2, FText::FromString(TEXT("高")));
 			ShadowQualityDataObject->AddIntegerOption(3, FText::FromString(TEXT("极高")));
 			ShadowQualityDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
-			ShadowQualityDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
 			// 同样，对于阴影质量，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理阴影质量的获取和设置。
 			ShadowQualityDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetShadowQuality));
 			ShadowQualityDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetShadowQuality));
@@ -601,7 +597,6 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			AntiAliasingDataObject->AddIntegerOption(2, FText::FromString(TEXT("高")));
 			AntiAliasingDataObject->AddIntegerOption(3, FText::FromString(TEXT("极高")));
 			AntiAliasingDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
-			AntiAliasingDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
 			// 同样，对于抗锯齿，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理抗锯齿的获取和设置。
 			AntiAliasingDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetAntiAliasingQuality));
 			AntiAliasingDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetAntiAliasingQuality));
@@ -625,7 +620,6 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			ViewDistanceDataObject->AddIntegerOption(2, FText::FromString(TEXT("高")));
 			ViewDistanceDataObject->AddIntegerOption(3, FText::FromString(TEXT("极高")));
 			ViewDistanceDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
-			ViewDistanceDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
 			// 同样，对于视野距离，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理视野距离的获取和设置。
 			ViewDistanceDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetViewDistanceQuality));
 			ViewDistanceDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetViewDistanceQuality));
@@ -651,7 +645,6 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			TextureQualityDataObject->AddIntegerOption(2, FText::FromString(TEXT("高")));
 			TextureQualityDataObject->AddIntegerOption(3, FText::FromString(TEXT("极高")));
 			TextureQualityDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
-			TextureQualityDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
 			// 同样，对于纹理质量，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理纹理质量的获取和设置。
 			TextureQualityDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetTextureQuality));
 			TextureQualityDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetTextureQuality));
@@ -680,7 +673,6 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			VisualEffectDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetVisualEffectQuality));
 			VisualEffectDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetVisualEffectQuality));
 			VisualEffectDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
-			VisualEffectDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
 
 			const FText VisualEffectDescription = GET_DESCRIPTION_TEXT("VisualEffectDescKey");
 			VisualEffectDataObject->SetDataDescriptionRichText(VisualEffectDescription);
@@ -705,7 +697,6 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			ReflectionQualityDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetReflectionQuality));
 			ReflectionQualityDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetReflectionQuality));
 			ReflectionQualityDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
-			ReflectionQualityDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
 
 			const FText ReflectionQualityDescription = GET_DESCRIPTION_TEXT("ReflectionQualityDescKey");
 			ReflectionQualityDataObject->SetDataDescriptionRichText(ReflectionQualityDescription);
@@ -729,7 +720,6 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			PostProcessingQualityDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetPostProcessingQuality));
 			PostProcessingQualityDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetPostProcessingQuality));
 			PostProcessingQualityDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
-			PostProcessingQualityDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
 
 			const FText PostProcessingQualityDescription = GET_DESCRIPTION_TEXT("PostProcessingQualityDescKey");
 			PostProcessingQualityDataObject->SetDataDescriptionRichText(PostProcessingQualityDescription);
