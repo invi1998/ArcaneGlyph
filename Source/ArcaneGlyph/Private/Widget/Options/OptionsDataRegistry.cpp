@@ -16,6 +16,9 @@
 #define MAKE_OPTIONS_DATA_CONTROL(SetterOrGetterName) \
 	MakeShared<FOptionsDataInteractionHelper>(GET_FUNCTION_NAME_STRING_CHECKED(UFrontendGameUserSettings, SetterOrGetterName))
 
+#define GET_DESCRIPTION_TEXT(DescriptionKey) \
+	LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", DescriptionKey)
+
 void UOptionsDataRegistry::InitOptionsDataRegistry(ULocalPlayer* InOwningLocalPlayer)
 {
 	InitGameplayCollectionTab();
@@ -95,7 +98,7 @@ void UOptionsDataRegistry::InitGameplayCollectionTab()
 		TutorialModeDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetCurrentGameplayTutorialModeEnabled));
 		TutorialModeDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 
-		const FText TutorialModeDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "TutorialModeDescKey");
+		const FText TutorialModeDescription = GET_DESCRIPTION_TEXT("TutorialModeDescKey");
 		
 		TutorialModeDataObject->SetDataDescriptionRichText(TutorialModeDescription);
 		
@@ -113,7 +116,7 @@ void UOptionsDataRegistry::InitGameplayCollectionTab()
 		AutoTargetLockDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetCurrentGameplayAutoTargetLock));
 		AutoTargetLockDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 
-		const FText AutoTargetLockDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "AutoTargetLockDescKey");
+		const FText AutoTargetLockDescription = GET_DESCRIPTION_TEXT("AutoTargetLockDescKey");
 		AutoTargetLockDataObject->SetDataDescriptionRichText(AutoTargetLockDescription);
 		
 		GameplayCollectionDataObject->AddChildListData(AutoTargetLockDataObject);
@@ -130,7 +133,7 @@ void UOptionsDataRegistry::InitGameplayCollectionTab()
 		AutoAttackTargetLockDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetCurrentGameplayAutoAttackTargetLock));
 		AutoAttackTargetLockDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 
-		const FText AutoAttackTargetLockDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "AutoAttackTargetLockDescKey");
+		const FText AutoAttackTargetLockDescription = GET_DESCRIPTION_TEXT("AutoAttackTargetLockDescKey");
 		AutoAttackTargetLockDataObject->SetDataDescriptionRichText(AutoAttackTargetLockDescription);
 		
 		GameplayCollectionDataObject->AddChildListData(AutoAttackTargetLockDataObject);
@@ -184,7 +187,7 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 			MasterVolumeDataObject->SetDisplayNumericType(ECommonNumericType::Percentage);		// 显示为百分比
 			MasterVolumeDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal());	// 不显示小数点
 
-			const FText MasterVolumeDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "MasterVolumeDescKey");
+			const FText MasterVolumeDescription = GET_DESCRIPTION_TEXT("MasterVolumeDescKey");
 			MasterVolumeDataObject->SetDataDescriptionRichText(MasterVolumeDescription);
 
 			// 设置动态获取器和设置器
@@ -207,7 +210,7 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 			MusicVolumeDataObject->SetDisplayNumericType(ECommonNumericType::Percentage);	// 显示为百分比
 			MusicVolumeDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal()); // 不显示小数点
 
-			const FText MusicVolumeDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "MusicVolumeDescKey");
+			const FText MusicVolumeDescription = GET_DESCRIPTION_TEXT("MusicVolumeDescKey");
 			MusicVolumeDataObject->SetDataDescriptionRichText(MusicVolumeDescription);
 			
 			// 设置动态获取器和设置器
@@ -230,7 +233,7 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 			EffectsVolumeDataObject->SetDisplayNumericType(ECommonNumericType::Percentage); // 显示为百分比
 			EffectsVolumeDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal()); // 不显示小数点
 
-			const FText EffectsVolumeDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "EffectsVolumeDescKey");
+			const FText EffectsVolumeDescription = GET_DESCRIPTION_TEXT("EffectsVolumeDescKey");
 			EffectsVolumeDataObject->SetDataDescriptionRichText(EffectsVolumeDescription);
 			
 			// 设置动态获取器和设置器
@@ -254,7 +257,7 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 			UserInterfaceVolumeDataObject->SetDisplayNumericType(ECommonNumericType::Percentage); // 显示为百分比
 			UserInterfaceVolumeDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal()); // 不显示小数点
 
-			const FText UserInterfaceVolumeDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "UserInterfaceVolumeDescKey");
+			const FText UserInterfaceVolumeDescription = GET_DESCRIPTION_TEXT("UserInterfaceVolumeDescKey");
 			UserInterfaceVolumeDataObject->SetDataDescriptionRichText(UserInterfaceVolumeDescription);
 			
 			// 设置动态获取器和设置器
@@ -276,7 +279,7 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 			InGameMusicVolumeDataObject->SetDisplayNumericType(ECommonNumericType::Percentage); // 显示为百分比
 			InGameMusicVolumeDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal()); // 不显示小数点
 
-			const FText InGameMusicVolumeDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "InGameMusicVolumeDescKey");
+			const FText InGameMusicVolumeDescription = GET_DESCRIPTION_TEXT("InGameMusicVolumeDescKey");
 			InGameMusicVolumeDataObject->SetDataDescriptionRichText(InGameMusicVolumeDescription);
 			
 			// 设置动态获取器和设置器
@@ -298,7 +301,7 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 			MenuMusicVolumeDataObject->SetDisplayNumericType(ECommonNumericType::Percentage); // 显示为百分比
 			MenuMusicVolumeDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal()); // 不显示小数点
 
-			const FText MenuMusicVolumeDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "MenuMusicVolumeDescKey");
+			const FText MenuMusicVolumeDescription = GET_DESCRIPTION_TEXT("MenuMusicVolumeDescKey");
 			MenuMusicVolumeDataObject->SetDataDescriptionRichText(MenuMusicVolumeDescription);
 			
 			// 设置动态获取器和设置器
@@ -330,7 +333,7 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 			BackgroundMusicDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetAllowBackgroundAudio));
 			BackgroundMusicDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 
-			const FText BackgroundMusicDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "BackgroundMusicDescKey");
+			const FText BackgroundMusicDescription = GET_DESCRIPTION_TEXT("BackgroundMusicDescKey");
 			BackgroundMusicDataObject->SetDataDescriptionRichText(BackgroundMusicDescription);
 			
 			AudioCollectionDataObject->AddChildListData(BackgroundMusicDataObject);
@@ -348,7 +351,7 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 			UseHDRAudioDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetUseHDRAudio));
 			UseHDRAudioDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 
-			const FText UseHDRAudioDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "UseHDRAudioDescKey");
+			const FText UseHDRAudioDescription = GET_DESCRIPTION_TEXT("UseHDRAudioDescKey");
 			UseHDRAudioDataObject->SetDataDescriptionRichText(UseHDRAudioDescription);
 
 			UseHDRAudioDataObject->SetDisabledRichText(FText::FromString(TEXT("<Warning>HDR音频模式已禁用</>\n\n<Bold>注意</>\n* 禁用后无法恢复HDR音频处理\n* 需重启游戏才能关闭HDR音频管线\n* 建议仅在高端音频设备上使用\n\n<Warning>警告</>：禁用后无法恢复，请谨慎操作！")));
@@ -403,7 +406,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			WindowModeDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetFullscreenMode));
 			WindowModeDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 
-			const FText WindowModeDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "WindowModeDescKey");
+			const FText WindowModeDescription = GET_DESCRIPTION_TEXT("WindowModeDescKey");
 			WindowModeDataObject->SetDataDescriptionRichText(WindowModeDescription);
 
 			// 编辑器状态下当前设置项不可用
@@ -420,7 +423,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			ScreenResolutionDataObject->SetDataID(FName("ScreenResolution"));
 			ScreenResolutionDataObject->SetDataDisplayName(FText::FromString(TEXT("屏幕分辨率")));
 
-			const FText ScreenResolutionDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "ScreenResolutionDescKey");
+			const FText ScreenResolutionDescription = GET_DESCRIPTION_TEXT("ScreenResolutionDescKey");
 			ScreenResolutionDataObject->SetDataDescriptionRichText(ScreenResolutionDescription);
 			
 			ScreenResolutionDataObject->InitResolutionValues();
@@ -476,7 +479,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			BrightnessDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetDisplayGama));
 			BrightnessDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetDisplayGama));
 
-			const FText BrightnessDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "BrightnessDescKey");
+			const FText BrightnessDescription = GET_DESCRIPTION_TEXT("BrightnessDescKey");
 			BrightnessDataObject->SetDataDescriptionRichText(BrightnessDescription);
 			
 			GraphicsCategoryCollection->AddChildListData(BrightnessDataObject);
@@ -493,7 +496,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			QualityLevelDataObject->AddIntegerOption(3, FText::FromString(TEXT("极高")));
 			QualityLevelDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
 
-			const FText QualityLevelDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "QualityLevelDescKey");
+			const FText QualityLevelDescription = GET_DESCRIPTION_TEXT("QualityLevelDescKey");
 			QualityLevelDataObject->SetDataDescriptionRichText(QualityLevelDescription);
 			
 			QualityLevelDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
@@ -520,7 +523,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			ResolutionScaleDataObject->SetNumberFormattingOptions(UListDataObject_Scalar::NoDecimal()); // 不显示小数点
 			ResolutionScaleDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 
-			const FText ResolutionScaleDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "ResolutionScaleDescKey");
+			const FText ResolutionScaleDescription = GET_DESCRIPTION_TEXT("ResolutionScaleDescKey");
 			ResolutionScaleDataObject->SetDataDescriptionRichText(ResolutionScaleDescription);
 			
 			// 同样，对于分辨率缩放等级，我们可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理分辨率缩放的获取和设置。
@@ -550,7 +553,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			GlobalIlluminationDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetGlobalIlluminationQuality));
 			GlobalIlluminationDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 
-			const FText GlobalIlluminationDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "GlobalIlluminationDescKey");
+			const FText GlobalIlluminationDescription = GET_DESCRIPTION_TEXT("GlobalIlluminationDescKey");
 			GlobalIlluminationDataObject->SetDataDescriptionRichText(GlobalIlluminationDescription);
 
 			// 添加依赖，整体画质变更时自动更新全局光照的编辑状态
@@ -579,7 +582,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			ShadowQualityDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetShadowQuality));
 			ShadowQualityDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 
-			const FText ShadowQualityDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "ShadowQualityDescKey");
+			const FText ShadowQualityDescription = GET_DESCRIPTION_TEXT("ShadowQualityDescKey");
 			ShadowQualityDataObject->SetDataDescriptionRichText(ShadowQualityDescription);
 
 			ShadowQualityDataObject->AddEditDependencyData(CreatedOverallQualityDataObject);
@@ -604,7 +607,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			AntiAliasingDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetAntiAliasingQuality));
 			AntiAliasingDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 
-			const FText AntiAliasingDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "AntiAliasingDescKey");
+			const FText AntiAliasingDescription = GET_DESCRIPTION_TEXT("AntiAliasingDescKey");
 			AntiAliasingDataObject->SetDataDescriptionRichText(AntiAliasingDescription);
 
 			AntiAliasingDataObject->AddEditDependencyData(CreatedOverallQualityDataObject);
@@ -628,7 +631,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			ViewDistanceDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetViewDistanceQuality));
 			ViewDistanceDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 
-			const FText ViewDistanceDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "ViewDistanceDescKey");
+			const FText ViewDistanceDescription = GET_DESCRIPTION_TEXT("ViewDistanceDescKey");
 			ViewDistanceDataObject->SetDataDescriptionRichText(ViewDistanceDescription);
 
 			ViewDistanceDataObject->AddEditDependencyData(CreatedOverallQualityDataObject);
@@ -654,7 +657,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			TextureQualityDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetTextureQuality));
 			TextureQualityDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 
-			const FText TextureQualityDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "TextureQualityDescKey");
+			const FText TextureQualityDescription = GET_DESCRIPTION_TEXT("TextureQualityDescKey");
 			TextureQualityDataObject->SetDataDescriptionRichText(TextureQualityDescription);
 
 			TextureQualityDataObject->AddEditDependencyData(CreatedOverallQualityDataObject);
@@ -679,7 +682,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			VisualEffectDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 			VisualEffectDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
 
-			const FText VisualEffectDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "VisualEffectDescKey");
+			const FText VisualEffectDescription = GET_DESCRIPTION_TEXT("VisualEffectDescKey");
 			VisualEffectDataObject->SetDataDescriptionRichText(VisualEffectDescription);
 			
 			VisualEffectDataObject->AddEditDependencyData(CreatedOverallQualityDataObject);
@@ -704,7 +707,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			ReflectionQualityDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 			ReflectionQualityDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
 
-			const FText ReflectionQualityDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "ReflectionQualityDescKey");
+			const FText ReflectionQualityDescription = GET_DESCRIPTION_TEXT("ReflectionQualityDescKey");
 			ReflectionQualityDataObject->SetDataDescriptionRichText(ReflectionQualityDescription);
 			
 			ReflectionQualityDataObject->AddEditDependencyData(CreatedOverallQualityDataObject);
@@ -728,7 +731,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			PostProcessingQualityDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 			PostProcessingQualityDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
 
-			const FText PostProcessingQualityDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "PostProcessingQualityDescKey");
+			const FText PostProcessingQualityDescription = GET_DESCRIPTION_TEXT("PostProcessingQualityDescKey");
 			PostProcessingQualityDataObject->SetDataDescriptionRichText(PostProcessingQualityDescription);
 			
 			PostProcessingQualityDataObject->AddEditDependencyData(CreatedOverallQualityDataObject);
@@ -756,7 +759,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			VSyncDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetVSyncEnabled));
 			VSyncDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 
-			const FText VSyncDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "VSyncDescKey");
+			const FText VSyncDescription = GET_DESCRIPTION_TEXT("VSyncDescKey");
 			VSyncDataObject->SetDataDescriptionRichText(VSyncDescription);
 
 			// 垂直同步选项应该只在全屏模式下可用，因此我们添加一个依赖关系到全屏模式选项。
@@ -785,9 +788,9 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			FrameRateLimitDataObject->AddDynamicOptionsString(LexToString(90.f), FText::FromString(TEXT("90 FPS")));
 			FrameRateLimitDataObject->AddDynamicOptionsString(LexToString(120.f), FText::FromString(TEXT("120 FPS")));
 			FrameRateLimitDataObject->AddDynamicOptionsString(LexToString(0.f), FText::FromString(TEXT("无限制")));
-			FrameRateLimitDataObject->SetDefaultValueFromString(LexToString(60.f)); // 默认值为60 FPS
+			FrameRateLimitDataObject->SetDefaultValueFromString(LexToString(0.f)); // 默认值为无限制不锁帧
 
-			const FText FrameRateLimitDescription = LOCTABLE("/Game/Blueprints/UI/StringTables/ST_OptionsScreenDescription.ST_OptionsScreenDescription", "FrameRateLimitDescKey");
+			const FText FrameRateLimitDescription = GET_DESCRIPTION_TEXT("FrameRateLimitDescKey");
 			FrameRateLimitDataObject->SetDataDescriptionRichText(FrameRateLimitDescription);
 			
 			// 帧率限制选项可以直接使用 Unreal Engine 内置的 UGameUserSettings 类来处理帧率限制的获取和设置。
