@@ -461,6 +461,7 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			QualityLevelDataObject->AddIntegerOption(2, FText::FromString(TEXT("高")));
 			QualityLevelDataObject->AddIntegerOption(3, FText::FromString(TEXT("极高")));
 			QualityLevelDataObject->AddIntegerOption(4, FText::FromString(TEXT("影视级")));
+			QualityLevelDataObject->SetDataDescriptionRichText(FText::FromString(TEXT("<Bold>画质等级</>\n五档预设优化游戏视觉效果：\n* <Bold>低</>：性能优先（帧率提升<Number>150%</>）\n* <Bold>中</>：平衡选择（推荐<Number>GTX 1060</>）\n* <Bold>高</>：画质增强（启用<Number>PBR</>材质）\n* <Bold>极高</>：次世代效果（需<Number>RTX 3060</>+）\n* <Bold>影视级</>：电影规格（<Number>8K</>纹理+<Number>64x</>抗锯齿）\n\n<Bold>核心技术差异</>\n* 阴影质量：低(<Number>512</>p)→影视级(<Number>16K</>光线追踪)\n* 纹理过滤：双线性→<Number>16x</>各向异性\n* 粒子效果：<Number>50%</>削减→<Number>200%</>增强\n\n<Bold>性能影响</>\n每提升一档：\n* GPU负载增加<Number>35-40%</>\n* 显存占用增长<Number>1.8</>倍\n* 帧率下降约<Number>30%</>\n\n<Warning>硬件要求</>\n* 影视级：需<Number>12GB</>显存+<Number>DLSS 3</>\n* 极高：<Number>8GB</>显存+光追支持\n* 高：<Number>6GB</>显存\n\n<Bold>智能优化</>\n* 动态降级：帧率<Number><45</>时自动降档\n* 内存保护：超限时压缩<Number>4K</>纹理\n* 焦点渲染：非视野区降低<Number>50%</>精度\n\n<Bold>推荐配置</>\n→ 竞技玩家：低@<Number>144</>Hz\n→ 开放世界：高+<Bold>DLSS质量</>\n→ 截图摄影：影视级+<Bold>无帧率限制</>\n\n<Warning>影视级警告</>\n启用后：\n* 功耗增加<Number>80%</>\n* 显存温度升<Number>20</>℃\n* 需关闭<Bold>Windows HDR</>防冲突")));
 			QualityLevelDataObject->SetDefaultValueFromInteger(3); // 默认值为极高画质
 			// 同样，对于画质等级，我们可以直接使用 Unreal Engine 内置的 UListDataObject_StringInteger 类来处理画质等级的获取和设置。
 			QualityLevelDataObject->SetDataDynamicGetter(MAKE_OPTIONS_DATA_CONTROL(GetOverallScalabilityLevel));
@@ -468,6 +469,11 @@ void UOptionsDataRegistry::InitVideoCollectionTab()
 			QualityLevelDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 
 			GraphicsCategoryCollection->AddChildListData(QualityLevelDataObject);
+		}
+
+		// 分辨率缩放等级
+		{
+			UListDataObject_StringInteger* ResolutionScaleDataObject = NewObject<UListDataObject_StringInteger>(GraphicsCategoryCollection, UListDataObject_StringInteger::StaticClass());
 		}
 	}
 
