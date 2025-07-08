@@ -28,7 +28,7 @@ private:
 	void FindChildListDataRecursively(UListDataObject_Base* InParentData, TArray<UListDataObject_Base*>& OutChildListData) const;
 	
 	void InitGameplayCollectionTab();		// 游戏玩法
-	void InitControlsCollectionTab();		// 控制
+	void InitControlsCollectionTab(ULocalPlayer* InOwningLocalPlayer);		// 控制
 	void InitAudioCollectionTab();			// 音频
 	void InitVideoCollectionTab();			// 视频
 

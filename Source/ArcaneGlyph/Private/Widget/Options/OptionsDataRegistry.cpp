@@ -4,7 +4,10 @@
 #include "Widget/Options/OptionsDataRegistry.h"
 
 #include "ArcaneBlueprintFunctionLibrary.h"
+#include "ArcaneDebugHelper.h"
 #include "ArcaneGameplayTags.h"
+#include "EnhancedInputSubsystems.h"
+#include "UserSettings/EnhancedInputUserSettings.h"
 #include "FrontendSettings/FrontendGameUserSettings.h"
 #include "Internationalization/StringTableRegistry.h"
 #include "Widget/Options/OptionsDataInteractionHelper.h"
@@ -22,7 +25,7 @@
 void UOptionsDataRegistry::InitOptionsDataRegistry(ULocalPlayer* InOwningLocalPlayer)
 {
 	InitGameplayCollectionTab();
-	InitControlsCollectionTab();
+	InitControlsCollectionTab(InOwningLocalPlayer);
 	InitAudioCollectionTab();
 	InitVideoCollectionTab();
 }
@@ -152,11 +155,53 @@ void UOptionsDataRegistry::InitGameplayCollectionTab()
 	RegisteredOptionsTabCollections.Add(GameplayCollectionDataObject);
 }
 
-void UOptionsDataRegistry::InitControlsCollectionTab()
+void UOptionsDataRegistry::InitControlsCollectionTab(ULocalPlayer* InOwningLocalPlayer)
 {
 	UListDataObject_Collection* ControlsCollectionDataObject = NewObject<UListDataObject_Collection>(this, UListDataObject_Collection::StaticClass());
 	ControlsCollectionDataObject->SetDataID(FName("ControlsTabCollection"));
 	ControlsCollectionDataObject->SetDataDisplayName(FText::FromString(TEXT("控制器")));
+
+	UEnhancedInputLocalPlayerSubsystem* EISubsystem = InOwningLocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+
+	check(EISubsystem);
+
+	// 获取当前玩家的增强输入用户设置
+	UEnhancedInputUserSettings* EnhancedUserSettings = EISubsystem->GetUserSettings();
+
+	check(EnhancedUserSettings);
+	
+	// 键盘鼠标控制
+	{
+		UListDataObject_Collection* KeyboardMouseCategoryCollection = NewObject<UListDataObject_Collection>(ControlsCollectionDataObject, UListDataObject_Collection::StaticClass());
+		KeyboardMouseCategoryCollection->SetDataID(FName("KeyboardMouseCategoryCollection"));
+		KeyboardMouseCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("键盘鼠标控制")));
+
+		ControlsCollectionDataObject->AddChildListData(KeyboardMouseCategoryCollection);
+
+		// 键鼠输入
+		{
+			//  TMap<FGameplayTag, TObjectPtr<UEnhancedPlayerMappableKeyProfile>>
+			for (const TPair<FGameplayTag, TObjectPtr<UEnhancedPlayerMappableKeyProfile>>& ProfilePair : EnhancedUserSettings->GetAllSavedKeyProfiles())
+			{
+				UEnhancedPlayerMappableKeyProfile* MappableKeyProfile = ProfilePair.Value;
+				check(MappableKeyProfile);
+
+				for (const TPair<FName, FKeyMappingRow>& MappingRowPair : MappableKeyProfile->GetPlayerMappingRows())
+				{
+					
+					for (const FPlayerKeyMapping& KeyMapping : MappingRowPair.Value.Mappings)
+					{
+						Debug::Print(
+							TEXT(" Mapping ID : ") + KeyMapping.GetMappingName().ToString() +
+							TEXT(" Display Name : ") + KeyMapping.GetDisplayName().ToString() +
+							TEXT(" Bound Key : ") + KeyMapping.GetCurrentKey().GetDisplayName().ToString()
+						);
+					}
+					
+				}
+			}
+		}
+	}
 
 	RegisteredOptionsTabCollections.Add(ControlsCollectionDataObject);
 }
