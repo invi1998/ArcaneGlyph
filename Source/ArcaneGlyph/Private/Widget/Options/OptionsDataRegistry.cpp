@@ -192,8 +192,6 @@ void UOptionsDataRegistry::InitControlsCollectionTab(ULocalPlayer* InOwningLocal
 		{
 			for (const FPlayerKeyMapping& KeyMapping : MappingRowPair.Value.Mappings)
 			{
-				FString TriggerKeyInfo;
-
 				// 检查是否有前置触发按键（InputAction 中的触发器）
 				if (KeyMapping.GetAssociatedInputAction() && KeyMapping.GetAssociatedInputAction()->Triggers.Num() > 0)
 				{
@@ -204,7 +202,7 @@ void UOptionsDataRegistry::InitControlsCollectionTab(ULocalPlayer* InOwningLocal
 							const UInputTriggerChordAction* ChordTrigger = Cast<UInputTriggerChordAction>(Trigger);
 							if (ChordTrigger && ChordTrigger->ChordAction)
 							{
-								TriggerKeyInfo += FString::Printf(TEXT(" | InputAction触发按键: %s"), *ChordTrigger->ChordAction->GetFName().ToString());
+								PreprocessedTriggerInfo.Add(ChordTrigger->ChordAction, &KeyMapping);
 							}
 						}
 					}
@@ -321,6 +319,7 @@ void UOptionsDataRegistry::InitControlsCollectionTab(ULocalPlayer* InOwningLocal
 
 		// 键鼠输入
 		{
+			
 			for (const TPair<FGameplayTag, TObjectPtr<UEnhancedPlayerMappableKeyProfile>>& ProfilePair : EnhancedUserSettings->GetAllSavedKeyProfiles())
 			{
 				UEnhancedPlayerMappableKeyProfile* MappableKeyProfile = ProfilePair.Value;
@@ -344,13 +343,13 @@ void UOptionsDataRegistry::InitControlsCollectionTab(ULocalPlayer* InOwningLocal
 							KeyRemapDataObject->SetDataID(KeyMapping.GetMappingName());
 							KeyRemapDataObject->SetDataDisplayName(KeyMapping.GetDisplayName());
 
-							const FPlayerKeyMapping* TriggertMapping = *(ActionToKeyMapping_KeyboardMouse.Find(KeyMapping.GetAssociatedInputAction()));
+							const bool bHasTrigger = PreprocessedTriggerInfo.Contains(KeyMapping.GetAssociatedInputAction());
 							KeyRemapDataObject->InitKeyRemapData(
 								ECommonInputType::MouseAndKeyboard,
 								EnhancedUserSettings,
 								MappableKeyProfile,
 								KeyMapping,
-								TriggertMapping
+								bHasTrigger ? PreprocessedTriggerInfo[KeyMapping.GetAssociatedInputAction()] : nullptr
 							);
 
 							KeyboardMouseCategoryCollection->AddChildListData(KeyRemapDataObject);

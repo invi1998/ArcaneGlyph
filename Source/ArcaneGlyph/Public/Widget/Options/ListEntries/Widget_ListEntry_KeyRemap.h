@@ -7,6 +7,7 @@
 #include "Widget_ListEntry_KeyRemap.generated.h"
 
 class UFrontendCommonButtonBase;
+class UListDataObject_KeyRemap;
 /**
  * 键位重映射列表项小部件类
  */

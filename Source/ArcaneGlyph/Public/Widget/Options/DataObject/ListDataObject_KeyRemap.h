@@ -33,6 +33,8 @@ public:
 	bool HasTrigger = false;	// 是否有触发键位映射
 
 private:
+	FPlayerKeyMapping* GetOwningKeyMapping(const FName& InMappingName, const EPlayerMappableKeySlot& InSlot) const;	// 获取当前拥有的键位映射
+	
 	UPROPERTY(Transient)
 	UEnhancedInputUserSettings* CachedEnhancedInputUserSettings;	// 引用Enhanced Input User Settings，用于获取和设置键位映射
 

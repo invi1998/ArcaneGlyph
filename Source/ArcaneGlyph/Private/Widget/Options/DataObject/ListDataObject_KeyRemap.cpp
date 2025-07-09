@@ -3,6 +3,9 @@
 
 #include "Widget/Options/DataObject/ListDataObject_KeyRemap.h"
 
+#include "CommonInputBaseTypes.h"
+#include "CommonInputSubsystem.h"
+
 void UListDataObject_KeyRemap::InitKeyRemapData(ECommonInputType InDesiredInputType,
                                                 UEnhancedInputUserSettings* InEnhancedInputUserSettings,
                                                 UEnhancedPlayerMappableKeyProfile* InPlayerMappableKeyProfile,
@@ -30,10 +33,51 @@ void UListDataObject_KeyRemap::InitKeyRemapData(ECommonInputType InDesiredInputT
 
 FSlateBrush UListDataObject_KeyRemap::GetIconFromCurrentKey() const
 {
-	return FSlateBrush();
+	check(CachedEnhancedInputUserSettings);
+	
+	FSlateBrush InputBrush;
+
+	UCommonInputSubsystem* CommonInputSubsystem = UCommonInputSubsystem::Get(CachedEnhancedInputUserSettings->GetLocalPlayer());
+
+	check(CommonInputSubsystem);
+	
+	const bool bHasFoundBrush = UCommonInputPlatformSettings::Get()->TryGetInputBrush(
+		InputBrush,
+		GetOwningKeyMapping(CachedMappingName, CachedMappableKeySlot)->GetCurrentKey(),
+		CachedDesiredInputType,
+		CommonInputSubsystem->GetCurrentGamepadName()
+	);
+
+	return InputBrush;
+	
 }
 
 FSlateBrush UListDataObject_KeyRemap::GetTriggerIconFromCurrentKey() const
 {
-	return FSlateBrush();
+	check(CachedEnhancedInputUserSettings);
+	
+	FSlateBrush InputBrush;
+
+	UCommonInputSubsystem* CommonInputSubsystem = UCommonInputSubsystem::Get(CachedEnhancedInputUserSettings->GetLocalPlayer());
+
+	check(CommonInputSubsystem);
+	
+	const bool bHasFoundBrush = UCommonInputPlatformSettings::Get()->TryGetInputBrush(
+		InputBrush,
+		GetOwningKeyMapping(CachedTriggerName, CachedTriggerKeySlot)->GetCurrentKey(),
+		CachedDesiredInputType,
+		CommonInputSubsystem->GetCurrentGamepadName()
+	);
+
+	return InputBrush;
+		
+}
+
+FPlayerKeyMapping* UListDataObject_KeyRemap::GetOwningKeyMapping(const FName& InMappingName, const EPlayerMappableKeySlot& InSlot) const
+{
+	check(CachedPlayerMappableKeyProfile);
+	FMapPlayerKeyArgs KeyArgs;
+	KeyArgs.MappingName = InMappingName;
+	KeyArgs.Slot = InSlot;
+	return CachedPlayerMappableKeyProfile->FindKeyMapping(KeyArgs);
 }
