@@ -8,6 +8,8 @@
 #include "ArcaneGameplayTags.h"
 #include "EnhancedInputSubsystems.h"
 #include "UserSettings/EnhancedInputUserSettings.h"
+#include "InputAction.h"
+#include "InputMappingContext.h"
 #include "FrontendSettings/FrontendGameUserSettings.h"
 #include "Internationalization/StringTableRegistry.h"
 #include "Widget/Options/OptionsDataInteractionHelper.h"
@@ -157,55 +159,124 @@ void UOptionsDataRegistry::InitGameplayCollectionTab()
 
 void UOptionsDataRegistry::InitControlsCollectionTab(ULocalPlayer* InOwningLocalPlayer)
 {
-	UListDataObject_Collection* ControlsCollectionDataObject = NewObject<UListDataObject_Collection>(this, UListDataObject_Collection::StaticClass());
-	ControlsCollectionDataObject->SetDataID(FName("ControlsTabCollection"));
-	ControlsCollectionDataObject->SetDataDisplayName(FText::FromString(TEXT("控制器")));
+    UListDataObject_Collection* ControlsCollectionDataObject = NewObject<UListDataObject_Collection>(this, UListDataObject_Collection::StaticClass());
+    ControlsCollectionDataObject->SetDataID(FName("ControlsTabCollection"));
+    ControlsCollectionDataObject->SetDataDisplayName(FText::FromString(TEXT("控制器")));
 
-	UEnhancedInputLocalPlayerSubsystem* EISubsystem = InOwningLocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+    UEnhancedInputLocalPlayerSubsystem* EISubsystem = InOwningLocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+    check(EISubsystem);
 
-	check(EISubsystem);
+    UEnhancedInputUserSettings* EnhancedUserSettings = EISubsystem->GetUserSettings();
+    check(EnhancedUserSettings);
 
-	// 获取当前玩家的增强输入用户设置
-	UEnhancedInputUserSettings* EnhancedUserSettings = EISubsystem->GetUserSettings();
+    // 预处理 InputMappingContext 中的触发器映射
+    TMap<const UInputAction*, FString> PreprocessedTriggerInfo;
+    for (const TObjectPtr<const UInputMappingContext>& MappingContext : EnhancedUserSettings->GetRegisteredInputMappingContexts())
+    {
+        for (const FEnhancedActionKeyMapping& Mapping : MappingContext->GetMappings())
+        {
+            if (Mapping.Triggers.Num() > 0)
+            {
+                FString TriggerKeyInfo;
+                for (const TObjectPtr<UInputTrigger>& Trigger : Mapping.Triggers)
+                {
+                    if (Trigger && Trigger->IsA<UInputTriggerChordAction>())
+                    {
+                        const UInputTriggerChordAction* ChordTrigger = Cast<UInputTriggerChordAction>(Trigger);
+                        if (ChordTrigger && ChordTrigger->ChordAction)
+                        {
+                            TriggerKeyInfo += FString::Printf(TEXT(" | InputMappingContext触发按键: %s"), *ChordTrigger->ChordAction->GetFName().ToString());
+                        }
+                    }
+                }
+                if (!TriggerKeyInfo.IsEmpty())
+                {
+                    PreprocessedTriggerInfo.Add(Mapping.Action, TriggerKeyInfo);
+                }
+            }
+        }
+    }
 
-	check(EnhancedUserSettings);
-	
-	// 键盘鼠标控制
-	{
-		UListDataObject_Collection* KeyboardMouseCategoryCollection = NewObject<UListDataObject_Collection>(ControlsCollectionDataObject, UListDataObject_Collection::StaticClass());
-		KeyboardMouseCategoryCollection->SetDataID(FName("KeyboardMouseCategoryCollection"));
-		KeyboardMouseCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("键盘鼠标控制")));
+    // 键盘鼠标控制
+    {
+        UListDataObject_Collection* KeyboardMouseCategoryCollection = NewObject<UListDataObject_Collection>(ControlsCollectionDataObject, UListDataObject_Collection::StaticClass());
+        KeyboardMouseCategoryCollection->SetDataID(FName("KeyboardMouseCategoryCollection"));
+        KeyboardMouseCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("键盘鼠标控制")));
 
-		ControlsCollectionDataObject->AddChildListData(KeyboardMouseCategoryCollection);
+        ControlsCollectionDataObject->AddChildListData(KeyboardMouseCategoryCollection);
 
-		// 键鼠输入
-		{
-			//  TMap<FGameplayTag, TObjectPtr<UEnhancedPlayerMappableKeyProfile>>
-			for (const TPair<FGameplayTag, TObjectPtr<UEnhancedPlayerMappableKeyProfile>>& ProfilePair : EnhancedUserSettings->GetAllSavedKeyProfiles())
-			{
-				UEnhancedPlayerMappableKeyProfile* MappableKeyProfile = ProfilePair.Value;
-				check(MappableKeyProfile);
+        // 键鼠输入
+        {
+            FPlayerMappableKeyQueryOptions KeyboardMouseOnlyQueryOptions;
+            KeyboardMouseOnlyQueryOptions.KeyToMatch = EKeys::S; // 仅匹配键盘鼠标输入
+            KeyboardMouseOnlyQueryOptions.bMatchBasicKeyTypes = true;
 
-				for (const TPair<FName, FKeyMappingRow>& MappingRowPair : MappableKeyProfile->GetPlayerMappingRows())
-				{
-					
-					for (const FPlayerKeyMapping& KeyMapping : MappingRowPair.Value.Mappings)
-					{
-						Debug::Print(
-							TEXT(" Mapping ID : ") + KeyMapping.GetMappingName().ToString() +
-							TEXT(" Display Name : ") + KeyMapping.GetDisplayName().ToString() +
-							TEXT(" Bound Key : ") + KeyMapping.GetCurrentKey().GetDisplayName().ToString()
-						);
-					}
-					
-				}
-			}
-		}
-	}
+            FPlayerMappableKeyQueryOptions GamepadOnlyQueryOptions;
+            GamepadOnlyQueryOptions.KeyToMatch = EKeys::Gamepad_FaceButton_Bottom; // 仅匹配手柄输入
+            GamepadOnlyQueryOptions.bMatchBasicKeyTypes = true;
 
-	RegisteredOptionsTabCollections.Add(ControlsCollectionDataObject);
+            for (const TPair<FGameplayTag, TObjectPtr<UEnhancedPlayerMappableKeyProfile>>& ProfilePair : EnhancedUserSettings->GetAllSavedKeyProfiles())
+            {
+                UEnhancedPlayerMappableKeyProfile* MappableKeyProfile = ProfilePair.Value;
+                check(MappableKeyProfile);
+
+                for (const TPair<FName, FKeyMappingRow>& MappingRowPair : MappableKeyProfile->GetPlayerMappingRows())
+                {
+                    for (const FPlayerKeyMapping& KeyMapping : MappingRowPair.Value.Mappings)
+                    {
+                        FString TriggerKeyInfo;
+
+                        // 检查是否有前置触发按键（InputAction 中的触发器）
+                        if (KeyMapping.GetAssociatedInputAction() && KeyMapping.GetAssociatedInputAction()->Triggers.Num() > 0)
+                        {
+                            for (const TObjectPtr<UInputTrigger>& Trigger : KeyMapping.GetAssociatedInputAction()->Triggers)
+                            {
+                                if (Trigger && Trigger->IsA<UInputTriggerChordAction>())
+                                {
+                                    const UInputTriggerChordAction* ChordTrigger = Cast<UInputTriggerChordAction>(Trigger);
+                                    if (ChordTrigger && ChordTrigger->ChordAction)
+                                    {
+                                        TriggerKeyInfo += FString::Printf(TEXT(" | InputAction触发按键: %s"), *ChordTrigger->ChordAction->GetFName().ToString());
+                                    }
+                                }
+                            }
+                        }
+
+                        // 查询预处理的 InputMappingContext 中的触发器信息
+                        if (KeyMapping.GetAssociatedInputAction() && PreprocessedTriggerInfo.Contains(KeyMapping.GetAssociatedInputAction()))
+                        {
+                            TriggerKeyInfo += PreprocessedTriggerInfo[KeyMapping.GetAssociatedInputAction()];
+                        }
+
+                        // 检查当前键映射是否符合查询条件（仅限键盘鼠标输入）
+                        if (MappableKeyProfile->DoesMappingPassQueryOptions(KeyMapping, KeyboardMouseOnlyQueryOptions))
+                        {
+                            Debug::Print(
+                                TEXT("映射ID: ") + KeyMapping.GetMappingName().ToString() +
+                                TEXT(" | 显示名称: ") + KeyMapping.GetDisplayName().ToString() +
+                                TEXT(" | 绑定按键: ") + KeyMapping.GetCurrentKey().GetDisplayName().ToString() +
+                                TriggerKeyInfo
+                            );
+                        }
+
+                        // 检查是否符合手柄输入查询条件
+                        if (MappableKeyProfile->DoesMappingPassQueryOptions(KeyMapping, GamepadOnlyQueryOptions))
+                        {
+                            Debug::Print(
+                                TEXT("映射ID: ") + KeyMapping.GetMappingName().ToString() +
+                                TEXT(" | 显示名称: ") + KeyMapping.GetDisplayName().ToString() +
+                                TEXT(" | 绑定按键: ") + KeyMapping.GetCurrentKey().GetDisplayName().ToString() +
+                                TriggerKeyInfo
+                            );
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    RegisteredOptionsTabCollections.Add(ControlsCollectionDataObject);
 }
-
 void UOptionsDataRegistry::InitAudioCollectionTab()
 {
 	UListDataObject_Collection* AudioCollectionDataObject = NewObject<UListDataObject_Collection>(this, UListDataObject_Collection::StaticClass());
