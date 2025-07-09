@@ -6,6 +6,7 @@
 #include "CommonButtonBase.h"
 #include "FrontendCommonButtonBase.generated.h"
 
+class UCommonLazyImage;
 class UCommonTextBlock;
 
 /**
@@ -23,6 +24,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FText GetButtonDisplayText() const;
 
+	UFUNCTION(BlueprintCallable)
+	void SetButtonDisplayIcon(const FSlateBrush& InButtonIcon);
+
 protected:
 	virtual void NativePreConstruct() override;
 
@@ -34,6 +38,9 @@ private:
 	//*** Bound Widgets (绑定的控件) ***//
 	UPROPERTY(meta=(BindWidgetOptional))
 	UCommonTextBlock* CommonTextBlock_ButtonText;	// 按钮文本块（可选绑定）
+
+	UPROPERTY(BlueprintReadOnly, meta=(BindWidgetOptional, AllowPrivateAccess = "true"))
+	UCommonLazyImage* CommonLazyImage_ButtonIcon;	// 按钮图标（可选绑定）
 	// ** Bound Widgets (绑定的控件) ***//
 
 	// 按钮文本
