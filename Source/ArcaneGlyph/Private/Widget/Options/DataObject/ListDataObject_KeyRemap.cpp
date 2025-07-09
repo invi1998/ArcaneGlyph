@@ -19,6 +19,21 @@ void UListDataObject_KeyRemap::InitKeyRemapData(ECommonInputType InDesiredInputT
 	{
 		CachedTriggerName = InTriggerKeyMapping->GetMappingName();
 		CachedTriggerKeySlot = InTriggerKeyMapping->GetSlot();
+		HasTrigger = true;
+	}
+	else
+	{
+		HasTrigger = false;
 	}
 	
+}
+
+FSlateBrush UListDataObject_KeyRemap::GetIconFromCurrentKey() const
+{
+	return FSlateBrush();
+}
+
+FSlateBrush UListDataObject_KeyRemap::GetTriggerIconFromCurrentKey() const
+{
+	return FSlateBrush();
 }

@@ -14,6 +14,14 @@ UCLASS(Abstract, BlueprintType, meta=(DisabledNativeTick))
 class ARCANEGLYPH_API UWidget_ListEntry_KeyRemap : public UWidget_ListEntry_Base
 {
 	GENERATED_BODY()
+
+protected:
+	virtual void NativePreConstruct() override;
+
+	// Begin UWidget_ListEntry_Base Interface
+	virtual void OnOwningListDataObjectSet(UListDataObject_Base* InOwningListDataObject) override;
+	virtual void OnOwningListDataObjectModified(UListDataObject_Base* InListDataObject, EOptionsListDataModifyReason InOptionsListDataModifyReason) override;
+	// End UWidget_ListEntry_Base Interface
 	
 private:
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget, AllowPrivateAccess = "true"))
@@ -27,4 +35,7 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget, AllowPrivateAccess = "true"))
 	UFrontendCommonButtonBase* CommonButton_ResetKeyBinding;	// 重置键位绑定按钮，用于重置当前键位绑定到默认值
+
+	UPROPERTY()
+	UListDataObject_KeyRemap* CachedOwningKeyRemapDataObject;	// 缓存的拥有的键位重映射数据对象，用于处理选项的选中状态和显示文本等逻辑
 };

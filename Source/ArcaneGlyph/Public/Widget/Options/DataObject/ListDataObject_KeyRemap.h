@@ -27,6 +27,11 @@ public:
 		const FPlayerKeyMapping* InTriggerKeyMapping
 	);
 
+	FSlateBrush GetIconFromCurrentKey() const;
+	FSlateBrush GetTriggerIconFromCurrentKey() const;
+
+	bool HasTrigger = false;	// 是否有触发键位映射
+
 private:
 	UPROPERTY(Transient)
 	UEnhancedInputUserSettings* CachedEnhancedInputUserSettings;	// 引用Enhanced Input User Settings，用于获取和设置键位映射

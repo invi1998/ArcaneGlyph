@@ -2,3 +2,65 @@
 
 
 #include "Widget/Options/ListEntries/Widget_ListEntry_KeyRemap.h"
+
+#include "CommonTextBlock.h"
+#include "Widget/Component/FrontendCommonButtonBase.h"
+#include "Widget/Options/DataObject/ListDataObject_KeyRemap.h"
+
+void UWidget_ListEntry_KeyRemap::NativePreConstruct()
+{
+	Super::NativePreConstruct();
+
+	if (CommonButton_TriggerKey)
+	{
+		CommonButton_TriggerKey->SetIsEnabled(false); // 禁用按钮，因为触发按钮只是作为展示
+	}
+	if (CommonTextBlock_ConnectedKey)
+	{
+		CommonTextBlock_ConnectedKey->SetIsEnabled(false); // 禁用文本块，因为它只是作为展示
+	}
+	
+}
+
+void UWidget_ListEntry_KeyRemap::OnOwningListDataObjectSet(UListDataObject_Base* InOwningListDataObject)
+{
+	Super::OnOwningListDataObjectSet(InOwningListDataObject);
+
+	CachedOwningKeyRemapDataObject = CastChecked<UListDataObject_KeyRemap>(InOwningListDataObject);
+
+	if (CachedOwningKeyRemapDataObject->HasTrigger)
+	{
+		CommonButton_TriggerKey->SetButtonDisplayIcon(CachedOwningKeyRemapDataObject->GetTriggerIconFromCurrentKey());
+		CommonButton_TriggerKey->SetVisibility(ESlateVisibility::SelfHitTestInvisible); // 显示触发按钮
+		CommonTextBlock_ConnectedKey->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+	}
+	else
+	{
+		CommonButton_TriggerKey->SetVisibility(ESlateVisibility::Collapsed);
+		CommonTextBlock_ConnectedKey->SetVisibility(ESlateVisibility::Collapsed);
+	}
+
+	CommonButton_KeyRemap->SetButtonDisplayIcon(CachedOwningKeyRemapDataObject->GetIconFromCurrentKey());
+	
+}
+
+void UWidget_ListEntry_KeyRemap::OnOwningListDataObjectModified(UListDataObject_Base* InListDataObject, EOptionsListDataModifyReason InOptionsListDataModifyReason)
+{
+	if (CachedOwningKeyRemapDataObject)
+	{
+		CommonButton_KeyRemap->SetButtonDisplayIcon(CachedOwningKeyRemapDataObject->GetIconFromCurrentKey());
+		
+		if (CachedOwningKeyRemapDataObject->HasTrigger)
+		{
+			CommonButton_TriggerKey->SetButtonDisplayIcon(CachedOwningKeyRemapDataObject->GetTriggerIconFromCurrentKey());
+			CommonButton_TriggerKey->SetVisibility(ESlateVisibility::SelfHitTestInvisible); // 显示触发按钮
+			CommonTextBlock_ConnectedKey->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		}
+		else
+		{
+			CommonButton_TriggerKey->SetVisibility(ESlateVisibility::Collapsed);
+			CommonTextBlock_ConnectedKey->SetVisibility(ESlateVisibility::Collapsed);
+		}
+	}
+	
+}
