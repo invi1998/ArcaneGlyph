@@ -17,7 +17,7 @@ class ARCANEGLYPH_API UWidget_ListEntry_KeyRemap : public UWidget_ListEntry_Base
 	GENERATED_BODY()
 
 protected:
-	virtual void NativePreConstruct() override;
+	virtual void NativeOnInitialized() override;
 
 	// Begin UWidget_ListEntry_Base Interface
 	virtual void OnOwningListDataObjectSet(UListDataObject_Base* InOwningListDataObject) override;
@@ -25,6 +25,9 @@ protected:
 	// End UWidget_ListEntry_Base Interface
 	
 private:
+	void OnRemapKeyButtonClicked();
+	void OnResetKeyBindingButtonClicked();
+	
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget, AllowPrivateAccess = "true"))
 	UFrontendCommonButtonBase* CommonButton_TriggerKey;	// 触发键位重映射按钮，组合键位里的前置触发键位（该项一帮不会被编辑）
 

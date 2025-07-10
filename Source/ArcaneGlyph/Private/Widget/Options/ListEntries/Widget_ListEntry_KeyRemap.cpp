@@ -7,9 +7,9 @@
 #include "Widget/Component/FrontendCommonButtonBase.h"
 #include "Widget/Options/DataObject/ListDataObject_KeyRemap.h"
 
-void UWidget_ListEntry_KeyRemap::NativePreConstruct()
+void UWidget_ListEntry_KeyRemap::NativeOnInitialized()
 {
-	Super::NativePreConstruct();
+	Super::NativeOnInitialized();
 
 	if (CommonButton_TriggerKey)
 	{
@@ -19,7 +19,9 @@ void UWidget_ListEntry_KeyRemap::NativePreConstruct()
 	{
 		CommonTextBlock_ConnectedKey->SetIsEnabled(false); // 禁用文本块，因为它只是作为展示
 	}
-	
+
+	CommonButton_KeyRemap->OnClicked().AddUObject(this, &ThisClass::OnRemapKeyButtonClicked);
+	CommonButton_ResetKeyBinding->OnClicked().AddUObject(this, &ThisClass::OnResetKeyBindingButtonClicked);
 }
 
 void UWidget_ListEntry_KeyRemap::OnOwningListDataObjectSet(UListDataObject_Base* InOwningListDataObject)
@@ -63,4 +65,12 @@ void UWidget_ListEntry_KeyRemap::OnOwningListDataObjectModified(UListDataObject_
 		}
 	}
 	
+}
+
+void UWidget_ListEntry_KeyRemap::OnRemapKeyButtonClicked()
+{
+}
+
+void UWidget_ListEntry_KeyRemap::OnResetKeyBindingButtonClicked()
+{
 }
