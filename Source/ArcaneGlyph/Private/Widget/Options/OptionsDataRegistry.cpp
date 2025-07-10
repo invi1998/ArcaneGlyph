@@ -274,58 +274,58 @@ void UOptionsDataRegistry::InitControlsCollectionTab(ULocalPlayer* InOwningLocal
 
 		// 键鼠输入
 		{
-			TMap<FString, UListDataObject_Collection*> CategoryMap;
+			TMap<FString, UListDataObject_CollectionInnerCategory*> CategoryMap;
 			// 移动, 攻击连招, 枪法切换, 技能, 装备/卸载武器, 物品拾取, 物品使用, 辅助
 
-			UListDataObject_Collection* KeyboardMouseMovementCategoryCollection = NewObject<UListDataObject_Collection>(KeyboardMouseCategoryCollection, UListDataObject_Collection::StaticClass());
+			UListDataObject_CollectionInnerCategory* KeyboardMouseMovementCategoryCollection = NewObject<UListDataObject_CollectionInnerCategory>(KeyboardMouseCategoryCollection, UListDataObject_CollectionInnerCategory::StaticClass());
 			KeyboardMouseMovementCategoryCollection->SetDataID(FName("KeyboardMouseMovementCategoryCollection"));
 			KeyboardMouseMovementCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("移动")));
 			KeyboardMouseCategoryCollection->AddChildListData(KeyboardMouseMovementCategoryCollection);
 			CategoryMap.Add(KeyboardMouseMovementCategoryCollection->GetDataDisplayName().ToString(), KeyboardMouseMovementCategoryCollection);
 
-			UListDataObject_Collection* KeyboardMouseAttackCategoryCollection = NewObject<UListDataObject_Collection>(KeyboardMouseCategoryCollection, UListDataObject_Collection::StaticClass());
+			UListDataObject_CollectionInnerCategory* KeyboardMouseAttackCategoryCollection = NewObject<UListDataObject_CollectionInnerCategory>(KeyboardMouseCategoryCollection, UListDataObject_CollectionInnerCategory::StaticClass());
 			KeyboardMouseAttackCategoryCollection->SetDataID(FName("KeyboardMouseAttackCategoryCollection"));
 			KeyboardMouseAttackCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("攻击连招")));
 			KeyboardMouseCategoryCollection->AddChildListData(KeyboardMouseAttackCategoryCollection);
 			CategoryMap.Add(KeyboardMouseAttackCategoryCollection->GetDataDisplayName().ToString(), KeyboardMouseAttackCategoryCollection);
 
-			UListDataObject_Collection* KeyboardMouseGunplayCategoryCollection = NewObject<UListDataObject_Collection>(KeyboardMouseCategoryCollection, UListDataObject_Collection::StaticClass());
+			UListDataObject_CollectionInnerCategory* KeyboardMouseGunplayCategoryCollection = NewObject<UListDataObject_CollectionInnerCategory>(KeyboardMouseCategoryCollection, UListDataObject_CollectionInnerCategory::StaticClass());
 			KeyboardMouseGunplayCategoryCollection->SetDataID(FName("KeyboardMouseGunplayCategoryCollection"));
 			KeyboardMouseGunplayCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("枪法切换")));
 			KeyboardMouseCategoryCollection->AddChildListData(KeyboardMouseGunplayCategoryCollection);
 			CategoryMap.Add(KeyboardMouseGunplayCategoryCollection->GetDataDisplayName().ToString(), KeyboardMouseGunplayCategoryCollection);
 
-			UListDataObject_Collection* KeyboardMouseSkillCategoryCollection = NewObject<UListDataObject_Collection>(KeyboardMouseCategoryCollection, UListDataObject_Collection::StaticClass());
+			UListDataObject_CollectionInnerCategory* KeyboardMouseSkillCategoryCollection = NewObject<UListDataObject_CollectionInnerCategory>(KeyboardMouseCategoryCollection, UListDataObject_CollectionInnerCategory::StaticClass());
 			KeyboardMouseSkillCategoryCollection->SetDataID(FName("KeyboardMouseSkillCategoryCollection"));
 			KeyboardMouseSkillCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("技能")));
 			KeyboardMouseCategoryCollection->AddChildListData(KeyboardMouseSkillCategoryCollection);
 			CategoryMap.Add(KeyboardMouseSkillCategoryCollection->GetDataDisplayName().ToString(), KeyboardMouseSkillCategoryCollection);
 
-			UListDataObject_Collection* KeyboardMouseEquipCategoryCollection = NewObject<UListDataObject_Collection>(KeyboardMouseCategoryCollection, UListDataObject_Collection::StaticClass());
+			UListDataObject_CollectionInnerCategory* KeyboardMouseEquipCategoryCollection = NewObject<UListDataObject_CollectionInnerCategory>(KeyboardMouseCategoryCollection, UListDataObject_CollectionInnerCategory::StaticClass());
 			KeyboardMouseEquipCategoryCollection->SetDataID(FName("KeyboardMouseEquipCategoryCollection"));
 			KeyboardMouseEquipCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("装备/卸载武器")));
 			KeyboardMouseCategoryCollection->AddChildListData(KeyboardMouseEquipCategoryCollection);
 			CategoryMap.Add(KeyboardMouseEquipCategoryCollection->GetDataDisplayName().ToString(), KeyboardMouseEquipCategoryCollection);
 
-			UListDataObject_Collection* KeyboardMousePickupCategoryCollection = NewObject<UListDataObject_Collection>(KeyboardMouseCategoryCollection, UListDataObject_Collection::StaticClass());
+			UListDataObject_CollectionInnerCategory* KeyboardMousePickupCategoryCollection = NewObject<UListDataObject_CollectionInnerCategory>(KeyboardMouseCategoryCollection, UListDataObject_CollectionInnerCategory::StaticClass());
 			KeyboardMousePickupCategoryCollection->SetDataID(FName("KeyboardMousePickupCategoryCollection"));
 			KeyboardMousePickupCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("物品拾取")));
 			KeyboardMouseCategoryCollection->AddChildListData(KeyboardMousePickupCategoryCollection);
 			CategoryMap.Add(KeyboardMousePickupCategoryCollection->GetDataDisplayName().ToString(), KeyboardMousePickupCategoryCollection);
 
-			UListDataObject_Collection* KeyboardMouseUsingCategoryCollection = NewObject<UListDataObject_Collection>(KeyboardMouseCategoryCollection, UListDataObject_Collection::StaticClass());
+			UListDataObject_CollectionInnerCategory* KeyboardMouseUsingCategoryCollection = NewObject<UListDataObject_CollectionInnerCategory>(KeyboardMouseCategoryCollection, UListDataObject_CollectionInnerCategory::StaticClass());
 			KeyboardMouseUsingCategoryCollection->SetDataID(FName("KeyboardMouseUsingCategoryCollection"));
 			KeyboardMouseUsingCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("物品使用")));
 			KeyboardMouseCategoryCollection->AddChildListData(KeyboardMouseUsingCategoryCollection);
 			CategoryMap.Add(KeyboardMouseUsingCategoryCollection->GetDataDisplayName().ToString(), KeyboardMouseUsingCategoryCollection);
 
-			UListDataObject_Collection* KeyboardMouseAssistCategoryCollection = NewObject<UListDataObject_Collection>(KeyboardMouseCategoryCollection, UListDataObject_Collection::StaticClass());
+			UListDataObject_CollectionInnerCategory* KeyboardMouseAssistCategoryCollection = NewObject<UListDataObject_CollectionInnerCategory>(KeyboardMouseCategoryCollection, UListDataObject_CollectionInnerCategory::StaticClass());
 			KeyboardMouseAssistCategoryCollection->SetDataID(FName("KeyboardMouseAssistCategoryCollection"));
 			KeyboardMouseAssistCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("辅助")));
 			KeyboardMouseCategoryCollection->AddChildListData(KeyboardMouseAssistCategoryCollection);
 			CategoryMap.Add(KeyboardMouseAssistCategoryCollection->GetDataDisplayName().ToString(), KeyboardMouseAssistCategoryCollection);
 
-			UListDataObject_Collection* KeyboardMouseOtherCategoryCollection = NewObject<UListDataObject_Collection>(KeyboardMouseCategoryCollection, UListDataObject_Collection::StaticClass());
+			UListDataObject_CollectionInnerCategory* KeyboardMouseOtherCategoryCollection = NewObject<UListDataObject_CollectionInnerCategory>(KeyboardMouseCategoryCollection, UListDataObject_CollectionInnerCategory::StaticClass());
 			KeyboardMouseOtherCategoryCollection->SetDataID(FName("KeyboardMouseOtherCategoryCollection"));
 			KeyboardMouseOtherCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("其他")));
 			KeyboardMouseCategoryCollection->AddChildListData(KeyboardMouseOtherCategoryCollection);
