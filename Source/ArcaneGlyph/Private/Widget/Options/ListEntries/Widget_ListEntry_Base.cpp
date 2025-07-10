@@ -13,6 +13,15 @@ void UWidget_ListEntry_Base::NativeOnListEntryWidgetHovered(bool bIsHovered)
 {
 	// GetListItem 确保我们在悬停时获取到正确的列表项
 	BP_OnListEntryWidgetHovered(bIsHovered, GetListItem() ? IsListItemSelected() : false);
+	if (bIsHovered)
+	{
+		BP_OnToggleEntryWidgetHighlightState(true);
+	}
+	else
+	{
+		BP_OnToggleEntryWidgetHighlightState(GetListItem() ? IsListItemSelected() : false);
+	}
+	
 }
 
 FReply UWidget_ListEntry_Base::NativeOnFocusReceived(const FGeometry& InGeometry, const FFocusEvent& InFocusEvent)
@@ -47,6 +56,13 @@ void UWidget_ListEntry_Base::NativeOnListItemObjectSet(UObject* ListItemObject)
 	UListDataObject_Base* ListDataObject = CastChecked<UListDataObject_Base>(ListItemObject);
 	OnOwningListDataObjectSet(ListDataObject);
 	
+}
+
+void UWidget_ListEntry_Base::NativeOnItemSelectionChanged(bool bIsSelected)
+{
+	IUserObjectListEntry::NativeOnItemSelectionChanged(bIsSelected);
+
+	BP_OnToggleEntryWidgetHighlightState(bIsSelected);
 }
 
 void UWidget_ListEntry_Base::OnOwningListDataObjectModified(UListDataObject_Base* InListDataObject, EOptionsListDataModifyReason InOptionsListDataModifyReason)

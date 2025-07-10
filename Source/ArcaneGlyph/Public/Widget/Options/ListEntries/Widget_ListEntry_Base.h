@@ -31,6 +31,9 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, meta=(DisplayName="GetWidgtToFocusOnGamepad"))
 	UWidget* BP_GetWidgtToFocusOnGamepad() const;		// 获取在手柄模式下需要聚焦的控件，子类可以重写此函数来返回需要聚焦的控件
 
+	UFUNCTION(BlueprintImplementableEvent, meta=(DisplayName="On Toggle Entry Widget Highlight State"))
+	void BP_OnToggleEntryWidgetHighlightState(bool bShouldHighlight) const;	// 当列表项被高亮时调用，子类可以重写此函数来处理高亮状态
+	
 	// Begin UUserWidget interface
 	virtual FReply NativeOnFocusReceived(const FGeometry& InGeometry, const FFocusEvent& InFocusEvent) override;
 	virtual void NativeOnEntryReleased() override;	// 当列表项被释放时调用
@@ -38,6 +41,7 @@ protected:
 	
 	// Begin IUserObjectListEntry interface
 	virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;
+	virtual void NativeOnItemSelectionChanged(bool bIsSelected) override;
 	// End IUserObjectListEntry interface
 
 	// 子类应当重写此函数，以便在数据对象更新后同步 UI 数值
