@@ -24,3 +24,9 @@ private:
 	UPROPERTY(Transient)
 	TArray<UListDataObject_Base*> ChildListDataArray;
 };
+
+UCLASS()
+class ARCANEGLYPH_API UListDataObject_CollectionInnerCategory : public UListDataObject_Collection
+{
+	GENERATED_BODY()
+};

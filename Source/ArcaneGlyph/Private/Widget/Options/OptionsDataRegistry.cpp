@@ -173,8 +173,9 @@ void UOptionsDataRegistry::InitControlsCollectionTab(ULocalPlayer* InOwningLocal
 	// 预处理 InputMappingContext 中的触发器映射
 	TMap<const UInputAction*, const FPlayerKeyMapping*> ActionToKeyMapping_KeyboardMouse;
 	TMap<const UInputAction*, const FPlayerKeyMapping*> ActionToKeyMapping_Gamepad;
-	TMap<const UInputAction*, const FPlayerKeyMapping*> PreprocessedTriggerInfo;
-
+	TMap<const UInputAction*, const FPlayerKeyMapping*> PreprocessedTriggerInfo_KeyboardMouse;
+	TMap<const UInputAction*, const FPlayerKeyMapping*> PreprocessedTriggerInfo_Gamepad;
+	
 	FPlayerMappableKeyQueryOptions KeyboardMouseOnlyQueryOptions;
 	KeyboardMouseOnlyQueryOptions.KeyToMatch = EKeys::S; // 仅匹配键盘鼠标输入
 	KeyboardMouseOnlyQueryOptions.bMatchBasicKeyTypes = true;
@@ -192,21 +193,6 @@ void UOptionsDataRegistry::InitControlsCollectionTab(ULocalPlayer* InOwningLocal
 		{
 			for (const FPlayerKeyMapping& KeyMapping : MappingRowPair.Value.Mappings)
 			{
-				// 检查是否有前置触发按键（InputAction 中的触发器）
-				if (KeyMapping.GetAssociatedInputAction() && KeyMapping.GetAssociatedInputAction()->Triggers.Num() > 0)
-				{
-					for (const TObjectPtr<UInputTrigger>& Trigger : KeyMapping.GetAssociatedInputAction()->Triggers)
-					{
-						if (Trigger && Trigger->IsA<UInputTriggerChordAction>())
-						{
-							const UInputTriggerChordAction* ChordTrigger = Cast<UInputTriggerChordAction>(Trigger);
-							if (ChordTrigger && ChordTrigger->ChordAction)
-							{
-								PreprocessedTriggerInfo.Add(ChordTrigger->ChordAction, &KeyMapping);
-							}
-						}
-					}
-				}
 
 				// 查询预处理的 InputMappingContext 中的触发器信息
 				// if (KeyMapping.GetAssociatedInputAction() && PreprocessedTriggerInfo.Contains(KeyMapping.GetAssociatedInputAction()))
@@ -241,42 +227,13 @@ void UOptionsDataRegistry::InitControlsCollectionTab(ULocalPlayer* InOwningLocal
 		}
 	}
 	
-	for (const TPair<FGameplayTag, TObjectPtr<UEnhancedPlayerMappableKeyProfile>>& ProfilePair : EnhancedUserSettings->GetAllSavedKeyProfiles())
-    {
-    	UEnhancedPlayerMappableKeyProfile* MappableKeyProfile = ProfilePair.Value;
-    	check(MappableKeyProfile);
-   
-    	for (const TPair<FName, FKeyMappingRow>& MappingRowPair : MappableKeyProfile->GetPlayerMappingRows())
-    	{
-    		for (const FPlayerKeyMapping& KeyMapping : MappingRowPair.Value.Mappings)
-    		{
-    			FString TriggerKeyInfo;
-   
-    			// 检查是否有前置触发按键（InputAction 中的触发器）
-    			if (KeyMapping.GetAssociatedInputAction() && KeyMapping.GetAssociatedInputAction()->Triggers.Num() > 0)
-    			{
-    				for (const TObjectPtr<UInputTrigger>& Trigger : KeyMapping.GetAssociatedInputAction()->Triggers)
-    				{
-    					if (Trigger && Trigger->IsA<UInputTriggerChordAction>())
-    					{
-    						const UInputTriggerChordAction* ChordTrigger = Cast<UInputTriggerChordAction>(Trigger);
-    						if (ChordTrigger && ChordTrigger->ChordAction)
-    						{
-    							TriggerKeyInfo += FString::Printf(TEXT(" | InputAction触发按键: %s"), *ChordTrigger->ChordAction->GetFName().ToString());
-    						}
-    					}
-    				}
-    			}
-			}
-		}
-	}
-	
 	// 检查预处理的 InputMappingContext 中的触发器信息，将按键的触发器信息添加到 PreprocessedTriggerInfo 中
 	for (const TObjectPtr<const UInputMappingContext>& MappingContext : EnhancedUserSettings->GetRegisteredInputMappingContexts())
 	{
 		for (const FEnhancedActionKeyMapping& Mapping : MappingContext->GetMappings())
 		{
-			if (Mapping.Triggers.Num() > 0)
+			
+			if (Mapping.Action && Mapping.Triggers.Num() > 0)
 			{
 				for (const TObjectPtr<UInputTrigger>& Trigger : Mapping.Triggers)
 				{
@@ -288,18 +245,16 @@ void UOptionsDataRegistry::InitControlsCollectionTab(ULocalPlayer* InOwningLocal
 						{
 							if (ActionToKeyMapping_KeyboardMouse.Contains(ChordTrigger->ChordAction))
 							{
-								const FPlayerKeyMapping* KeyMapping = ActionToKeyMapping_KeyboardMouse[ChordTrigger->ChordAction];
-								if (KeyMapping)
+								if (const FPlayerKeyMapping* KeyMapping = ActionToKeyMapping_KeyboardMouse[ChordTrigger->ChordAction])
 								{
-									PreprocessedTriggerInfo.Add(ChordTrigger->ChordAction, KeyMapping);
+									PreprocessedTriggerInfo_KeyboardMouse.Add(Mapping.Action, KeyMapping);
 								}
 							}
 							else if (ActionToKeyMapping_Gamepad.Contains(ChordTrigger->ChordAction))
 							{
-								const FPlayerKeyMapping* KeyMapping = ActionToKeyMapping_Gamepad[ChordTrigger->ChordAction];
-								if (KeyMapping)
+								if (const FPlayerKeyMapping* KeyMapping = ActionToKeyMapping_Gamepad[ChordTrigger->ChordAction])
 								{
-									PreprocessedTriggerInfo.Add(ChordTrigger->ChordAction, KeyMapping);
+									PreprocessedTriggerInfo_Gamepad.Add(Mapping.Action, KeyMapping);
 								}
 							}
 						}
@@ -319,6 +274,62 @@ void UOptionsDataRegistry::InitControlsCollectionTab(ULocalPlayer* InOwningLocal
 
 		// 键鼠输入
 		{
+			TMap<FString, UListDataObject_Collection*> CategoryMap;
+			// 移动, 攻击连招, 枪法切换, 技能, 装备/卸载武器, 物品拾取, 物品使用, 辅助
+
+			UListDataObject_Collection* KeyboardMouseMovementCategoryCollection = NewObject<UListDataObject_Collection>(KeyboardMouseCategoryCollection, UListDataObject_Collection::StaticClass());
+			KeyboardMouseMovementCategoryCollection->SetDataID(FName("KeyboardMouseMovementCategoryCollection"));
+			KeyboardMouseMovementCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("移动")));
+			KeyboardMouseCategoryCollection->AddChildListData(KeyboardMouseMovementCategoryCollection);
+			CategoryMap.Add(KeyboardMouseMovementCategoryCollection->GetDataDisplayName().ToString(), KeyboardMouseMovementCategoryCollection);
+
+			UListDataObject_Collection* KeyboardMouseAttackCategoryCollection = NewObject<UListDataObject_Collection>(KeyboardMouseCategoryCollection, UListDataObject_Collection::StaticClass());
+			KeyboardMouseAttackCategoryCollection->SetDataID(FName("KeyboardMouseAttackCategoryCollection"));
+			KeyboardMouseAttackCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("攻击连招")));
+			KeyboardMouseCategoryCollection->AddChildListData(KeyboardMouseAttackCategoryCollection);
+			CategoryMap.Add(KeyboardMouseAttackCategoryCollection->GetDataDisplayName().ToString(), KeyboardMouseAttackCategoryCollection);
+
+			UListDataObject_Collection* KeyboardMouseGunplayCategoryCollection = NewObject<UListDataObject_Collection>(KeyboardMouseCategoryCollection, UListDataObject_Collection::StaticClass());
+			KeyboardMouseGunplayCategoryCollection->SetDataID(FName("KeyboardMouseGunplayCategoryCollection"));
+			KeyboardMouseGunplayCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("枪法切换")));
+			KeyboardMouseCategoryCollection->AddChildListData(KeyboardMouseGunplayCategoryCollection);
+			CategoryMap.Add(KeyboardMouseGunplayCategoryCollection->GetDataDisplayName().ToString(), KeyboardMouseGunplayCategoryCollection);
+
+			UListDataObject_Collection* KeyboardMouseSkillCategoryCollection = NewObject<UListDataObject_Collection>(KeyboardMouseCategoryCollection, UListDataObject_Collection::StaticClass());
+			KeyboardMouseSkillCategoryCollection->SetDataID(FName("KeyboardMouseSkillCategoryCollection"));
+			KeyboardMouseSkillCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("技能")));
+			KeyboardMouseCategoryCollection->AddChildListData(KeyboardMouseSkillCategoryCollection);
+			CategoryMap.Add(KeyboardMouseSkillCategoryCollection->GetDataDisplayName().ToString(), KeyboardMouseSkillCategoryCollection);
+
+			UListDataObject_Collection* KeyboardMouseEquipCategoryCollection = NewObject<UListDataObject_Collection>(KeyboardMouseCategoryCollection, UListDataObject_Collection::StaticClass());
+			KeyboardMouseEquipCategoryCollection->SetDataID(FName("KeyboardMouseEquipCategoryCollection"));
+			KeyboardMouseEquipCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("装备/卸载武器")));
+			KeyboardMouseCategoryCollection->AddChildListData(KeyboardMouseEquipCategoryCollection);
+			CategoryMap.Add(KeyboardMouseEquipCategoryCollection->GetDataDisplayName().ToString(), KeyboardMouseEquipCategoryCollection);
+
+			UListDataObject_Collection* KeyboardMousePickupCategoryCollection = NewObject<UListDataObject_Collection>(KeyboardMouseCategoryCollection, UListDataObject_Collection::StaticClass());
+			KeyboardMousePickupCategoryCollection->SetDataID(FName("KeyboardMousePickupCategoryCollection"));
+			KeyboardMousePickupCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("物品拾取")));
+			KeyboardMouseCategoryCollection->AddChildListData(KeyboardMousePickupCategoryCollection);
+			CategoryMap.Add(KeyboardMousePickupCategoryCollection->GetDataDisplayName().ToString(), KeyboardMousePickupCategoryCollection);
+
+			UListDataObject_Collection* KeyboardMouseUsingCategoryCollection = NewObject<UListDataObject_Collection>(KeyboardMouseCategoryCollection, UListDataObject_Collection::StaticClass());
+			KeyboardMouseUsingCategoryCollection->SetDataID(FName("KeyboardMouseUsingCategoryCollection"));
+			KeyboardMouseUsingCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("物品使用")));
+			KeyboardMouseCategoryCollection->AddChildListData(KeyboardMouseUsingCategoryCollection);
+			CategoryMap.Add(KeyboardMouseUsingCategoryCollection->GetDataDisplayName().ToString(), KeyboardMouseUsingCategoryCollection);
+
+			UListDataObject_Collection* KeyboardMouseAssistCategoryCollection = NewObject<UListDataObject_Collection>(KeyboardMouseCategoryCollection, UListDataObject_Collection::StaticClass());
+			KeyboardMouseAssistCategoryCollection->SetDataID(FName("KeyboardMouseAssistCategoryCollection"));
+			KeyboardMouseAssistCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("辅助")));
+			KeyboardMouseCategoryCollection->AddChildListData(KeyboardMouseAssistCategoryCollection);
+			CategoryMap.Add(KeyboardMouseAssistCategoryCollection->GetDataDisplayName().ToString(), KeyboardMouseAssistCategoryCollection);
+
+			UListDataObject_Collection* KeyboardMouseOtherCategoryCollection = NewObject<UListDataObject_Collection>(KeyboardMouseCategoryCollection, UListDataObject_Collection::StaticClass());
+			KeyboardMouseOtherCategoryCollection->SetDataID(FName("KeyboardMouseOtherCategoryCollection"));
+			KeyboardMouseOtherCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("其他")));
+			KeyboardMouseCategoryCollection->AddChildListData(KeyboardMouseOtherCategoryCollection);
+			
 			
 			for (const TPair<FGameplayTag, TObjectPtr<UEnhancedPlayerMappableKeyProfile>>& ProfilePair : EnhancedUserSettings->GetAllSavedKeyProfiles())
 			{
@@ -343,16 +354,23 @@ void UOptionsDataRegistry::InitControlsCollectionTab(ULocalPlayer* InOwningLocal
 							KeyRemapDataObject->SetDataID(KeyMapping.GetMappingName());
 							KeyRemapDataObject->SetDataDisplayName(KeyMapping.GetDisplayName());
 
-							const bool bHasTrigger = PreprocessedTriggerInfo.Contains(KeyMapping.GetAssociatedInputAction());
+							const bool bHasTrigger = PreprocessedTriggerInfo_KeyboardMouse.Contains(KeyMapping.GetAssociatedInputAction());
 							KeyRemapDataObject->InitKeyRemapData(
 								ECommonInputType::MouseAndKeyboard,
 								EnhancedUserSettings,
 								MappableKeyProfile,
 								KeyMapping,
-								bHasTrigger ? PreprocessedTriggerInfo[KeyMapping.GetAssociatedInputAction()] : nullptr
+								bHasTrigger ? PreprocessedTriggerInfo_KeyboardMouse[KeyMapping.GetAssociatedInputAction()] : nullptr
 							);
 
-							KeyboardMouseCategoryCollection->AddChildListData(KeyRemapDataObject);
+							if (CategoryMap.Contains(KeyMapping.GetDisplayCategory().ToString()))
+							{
+								CategoryMap[KeyMapping.GetDisplayCategory().ToString()]->AddChildListData(KeyRemapDataObject);
+							}
+							else
+							{
+								KeyboardMouseOtherCategoryCollection->AddChildListData(KeyRemapDataObject);
+							}
 						}
 					}
 				}
