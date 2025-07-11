@@ -115,9 +115,9 @@ void UWidget_OptionsScreen::OnResetBoundActionsTriggered()
 		return;
 	}
 
-	UFrontendCommonButtonBase* FrontendSeletedTabButton = CastChecked<UFrontendCommonButtonBase>(SelectedTabButton);
+	UFrontendCommonButtonBase* FrontendSelectedTabButton = CastChecked<UFrontendCommonButtonBase>(SelectedTabButton);
 
-	FString ButtonDisplayString = FrontendSeletedTabButton->GetButtonDisplayText().ToString();
+	FString ButtonDisplayString = FrontendSelectedTabButton->GetButtonDisplayText().ToString();
 	
 	UFrontendUISubsystem::Get(this)->PushModalScreenToModalStackAsync(
 		ArcaneGameplayTags::Frontend_Widget_ModalScreen_TimerConfirm,

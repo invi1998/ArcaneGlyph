@@ -3,7 +3,10 @@
 
 #include "Widget/Options/ListEntries/Widget_ListEntry_KeyRemap.h"
 
+#include "ArcaneBlueprintFunctionLibrary.h"
+#include "ArcaneGameplayTags.h"
 #include "CommonTextBlock.h"
+#include "Subsystems/FrontendUISubsystem.h"
 #include "Widget/Component/FrontendCommonButtonBase.h"
 #include "Widget/Options/DataObject/ListDataObject_KeyRemap.h"
 
@@ -69,6 +72,14 @@ void UWidget_ListEntry_KeyRemap::OnOwningListDataObjectModified(UListDataObject_
 
 void UWidget_ListEntry_KeyRemap::OnRemapKeyButtonClicked()
 {
+	UFrontendUISubsystem::Get(this)->PushSoftWidgetToStackAsync(
+		ArcaneGameplayTags::Frontend_WidgetStack_Modal,
+		UArcaneBlueprintFunctionLibrary::GetFrontendSoftWidgetClassByTag(ArcaneGameplayTags::Frontend_Widget_Frontend_KeyRemapScreen),
+		[](EAsyncPushWidgetState InPushWidgetState, UWidget_ActivatableBase* PushedWidget)
+		{
+			
+		}
+	);
 }
 
 void UWidget_ListEntry_KeyRemap::OnResetKeyBindingButtonClicked()

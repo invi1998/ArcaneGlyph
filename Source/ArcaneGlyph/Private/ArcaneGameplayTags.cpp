@@ -241,14 +241,13 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_Frontend_StoryScreen, "Frontend.Widget.Frontend.StoryScreen", "前端：前端窗口-故事屏幕");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_Frontend_DifficultyScreen, "Frontend.Widget.Frontend.DifficultyScreen", "前端：前端窗口-难度屏幕");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_Frontend_SaveLoadScreen, "Frontend.Widget.Frontend.SaveLoadScreen", "前端：前端窗口-存档加载屏幕");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_Frontend_KeyRemapScreen, "Frontend.Widget.Frontend.KeyRemapScreen", "前端：前端窗口-按键重映射屏幕");
 	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_ModalScreen_QuitScreen, "Frontend.Widget.ModalScreen.QuitScreen", "前端：模态屏幕-退出游戏");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_ModalScreen_ReturnBackToMainMenu, "Frontend.Widget.ModalScreen.ReturnBackToMainMenu", "前端：模态屏幕-返回主菜单");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_ModalScreen_More, "Frontend.Widget.ModalScreen.More", "前端：模态屏幕-更多");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_ModalScreen_Normal, "Frontend.Widget.ModalScreen.Normal", "前端：模态屏幕-普通");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_ModalScreen_TimerConfirm, "Frontend.Widget.ModalScreen.TimerConfirm", "前端：模态屏幕-计时确认");
-
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_ModalScreen_KeyRemapScreen, "Frontend.Widget.ModalScreen.KeyRemapScreen", "前端：模态屏幕-按键重映射");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Image_TestImage, "Frontend.Image.TestImage", "前端：测试图像");
 	

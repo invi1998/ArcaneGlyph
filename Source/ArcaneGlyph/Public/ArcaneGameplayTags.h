@@ -244,14 +244,13 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_Frontend_StoryScreen);			// 前端标签：故事
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_Frontend_DifficultyScreen);		// 前端标签：难度
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_Frontend_SaveLoadScreen);			// 前端标签：保存/加载
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_Frontend_KeyRemapScreen);		// 前端标签：键位重映射屏幕
 	
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_ModalScreen_QuitScreen);		// 前端标签：模态框：退出屏幕
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_ModalScreen_ReturnBackToMainMenu);	// 前端标签：模态框：返回主菜单
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_ModalScreen_More);		// 前端标签：模态框：更多
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_ModalScreen_Normal);		// 前端标签：模态框：普通
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_ModalScreen_TimerConfirm);		// 前端标签：模态框：计时器确认
-
-	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_ModalScreen_KeyRemapScreen);		// 前端标签：模态框：键位重映射屏幕
 	
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Image_TestImage);			// 前端标签：测试图片
 
