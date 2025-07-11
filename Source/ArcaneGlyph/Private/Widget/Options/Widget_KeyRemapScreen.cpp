@@ -9,7 +9,10 @@
 class FKeyRemapScreenInputPreprocessor : public IInputProcessor
 {
 public:
-
+	explicit FKeyRemapScreenInputPreprocessor(ECommonInputType InInputTypeToListen = ECommonInputType::MouseAndKeyboard)
+		: CachedInputTypeToListen(InInputTypeToListen)
+	{
+	}
 
 protected:
 	virtual void Tick(const float DeltaTime, FSlateApplication& SlateApp, TSharedRef<ICursor> Cursor) override
@@ -30,7 +33,15 @@ protected:
 
 		return true;
 	}
+
+private:
+	ECommonInputType CachedInputTypeToListen; // 缓存当前输入类型，用于判断是否需要处理键盘鼠标或手柄输入
 };
+
+void UWidget_KeyRemapScreen::SetDesiredInputTypeToFilter(ECommonInputType InputType)
+{
+	CachedDesiredInputTypeToListen = InputType;
+}
 
 void UWidget_KeyRemapScreen::NativeOnActivated()
 {

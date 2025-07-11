@@ -27,6 +27,8 @@ public:
 		const FPlayerKeyMapping* InTriggerKeyMapping
 	);
 
+	FORCEINLINE ECommonInputType GetDesiredInputType() const { return CachedDesiredInputType; }	// 获取当前期望的输入类型（键盘鼠标或手柄）
+
 	FSlateBrush GetIconFromCurrentKey() const;
 	FSlateBrush GetTriggerIconFromCurrentKey() const;
 

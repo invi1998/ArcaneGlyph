@@ -8,6 +8,7 @@
 #include "CommonTextBlock.h"
 #include "Subsystems/FrontendUISubsystem.h"
 #include "Widget/Component/FrontendCommonButtonBase.h"
+#include "Widget/Options/Widget_KeyRemapScreen.h"
 #include "Widget/Options/DataObject/ListDataObject_KeyRemap.h"
 
 void UWidget_ListEntry_KeyRemap::NativeOnInitialized()
@@ -75,9 +76,18 @@ void UWidget_ListEntry_KeyRemap::OnRemapKeyButtonClicked()
 	UFrontendUISubsystem::Get(this)->PushSoftWidgetToStackAsync(
 		ArcaneGameplayTags::Frontend_WidgetStack_Modal,
 		UArcaneBlueprintFunctionLibrary::GetFrontendSoftWidgetClassByTag(ArcaneGameplayTags::Frontend_Widget_Frontend_KeyRemapScreen),
-		[](EAsyncPushWidgetState InPushWidgetState, UWidget_ActivatableBase* PushedWidget)
+		[this](EAsyncPushWidgetState InPushWidgetState, UWidget_ActivatableBase* PushedWidget)
 		{
-			
+			if (InPushWidgetState == EAsyncPushWidgetState::OnCreatedBeforePush)
+			{
+				UWidget_KeyRemapScreen* KeyRemapScreen = CastChecked<UWidget_KeyRemapScreen>(PushedWidget);
+				// 设置键位重映射屏幕需要监听的按键类型（键盘鼠标或手柄）
+				if (CachedOwningKeyRemapDataObject)
+				{
+					KeyRemapScreen->SetDesiredInputTypeToFilter(CachedOwningKeyRemapDataObject->GetDesiredInputType());
+				}
+				
+			}
 		}
 	);
 }
