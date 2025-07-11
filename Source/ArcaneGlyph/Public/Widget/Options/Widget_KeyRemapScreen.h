@@ -7,6 +7,7 @@
 #include "Widget_KeyRemapScreen.generated.h"
 
 class UCommonRichTextBlock;
+class FKeyRemapScreenInputPreprocessor;
 /**
  * 
  */
@@ -23,4 +24,6 @@ protected:
 private:
 	UPROPERTY(meta=(BindWidget))
 	UCommonRichTextBlock* CommonRichTextBlock_KeyRemapMessage;	// 键位重映射提示文本块
+
+	TSharedPtr<FKeyRemapScreenInputPreprocessor> CachedInputPreprocessor;	// 键位重映射输入预处理器，用于处理键位重映射的输入事件
 };
