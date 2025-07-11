@@ -14,6 +14,12 @@ public:
 	{
 	}
 
+	DECLARE_DELEGATE_OneParam(FOnInputPreProcessorKeyPressedDelegate, const FKey& /* PressedKey */);
+	FOnInputPreProcessorKeyPressedDelegate OnInputPreProcessorKeyPressed;
+
+	DECLARE_DELEGATE_OneParam(FOnInputPreProcessorKeySelectCanceledDelegate, const FString& /* CanceledReason */);
+	FOnInputPreProcessorKeySelectCanceledDelegate OnInputPreProcessorKeySelectCanceled;
+	
 protected:
 	virtual void Tick(const float DeltaTime, FSlateApplication& SlateApp, TSharedRef<ICursor> Cursor) override
 	{
@@ -22,16 +28,47 @@ protected:
 
 	virtual bool HandleKeyDownEvent(FSlateApplication& SlateApp, const FKeyEvent& InKeyEvent) override
 	{
-		Debug::Print(TEXT("HandleKeyDownEvent") + InKeyEvent.GetKey().GetDisplayName().ToString());
+		ProcessPressedKey(InKeyEvent.GetKey()); // 处理按键按下事件
 
 		return true;
 	}
 
 	virtual bool HandleMouseButtonDownEvent(FSlateApplication& SlateApp, const FPointerEvent& MouseEvent) override
 	{
-		Debug::Print(TEXT("HandleMouseButtonDownEvent") + MouseEvent.GetEffectingButton().GetDisplayName().ToString());
-
+		ProcessPressedKey(MouseEvent.GetEffectingButton()); // 处理鼠标按键按下事件
 		return true;
+	}
+
+	void ProcessPressedKey(const FKey& PressedKey) const
+	{
+		if (PressedKey == EKeys::Escape || PressedKey == EKeys::RightMouseButton)
+		{
+			OnInputPreProcessorKeySelectCanceled.ExecuteIfBound(TEXT("按键重映射已取消"));
+			return; // 如果按下的是Escape键或者鼠标右键或者左键，则取消当前按键选择
+		}
+
+		switch (CachedInputTypeToListen)
+		{
+		case ECommonInputType::MouseAndKeyboard:
+			if (PressedKey.IsGamepadKey())
+			{
+				OnInputPreProcessorKeySelectCanceled.ExecuteIfBound(TEXT("检测到手柄按键被映射为键盘输入，按键重映射已取消，请使用键盘鼠标输入进行按键重映射"));
+				return;
+			}
+			break;
+		case ECommonInputType::Gamepad:
+			if (!PressedKey.IsGamepadKey())
+			{
+				OnInputPreProcessorKeySelectCanceled.ExecuteIfBound(TEXT("检测到键盘鼠标按键被映射为手柄输入，按键重映射已取消，请使用手柄输入进行按键重映射"));
+				return; // 如果按下的不是手柄按键，则取消当前按键选择
+			}
+			break;
+		default:
+			break;
+		}
+
+		OnInputPreProcessorKeyPressed.ExecuteIfBound(PressedKey);
+		
 	}
 
 private:
