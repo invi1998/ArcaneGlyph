@@ -101,6 +101,10 @@ void UWidget_ListEntry_KeyRemap::OnResetKeyBindingButtonClicked()
 
 void UWidget_ListEntry_KeyRemap::OnKeyToRemapPressed(const FKey& InPressedKey)
 {
+	if (CachedOwningKeyRemapDataObject)
+	{
+		CachedOwningKeyRemapDataObject->BindNewInputKey(InPressedKey);
+	}
 }
 
 void UWidget_ListEntry_KeyRemap::OnKeyToRemapSelectCanceled(const FString& InMsg)

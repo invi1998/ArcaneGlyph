@@ -34,6 +34,8 @@ public:
 
 	bool HasTrigger = false;	// 是否有触发键位映射
 
+	void BindNewInputKey(const FKey& InNewKey);		// 绑定新的输入键位映射
+
 private:
 	FPlayerKeyMapping* GetOwningKeyMapping(const FName& InMappingName, const EPlayerMappableKeySlot& InSlot) const;	// 获取当前拥有的键位映射
 	

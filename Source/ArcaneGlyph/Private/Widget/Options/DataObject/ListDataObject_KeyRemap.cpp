@@ -73,6 +73,22 @@ FSlateBrush UListDataObject_KeyRemap::GetTriggerIconFromCurrentKey() const
 		
 }
 
+void UListDataObject_KeyRemap::BindNewInputKey(const FKey& InNewKey)
+{
+	check(CachedEnhancedInputUserSettings);
+
+	FMapPlayerKeyArgs KeyArgs;
+	KeyArgs.MappingName = CachedMappingName;
+	KeyArgs.Slot = CachedMappableKeySlot;
+	KeyArgs.NewKey = InNewKey;
+
+	FGameplayTagContainer Container;
+	CachedEnhancedInputUserSettings->MapPlayerKey(KeyArgs, Container);
+	CachedEnhancedInputUserSettings->SaveSettings();
+
+	NotifyListDataModified(this);
+}
+
 FPlayerKeyMapping* UListDataObject_KeyRemap::GetOwningKeyMapping(const FName& InMappingName, const EPlayerMappableKeySlot& InSlot) const
 {
 	check(CachedPlayerMappableKeyProfile);
