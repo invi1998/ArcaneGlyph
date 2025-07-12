@@ -75,7 +75,7 @@ void UWidget_ListEntry_KeyRemap::OnRemapKeyButtonClicked()
 {
 	UFrontendUISubsystem::Get(this)->PushSoftWidgetToStackAsync(
 		ArcaneGameplayTags::Frontend_WidgetStack_Modal,
-		UArcaneBlueprintFunctionLibrary::GetFrontendSoftWidgetClassByTag(ArcaneGameplayTags::Frontend_Widget_Frontend_KeyRemapScreen),
+		UArcaneBlueprintFunctionLibrary::GetFrontendSoftWidgetClassByTag(ArcaneGameplayTags::Frontend_Widget_ModalScreen_KeyRemapScreen),
 		[this](EAsyncPushWidgetState InPushWidgetState, UWidget_ActivatableBase* PushedWidget)
 		{
 			if (InPushWidgetState == EAsyncPushWidgetState::OnCreatedBeforePush)
@@ -105,4 +105,24 @@ void UWidget_ListEntry_KeyRemap::OnKeyToRemapPressed(const FKey& InPressedKey)
 
 void UWidget_ListEntry_KeyRemap::OnKeyToRemapSelectCanceled(const FString& InMsg)
 {
+	UFrontendUISubsystem::Get(this)->PushModalScreenToModalStackAsync(
+		ArcaneGameplayTags::Frontend_WidgetStack_Modal,
+		UArcaneBlueprintFunctionLibrary::GetFrontendSoftWidgetClassByTag(ArcaneGameplayTags::Frontend_Widget_ModalScreen_KeyRemapScreen),
+		[this](EAsyncPushWidgetState InPushWidgetState, UWidget_ActivatableBase* PushedWidget)
+		{
+			if (InPushWidgetState == EAsyncPushWidgetState::OnCreatedBeforePush)
+			{
+				UWidget_KeyRemapScreen* KeyRemapScreen = CastChecked<UWidget_KeyRemapScreen>(PushedWidget);
+				KeyRemapScreen->OnKeyRemapScreenKeyPressed.BindUObject(this, &ThisClass::OnKeyToRemapPressed);
+				KeyRemapScreen->OnKeyRemapScreenKeySelectCanceled.BindUObject(this, &ThisClass::OnKeyToRemapSelectCanceled);
+				
+				// 设置键位重映射屏幕需要监听的按键类型（键盘鼠标或手柄）
+				if (CachedOwningKeyRemapDataObject)
+				{
+					KeyRemapScreen->SetDesiredInputTypeToFilter(CachedOwningKeyRemapDataObject->GetDesiredInputType());
+				}
+				
+			}
+		}
+	);
 }
