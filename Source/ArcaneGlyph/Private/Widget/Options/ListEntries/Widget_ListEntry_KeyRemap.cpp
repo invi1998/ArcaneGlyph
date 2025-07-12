@@ -106,23 +106,15 @@ void UWidget_ListEntry_KeyRemap::OnKeyToRemapPressed(const FKey& InPressedKey)
 void UWidget_ListEntry_KeyRemap::OnKeyToRemapSelectCanceled(const FString& InMsg)
 {
 	UFrontendUISubsystem::Get(this)->PushModalScreenToModalStackAsync(
-		ArcaneGameplayTags::Frontend_WidgetStack_Modal,
-		UArcaneBlueprintFunctionLibrary::GetFrontendSoftWidgetClassByTag(ArcaneGameplayTags::Frontend_Widget_ModalScreen_KeyRemapScreen),
-		[this](EAsyncPushWidgetState InPushWidgetState, UWidget_ActivatableBase* PushedWidget)
-		{
-			if (InPushWidgetState == EAsyncPushWidgetState::OnCreatedBeforePush)
-			{
-				UWidget_KeyRemapScreen* KeyRemapScreen = CastChecked<UWidget_KeyRemapScreen>(PushedWidget);
-				KeyRemapScreen->OnKeyRemapScreenKeyPressed.BindUObject(this, &ThisClass::OnKeyToRemapPressed);
-				KeyRemapScreen->OnKeyRemapScreenKeySelectCanceled.BindUObject(this, &ThisClass::OnKeyToRemapSelectCanceled);
-				
-				// 设置键位重映射屏幕需要监听的按键类型（键盘鼠标或手柄）
-				if (CachedOwningKeyRemapDataObject)
-				{
-					KeyRemapScreen->SetDesiredInputTypeToFilter(CachedOwningKeyRemapDataObject->GetDesiredInputType());
-				}
-				
-			}
-		}
+		ArcaneGameplayTags::Frontend_Widget_ModalScreen_TimerConfirm,
+		EModalType::Ok,
+		FText::FromString(TEXT("")),
+		FText::FromString(TEXT("")),
+		FText::FromString(InMsg),
+		FText::FromString(TEXT("")),
+		FSlateBrush(),
+		[this](EModalButtonType ClickButtonType){},
+		EColorThemeType::ErrorTheme,
+		FText::FromString(TEXT("退出")) // 按键选择取消的标题文本
 	);
 }

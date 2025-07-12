@@ -110,7 +110,7 @@ void UWidget_KeyRemapScreen::NativeOnActivated()
 		}
 
 		const FString InfoMsg = FString::Printf(
-			TEXT("<KeyRemapDefault>按下任意</><KeyRemapHighlight> %s </><KeyRemapDefault>按键</>"), *InputDeviceName);
+			TEXT("<KeyRemapDefault>按下任意</><KeyRemapHighlight> %s </><KeyRemapDefault>按键 用以替换当前输入按键</>"), *InputDeviceName);
 
 		CommonRichTextBlock_KeyRemapMessage->SetText(FText::FromString(InfoMsg));
 
