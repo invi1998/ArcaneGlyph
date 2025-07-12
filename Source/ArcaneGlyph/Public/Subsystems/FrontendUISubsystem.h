@@ -38,7 +38,7 @@ public:
 
 	void PushSoftWidgetToStackAsync(const FGameplayTag& WidgetTag, TSoftClassPtr<UWidget_ActivatableBase> InSoftWidgetClass, TFunction<void(EAsyncPushWidgetState, UWidget_ActivatableBase*)> AsyncPushStateCallback);
 
-	void PushModalScreenToModalStackAsync(const FGameplayTag& WidgetTag, EModalType ModalType, const FText& ModalTitle, const FText& ModalSubtitle, const FText& ModalMessage, const FText& ModalDescription, const FSlateBrush& ModalIcon, TFunction<void(EModalButtonType)> ButtonClickedCallback, EColorThemeType InColorTheme = EColorThemeType::None);
+	void PushModalScreenToModalStackAsync(const FGameplayTag& WidgetTag, EModalType ModalType, const FText& ModalTitle, const FText& ModalSubtitle, const FText& ModalMessage, const FText& ModalDescription, const FSlateBrush& ModalIcon, TFunction<void(EModalButtonType)> ButtonClickedCallback, EColorThemeType InColorTheme = EColorThemeType::None, const FText& ConfirmButtonText = FText::GetEmpty(), const FText& CancelButtonText = FText::GetEmpty(), const FText& CloseButtonText = FText::GetEmpty());
 	
 	UPROPERTY(BlueprintAssignable)
 	FOnButtonDescriptionTextUpdateDelegate OnButtonDescriptionTextUpdate;	// 按钮描述文本更新委托

@@ -48,9 +48,9 @@ public:
 	UPROPERTY(Transient)
 	TArray<FConfirmButtonInfo> AvailableScreenButtons;	// 可变按钮列表
 
-	static UConfirmScreenInfoObject* CreateOKScreen(const FText& InTitle, const FText& InSubTitle, const FText& InMessage, const FText& InDescription = FText::GetEmpty(), const FSlateBrush& InIcon = FSlateBrush());
-	static UConfirmScreenInfoObject* CreateOKCancelScreen(const FText& InTitle, const FText& InSubTitle, const FText& InMessage, const FText& InDescription = FText::GetEmpty(), const FSlateBrush& InIcon = FSlateBrush());
-	static UConfirmScreenInfoObject* CreateYesNoScreen(const FText& InTitle, const FText& InSubTitle, const FText& InMessage, const FText& InDescription = FText::GetEmpty(), const FSlateBrush& InIcon = FSlateBrush());
+	static UConfirmScreenInfoObject* CreateOKScreen(const FText& InTitle, const FText& InSubTitle, const FText& InMessage, const FText& InDescription = FText::GetEmpty(), const FSlateBrush& InIcon = FSlateBrush(), const FText& InOkButtonText = FText::GetEmpty());
+	static UConfirmScreenInfoObject* CreateOKCancelScreen(const FText& InTitle, const FText& InSubTitle, const FText& InMessage, const FText& InDescription = FText::GetEmpty(), const FSlateBrush& InIcon = FSlateBrush(), const FText& InOkButtonText = FText::GetEmpty(), const FText& InCancelButtonText = FText::GetEmpty());
+	static UConfirmScreenInfoObject* CreateYesNoScreen(const FText& InTitle, const FText& InSubTitle, const FText& InMessage, const FText& InDescription = FText::GetEmpty(), const FSlateBrush& InIcon = FSlateBrush(), const FText& InYesButtonText = FText::GetEmpty(), const FText& InNoButtonText = FText::GetEmpty());
 
 };
 

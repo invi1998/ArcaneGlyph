@@ -80,19 +80,20 @@ void UFrontendUISubsystem::PushSoftWidgetToStackAsync(const FGameplayTag& Widget
 
 void UFrontendUISubsystem::PushModalScreenToModalStackAsync(const FGameplayTag& WidgetTag, EModalType ModalType, const FText& ModalTitle,
 	const FText& ModalSubtitle, const FText& ModalMessage, const FText& ModalDescription, const FSlateBrush& ModalIcon,
-	TFunction<void(EModalButtonType)> ButtonClickedCallback, EColorThemeType InColorTheme)
+	TFunction<void(EModalButtonType)> ButtonClickedCallback, EColorThemeType InColorTheme,
+	const FText& ConfirmButtonText, const FText& CancelButtonText, const FText& CloseButtonText)
 {
 	UConfirmScreenInfoObject* ConfirmScreenInfoObject = nullptr;
 	switch (ModalType)
 	{
 	case EModalType::Ok:
-		ConfirmScreenInfoObject = UConfirmScreenInfoObject::CreateOKScreen(ModalTitle, ModalSubtitle, ModalMessage, ModalDescription, ModalIcon);
+		ConfirmScreenInfoObject = UConfirmScreenInfoObject::CreateOKScreen(ModalTitle, ModalSubtitle, ModalMessage, ModalDescription, ModalIcon, ConfirmButtonText);
 		break;
 	case EModalType::OkCancel:
-		ConfirmScreenInfoObject = UConfirmScreenInfoObject::CreateOKCancelScreen(ModalTitle, ModalSubtitle, ModalMessage, ModalDescription, ModalIcon);
+		ConfirmScreenInfoObject = UConfirmScreenInfoObject::CreateOKCancelScreen(ModalTitle, ModalSubtitle, ModalMessage, ModalDescription, ModalIcon, ConfirmButtonText, CloseButtonText);
 		break;
 	case EModalType::YesNo:
-		ConfirmScreenInfoObject = UConfirmScreenInfoObject::CreateYesNoScreen(ModalTitle, ModalSubtitle, ModalMessage, ModalDescription, ModalIcon);
+		ConfirmScreenInfoObject = UConfirmScreenInfoObject::CreateYesNoScreen(ModalTitle, ModalSubtitle, ModalMessage, ModalDescription, ModalIcon, ConfirmButtonText, CancelButtonText);
 		break;
 	case EModalType::Unknow:
 		break;

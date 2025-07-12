@@ -10,7 +10,7 @@
 #include "Widget/Component/FrontendCommonButtonBase.h"
 #include "ICommonInputModule.h"
 
-UConfirmScreenInfoObject* UConfirmScreenInfoObject::CreateOKScreen(const FText& InTitle, const FText& InSubTitle, const FText& InMessage, const FText& InDescription, const FSlateBrush& InIcon)
+UConfirmScreenInfoObject* UConfirmScreenInfoObject::CreateOKScreen(const FText& InTitle, const FText& InSubTitle, const FText& InMessage, const FText& InDescription, const FSlateBrush& InIcon, const FText& InOkButtonText)
 {
 	UConfirmScreenInfoObject* NewScreen = NewObject<UConfirmScreenInfoObject>();
 	NewScreen->ModalTitle = InTitle;
@@ -21,7 +21,7 @@ UConfirmScreenInfoObject* UConfirmScreenInfoObject::CreateOKScreen(const FText& 
 
 	FConfirmButtonInfo OKButtonInfo = FConfirmButtonInfo();
 	OKButtonInfo.ConfirmButtonType = EModalButtonType::Close;
-	OKButtonInfo.ButtonText = FText::FromString(TEXT("确认"));
+	OKButtonInfo.ButtonText = InOkButtonText.IsEmpty() ? FText::FromString(TEXT("确认")) : InOkButtonText;
 
 	NewScreen->AvailableScreenButtons.Add(OKButtonInfo);
 
@@ -29,7 +29,7 @@ UConfirmScreenInfoObject* UConfirmScreenInfoObject::CreateOKScreen(const FText& 
 
 }
 
-UConfirmScreenInfoObject* UConfirmScreenInfoObject::CreateOKCancelScreen(const FText& InTitle, const FText& InSubTitle, const FText& InMessage, const FText& InDescription, const FSlateBrush& InIcon)
+UConfirmScreenInfoObject* UConfirmScreenInfoObject::CreateOKCancelScreen(const FText& InTitle, const FText& InSubTitle, const FText& InMessage, const FText& InDescription, const FSlateBrush& InIcon, const FText& InOkButtonText, const FText& InCancelButtonText)
 {
 	UConfirmScreenInfoObject* NewScreen = NewObject<UConfirmScreenInfoObject>();
 	NewScreen->ModalTitle = InTitle;
@@ -40,11 +40,11 @@ UConfirmScreenInfoObject* UConfirmScreenInfoObject::CreateOKCancelScreen(const F
 
 	FConfirmButtonInfo OkButtonInfo = FConfirmButtonInfo();
 	OkButtonInfo.ConfirmButtonType = EModalButtonType::Confirm;
-	OkButtonInfo.ButtonText = FText::FromString(TEXT("确认"));
+	OkButtonInfo.ButtonText = InOkButtonText.IsEmpty() ? FText::FromString(TEXT("确认")) : InOkButtonText;
 
 	FConfirmButtonInfo CancelButtonInfo = FConfirmButtonInfo();
 	CancelButtonInfo.ConfirmButtonType = EModalButtonType::Cancel;
-	CancelButtonInfo.ButtonText = FText::FromString(TEXT("取消"));
+	CancelButtonInfo.ButtonText = InCancelButtonText.IsEmpty() ? FText::FromString(TEXT("取消")) : InCancelButtonText;
 
 	NewScreen->AvailableScreenButtons.Add(OkButtonInfo);
 	NewScreen->AvailableScreenButtons.Add(CancelButtonInfo);
@@ -52,7 +52,7 @@ UConfirmScreenInfoObject* UConfirmScreenInfoObject::CreateOKCancelScreen(const F
 	return NewScreen;
 }
 
-UConfirmScreenInfoObject* UConfirmScreenInfoObject::CreateYesNoScreen(const FText& InTitle, const FText& InSubTitle, const FText& InMessage, const FText& InDescription, const FSlateBrush& InIcon)
+UConfirmScreenInfoObject* UConfirmScreenInfoObject::CreateYesNoScreen(const FText& InTitle, const FText& InSubTitle, const FText& InMessage, const FText& InDescription, const FSlateBrush& InIcon, const FText& InYesButtonText, const FText& InNoButtonText)
 {
 	UConfirmScreenInfoObject* NewScreen = NewObject<UConfirmScreenInfoObject>();
 	NewScreen->ModalTitle = InTitle;
@@ -63,11 +63,11 @@ UConfirmScreenInfoObject* UConfirmScreenInfoObject::CreateYesNoScreen(const FTex
 
 	FConfirmButtonInfo YesButtonInfo = FConfirmButtonInfo();
 	YesButtonInfo.ConfirmButtonType = EModalButtonType::Confirm;
-	YesButtonInfo.ButtonText = FText::FromString(TEXT("确认"));
+	YesButtonInfo.ButtonText = InYesButtonText.IsEmpty() ? FText::FromString(TEXT("确认")) : InYesButtonText;
 
 	FConfirmButtonInfo NoButtonInfo = FConfirmButtonInfo();
 	NoButtonInfo.ConfirmButtonType = EModalButtonType::Cancel;
-	NoButtonInfo.ButtonText = FText::FromString(TEXT("取消"));
+	NoButtonInfo.ButtonText = InNoButtonText.IsEmpty() ? FText::FromString(TEXT("取消")) : InNoButtonText;
 
 	NewScreen->AvailableScreenButtons.Add(YesButtonInfo);
 	NewScreen->AvailableScreenButtons.Add(NoButtonInfo);

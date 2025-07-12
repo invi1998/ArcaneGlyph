@@ -8,7 +8,8 @@
 UAsyncAction_PushModalScreen* UAsyncAction_PushModalScreen::PushModalScreen(const UObject* WorldContextObject,
 	UPARAM(meta = (Categories = "Frontend.Widget.ModalScreen")) FGameplayTag WidgetStackTag,
 	EModalType ModalType, FText ModalTitle, FText ModalSubtitle, FText ModalMessage, FText ModalDescription,
-	FSlateBrush ModalIcon, EColorThemeType ModalTheme)
+	FSlateBrush ModalIcon, EColorThemeType ModalTheme,
+	FText ConfirmButtonText, FText CancelButtonText, FText CloseButtonText)
 {
 	if (GEngine)
 	{
@@ -24,6 +25,9 @@ UAsyncAction_PushModalScreen* UAsyncAction_PushModalScreen::PushModalScreen(cons
 			Action->CachedModalDescription = ModalDescription;
 			Action->CachedModalIcon = ModalIcon;
 			Action->CachedModalTheme = ModalTheme;
+			Action->CachedConfirmButtonText = ConfirmButtonText;
+			Action->CachedCancelButtonText = CancelButtonText;
+			Action->CachedCloseButtonText = CloseButtonText;
 
 			Action->RegisterWithGameInstance(World);
 
@@ -43,6 +47,6 @@ void UAsyncAction_PushModalScreen::Activate()
 
 			SetReadyToDestroy();
 		},
-		CachedModalTheme
+		CachedModalTheme, CachedConfirmButtonText, CachedCancelButtonText, CachedCloseButtonText
 	);
 }

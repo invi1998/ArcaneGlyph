@@ -29,7 +29,8 @@ public:
 		FText ModalMessage = FText::GetEmpty(),
 		FText ModalDescription = FText::GetEmpty(),
 		FSlateBrush ModalIcon = FSlateBrush(),
-		EColorThemeType ModalTheme = EColorThemeType::NormalTheme);
+		EColorThemeType ModalTheme = EColorThemeType::NormalTheme,
+		FText ConfirmButtonText = FText::GetEmpty(), FText CancelButtonText = FText::GetEmpty(), FText CloseButtonText = FText::GetEmpty());
 
 	virtual void Activate() override;
 
@@ -46,5 +47,8 @@ private:
 	FText CachedModalDescription;									// 缓存的模态描述
 	FSlateBrush CachedModalIcon;										// 缓存的模态图标
 	EColorThemeType CachedModalTheme;								// 缓存的模态主题颜色类型
+	FText CachedConfirmButtonText;										// 确认按钮文本
+	FText CachedCancelButtonText;										// 取消按钮文本
+	FText CachedCloseButtonText;										// 关闭按钮文本
 	
 };
