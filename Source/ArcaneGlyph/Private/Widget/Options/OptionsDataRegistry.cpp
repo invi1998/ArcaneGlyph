@@ -328,7 +328,6 @@ void UOptionsDataRegistry::InitControlsCollectionTab(ULocalPlayer* InOwningLocal
 			UListDataObject_CollectionInnerCategory* KeyboardMouseOtherCategoryCollection = NewObject<UListDataObject_CollectionInnerCategory>(KeyboardMouseCategoryCollection, UListDataObject_CollectionInnerCategory::StaticClass());
 			KeyboardMouseOtherCategoryCollection->SetDataID(FName("KeyboardMouseOtherCategoryCollection"));
 			KeyboardMouseOtherCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("其他")));
-			KeyboardMouseCategoryCollection->AddChildListData(KeyboardMouseOtherCategoryCollection);
 			
 			
 			for (const TPair<FGameplayTag, TObjectPtr<UEnhancedPlayerMappableKeyProfile>>& ProfilePair : EnhancedUserSettings->GetAllSavedKeyProfiles())
@@ -363,6 +362,29 @@ void UOptionsDataRegistry::InitControlsCollectionTab(ULocalPlayer* InOwningLocal
 								bHasTrigger ? PreprocessedTriggerInfo_KeyboardMouse[KeyMapping.GetAssociatedInputAction()] : nullptr
 							);
 
+							// 移动, 攻击连招, 装备/卸载武器, 物品拾取, 物品使用, 辅助 这些分类中的设置都不允许玩家变更按键映射
+							FOptionDataEditConditionDescriptor NotAllowedCondition;
+							NotAllowedCondition.SetEditConditionFunction(
+								[KeyMapping]()->bool
+								{
+									if (KeyMapping.GetDisplayCategory().ToString() == TEXT("移动") ||
+										KeyMapping.GetDisplayCategory().ToString() == TEXT("攻击连招") ||
+										KeyMapping.GetDisplayCategory().ToString() == TEXT("装备/卸载武器") ||
+										KeyMapping.GetDisplayCategory().ToString() == TEXT("物品拾取") ||
+										KeyMapping.GetDisplayCategory().ToString() == TEXT("物品使用") ||
+										KeyMapping.GetDisplayCategory().ToString() == TEXT("辅助") ||
+										KeyMapping.GetDisplayCategory().ToString().IsEmpty())
+									{
+										return false; // 不允许玩家变更这些分类的按键映射
+									}
+									return true;
+								}
+							);
+
+							NotAllowedCondition.SetDisabledRichReason(TEXT("\n\n<Warning>该按键映射不允许玩家变更。</>\n"));
+
+							KeyRemapDataObject->AddEditCondition(NotAllowedCondition);
+
 							if (CategoryMap.Contains(KeyMapping.GetDisplayCategory().ToString()))
 							{
 								CategoryMap[KeyMapping.GetDisplayCategory().ToString()]->AddChildListData(KeyRemapDataObject);
@@ -374,6 +396,12 @@ void UOptionsDataRegistry::InitControlsCollectionTab(ULocalPlayer* InOwningLocal
 						}
 					}
 				}
+			}
+
+			// 如果 "其他"分类中没有任何按键映射，则不添加该分类
+			if (KeyboardMouseOtherCategoryCollection->HasAnyChildListData())
+			{
+				KeyboardMouseCategoryCollection->AddChildListData(KeyboardMouseOtherCategoryCollection);
 			}
 		}
 	}
@@ -570,10 +598,17 @@ void UOptionsDataRegistry::InitAudioCollectionTab()
 			UseHDRAudioDataObject->SetDataDynamicSetter(MAKE_OPTIONS_DATA_CONTROL(SetUseHDRAudio));
 			UseHDRAudioDataObject->SetShouldApplyChangeImmediately(true); // 设置为立即应用更改
 
+			FOptionDataEditConditionDescriptor DisableCondition;	// 禁用条件
+			DisableCondition.SetEditConditionFunction(
+				[]()->bool
+				{
+					return false; // 禁用
+				}
+			);
+			DisableCondition.SetDisabledRichReason(TEXT("\n\n<Warning>HDR音频模式已禁用</>\n\n"));
+
 			const FText UseHDRAudioDescription = GET_DESCRIPTION_TEXT("UseHDRAudioDescKey");
 			UseHDRAudioDataObject->SetDataDescriptionRichText(UseHDRAudioDescription);
-
-			UseHDRAudioDataObject->SetDisabledRichText(FText::FromString(TEXT("<Warning>HDR音频模式已禁用</>\n\n<Bold>注意</>\n* 禁用后无法恢复HDR音频处理\n* 需重启游戏才能关闭HDR音频管线\n* 建议仅在高端音频设备上使用\n\n<Warning>警告</>：禁用后无法恢复，请谨慎操作！")));
 			
 			SoundCategoryCollection->AddChildListData(UseHDRAudioDataObject);
 		}
