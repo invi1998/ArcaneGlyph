@@ -71,6 +71,20 @@ void UWidget_ListEntry_KeyRemap::OnOwningListDataObjectModified(UListDataObject_
 	
 }
 
+void UWidget_ListEntry_KeyRemap::OnToggleEditableState(bool bIsEditable)
+{
+	Super::OnToggleEditableState(bIsEditable);
+	if (CommonButton_KeyRemap)
+	{
+		CommonButton_KeyRemap->SetIsEnabled(bIsEditable); // 设置键位重映射按钮的可用状态
+	}
+	if (CommonButton_ResetKeyBinding)
+	{
+		CommonButton_ResetKeyBinding->SetIsEnabled(bIsEditable); // 设置重置键位绑定按钮的可用状态
+		CommonButton_ResetKeyBinding->SetVisibility(bIsEditable ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+	}
+}
+
 void UWidget_ListEntry_KeyRemap::OnRemapKeyButtonClicked()
 {
 	UFrontendUISubsystem::Get(this)->PushSoftWidgetToStackAsync(
