@@ -33,6 +33,44 @@ void UFrontendCommonButtonBase::SetButtonDisplayIcon(const FSlateBrush& InButton
 	}
 }
 
+void UFrontendCommonButtonBase::SetButtonTheme(EColorThemeType InColorTheme)
+{
+	switch (InColorTheme) {
+	case EColorThemeType::None:
+		break;
+	case EColorThemeType::ClearTheme:
+		if (ClearThemeButtonStyle)
+		{
+			SetStyle(ClearThemeButtonStyle);
+		}
+		break;
+	case EColorThemeType::NormalTheme:
+		if (NormalThemeButtonStyle)
+		{
+			SetStyle(NormalThemeButtonStyle);
+		}
+		break;
+	case EColorThemeType::InfoTheme:
+		if (InfoThemeButtonStyle)
+		{
+			SetStyle(InfoThemeButtonStyle);
+		}
+		break;
+	case EColorThemeType::WarningTheme:
+		if (WarningThemeButtonStyle)
+		{
+			SetStyle(WarningThemeButtonStyle);
+		}
+		break;
+	case EColorThemeType::ErrorTheme:
+		if (ErrorThemeButtonStyle)
+		{
+			SetStyle(ErrorThemeButtonStyle);
+		}
+		break;
+	}
+}
+
 void UFrontendCommonButtonBase::NativePreConstruct()
 {
 	Super::NativePreConstruct();

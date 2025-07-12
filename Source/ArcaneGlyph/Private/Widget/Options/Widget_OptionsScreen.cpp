@@ -155,7 +155,8 @@ void UWidget_OptionsScreen::OnResetBoundActionsTriggered()
 				bIsResettingData = false; // 重置完成后，清除标志位
 				
 			}
-		}
+		},
+		EColorThemeType::WarningTheme
 	);
 	
 }

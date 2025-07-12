@@ -152,6 +152,17 @@ enum class EOptionsListDataModifyReason : uint8
 	ResetToDefault UMETA(DisplayName = "重置为默认"),
 };
 
+UENUM(BlueprintType)
+enum class EColorThemeType : uint8
+{
+	None UMETA(DisplayName = "无主题"),		// 由编辑器内自行指定
+	ClearTheme UMETA(DisplayName = "清晰色主题"),
+	NormalTheme UMETA(DisplayName = "普通色主题"),
+	InfoTheme UMETA(DisplayName = "信息色主题"),
+	WarningTheme UMETA(DisplayName = "警告色主题"),
+	ErrorTheme UMETA(DisplayName = "错误色主题"),
+};
+
 
 
 

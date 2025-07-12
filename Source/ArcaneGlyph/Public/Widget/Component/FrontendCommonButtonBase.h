@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "CommonButtonBase.h"
+#include "ArcaneTypes/ArcaneEnumTypes.h"
 #include "FrontendCommonButtonBase.generated.h"
 
 class UCommonLazyImage;
@@ -26,6 +27,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetButtonDisplayIcon(const FSlateBrush& InButtonIcon);
+
+	void SetButtonTheme(EColorThemeType InColorTheme);
 
 protected:
 	virtual void NativePreConstruct() override;
@@ -54,5 +57,20 @@ private:
 	// 按钮描述文本
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Frontend Button", meta = (AllowPrivateAccess = "true"))
 	FText ButtonDescriptionText;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Button Theme", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UCommonButtonStyle> ClearThemeButtonStyle;	// 清除主题按钮样式
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Button Theme", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UCommonButtonStyle> NormalThemeButtonStyle;	// 普通主题按钮样式
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Button Theme", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UCommonButtonStyle> InfoThemeButtonStyle;	// 信息主题按钮样式
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Button Theme", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UCommonButtonStyle> WarningThemeButtonStyle;	// 警告主题按钮样式
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Button Theme", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UCommonButtonStyle> ErrorThemeButtonStyle;	// 错误主题按钮样式
 	
 };

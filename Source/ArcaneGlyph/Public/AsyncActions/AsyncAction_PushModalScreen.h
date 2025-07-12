@@ -28,7 +28,8 @@ public:
 		FText ModalSubtitle = FText::GetEmpty(),
 		FText ModalMessage = FText::GetEmpty(),
 		FText ModalDescription = FText::GetEmpty(),
-		FSlateBrush ModalIcon = FSlateBrush());
+		FSlateBrush ModalIcon = FSlateBrush(),
+		EColorThemeType ModalTheme = EColorThemeType::NormalTheme);
 
 	virtual void Activate() override;
 
@@ -44,5 +45,6 @@ private:
 	FText CachedModalMessage;										// 缓存的模态消息
 	FText CachedModalDescription;									// 缓存的模态描述
 	FSlateBrush CachedModalIcon;										// 缓存的模态图标
+	EColorThemeType CachedModalTheme;								// 缓存的模态主题颜色类型
 	
 };

@@ -75,9 +75,10 @@ UConfirmScreenInfoObject* UConfirmScreenInfoObject::CreateYesNoScreen(const FTex
 	return NewScreen;
 }
 
-void UWidget_ModalScreen::InitConfirmScreen(const UConfirmScreenInfoObject* ConfirmScreenInfoObject, TFunction<void(EModalButtonType)> OnButtonClickedCallback)
+void UWidget_ModalScreen::InitConfirmScreen(const UConfirmScreenInfoObject* ConfirmScreenInfoObject, TFunction<void(EModalButtonType)> OnButtonClickedCallback, EColorThemeType InColorTheme)
 {
 	check(Modal_Message);
+	ColorTheme = InColorTheme;
 	if (ConfirmScreenInfoObject)
 	{
 		if (Modal_Title)
@@ -147,6 +148,8 @@ void UWidget_ModalScreen::InitConfirmScreen(const UConfirmScreenInfoObject* Conf
 					DeactivateWidget();
 				}
 			);
+			// 设置按钮的主题颜色
+			AddButton->SetButtonTheme(InColorTheme);
 		}
 
 		if (DynamicEntryBox_Buttons->GetNumEntries() > 0)
@@ -156,6 +159,25 @@ void UWidget_ModalScreen::InitConfirmScreen(const UConfirmScreenInfoObject* Conf
 		}
 		
 	}
+}
+
+FSlateColor UWidget_ModalScreen::GetThemeColor() const
+{
+	switch (ColorTheme) {
+	case EColorThemeType::None:
+		return FLinearColor::Transparent;
+	case EColorThemeType::ClearTheme:
+		return FLinearColor::Transparent;
+	case EColorThemeType::NormalTheme:
+		return NormalColor;
+	case EColorThemeType::InfoTheme:
+		return InfoColor;
+	case EColorThemeType::WarningTheme:
+		return WarningColor;
+	case EColorThemeType::ErrorTheme:
+		return ErrorColor;
+	}
+	return FLinearColor::Transparent;
 }
 
 UWidget* UWidget_ModalScreen::NativeGetDesiredFocusTarget() const

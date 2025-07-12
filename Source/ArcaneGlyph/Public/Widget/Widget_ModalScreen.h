@@ -65,8 +65,10 @@ class ARCANEGLYPH_API UWidget_ModalScreen : public UWidget_ActivatableBase
 
 public:
 	// 当这个控件被构建时，在类外部调用该函数，并且在该控件被推入modal栈之前执行
-	void InitConfirmScreen(const UConfirmScreenInfoObject* ConfirmScreenInfoObject, TFunction<void(EModalButtonType)> OnButtonClickedCallback);
-
+	void InitConfirmScreen(const UConfirmScreenInfoObject* ConfirmScreenInfoObject, TFunction<void(EModalButtonType)> OnButtonClickedCallback, EColorThemeType InColorTheme = EColorThemeType::None);
+	
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	FSlateColor GetThemeColor() const;	// 获取当前主题颜色
 
 protected:
 	virtual UWidget* NativeGetDesiredFocusTarget() const override;
@@ -90,4 +92,21 @@ private:
 	// 这是一个可在运行时动态插入按钮的容器控件
 	UPROPERTY(meta=(BindWidget))
 	UDynamicEntryBox* DynamicEntryBox_Buttons;	// 模态框按钮动态入口框
+
+	UPROPERTY()
+	EColorThemeType ColorTheme = EColorThemeType::None;	// 当前颜色主题类型
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Theme Color", meta = (AllowPrivateAccess = "true"))
+	FSlateColor NormalColor;	// 正常主题颜色
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Theme Color", meta = (AllowPrivateAccess = "true"))
+	FSlateColor InfoColor;	// 信息主题颜色
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Theme Color", meta = (AllowPrivateAccess = "true"))
+	FSlateColor WarningColor;	// 警告主题颜色
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Theme Color", meta = (AllowPrivateAccess = "true"))
+	FSlateColor ErrorColor;	// 错误主题颜色
+	
+	
 };

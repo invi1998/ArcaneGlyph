@@ -80,7 +80,7 @@ void UFrontendUISubsystem::PushSoftWidgetToStackAsync(const FGameplayTag& Widget
 
 void UFrontendUISubsystem::PushModalScreenToModalStackAsync(const FGameplayTag& WidgetTag, EModalType ModalType, const FText& ModalTitle,
 	const FText& ModalSubtitle, const FText& ModalMessage, const FText& ModalDescription, const FSlateBrush& ModalIcon,
-	TFunction<void(EModalButtonType)> ButtonClickedCallback)
+	TFunction<void(EModalButtonType)> ButtonClickedCallback, EColorThemeType InColorTheme)
 {
 	UConfirmScreenInfoObject* ConfirmScreenInfoObject = nullptr;
 	switch (ModalType)
@@ -103,13 +103,13 @@ void UFrontendUISubsystem::PushModalScreenToModalStackAsync(const FGameplayTag& 
 	PushSoftWidgetToStackAsync(
 		ArcaneGameplayTags::Frontend_WidgetStack_Modal,
 		UArcaneBlueprintFunctionLibrary::GetFrontendSoftWidgetClassByTag(WidgetTag),
-		[this, ConfirmScreenInfoObject, ButtonClickedCallback](EAsyncPushWidgetState State, UWidget_ActivatableBase* PushedWidget)
+		[this, ConfirmScreenInfoObject, ButtonClickedCallback, InColorTheme](EAsyncPushWidgetState State, UWidget_ActivatableBase* PushedWidget)
 		{
 			if (State == EAsyncPushWidgetState::OnCreatedBeforePush)
 			{
 				if (UWidget_ModalScreen* ModalScreen = Cast<UWidget_ModalScreen>(PushedWidget))
 				{
-					ModalScreen->InitConfirmScreen(ConfirmScreenInfoObject, ButtonClickedCallback);
+					ModalScreen->InitConfirmScreen(ConfirmScreenInfoObject, ButtonClickedCallback, InColorTheme);
 				}
 			}
 		}
