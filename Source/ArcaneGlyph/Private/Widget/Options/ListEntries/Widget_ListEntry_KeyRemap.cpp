@@ -81,6 +81,9 @@ void UWidget_ListEntry_KeyRemap::OnRemapKeyButtonClicked()
 			if (InPushWidgetState == EAsyncPushWidgetState::OnCreatedBeforePush)
 			{
 				UWidget_KeyRemapScreen* KeyRemapScreen = CastChecked<UWidget_KeyRemapScreen>(PushedWidget);
+				KeyRemapScreen->OnKeyRemapScreenKeyPressed.BindUObject(this, &ThisClass::OnKeyToRemapPressed);
+				KeyRemapScreen->OnKeyRemapScreenKeySelectCanceled.BindUObject(this, &ThisClass::OnKeyToRemapSelectCanceled);
+				
 				// 设置键位重映射屏幕需要监听的按键类型（键盘鼠标或手柄）
 				if (CachedOwningKeyRemapDataObject)
 				{
@@ -93,5 +96,13 @@ void UWidget_ListEntry_KeyRemap::OnRemapKeyButtonClicked()
 }
 
 void UWidget_ListEntry_KeyRemap::OnResetKeyBindingButtonClicked()
+{
+}
+
+void UWidget_ListEntry_KeyRemap::OnKeyToRemapPressed(const FKey& InPressedKey)
+{
+}
+
+void UWidget_ListEntry_KeyRemap::OnKeyToRemapSelectCanceled(const FString& InMsg)
 {
 }

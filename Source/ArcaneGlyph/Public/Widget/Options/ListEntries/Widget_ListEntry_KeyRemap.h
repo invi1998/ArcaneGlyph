@@ -27,6 +27,9 @@ protected:
 private:
 	void OnRemapKeyButtonClicked();
 	void OnResetKeyBindingButtonClicked();
+
+	void OnKeyToRemapPressed(const FKey& InPressedKey);	// 键位重映射按键按下的回调函数
+	void OnKeyToRemapSelectCanceled(const FString& InMsg);	// 键位重映射按键选择取消的回调函数
 	
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget, AllowPrivateAccess = "true"))
 	UFrontendCommonButtonBase* CommonButton_TriggerKey;	// 触发键位重映射按钮，组合键位里的前置触发键位（该项一帮不会被编辑）
