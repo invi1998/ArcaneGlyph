@@ -10,7 +10,7 @@
 class FKeyRemapScreenInputPreprocessor : public IInputProcessor
 {
 public:
-	explicit FKeyRemapScreenInputPreprocessor(ECommonInputType InInputTypeToListen = ECommonInputType::MouseAndKeyboard)
+	explicit FKeyRemapScreenInputPreprocessor(ECommonInputType InInputTypeToListen)
 		: CachedInputTypeToListen(InInputTypeToListen)
 	{
 	}
@@ -42,9 +42,9 @@ protected:
 
 	void ProcessPressedKey(const FKey& PressedKey) const
 	{
-		if (PressedKey == EKeys::Escape || PressedKey == EKeys::RightMouseButton)
+		if (PressedKey == EKeys::Escape || PressedKey == EKeys::RightMouseButton || PressedKey == EKeys::LeftMouseButton)
 		{
-			OnInputPreProcessorKeySelectCanceled.ExecuteIfBound(TEXT("按键重映射已取消"));
+			OnInputPreProcessorKeySelectCanceled.ExecuteIfBound(TEXT("按键重映射已取消 （按下了Escape键或鼠标右键或左键）"));
 			return; // 如果按下的是Escape键或者鼠标右键或者左键，则取消当前按键选择
 		}
 
@@ -86,7 +86,7 @@ void UWidget_KeyRemapScreen::NativeOnActivated()
 {
 	Super::NativeOnActivated();
 
-	CachedInputPreprocessor = MakeShared<FKeyRemapScreenInputPreprocessor>();
+	CachedInputPreprocessor = MakeShared<FKeyRemapScreenInputPreprocessor>(CachedDesiredInputTypeToListen);
 	CachedInputPreprocessor->OnInputPreProcessorKeyPressed.BindUObject(this, &ThisClass::OnValidKeyPressedDelegate);
 	CachedInputPreprocessor->OnInputPreProcessorKeySelectCanceled.BindUObject(this, &ThisClass::OnInvalidKeyPressedDelegate);
 
