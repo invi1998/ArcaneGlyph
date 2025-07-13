@@ -488,7 +488,7 @@ void UOptionsDataRegistry::InitControlsCollectionTab(ULocalPlayer* InOwningLocal
 
 							const bool bHasTrigger = PreprocessedTriggerInfo_Gamepad.Contains(KeyMapping.GetAssociatedInputAction());
 							KeyRemapDataObject->InitKeyRemapData(
-								ECommonInputType::MouseAndKeyboard,
+								ECommonInputType::Gamepad,
 								EnhancedUserSettings,
 								MappableKeyProfile,
 								KeyMapping,
