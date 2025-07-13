@@ -4,14 +4,17 @@
 #include "Widget/Options/Widget_KeyRemapScreen.h"
 
 #include "ArcaneDebugHelper.h"
+#include "CommonInputSubsystem.h"
 #include "CommonRichTextBlock.h"
+#include "ICommonInputModule.h"
+#include  "CommonUITypes.h"
 #include "Framework/Application/IInputProcessor.h"
 
 class FKeyRemapScreenInputPreprocessor : public IInputProcessor
 {
 public:
-	explicit FKeyRemapScreenInputPreprocessor(ECommonInputType InInputTypeToListen)
-		: CachedInputTypeToListen(InInputTypeToListen)
+	explicit FKeyRemapScreenInputPreprocessor(ECommonInputType InInputTypeToListen, ULocalPlayer* InLocalPlayer)
+		: CachedInputTypeToListen(InInputTypeToListen), CachedWeakLocalPlayer(InLocalPlayer)
 	{
 	}
 
@@ -42,22 +45,42 @@ protected:
 
 	void ProcessPressedKey(const FKey& PressedKey) const
 	{
-		if (PressedKey == EKeys::Escape || PressedKey == EKeys::RightMouseButton || PressedKey == EKeys::LeftMouseButton)
-		{
-			OnInputPreProcessorKeySelectCanceled.ExecuteIfBound(TEXT("按键重映射已取消 （按下了Escape键或鼠标右键或左键）"));
-			return; // 如果按下的是Escape键或者鼠标右键或者左键，则取消当前按键选择
-		}
+		UCommonInputSubsystem* CommonInputSubsystem = UCommonInputSubsystem::Get(CachedWeakLocalPlayer.Get());
+		check(CommonInputSubsystem);
 
+		ECommonInputType CurrentInputType = CommonInputSubsystem->GetCurrentInputType();
+			
 		switch (CachedInputTypeToListen)
 		{
 		case ECommonInputType::MouseAndKeyboard:
-			if (PressedKey.IsGamepadKey())
+			if (PressedKey.IsGamepadKey() || CurrentInputType == ECommonInputType::Gamepad)
 			{
+				// 如果按下的按键是手柄按键，或者当前输入类型是手柄，则取消当前按键选择
 				OnInputPreProcessorKeySelectCanceled.ExecuteIfBound(TEXT("检测到手柄按键被映射为键盘输入，按键重映射已取消，请使用键盘鼠标输入进行按键重映射"));
 				return;
 			}
+			if (PressedKey == EKeys::Escape || PressedKey == EKeys::RightMouseButton || PressedKey == EKeys::LeftMouseButton)
+			{
+				OnInputPreProcessorKeySelectCanceled.ExecuteIfBound(TEXT("按键重映射已取消 （按下了Escape键或鼠标右键或左键）"));
+				return; // 如果按下的是Escape键或者鼠标右键或者左键，则取消当前按键选择
+			}
 			break;
 		case ECommonInputType::Gamepad:
+			if (CurrentInputType == ECommonInputType::Gamepad && PressedKey == EKeys::LeftMouseButton)
+			{
+				// 如果当前输入类型是手柄，并且按下的是手柄确认键（左键），则广播当前按键映射
+				/* 那么这里我们应该广播什么键值呢？
+				现在我们不能再将这个输入作为键值广播了。
+				因为按下游戏手柄上的确认键时，其效果总是等同于鼠标左键点击
+				而这并非我们想要的结果
+				此外，我们也不应该广播硬编码的键位值，因为游戏手柄上的确认键
+				可能根据数据表中设置的值而有所不同 在这里我们应该通过通用 UI 检索映射来确认按键。*/
+				FCommonInputActionDataBase* InputActionData = ICommonInputModule::GetSettings().GetDefaultClickAction().GetRow<FCommonInputActionDataBase>(TEXT(""));
+				check(InputActionData);
+				
+				OnInputPreProcessorKeyPressed.ExecuteIfBound(InputActionData->GetDefaultGamepadInputTypeInfo().GetKey());
+				return;
+			}
 			if (!PressedKey.IsGamepadKey())
 			{
 				OnInputPreProcessorKeySelectCanceled.ExecuteIfBound(TEXT("检测到键盘鼠标按键被映射为手柄输入，按键重映射已取消，请使用手柄输入进行按键重映射"));
@@ -74,6 +97,7 @@ protected:
 
 private:
 	ECommonInputType CachedInputTypeToListen; // 缓存当前输入类型，用于判断是否需要处理键盘鼠标或手柄输入
+	TWeakObjectPtr<ULocalPlayer> CachedWeakLocalPlayer; // 缓存本地玩家对象，用于处理输入事件
 	
 };
 
@@ -86,7 +110,7 @@ void UWidget_KeyRemapScreen::NativeOnActivated()
 {
 	Super::NativeOnActivated();
 
-	CachedInputPreprocessor = MakeShared<FKeyRemapScreenInputPreprocessor>(CachedDesiredInputTypeToListen);
+	CachedInputPreprocessor = MakeShared<FKeyRemapScreenInputPreprocessor>(CachedDesiredInputTypeToListen, GetOwningLocalPlayer());
 	CachedInputPreprocessor->OnInputPreProcessorKeyPressed.BindUObject(this, &ThisClass::OnValidKeyPressedDelegate);
 	CachedInputPreprocessor->OnInputPreProcessorKeySelectCanceled.BindUObject(this, &ThisClass::OnInvalidKeyPressedDelegate);
 
