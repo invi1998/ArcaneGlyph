@@ -87,6 +87,7 @@ void UWidget_ListEntry_KeyRemap::OnToggleEditableState(bool bIsEditable)
 
 void UWidget_ListEntry_KeyRemap::OnRemapKeyButtonClicked()
 {
+	SelectThisEntryWidget();
 	UFrontendUISubsystem::Get(this)->PushSoftWidgetToStackAsync(
 		ArcaneGameplayTags::Frontend_WidgetStack_Modal,
 		UArcaneBlueprintFunctionLibrary::GetFrontendSoftWidgetClassByTag(ArcaneGameplayTags::Frontend_Widget_ModalScreen_KeyRemapScreen),
@@ -111,6 +112,10 @@ void UWidget_ListEntry_KeyRemap::OnRemapKeyButtonClicked()
 
 void UWidget_ListEntry_KeyRemap::OnResetKeyBindingButtonClicked()
 {
+	SelectThisEntryWidget();
+
+	// 检查当前按键是否已经是默认按键
+	CachedOwningKeyRemapDataObject->TryResetToDefault();
 }
 
 void UWidget_ListEntry_KeyRemap::OnKeyToRemapPressed(const FKey& InPressedKey)

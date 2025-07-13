@@ -89,6 +89,29 @@ void UListDataObject_KeyRemap::BindNewInputKey(const FKey& InNewKey)
 	NotifyListDataModified(this);
 }
 
+bool UListDataObject_KeyRemap::HasDefaultValue() const
+{
+	return GetOwningKeyMapping(CachedMappingName, CachedMappableKeySlot)->GetDefaultKey().IsValid();
+}
+
+bool UListDataObject_KeyRemap::CanResetToDefault() const
+{
+	return HasDefaultValue() && GetOwningKeyMapping(CachedMappingName, CachedMappableKeySlot)->IsCustomized();
+}
+
+bool UListDataObject_KeyRemap::TryResetToDefault()
+{
+	if (CanResetToDefault())
+	{
+		check(CachedEnhancedInputUserSettings);
+		GetOwningKeyMapping(CachedMappingName, CachedMappableKeySlot)->ResetToDefault();
+		CachedEnhancedInputUserSettings->SaveSettings();
+		NotifyListDataModified(this, EOptionsListDataModifyReason::ResetToDefault);
+		return true;
+	}
+	return false;
+}
+
 FPlayerKeyMapping* UListDataObject_KeyRemap::GetOwningKeyMapping(const FName& InMappingName, const EPlayerMappableKeySlot& InSlot) const
 {
 	check(CachedPlayerMappableKeyProfile);

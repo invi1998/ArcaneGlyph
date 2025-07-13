@@ -36,6 +36,15 @@ public:
 
 	void BindNewInputKey(const FKey& InNewKey);		// 绑定新的输入键位映射
 
+	// Begin UListDataObject_Base Interface
+	virtual bool HasDefaultValue() const override;
+	virtual bool CanResetToDefault() const override;
+	virtual bool TryResetToDefault() override;
+	// End UListDataObject_Base Interface
+
+protected:
+
+
 private:
 	FPlayerKeyMapping* GetOwningKeyMapping(const FName& InMappingName, const EPlayerMappableKeySlot& InSlot) const;	// 获取当前拥有的键位映射
 	
