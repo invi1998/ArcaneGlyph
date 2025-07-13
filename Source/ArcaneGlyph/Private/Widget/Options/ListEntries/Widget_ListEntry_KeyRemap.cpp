@@ -120,7 +120,7 @@ void UWidget_ListEntry_KeyRemap::OnResetKeyBindingButtonClicked()
 	}
 
 	// 检查当前按键是否已经是默认按键
-	if (!CachedOwningKeyRemapDataObject->TryResetToDefault())
+	if (!CachedOwningKeyRemapDataObject->CanResetToDefault())
 	{
 		UFrontendUISubsystem::Get(this)->PushModalScreenToModalStackAsync(
 			ArcaneGameplayTags::Frontend_Widget_ModalScreen_TimerConfirm,
@@ -139,15 +139,22 @@ void UWidget_ListEntry_KeyRemap::OnResetKeyBindingButtonClicked()
 	{
 		UFrontendUISubsystem::Get(this)->PushModalScreenToModalStackAsync(
 			ArcaneGameplayTags::Frontend_Widget_ModalScreen_TimerConfirm,
-			EModalType::Ok,
+			EModalType::YesNo,
 			FText::FromString(TEXT("")),
 			FText::FromString(TEXT("")),
-			FText::FromString(TEXT("当前输入已恢复到默认按键！")),
+			FText::FromString(TEXT("是否恢复当前输入绑定到默认按键？")),
 			FText::FromString(TEXT("")),
 			FSlateBrush(),
-			[this](EModalButtonType ClickButtonType){},
+			[this](EModalButtonType ClickButtonType)
+			{
+				if (ClickButtonType == EModalButtonType::Confirm)
+				{
+					CachedOwningKeyRemapDataObject->TryResetToDefault(); // 重置到默认按键
+				}
+			},
 			EColorThemeType::InfoTheme,
-			FText::FromString(TEXT("好的")) // 按键选择取消的标题文本
+			FText::FromString(TEXT("确定")), // 按键选择取消的标题文本
+			FText::FromString(TEXT("取消")) // 按键选择取消的标题文本
 		);
 	}
 }
