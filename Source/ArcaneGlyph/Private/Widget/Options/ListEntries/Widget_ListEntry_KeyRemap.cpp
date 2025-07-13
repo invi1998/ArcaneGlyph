@@ -114,8 +114,42 @@ void UWidget_ListEntry_KeyRemap::OnResetKeyBindingButtonClicked()
 {
 	SelectThisEntryWidget();
 
+	if (!CachedOwningKeyRemapDataObject)
+	{
+		return; // 如果没有缓存的键位重映射数据对象，则直接返回
+	}
+
 	// 检查当前按键是否已经是默认按键
-	CachedOwningKeyRemapDataObject->TryResetToDefault();
+	if (!CachedOwningKeyRemapDataObject->TryResetToDefault())
+	{
+		UFrontendUISubsystem::Get(this)->PushModalScreenToModalStackAsync(
+			ArcaneGameplayTags::Frontend_Widget_ModalScreen_TimerConfirm,
+			EModalType::Ok,
+			FText::FromString(TEXT("")),
+			FText::FromString(TEXT("")),
+			FText::FromString(TEXT("当前按键已经是默认按键，无法重置！")),
+			FText::FromString(TEXT("")),
+			FSlateBrush(),
+			[this](EModalButtonType ClickButtonType){},
+			EColorThemeType::ErrorTheme,
+			FText::FromString(TEXT("退出")) // 按键选择取消的标题文本
+		);
+	}
+	else
+	{
+		UFrontendUISubsystem::Get(this)->PushModalScreenToModalStackAsync(
+			ArcaneGameplayTags::Frontend_Widget_ModalScreen_TimerConfirm,
+			EModalType::Ok,
+			FText::FromString(TEXT("")),
+			FText::FromString(TEXT("")),
+			FText::FromString(TEXT("当前输入已恢复到默认按键！")),
+			FText::FromString(TEXT("")),
+			FSlateBrush(),
+			[this](EModalButtonType ClickButtonType){},
+			EColorThemeType::InfoTheme,
+			FText::FromString(TEXT("好的")) // 按键选择取消的标题文本
+		);
+	}
 }
 
 void UWidget_ListEntry_KeyRemap::OnKeyToRemapPressed(const FKey& InPressedKey)
