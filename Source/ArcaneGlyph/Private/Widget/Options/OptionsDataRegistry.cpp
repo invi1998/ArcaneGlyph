@@ -406,6 +406,139 @@ void UOptionsDataRegistry::InitControlsCollectionTab(ULocalPlayer* InOwningLocal
 		}
 	}
 
+	// 游戏手柄控制
+	{
+		UListDataObject_Collection* GamepadCategoryCollection = NewObject<UListDataObject_Collection>(ControlsCollectionDataObject, UListDataObject_Collection::StaticClass());
+		GamepadCategoryCollection->SetDataID(FName("GamepadCategoryCollection"));
+		GamepadCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("手柄控制")));
+
+		ControlsCollectionDataObject->AddChildListData(GamepadCategoryCollection);
+
+		{
+			TMap<FString, UListDataObject_CollectionInnerCategory*> CategoryMap;
+			// 移动, 攻击连招, 枪法切换, 技能, 装备/卸载武器, 物品拾取, 物品使用, 辅助
+
+			UListDataObject_CollectionInnerCategory* GamepadMovementCategoryCollection = NewObject<UListDataObject_CollectionInnerCategory>(GamepadCategoryCollection, UListDataObject_CollectionInnerCategory::StaticClass());
+			GamepadMovementCategoryCollection->SetDataID(FName("GamepadMovementCategoryCollection"));
+			GamepadMovementCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("移动")));
+			GamepadCategoryCollection->AddChildListData(GamepadMovementCategoryCollection);
+			CategoryMap.Add(GamepadMovementCategoryCollection->GetDataDisplayName().ToString(), GamepadMovementCategoryCollection);
+
+			UListDataObject_CollectionInnerCategory* GamepadAttackCategoryCollection = NewObject<UListDataObject_CollectionInnerCategory>(GamepadCategoryCollection, UListDataObject_CollectionInnerCategory::StaticClass());
+			GamepadAttackCategoryCollection->SetDataID(FName("GamepadAttackCategoryCollection"));
+			GamepadAttackCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("攻击连招")));
+			GamepadCategoryCollection->AddChildListData(GamepadAttackCategoryCollection);
+			CategoryMap.Add(GamepadAttackCategoryCollection->GetDataDisplayName().ToString(), GamepadAttackCategoryCollection);
+
+			UListDataObject_CollectionInnerCategory* GamepadGunplayCategoryCollection = NewObject<UListDataObject_CollectionInnerCategory>(GamepadCategoryCollection, UListDataObject_CollectionInnerCategory::StaticClass());
+			GamepadGunplayCategoryCollection->SetDataID(FName("GamepadGunplayCategoryCollection"));
+			GamepadGunplayCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("枪法切换")));
+			GamepadCategoryCollection->AddChildListData(GamepadGunplayCategoryCollection);
+			CategoryMap.Add(GamepadGunplayCategoryCollection->GetDataDisplayName().ToString(), GamepadGunplayCategoryCollection);
+
+			UListDataObject_CollectionInnerCategory* GamepadSkillCategoryCollection = NewObject<UListDataObject_CollectionInnerCategory>(GamepadCategoryCollection, UListDataObject_CollectionInnerCategory::StaticClass());
+			GamepadSkillCategoryCollection->SetDataID(FName("GamepadSkillCategoryCollection"));
+			GamepadSkillCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("技能")));
+			GamepadCategoryCollection->AddChildListData(GamepadSkillCategoryCollection);
+			CategoryMap.Add(GamepadSkillCategoryCollection->GetDataDisplayName().ToString(), GamepadSkillCategoryCollection);
+
+			UListDataObject_CollectionInnerCategory* GamepadEquipCategoryCollection = NewObject<UListDataObject_CollectionInnerCategory>(GamepadCategoryCollection, UListDataObject_CollectionInnerCategory::StaticClass());
+			GamepadEquipCategoryCollection->SetDataID(FName("GamepadEquipCategoryCollection"));
+			GamepadEquipCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("装备/卸载武器")));
+			GamepadCategoryCollection->AddChildListData(GamepadEquipCategoryCollection);
+			CategoryMap.Add(GamepadEquipCategoryCollection->GetDataDisplayName().ToString(), GamepadEquipCategoryCollection);
+
+			UListDataObject_CollectionInnerCategory* GamepadPickupCategoryCollection = NewObject<UListDataObject_CollectionInnerCategory>(GamepadCategoryCollection, UListDataObject_CollectionInnerCategory::StaticClass());
+			GamepadPickupCategoryCollection->SetDataID(FName("GamepadPickupCategoryCollection"));
+			GamepadPickupCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("物品拾取")));
+			GamepadCategoryCollection->AddChildListData(GamepadPickupCategoryCollection);
+			CategoryMap.Add(GamepadPickupCategoryCollection->GetDataDisplayName().ToString(), GamepadPickupCategoryCollection);
+
+			UListDataObject_CollectionInnerCategory* GamepadUsingCategoryCollection = NewObject<UListDataObject_CollectionInnerCategory>(GamepadCategoryCollection, UListDataObject_CollectionInnerCategory::StaticClass());
+			GamepadUsingCategoryCollection->SetDataID(FName("GamepadUsingCategoryCollection"));
+			GamepadUsingCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("物品使用")));
+			GamepadCategoryCollection->AddChildListData(GamepadUsingCategoryCollection);
+			CategoryMap.Add(GamepadUsingCategoryCollection->GetDataDisplayName().ToString(), GamepadUsingCategoryCollection);
+
+			UListDataObject_CollectionInnerCategory* GamepadAssistCategoryCollection = NewObject<UListDataObject_CollectionInnerCategory>(GamepadCategoryCollection, UListDataObject_CollectionInnerCategory::StaticClass());
+			GamepadAssistCategoryCollection->SetDataID(FName("GamepadAssistCategoryCollection"));
+			GamepadAssistCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("辅助")));
+			GamepadCategoryCollection->AddChildListData(GamepadAssistCategoryCollection);
+			CategoryMap.Add(GamepadAssistCategoryCollection->GetDataDisplayName().ToString(), GamepadAssistCategoryCollection);
+
+			UListDataObject_CollectionInnerCategory* GamepadOtherCategoryCollection = NewObject<UListDataObject_CollectionInnerCategory>(GamepadCategoryCollection, UListDataObject_CollectionInnerCategory::StaticClass());
+			GamepadOtherCategoryCollection->SetDataID(FName("GamepadOtherCategoryCollection"));
+			GamepadOtherCategoryCollection->SetDataDisplayName(FText::FromString(TEXT("其他")));
+
+			for (const TPair<FGameplayTag, TObjectPtr<UEnhancedPlayerMappableKeyProfile>>& ProfilePair : EnhancedUserSettings->GetAllSavedKeyProfiles())
+			{
+				UEnhancedPlayerMappableKeyProfile* MappableKeyProfile = ProfilePair.Value;
+				check(MappableKeyProfile);
+
+				for (const TPair<FName, FKeyMappingRow>& MappingRowPair : MappableKeyProfile->GetPlayerMappingRows())
+				{
+					for (const FPlayerKeyMapping& KeyMapping : MappingRowPair.Value.Mappings)
+					{
+						// 检查当前键映射是否符合查询条件（仅限游戏手柄输入）
+						if (MappableKeyProfile->DoesMappingPassQueryOptions(KeyMapping, GamepadOnlyQueryOptions))
+						{
+							UListDataObject_KeyRemap* KeyRemapDataObject = NewObject<UListDataObject_KeyRemap>(GamepadCategoryCollection, UListDataObject_KeyRemap::StaticClass());
+							KeyRemapDataObject->SetDataID(KeyMapping.GetMappingName());
+							KeyRemapDataObject->SetDataDisplayName(KeyMapping.GetDisplayName());
+
+							const bool bHasTrigger = PreprocessedTriggerInfo_Gamepad.Contains(KeyMapping.GetAssociatedInputAction());
+							KeyRemapDataObject->InitKeyRemapData(
+								ECommonInputType::MouseAndKeyboard,
+								EnhancedUserSettings,
+								MappableKeyProfile,
+								KeyMapping,
+								bHasTrigger ? PreprocessedTriggerInfo_Gamepad[KeyMapping.GetAssociatedInputAction()] : nullptr
+							);
+
+							// 移动, 攻击连招, 装备/卸载武器, 物品拾取, 物品使用, 辅助 这些分类中的设置都不允许玩家变更按键映射
+							FOptionDataEditConditionDescriptor NotAllowedCondition;
+							NotAllowedCondition.SetEditConditionFunction(
+								[KeyMapping]()->bool
+								{
+									if (KeyMapping.GetDisplayCategory().ToString() == TEXT("移动") ||
+										KeyMapping.GetDisplayCategory().ToString() == TEXT("攻击连招") ||
+										KeyMapping.GetDisplayCategory().ToString() == TEXT("装备/卸载武器") ||
+										KeyMapping.GetDisplayCategory().ToString() == TEXT("物品拾取") ||
+										KeyMapping.GetDisplayCategory().ToString() == TEXT("物品使用") ||
+										KeyMapping.GetDisplayCategory().ToString() == TEXT("辅助") ||
+										KeyMapping.GetDisplayCategory().ToString().IsEmpty())
+									{
+										return false; // 不允许玩家变更这些分类的按键映射
+									}
+									return true;
+								}
+							);
+
+							NotAllowedCondition.SetDisabledRichReason(TEXT("\n\n<Warning>该按键映射不允许玩家变更。</>\n"));
+
+							KeyRemapDataObject->AddEditCondition(NotAllowedCondition);
+
+							if (CategoryMap.Contains(KeyMapping.GetDisplayCategory().ToString()))
+							{
+								CategoryMap[KeyMapping.GetDisplayCategory().ToString()]->AddChildListData(KeyRemapDataObject);
+							}
+							else
+							{
+								GamepadOtherCategoryCollection->AddChildListData(KeyRemapDataObject);
+							}
+						}
+					}
+				}
+			}
+
+			// 如果 "其他"分类中没有任何按键映射，则不添加该分类
+			if (GamepadOtherCategoryCollection->HasAnyChildListData())
+			{
+				GamepadCategoryCollection->AddChildListData(GamepadOtherCategoryCollection);
+			}
+		}
+	}
+
 	RegisteredOptionsTabCollections.Add(ControlsCollectionDataObject);
 }
 void UOptionsDataRegistry::InitAudioCollectionTab()
