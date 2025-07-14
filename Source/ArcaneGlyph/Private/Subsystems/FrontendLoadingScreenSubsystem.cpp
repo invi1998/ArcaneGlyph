@@ -100,6 +100,7 @@ void UFrontendLoadingScreenSubsystem::OnMapPostLoaded(UWorld* LoadedWorld)
 	}
 }
 
+// 预加载画面是否激活
 bool UFrontendLoadingScreenSubsystem::IsPreLoadingScreenActive() const
 {
 	FPreLoadScreenManager* PreLoadScreenManager = FPreLoadScreenManager::Get();
