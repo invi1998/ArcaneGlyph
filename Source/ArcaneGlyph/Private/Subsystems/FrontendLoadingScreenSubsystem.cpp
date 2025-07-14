@@ -5,6 +5,7 @@
 
 #include "ArcaneDebugHelper.h"
 #include "PreLoadScreenManager.h"
+#include "Blueprint/UserWidget.h"
 #include "FrontendSettings/FrontendLoadingScreenSettings.h"
 
 bool UFrontendLoadingScreenSubsystem::ShouldCreateSubsystem(UObject* Outer) const
@@ -197,6 +198,37 @@ bool UFrontendLoadingScreenSubsystem::CheckTheNeedToShowLoadingScreen()
 	return false;
 }
 
+void UFrontendLoadingScreenSubsystem::TryDisplayLoadingScreen()
+{
+	// 首先检查是否已经创建了加载界面控件
+	if (CachedCreatedLoadingScreenWidget) return;
+
+	if (const UFrontendLoadingScreenSettings* LoadingScreenSettings = GetDefault<UFrontendLoadingScreenSettings>())
+	{
+		if (TSubclassOf<UUserWidget> LoadingScreenClass = LoadingScreenSettings->GetLoadingScreenWidgetClassChecked())
+		{
+			// 获取到这个控件后，我们就可以尝试将其绘制到视口中
+			// 因为我们正在关卡过度期间绘制控件
+			// 所以我们不能再依赖世界场景或玩家控制器了
+			// 我们需要依赖游戏实例来实现
+			UUserWidget* CreatedWidget = UUserWidget::CreateWidgetInstance(
+				*GetGameInstance(),
+				LoadingScreenClass,
+				NAME_None
+			);
+			if (CreatedWidget)
+			{
+				CachedCreatedLoadingScreenWidget = CreatedWidget->TakeWidget();
+				// 将加载界面添加到游戏视口
+				GetGameInstance()->GetGameViewportClient()->AddViewportWidgetContent(
+					CachedCreatedLoadingScreenWidget.ToSharedRef(),
+					1000		// 数值较大的控件会显示在数值较小的控件上方
+				);
+			}
+		}
+	}
+}
+
 void UFrontendLoadingScreenSubsystem::TryUpdateLoadingScreen()
 {
 	// 首先需要检查当前是否存在启动加载界面
@@ -205,6 +237,7 @@ void UFrontendLoadingScreenSubsystem::TryUpdateLoadingScreen()
 	// 检查是否应该显示加载界面
 	if (ShouldShowLoadingScreen())
 	{
+		TryDisplayLoadingScreen();
 		// 显示加载界面
 		OnLoadingReasonChanged.Broadcast(CurrentLoadingReason);
 	}
