@@ -229,6 +229,17 @@ void UFrontendLoadingScreenSubsystem::TryDisplayLoadingScreen()
 	}
 }
 
+void UFrontendLoadingScreenSubsystem::TryRemoveLoadingScreen()
+{
+	if (CachedCreatedLoadingScreenWidget)
+	{
+		GetGameInstance()->GetGameViewportClient()->RemoveViewportWidgetContent(
+			CachedCreatedLoadingScreenWidget.ToSharedRef()
+		);
+		CachedCreatedLoadingScreenWidget.Reset();
+	}
+}
+
 void UFrontendLoadingScreenSubsystem::TryUpdateLoadingScreen()
 {
 	// 首先需要检查当前是否存在启动加载界面
@@ -244,6 +255,9 @@ void UFrontendLoadingScreenSubsystem::TryUpdateLoadingScreen()
 	else
 	{
 		// 移除当前加载界面
+		TryRemoveLoadingScreen();
+		HoldLoadingScreenStartupTime = -1.f;
+		
 		// 通知加载完成
 		// 禁用Tick
 		SetTickableTickType(ETickableTickType::Never);

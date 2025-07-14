@@ -43,6 +43,7 @@ private:
 	bool CheckTheNeedToShowLoadingScreen();	// 检查是否需要显示加载画面
 
 	void TryDisplayLoadingScreen();	// 尝试显示加载画面
+	void TryRemoveLoadingScreen();	// 尝试移除加载画面
 
 	void TryUpdateLoadingScreen();
 	bool bIsCurrentlyLoadingMap = false;	// 当前是否正在加载地图
