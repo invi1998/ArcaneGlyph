@@ -83,6 +83,11 @@ TStatId UFrontendLoadingScreenSubsystem::GetStatId() const
 	RETURN_QUICK_DECLARE_CYCLE_STAT(UFrontendLoadingScreenSubsystem, STATGROUP_Tickables);
 }
 
+void UFrontendLoadingScreenSubsystem::RemoveLoadingScreen()
+{
+	TryRemoveLoadingScreen();
+}
+
 void UFrontendLoadingScreenSubsystem::OnMapPreLoaded(const FWorldContext& WorldContext, const FString& MapName)
 {
 	if (WorldContext.OwningGameInstance != GetGameInstance())

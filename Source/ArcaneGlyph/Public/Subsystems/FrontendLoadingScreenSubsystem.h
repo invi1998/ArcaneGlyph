@@ -41,6 +41,9 @@ public:
 	virtual TStatId GetStatId() const override;	// 获取TickableGameObject的统计ID
 	// end FTickableGameObject Interface
 
+	UFUNCTION(BlueprintCallable, Category = "Frontend Loading Screen")
+	void RemoveLoadingScreen();	// 移除加载画面
+
 private:
 	void OnMapPreLoaded(const FWorldContext& WorldContext, const FString& MapName);
 	void OnMapPostLoaded(UWorld* LoadedWorld);
