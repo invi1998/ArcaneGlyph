@@ -132,6 +132,8 @@ bool UFrontendLoadingScreenSubsystem::ShouldShowLoadingScreen()
 			GetGameInstance()->GetGameViewportClient()->bDisableWorldRendering = true;
 			return true;
 		}
+		
+		CurrentLoadingReason = TEXT("当前加载区域等待纹理流送");
 
 		// 无需显示加载界面，将世界场景渲染至视口
 		GetGameInstance()->GetGameViewportClient()->bDisableWorldRendering = false;
@@ -152,6 +154,7 @@ bool UFrontendLoadingScreenSubsystem::ShouldShowLoadingScreen()
 		// 计算已用时间的方法 是通过当前时间减去加载界面的起始时间来实现的
 
 		// 如果经过的时间小于加载界面的持续时间，则显示加载界面（即我们希望在完成地图加载后继续持续一段时间显示加载界面）
+		// 加载屏幕设置中的这个变量用于消除模糊纹理
 		if (ElapsedTime < LoadingScreenSettings->HoldLoadingScreenExtraSeconds)
 		{
 			// 如果经过的时间大于或等于加载界面的启动时间，则显示加载界面
@@ -163,9 +166,35 @@ bool UFrontendLoadingScreenSubsystem::ShouldShowLoadingScreen()
 	return false;
 }
 
-bool UFrontendLoadingScreenSubsystem::CheckTheNeedToShowLoadingScreen() const
+bool UFrontendLoadingScreenSubsystem::CheckTheNeedToShowLoadingScreen()
 {
-	
+	if (bIsCurrentlyLoadingMap)
+	{
+		// 如果当前正在加载地图，则需要显示加载界面
+		CurrentLoadingReason = TEXT("关卡加载中");
+		return true;
+	}
+	UWorld* CurrentWorld = GetGameInstance()->GetWorld();
+	if (!CurrentWorld)
+	{
+		CurrentLoadingReason = TEXT("世界初始化中");
+		return true;
+	}
+
+	if (!CurrentWorld->HasBegunPlay())
+	{
+		CurrentLoadingReason = TEXT("即将开始游戏");
+		return true;
+	}
+
+	if (!CurrentWorld->GetFirstPlayerController())
+	{
+		CurrentLoadingReason = TEXT("玩家控制器未就绪");
+		return true;
+	}
+
+	// 可以检查游戏状态、玩家状态或玩家角色 actor 组件
+	return false;
 }
 
 void UFrontendLoadingScreenSubsystem::TryUpdateLoadingScreen()
@@ -177,6 +206,7 @@ void UFrontendLoadingScreenSubsystem::TryUpdateLoadingScreen()
 	if (ShouldShowLoadingScreen())
 	{
 		// 显示加载界面
+		OnLoadingReasonChanged.Broadcast(CurrentLoadingReason);
 	}
 	else
 	{

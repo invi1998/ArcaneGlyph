@@ -15,6 +15,11 @@ class ARCANEGLYPH_API UFrontendLoadingScreenSubsystem : public UGameInstanceSubs
 	GENERATED_BODY()
 
 public:
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLoadingReasonChangedDelegate, const FString&, NewLoadingReason);
+
+	UPROPERTY(BlueprintAssignable, Category = "Frontend Loading Screen")
+	FOnLoadingReasonChangedDelegate OnLoadingReasonChanged;	// 加载原因改变委托
+	
 	// begin USubsystem Interface
 	virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
@@ -35,11 +40,12 @@ private:
 
 	bool IsPreLoadingScreenActive() const;	// 预加载画面是否激活
 	bool ShouldShowLoadingScreen();	// 是否应该显示加载画面
-	bool CheckTheNeedToShowLoadingScreen() const;	// 检查是否需要显示加载画面
+	bool CheckTheNeedToShowLoadingScreen();	// 检查是否需要显示加载画面
 
 	void TryUpdateLoadingScreen();
 	bool bIsCurrentlyLoadingMap = false;	// 当前是否正在加载地图
 	float HoldLoadingScreenStartupTime = -1.f;	// 加载画面启动时间
+	FString CurrentLoadingReason;	// 当前加载原因
 	
 };
 
