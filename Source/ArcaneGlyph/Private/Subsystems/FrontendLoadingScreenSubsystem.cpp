@@ -52,7 +52,7 @@ UWorld* UFrontendLoadingScreenSubsystem::GetTickableGameObjectWorld() const
 
 void UFrontendLoadingScreenSubsystem::Tick(float DeltaTime)
 {
-	Debug::Print(TEXT("Ticking FrontendLoadingScreenSubsystem"));
+	TryUpdateLoadingScreen();
 }
 
 ETickableTickType UFrontendLoadingScreenSubsystem::GetTickableTickType() const
@@ -81,9 +81,40 @@ TStatId UFrontendLoadingScreenSubsystem::GetStatId() const
 
 void UFrontendLoadingScreenSubsystem::OnMapPreLoaded(const FWorldContext& WorldContext, const FString& MapName)
 {
-	
+	if (WorldContext.OwningGameInstance != GetGameInstance())
+	{
+		return;
+	}
+
+	SetTickableTickType(ETickableTickType::Conditional);
+	bIsCurrentlyLoadingMap = true;
+	TryUpdateLoadingScreen();
 }
 
 void UFrontendLoadingScreenSubsystem::OnMapPostLoaded(UWorld* LoadedWorld)
 {
+	if (LoadedWorld && LoadedWorld->GetGameInstance() == GetGameInstance())
+	{
+		bIsCurrentlyLoadingMap = false;
+	}
+}
+
+void UFrontendLoadingScreenSubsystem::TryUpdateLoadingScreen()
+{
+	// 首先需要检查当前是否存在启动加载界面
+
+	// 检查是否应该显示加载界面
+	if (true)
+	{
+		// 显示加载界面
+	}
+	else
+	{
+		// 移除当前加载界面
+		// 通知加载完成
+		// 禁用Tick
+		SetTickableTickType(ETickableTickType::Never);
+	}
+
+	
 }
