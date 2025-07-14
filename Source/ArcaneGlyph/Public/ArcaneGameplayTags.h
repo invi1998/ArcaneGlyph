@@ -244,6 +244,7 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_Frontend_StoryScreen);			// 前端标签：故事
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_Frontend_DifficultyScreen);		// 前端标签：难度
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_Frontend_SaveLoadScreen);			// 前端标签：保存/加载
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_Frontend_CreditScreen);			// 前端标签：创建角色屏幕
 	
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_ModalScreen_QuitScreen);		// 前端标签：模态框：退出屏幕
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_ModalScreen_ReturnBackToMainMenu);	// 前端标签：模态框：返回主菜单

@@ -241,6 +241,7 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_Frontend_StoryScreen, "Frontend.Widget.Frontend.StoryScreen", "前端：前端窗口-故事屏幕");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_Frontend_DifficultyScreen, "Frontend.Widget.Frontend.DifficultyScreen", "前端：前端窗口-难度屏幕");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_Frontend_SaveLoadScreen, "Frontend.Widget.Frontend.SaveLoadScreen", "前端：前端窗口-存档加载屏幕");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_Frontend_CreditScreen, "Frontend.Widget.Frontend.CreditScreen", "前端：前端窗口-制作人员屏幕");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_ModalScreen_QuitScreen, "Frontend.Widget.ModalScreen.QuitScreen", "前端：模态屏幕-退出游戏");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_ModalScreen_ReturnBackToMainMenu, "Frontend.Widget.ModalScreen.ReturnBackToMainMenu", "前端：模态屏幕-返回主菜单");
