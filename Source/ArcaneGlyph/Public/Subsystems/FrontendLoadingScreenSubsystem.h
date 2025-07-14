@@ -34,9 +34,12 @@ private:
 	void OnMapPostLoaded(UWorld* LoadedWorld);
 
 	bool IsPreLoadingScreenActive() const;	// 预加载画面是否激活
+	bool ShouldShowLoadingScreen();	// 是否应该显示加载画面
+	bool CheckTheNeedToShowLoadingScreen() const;	// 检查是否需要显示加载画面
 
 	void TryUpdateLoadingScreen();
 	bool bIsCurrentlyLoadingMap = false;	// 当前是否正在加载地图
+	float HoldLoadingScreenStartupTime = -1.f;	// 加载画面启动时间
 	
 };
 

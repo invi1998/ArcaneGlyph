@@ -5,6 +5,7 @@
 
 #include "ArcaneDebugHelper.h"
 #include "PreLoadScreenManager.h"
+#include "FrontendSettings/FrontendLoadingScreenSettings.h"
 
 bool UFrontendLoadingScreenSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 {
@@ -113,13 +114,67 @@ bool UFrontendLoadingScreenSubsystem::IsPreLoadingScreenActive() const
 	return false;
 }
 
+bool UFrontendLoadingScreenSubsystem::ShouldShowLoadingScreen()
+{
+	if (const UFrontendLoadingScreenSettings* LoadingScreenSettings = GetDefault<UFrontendLoadingScreenSettings>())
+	{
+		// 检查是否启用了加载界面
+		if (GIsEditor && !LoadingScreenSettings->bShouldLoadingScreenInEditor)
+		{
+			// 如果在编辑器中且不启用加载界面，则不显示加载界面
+			return false;
+		}
+
+		// 检查世界对象是否需要加载界面
+		if (CheckTheNeedToShowLoadingScreen())
+		{
+			// 如果仍需显示加载画面，就无需将世界场景渲染至视口
+			GetGameInstance()->GetGameViewportClient()->bDisableWorldRendering = true;
+			return true;
+		}
+
+		// 无需显示加载界面，将世界场景渲染至视口
+		GetGameInstance()->GetGameViewportClient()->bDisableWorldRendering = false;
+
+		const float CurrentTime = FPlatformTime::Seconds();
+
+		if (HoldLoadingScreenStartupTime < 0.f)
+		{
+			// 如果没有设置启动加载界面的持续时间，则不显示加载界面
+			HoldLoadingScreenStartupTime = CurrentTime;
+		}
+
+		// 计算自启动加载界面以来的经过时间
+		const float ElapsedTime = CurrentTime - HoldLoadingScreenStartupTime;
+
+		// 在第一次 tick 时，我们的当前时间将等于这个加载界面的起始时间
+		// 但从第二个 tick 开始，当前时间应大于整个加载屏幕的起始时间
+		// 计算已用时间的方法 是通过当前时间减去加载界面的起始时间来实现的
+
+		// 如果经过的时间小于加载界面的持续时间，则显示加载界面（即我们希望在完成地图加载后继续持续一段时间显示加载界面）
+		if (ElapsedTime < LoadingScreenSettings->HoldLoadingScreenExtraSeconds)
+		{
+			// 如果经过的时间大于或等于加载界面的启动时间，则显示加载界面
+			return true;
+		}
+		
+	}
+
+	return false;
+}
+
+bool UFrontendLoadingScreenSubsystem::CheckTheNeedToShowLoadingScreen() const
+{
+	
+}
+
 void UFrontendLoadingScreenSubsystem::TryUpdateLoadingScreen()
 {
 	// 首先需要检查当前是否存在启动加载界面
 	if (IsPreLoadingScreenActive()) return;
 
 	// 检查是否应该显示加载界面
-	if (true)
+	if (ShouldShowLoadingScreen())
 	{
 		// 显示加载界面
 	}
