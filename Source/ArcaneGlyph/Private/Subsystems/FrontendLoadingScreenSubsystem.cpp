@@ -7,6 +7,7 @@
 #include "PreLoadScreenManager.h"
 #include "Blueprint/UserWidget.h"
 #include "FrontendSettings/FrontendLoadingScreenSettings.h"
+#include "Interfaces/FrontendLoadScreenInterface.h"
 
 bool UFrontendLoadingScreenSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 {
@@ -246,6 +247,7 @@ void UFrontendLoadingScreenSubsystem::TryRemoveLoadingScreen()
 
 void UFrontendLoadingScreenSubsystem::NotifyLoadingScreenStartup()
 {
+	OnLoadingScreenStartup.Broadcast();
 	for (ULocalPlayer* ExistingPlayer : GetGameInstance()->GetLocalPlayers())
 	{
 		if (ExistingPlayer)
@@ -253,7 +255,18 @@ void UFrontendLoadingScreenSubsystem::NotifyLoadingScreenStartup()
 			// 通知玩家控制器加载界面已启动
 			if (APlayerController* PC = ExistingPlayer->GetPlayerController(GetGameInstance()->GetWorld()))
 			{
-				
+				// 检查玩家控制器是否实现了IFrontendLoadScreenInterface接口
+				if (PC->Implements<UFrontendLoadScreenInterface>())
+				{
+					IFrontendLoadScreenInterface::Execute_OnLoadingScreenActivated(PC);
+				}
+				if (APawn* OwningPawn = PC->GetPawn())
+				{
+					if (OwningPawn->Implements<UFrontendLoadScreenInterface>())
+					{
+						IFrontendLoadScreenInterface::Execute_OnLoadingScreenActivated(OwningPawn);
+					}
+				}
 			}
 		}
 	}
@@ -261,6 +274,29 @@ void UFrontendLoadingScreenSubsystem::NotifyLoadingScreenStartup()
 
 void UFrontendLoadingScreenSubsystem::NotifyLoadingScreenShutdown()
 {
+	for (ULocalPlayer* ExistingPlayer : GetGameInstance()->GetLocalPlayers())
+	{
+		if (ExistingPlayer)
+		{
+			// 通知玩家控制器加载界面已启动
+			if (APlayerController* PC = ExistingPlayer->GetPlayerController(GetGameInstance()->GetWorld()))
+			{
+				// 检查玩家控制器是否实现了IFrontendLoadScreenInterface接口
+				if (PC->Implements<UFrontendLoadScreenInterface>())
+				{
+					IFrontendLoadScreenInterface::Execute_OnLoadingScreenDeactivated(PC);
+				}
+
+				if (APawn* OwningPawn = PC->GetPawn())
+				{
+					if (OwningPawn->Implements<UFrontendLoadScreenInterface>())
+					{
+						IFrontendLoadScreenInterface::Execute_OnLoadingScreenDeactivated(OwningPawn);
+					}
+				}
+			}
+		}
+	}
 }
 
 void UFrontendLoadingScreenSubsystem::TryUpdateLoadingScreen()
@@ -278,7 +314,8 @@ void UFrontendLoadingScreenSubsystem::TryUpdateLoadingScreen()
 	else
 	{
 		// 移除当前加载界面
-		TryRemoveLoadingScreen();
+		OnLoadingScreenShutdown.Broadcast();
+		// TryRemoveLoadingScreen();
 		HoldLoadingScreenStartupTime = -1.f;
 		
 		// 通知加载完成

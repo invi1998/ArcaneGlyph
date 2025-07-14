@@ -16,9 +16,16 @@ class ARCANEGLYPH_API UFrontendLoadingScreenSubsystem : public UGameInstanceSubs
 
 public:
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLoadingReasonChangedDelegate, const FString&, NewLoadingReason);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLoadingScreenStateChangedDelegate);
 
 	UPROPERTY(BlueprintAssignable, Category = "Frontend Loading Screen")
 	FOnLoadingReasonChangedDelegate OnLoadingReasonChanged;	// 加载原因改变委托
+
+	UPROPERTY(BlueprintAssignable, Category = "Frontend Loading Screen")
+	FOnLoadingScreenStateChangedDelegate OnLoadingScreenStartup;	// 加载画面启动委托
+
+	UPROPERTY(BlueprintAssignable, Category = "Frontend Loading Screen")
+	FOnLoadingScreenStateChangedDelegate OnLoadingScreenShutdown;	// 加载画面关闭委托
 	
 	// begin USubsystem Interface
 	virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
