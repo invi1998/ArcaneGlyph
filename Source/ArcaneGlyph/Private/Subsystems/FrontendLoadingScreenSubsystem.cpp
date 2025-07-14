@@ -3,6 +3,8 @@
 
 #include "Subsystems/FrontendLoadingScreenSubsystem.h"
 
+#include "ArcaneDebugHelper.h"
+
 bool UFrontendLoadingScreenSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 {
 	if (!CastChecked<UGameInstance>(Outer)->IsDedicatedServerInstance())
@@ -36,6 +38,45 @@ void UFrontendLoadingScreenSubsystem::Deinitialize()
 	FCoreUObjectDelegates::PostLoadMapWithWorld.RemoveAll(this);
 	
 	Super::Deinitialize();
+}
+
+UWorld* UFrontendLoadingScreenSubsystem::GetTickableGameObjectWorld() const
+{
+	if (UGameInstance* OwningGameInstance = GetGameInstance())
+	{
+		return OwningGameInstance->GetWorld();
+	}
+
+	return nullptr;
+}
+
+void UFrontendLoadingScreenSubsystem::Tick(float DeltaTime)
+{
+	Debug::Print(TEXT("Ticking FrontendLoadingScreenSubsystem"));
+}
+
+ETickableTickType UFrontendLoadingScreenSubsystem::GetTickableTickType() const
+{
+	if (IsTemplate())
+	{
+		// 如果是模板，则不需要Tick，因为模板不会被实例化
+		return ETickableTickType::Never;
+	}
+
+	// 如果不是模板，则返回条件Tick类型，即按照条件进行Tick
+	return ETickableTickType::Conditional;
+}
+
+bool UFrontendLoadingScreenSubsystem::IsTickable() const
+{
+	// 检查游戏实例和游戏视口客户端是否存在
+	return GetGameInstance() && GetGameInstance()->GetGameViewportClient();
+}
+
+TStatId UFrontendLoadingScreenSubsystem::GetStatId() const
+{
+	// 返回一个唯一的统计ID，用于跟踪Tickable对象的性能
+	RETURN_QUICK_DECLARE_CYCLE_STAT(UFrontendLoadingScreenSubsystem, STATGROUP_Tickables);
 }
 
 void UFrontendLoadingScreenSubsystem::OnMapPreLoaded(const FWorldContext& WorldContext, const FString& MapName)

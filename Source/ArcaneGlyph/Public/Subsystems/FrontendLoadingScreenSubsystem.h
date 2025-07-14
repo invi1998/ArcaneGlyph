@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class ARCANEGLYPH_API UFrontendLoadingScreenSubsystem : public UGameInstanceSubsystem
+class ARCANEGLYPH_API UFrontendLoadingScreenSubsystem : public UGameInstanceSubsystem, public FTickableGameObject
 {
 	GENERATED_BODY()
 
@@ -20,6 +20,14 @@ public:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
 	// end USubsystem Interface
+
+	// begin FTickableGameObject Interface
+	virtual UWorld* GetTickableGameObjectWorld() const override;	// 获取TickableGameObject所在的世界
+	virtual void Tick(float DeltaTime) override;
+	virtual ETickableTickType GetTickableTickType() const override;	// 获取TickableGameObject的Tick类型
+	virtual bool IsTickable() const override;	// 是否可被Tick
+	virtual TStatId GetStatId() const override;	// 获取TickableGameObject的统计ID
+	// end FTickableGameObject Interface
 
 private:
 	void OnMapPreLoaded(const FWorldContext& WorldContext, const FString& MapName);
