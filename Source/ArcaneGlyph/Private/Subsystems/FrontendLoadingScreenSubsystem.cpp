@@ -224,6 +224,8 @@ void UFrontendLoadingScreenSubsystem::TryDisplayLoadingScreen()
 					CachedCreatedLoadingScreenWidget.ToSharedRef(),
 					1000		// 数值较大的控件会显示在数值较小的控件上方
 				);
+
+				NotifyLoadingScreenStartup();
 			}
 		}
 	}
@@ -237,7 +239,28 @@ void UFrontendLoadingScreenSubsystem::TryRemoveLoadingScreen()
 			CachedCreatedLoadingScreenWidget.ToSharedRef()
 		);
 		CachedCreatedLoadingScreenWidget.Reset();
+
+		NotifyLoadingScreenShutdown();
 	}
+}
+
+void UFrontendLoadingScreenSubsystem::NotifyLoadingScreenStartup()
+{
+	for (ULocalPlayer* ExistingPlayer : GetGameInstance()->GetLocalPlayers())
+	{
+		if (ExistingPlayer)
+		{
+			// 通知玩家控制器加载界面已启动
+			if (APlayerController* PC = ExistingPlayer->GetPlayerController(GetGameInstance()->GetWorld()))
+			{
+				
+			}
+		}
+	}
+}
+
+void UFrontendLoadingScreenSubsystem::NotifyLoadingScreenShutdown()
+{
 }
 
 void UFrontendLoadingScreenSubsystem::TryUpdateLoadingScreen()

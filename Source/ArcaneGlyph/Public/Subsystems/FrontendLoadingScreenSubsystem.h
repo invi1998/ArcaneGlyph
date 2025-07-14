@@ -45,6 +45,9 @@ private:
 	void TryDisplayLoadingScreen();	// 尝试显示加载画面
 	void TryRemoveLoadingScreen();	// 尝试移除加载画面
 
+	void NotifyLoadingScreenStartup();	// 通知加载画面启动
+	void NotifyLoadingScreenShutdown();	// 通知加载画面关闭
+
 	void TryUpdateLoadingScreen();
 	bool bIsCurrentlyLoadingMap = false;	// 当前是否正在加载地图
 	float HoldLoadingScreenStartupTime = -1.f;	// 加载画面启动时间
