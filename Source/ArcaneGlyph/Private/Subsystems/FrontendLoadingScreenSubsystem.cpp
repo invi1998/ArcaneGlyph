@@ -246,7 +246,6 @@ void UFrontendLoadingScreenSubsystem::TryRemoveLoadingScreen()
 		);
 		CachedCreatedLoadingScreenWidget.Reset();
 
-		NotifyLoadingScreenShutdown();
 	}
 }
 
@@ -320,10 +319,13 @@ void UFrontendLoadingScreenSubsystem::TryUpdateLoadingScreen()
 	{
 		// 移除当前加载界面
 		OnLoadingScreenShutdown.Broadcast();
+		
 		// TryRemoveLoadingScreen();
 		HoldLoadingScreenStartupTime = -1.f;
 		
 		// 通知加载完成
+		NotifyLoadingScreenShutdown();
+		
 		// 禁用Tick
 		SetTickableTickType(ETickableTickType::Never);
 	}
