@@ -33,6 +33,8 @@ private:
 	void OnMapPreLoaded(const FWorldContext& WorldContext, const FString& MapName);
 	void OnMapPostLoaded(UWorld* LoadedWorld);
 
+	bool IsPreLoadingScreenActive() const;
+
 	void TryUpdateLoadingScreen();
 	bool bIsCurrentlyLoadingMap = false;	// 当前是否正在加载地图
 	

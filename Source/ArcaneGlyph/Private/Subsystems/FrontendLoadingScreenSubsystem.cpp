@@ -4,6 +4,7 @@
 #include "Subsystems/FrontendLoadingScreenSubsystem.h"
 
 #include "ArcaneDebugHelper.h"
+#include "PreLoadScreenManager.h"
 
 bool UFrontendLoadingScreenSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 {
@@ -99,9 +100,22 @@ void UFrontendLoadingScreenSubsystem::OnMapPostLoaded(UWorld* LoadedWorld)
 	}
 }
 
+bool UFrontendLoadingScreenSubsystem::IsPreLoadingScreenActive() const
+{
+	FPreLoadScreenManager* PreLoadScreenManager = FPreLoadScreenManager::Get();
+	if (PreLoadScreenManager)
+	{
+		// 检查预加载屏幕管理器是否存在，并且当前是否有有效的活动预加载屏幕
+		return PreLoadScreenManager->HasValidActivePreLoadScreen();
+	}
+
+	return false;
+}
+
 void UFrontendLoadingScreenSubsystem::TryUpdateLoadingScreen()
 {
 	// 首先需要检查当前是否存在启动加载界面
+	if (IsPreLoadingScreenActive()) return;
 
 	// 检查是否应该显示加载界面
 	if (true)
