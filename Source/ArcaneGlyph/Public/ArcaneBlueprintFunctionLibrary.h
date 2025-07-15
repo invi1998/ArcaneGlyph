@@ -9,6 +9,7 @@
 #include "Widget/Widget_ActivatableBase.h"
 #include "ArcaneBlueprintFunctionLibrary.generated.h"
 
+class UArcaneGameInstance;
 struct FGameplayEffectSpecHandle;
 class AArcaneHeroCharacter;
 struct FScalableFloat;
@@ -123,6 +124,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary")
 	static AActor* GetNearestEnemyInFrontOfCharacter(AActor* InActor, TArray<TEnumAsByte<EObjectTypeQuery>> TargetObjectTypes, bool bShowDebugTrace = false, float MaxDistance = 1000.0f, float MaxAngle = 90.0f, FVector TraceBoxSize = FVector(2000.f, 2000.f, 2000.f));
 
+	UFUNCTION(BlueprintPure, Category = "Arcane | FunctionLibrary", meta = (WorldContext = "WorldContextObject"))
+	static UArcaneGameInstance* GetArcaneGameInstance(const UObject* WorldContextObject);
+	
 
 	// Frontend UI Subsystem相关函数
 	UFUNCTION(BlueprintPure, Category = "FrontendUI | FunctionLibrary")
