@@ -257,6 +257,7 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_ModalScreen_TimerConfirm);		// 前端标签：模态框：计时器确认
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_ModalScreen_KeyRemapScreen);		// 前端标签：模态框：键位重映射屏幕
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_ModalScreen_PlayerDie);		// 前端标签：模态框：玩家死亡
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_ModalScreen_PlayerWin);		// 前端标签：模态框：玩家胜利
 	
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Image_TestImage);			// 前端标签：测试图片
 

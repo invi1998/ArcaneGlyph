@@ -7,7 +7,7 @@ TSoftObjectPtr<UWorld> UArcaneGameInstance::GetLevelWorldByTag(FGameplayTag Leve
 {
 	for (const FArcaneGameLevelSet& GameLevelSet : GameLevelSets)
 	{
-		if (!GameLevelSet.LevelWorld.IsValid())
+		if (!GameLevelSet.IsValid())
 		{
 			continue; // 如果 LevelWorld 无效，则跳过
 		}
