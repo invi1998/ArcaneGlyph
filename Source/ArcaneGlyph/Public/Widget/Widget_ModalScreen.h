@@ -51,7 +51,7 @@ public:
 	static UConfirmScreenInfoObject* CreateOKScreen(const FText& InTitle, const FText& InSubTitle, const FText& InMessage, const FText& InDescription = FText::GetEmpty(), const FSlateBrush& InIcon = FSlateBrush(), const FText& InOkButtonText = FText::GetEmpty());
 	static UConfirmScreenInfoObject* CreateOKCancelScreen(const FText& InTitle, const FText& InSubTitle, const FText& InMessage, const FText& InDescription = FText::GetEmpty(), const FSlateBrush& InIcon = FSlateBrush(), const FText& InOkButtonText = FText::GetEmpty(), const FText& InCancelButtonText = FText::GetEmpty());
 	static UConfirmScreenInfoObject* CreateYesNoScreen(const FText& InTitle, const FText& InSubTitle, const FText& InMessage, const FText& InDescription = FText::GetEmpty(), const FSlateBrush& InIcon = FSlateBrush(), const FText& InYesButtonText = FText::GetEmpty(), const FText& InNoButtonText = FText::GetEmpty());
-
+	static UConfirmScreenInfoObject* CreateYesNoCloseScreen(const FText& InTitle, const FText& InSubTitle, const FText& InMessage, const FText& InDescription = FText::GetEmpty(), const FSlateBrush& InIcon = FSlateBrush(), const FText& InYesButtonText = FText::GetEmpty(), const FText& InNoButtonText = FText::GetEmpty(), const FText& InCloseButtonText = FText::GetEmpty());
 };
 
 

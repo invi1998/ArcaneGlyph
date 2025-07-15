@@ -75,6 +75,36 @@ UConfirmScreenInfoObject* UConfirmScreenInfoObject::CreateYesNoScreen(const FTex
 	return NewScreen;
 }
 
+UConfirmScreenInfoObject* UConfirmScreenInfoObject::CreateYesNoCloseScreen(const FText& InTitle,
+	const FText& InSubTitle, const FText& InMessage, const FText& InDescription, const FSlateBrush& InIcon,
+	const FText& InYesButtonText, const FText& InNoButtonText, const FText& InCloseButtonText)
+{
+	UConfirmScreenInfoObject* NewScreen = NewObject<UConfirmScreenInfoObject>();
+	NewScreen->ModalTitle = InTitle;
+	NewScreen->ModalSubtitle = InSubTitle;
+	NewScreen->ModalMessage = InMessage;
+	NewScreen->ModalDescription = InDescription;
+	NewScreen->ModalIcon = InIcon;
+
+	FConfirmButtonInfo YesButtonInfo = FConfirmButtonInfo();
+	YesButtonInfo.ConfirmButtonType = EModalButtonType::Confirm;
+	YesButtonInfo.ButtonText = InYesButtonText.IsEmpty() ? FText::FromString(TEXT("确认")) : InYesButtonText;
+
+	FConfirmButtonInfo NoButtonInfo = FConfirmButtonInfo();
+	NoButtonInfo.ConfirmButtonType = EModalButtonType::Cancel;
+	NoButtonInfo.ButtonText = InNoButtonText.IsEmpty() ? FText::FromString(TEXT("取消")) : InNoButtonText;
+
+	FConfirmButtonInfo CloseButtonInfo = FConfirmButtonInfo();
+	CloseButtonInfo.ConfirmButtonType = EModalButtonType::Close;
+	CloseButtonInfo.ButtonText = InCloseButtonText.IsEmpty() ? FText::FromString(TEXT("关闭")) : InCloseButtonText;
+
+	NewScreen->AvailableScreenButtons.Add(YesButtonInfo);
+	NewScreen->AvailableScreenButtons.Add(NoButtonInfo);
+	NewScreen->AvailableScreenButtons.Add(CloseButtonInfo);
+
+	return NewScreen;
+}
+
 void UWidget_ModalScreen::InitConfirmScreen(const UConfirmScreenInfoObject* ConfirmScreenInfoObject, TFunction<void(EModalButtonType)> OnButtonClickedCallback, EColorThemeType InColorTheme)
 {
 	check(Modal_Message);
@@ -96,6 +126,10 @@ void UWidget_ModalScreen::InitConfirmScreen(const UConfirmScreenInfoObject* Conf
 		if (Modal_Icon)
 		{
 			Modal_Icon->SetBrush(ConfirmScreenInfoObject->ModalIcon);
+		}
+		if (Modal_Description)
+		{
+			Modal_Description->SetText(ConfirmScreenInfoObject->ModalDescription);
 		}
 		if (DynamicEntryBox_Buttons->GetNumEntries() > 0)
 		{

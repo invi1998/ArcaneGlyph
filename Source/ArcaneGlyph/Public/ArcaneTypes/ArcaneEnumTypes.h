@@ -132,6 +132,7 @@ enum class EModalType : uint8
 	Ok UMETA(DisplayName = "确定"),
 	OkCancel UMETA(DisplayName = "确定/取消"),
 	YesNo UMETA(DisplayName = "是/否"),
+	YesNoClose UMETA(DisplayName = "是/否/关闭"),
 	Unknow UMETA(Hidden)
 };
 

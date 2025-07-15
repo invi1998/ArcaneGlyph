@@ -95,6 +95,9 @@ void UFrontendUISubsystem::PushModalScreenToModalStackAsync(const FGameplayTag& 
 	case EModalType::YesNo:
 		ConfirmScreenInfoObject = UConfirmScreenInfoObject::CreateYesNoScreen(ModalTitle, ModalSubtitle, ModalMessage, ModalDescription, ModalIcon, ConfirmButtonText, CancelButtonText);
 		break;
+	case EModalType::YesNoClose:
+		ConfirmScreenInfoObject = UConfirmScreenInfoObject::CreateYesNoCloseScreen(ModalTitle, ModalSubtitle, ModalMessage, ModalDescription, ModalIcon, ConfirmButtonText, CloseButtonText);
+		break;
 	case EModalType::Unknow:
 		break;
 	}
