@@ -229,6 +229,10 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Status_Hegemony, "Shared.Status.Hegemony", "共享状态：霸体");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Status_ShipoWindow, "Shared.Status.ShipoWindow", "共享状态：识破窗口");
 
+	// Gameplay Tags for GameData
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameData_Level_SurvivalGameModeMap, "GameData.Level.SurvivalGameModeMap", "游戏数据：关卡-生存模式地图");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameData_Level_MainMenuMap, "GameData.Level.MainMenuMap", "游戏数据：关卡-主菜单地图");
+
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_WidgetStack_Modal, "Frontend.WidgetStack.Modal", "前端：模态窗口堆栈");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_WidgetStack_GameMenu, "Frontend.WidgetStack.GameMenu", "前端：游戏菜单窗口堆栈");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_WidgetStack_HUD, "Frontend.WidgetStack.HUD", "前端：HUD窗口堆栈");

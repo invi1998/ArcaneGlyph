@@ -230,6 +230,10 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Status_Hegemony);				// 共享状态：霸体状态
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Status_ShipoWindow);			// 共享状态：识破招式窗口
 
+	// Gameplay Tags for GameData
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameData_Level_SurvivalGameModeMap);	// 游戏数据标签：生存游戏模式地图
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameData_Level_MainMenuMap);			// 游戏数据标签：主菜单地图
+
 
 	// Frontend Tags（前端标签）
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_WidgetStack_Modal);			// 前端标签：模态窗口栈
