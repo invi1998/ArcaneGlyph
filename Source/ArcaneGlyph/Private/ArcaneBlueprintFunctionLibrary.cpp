@@ -546,6 +546,30 @@ void UArcaneBlueprintFunctionLibrary::ArcaneCloseGame(const UObject* WorldContex
 	}
 }
 
+void UArcaneBlueprintFunctionLibrary::ToggleInputMode(const UObject* WorldContextObject, EArcaneInputMode InputMode)
+{
+	if (GEngine)
+	{
+		UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
+		APlayerController* PlayerController = World->GetFirstPlayerController();
+		if (!PlayerController) return;
+
+		FInputModeGameOnly GameOnlyMode;
+		FInputModeUIOnly UIOnlyMode;
+
+		switch (InputMode) {
+		case EArcaneInputMode::GameOnly:
+			PlayerController->SetInputMode(GameOnlyMode);
+			PlayerController->bShowMouseCursor = false;
+			break;
+		case EArcaneInputMode::UIOnly:
+			PlayerController->SetInputMode(UIOnlyMode);
+			PlayerController->bShowMouseCursor = true;
+			break;
+		}
+	}
+}
+
 TSoftClassPtr<UWidget_ActivatableBase> UArcaneBlueprintFunctionLibrary::GetFrontendSoftWidgetClassByTag(UPARAM(meta = (Categories = "Frontend.Widget")) FGameplayTag WidgetTag)
 {
 	const UFrontendDeveloperSettings* FrontendDeveloperSettings = GetDefault<UFrontendDeveloperSettings>();

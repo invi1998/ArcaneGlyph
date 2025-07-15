@@ -164,6 +164,13 @@ enum class EColorThemeType : uint8
 	ErrorTheme UMETA(DisplayName = "错误色主题"),
 };
 
+UENUM(BlueprintType)
+enum class EArcaneInputMode : uint8
+{
+	GameOnly UMETA(DisplayName = "游戏输入模式"),
+	UIOnly UMETA(DisplayName = "UI输入模式")
+};
+
 
 
 
