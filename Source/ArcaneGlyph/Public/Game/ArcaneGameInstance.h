@@ -12,7 +12,7 @@ struct FArcaneGameLevelSet
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditDefaultsOnly, meta=(Category="GameData.Level"))
+	UPROPERTY(EditDefaultsOnly, meta=(Categories ="GameData.Level"))
 	FGameplayTag LevelTag;	// 关卡标签，用于标识该关卡集
 
 	UPROPERTY(EditDefaultsOnly)
@@ -34,7 +34,7 @@ class ARCANEGLYPH_API UArcaneGameInstance : public UGameInstance
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, meta=(GameplayTagFilter="GameData.Level"))
+	UFUNCTION(BlueprintPure, meta=(GameplayTagFilter ="GameData.Level"))
 	TSoftObjectPtr<UWorld> GetLevelWorldByTag(FGameplayTag LevelTag) const;
 
 
