@@ -126,7 +126,10 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "Arcane | FunctionLibrary", meta = (WorldContext = "WorldContextObject"))
 	static UArcaneGameInstance* GetArcaneGameInstance(const UObject* WorldContextObject);
-	
+
+	// 关闭游戏（添加关于游戏手柄的处理）
+	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary", meta = (WorldContext = "WorldContextObject"))
+	static void ArcaneCloseGame(const UObject* WorldContextObject);
 
 	// Frontend UI Subsystem相关函数
 	UFUNCTION(BlueprintPure, Category = "FrontendUI | FunctionLibrary")

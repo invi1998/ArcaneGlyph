@@ -6,6 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "ArcaneDebugHelper.h"
 #include "ArcaneGameplayTags.h"
+#include "CommonInputSubsystem.h"
 #include "EngineUtils.h"
 #include "GenericTeamAgentInterface.h"
 #include "KismetAnimationLibrary.h"
@@ -520,6 +521,29 @@ UArcaneGameInstance* UArcaneBlueprintFunctionLibrary::GetArcaneGameInstance(cons
 		}
 	}
 	return nullptr;
+}
+
+void UArcaneBlueprintFunctionLibrary::ArcaneCloseGame(const UObject* WorldContextObject)
+{
+	if (GEngine)
+	{
+		UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::Assert);
+
+		const ULocalPlayer* LocalPlayer = World->GetFirstLocalPlayerFromController();
+		
+		if (UCommonInputSubsystem* CommonInputSubsystem = UCommonInputSubsystem::Get(LocalPlayer))
+		{
+			// 关闭游戏前，如果是手柄控制，需要切换到鼠标键盘输入类型
+			if (CommonInputSubsystem->GetCurrentInputType() == ECommonInputType::Gamepad)
+			{
+				CommonInputSubsystem->SetCurrentInputType(ECommonInputType::MouseAndKeyboard);
+			}
+		}
+
+		// 通过Kismet库来关闭游戏
+		UKismetSystemLibrary::QuitGame(World, nullptr, EQuitPreference::Quit, true);
+		
+	}
 }
 
 TSoftClassPtr<UWidget_ActivatableBase> UArcaneBlueprintFunctionLibrary::GetFrontendSoftWidgetClassByTag(UPARAM(meta = (Categories = "Frontend.Widget")) FGameplayTag WidgetTag)
