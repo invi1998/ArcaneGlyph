@@ -256,6 +256,7 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_ModalScreen_PlayerDie, "Frontend.Widget.ModalScreen.PlayerDie", "前端：模态屏幕-玩家死亡");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_ModalScreen_PlayerWin, "Frontend.Widget.ModalScreen.PlayerWin", "前端：模态屏幕-玩家胜利");
 
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_HUD_CharacterOverlay, "Frontend.Widget.HUD.CharacterOverlay", "前端：HUD窗口-角色覆盖");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Widget_HUD_PauseScreen, "Frontend.Widget.HUD.PauseScreen", "前端：HUD窗口-暂停屏幕");
 	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Frontend_Image_TestImage, "Frontend.Image.TestImage", "前端：测试图像");
