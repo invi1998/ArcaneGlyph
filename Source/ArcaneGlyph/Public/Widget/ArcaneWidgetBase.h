@@ -11,7 +11,7 @@ class UHeroUIComponent;
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract, BlueprintType, meta=(DisabledNativeTick))
 class ARCANEGLYPH_API UArcaneWidgetBase : public UUserWidget
 {
 	GENERATED_BODY()
