@@ -18,6 +18,9 @@ class ARCANEGLYPH_API UWidget_ActivatableBase : public UCommonActivatableWidget
 protected:
 	UFUNCTION(BlueprintPure)
 	AArcaneHeroController* GetOwningHeroController();
+
+	virtual void NativeOnActivated() override;
+	virtual void NativeOnDeactivated() override;
 	
 
 private:
