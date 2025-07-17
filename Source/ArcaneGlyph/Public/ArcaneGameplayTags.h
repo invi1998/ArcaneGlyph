@@ -259,7 +259,8 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_ModalScreen_PlayerDie);		// 前端标签：模态框：玩家死亡
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_ModalScreen_PlayerWin);		// 前端标签：模态框：玩家胜利
 
-	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_HUD_CharacterOverlay);	// 前端标签：HUD-角色覆盖
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_HUD_KeyMouseOverlay);	// 前端标签：HUD-键鼠覆盖层
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_HUD_GamePadOverlay);		// 前端标签：HUD-手柄覆盖层
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Frontend_Widget_HUD_PauseScreen);	// 前端标签：HUD-暂停屏幕
 	
 	
