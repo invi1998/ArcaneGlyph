@@ -18,6 +18,8 @@ class AArcaneHeroController;
 // 定义一个动态多播委托，用于处理输入类型变化事件，对于那些在不同输入类型下需要使用不同UI页面的控件尤为重要
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInputTypeChangedDelegate, ECommonInputType, NewInputType);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnTriggerInputKeyPressedOrReleaseDelegate);	// 定义一个动态多播委托，用于处理触发输入键按下事件
+
 UCLASS(Abstract, BlueprintType, meta=(DisabledNativeTick))
 class ARCANEGLYPH_API UWidget_ActivatableBase : public UCommonActivatableWidget
 {
@@ -27,12 +29,20 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnInputTypeChangedDelegate OnInputTypeChanged;	// 输入类型变化事件委托
 
+	UPROPERTY(BlueprintAssignable)
+	FOnTriggerInputKeyPressedOrReleaseDelegate OnTriggerInputKeyPressed;	// 触发输入键按下事件委托
+
+	UPROPERTY(BlueprintAssignable)
+	FOnTriggerInputKeyPressedOrReleaseDelegate OnTriggerInputKeyReleased;	// 触发输入键释放事件委托
+
 protected:
 	UFUNCTION(BlueprintPure)
 	AArcaneHeroController* GetOwningHeroController();
 
 	void OnRightMouseButtonPressed(const FKey& Key);
-	void HandleInputkeyPressed(const FKey& Key, ECommonInputType InputType);
+	void HandleInputKeyPressed(const FKey& Key, ECommonInputType InputType);
+	void HandleTriggerInputKeyPressed(const FKey& Key, ECommonInputType InputType);
+	void HandleTriggerInputKeyReleased(const FKey& Key, ECommonInputType InputType);
 	
 	virtual void NativeOnActivated() override;
 	virtual void NativeOnDeactivated() override;
@@ -44,9 +54,14 @@ protected:
 private:
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess = "true"))
 	bool bUseDifferentPageForDifferentInputType = false;	// 是否为不同的输入类型使用不同的页面
+
+	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess = "true"))
+	bool bListenTriggerKey = false;	// 是否监听触发键
 	
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess = "true"))
 	ECommonInputType CurrentPageInputType = ECommonInputType::MouseAndKeyboard;	// 当前页面输入类型（键盘鼠标或手柄）
+
+	bool bTriggering = false;	// 是否正在触发输入键
 	
 };
 
