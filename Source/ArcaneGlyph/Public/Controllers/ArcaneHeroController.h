@@ -28,5 +28,7 @@ protected:
 
 private:
 	FGenericTeamId HeroTeamID;	// 英雄团队 ID（玩家团队 ID）
+
+	
 	
 };

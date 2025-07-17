@@ -7,6 +7,7 @@
 #include "CommonInputTypeEnum.h"
 #include "Controllers/ArcaneHeroController.h"
 #include "Framework/Application/IInputProcessor.h"
+#include "Interfaces/PawnUIInterface.h"
 
 class FCommonUIMouseInputProcessor : public IInputProcessor
 {
@@ -84,5 +85,29 @@ void UWidget_ActivatableBase::NativeOnDeactivated()
 	{
 		FSlateApplication::Get().UnregisterInputPreProcessor(CachedMouseInputPreprocessor);	//	注销鼠标输入处理器
 		CachedMouseInputPreprocessor.Reset();	// 重置鼠标输入处理器
+	}
+}
+
+void UWidget_ActivatableArcane::InitEnemyCreatedWidget(AActor* InEnemyActor)
+{
+	if (IPawnUIInterface* PawnUIInterface = Cast<IPawnUIInterface>(InEnemyActor))
+	{
+		if (UEnemyUIComponent* EnemyUIComponent = PawnUIInterface->GetEnemyUIComponent())
+		{
+			BP_OnEnemyCreatedWidgetInitialized(EnemyUIComponent);
+		}
+	}
+}
+
+void UWidget_ActivatableArcane::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+
+	if (IPawnUIInterface* PawnUIInterface = Cast<IPawnUIInterface>(GetOwningPlayerPawn()))
+	{
+		if (UHeroUIComponent* HeroUIComponent = PawnUIInterface->GetHeroUIComponent())
+		{
+			BP_OnOwningHeroUIComponentInitialized(HeroUIComponent);
+		}
 	}
 }
