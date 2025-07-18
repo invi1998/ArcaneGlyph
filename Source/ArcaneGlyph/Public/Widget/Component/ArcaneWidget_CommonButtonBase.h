@@ -22,7 +22,7 @@ public:
 
 protected:
 	virtual void NativeOnInitialized() override;
-
+	
 	UFUNCTION(BlueprintImplementableEvent, Category = "Arcane | Widget", meta = (DisplayName = "On Owning Hero UI Component Initialized"))
 	void BP_OnOwningHeroUIComponentInitialized(UHeroUIComponent* InHeroUIComponent);
 
