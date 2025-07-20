@@ -44,6 +44,13 @@ void UHeroCombatComponent::BroadcastCurrentCombatState(const UHeroUIComponent* I
 					);
 				}
 			}
+
+			// 广播当前武器的攻击类型（棍法）
+			TSoftObjectPtr<UTexture2D> TextureStaffIcon = WeaponData.AbilitySetGroups.Find(CurrentComboTypeTag)->GroupIcon;
+			InHeroUIComponent->OnComboTypeChanged.Broadcast(
+				CurrentComboTypeTag,
+				TextureStaffIcon
+			);
 		}
 		else
 		{
