@@ -28,6 +28,9 @@ class ARCANEGLYPH_API UHeroUIComponent : public UPawnUIComponent
 	GENERATED_BODY()
 
 public:
+	UFUNCTION(BlueprintCallable)
+	void BroadcastInitialValues() const;
+	
 	UPROPERTY(BlueprintAssignable)
 	FOnPercentChangedWithSparkDelegate OnCurrentRageChanged;	// 当前怒气值变化
 

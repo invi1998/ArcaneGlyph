@@ -134,7 +134,7 @@ public:
 	// 该函数用于传统的UI切换游戏输入模式，在接入CommonUI后，就不需要调用该函数了（调用该函数会扰乱CommonUI的工作）
 	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary", meta = (WorldContext = "WorldContextObject"))
 	static void ToggleInputMode(const UObject* WorldContextObject, EArcaneInputMode InputMode);
-
+	
 	// Frontend UI Subsystem相关函数
 	UFUNCTION(BlueprintPure, Category = "FrontendUI | FunctionLibrary")
 	static TSoftClassPtr<UWidget_ActivatableBase> GetFrontendSoftWidgetClassByTag(UPARAM(meta = (Categories = "Frontend.Widget")) FGameplayTag WidgetTag);

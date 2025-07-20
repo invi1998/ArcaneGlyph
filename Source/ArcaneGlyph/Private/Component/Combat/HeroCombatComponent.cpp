@@ -7,9 +7,52 @@
 #include "ArcaneBlueprintFunctionLibrary.h"
 #include "ArcaneDebugHelper.h"
 #include "ArcaneGameplayTags.h"
+#include "GameplayEffect.h"
+#include "AbilitySystem/ArcaneAbilitySystemComponent.h"
 #include "Characters/ArcaneHeroCharacter.h"
 #include "Component/UI/HeroUIComponent.h"
 #include "Items/Weapons/ArcaneHeroWeapon.h"
+
+void UHeroCombatComponent::BroadcastCurrentCombatState(const UHeroUIComponent* InHeroUIComponent) const
+{
+	UArcaneAbilitySystemComponent* ArcaneASC = UArcaneBlueprintFunctionLibrary::GetArcaneASCFromActor(GetOwningPawn());
+	if (InHeroUIComponent && ArcaneASC)
+	{
+		// 获取当前装备的武器
+		if (const AArcaneHeroWeapon* CurrentEquippedWeapon = GetHeroCurrentEquippedWeapon())
+		{
+			const FArcaneHeroWeaponData& WeaponData = CurrentEquippedWeapon->HeroWeaponData;
+			// 广播当前武器图标
+			InHeroUIComponent->OnEquippedWeaponChanged.Broadcast(
+				WeaponData.WeaponIcon
+			);
+
+			// 遍历当前武器技能，广播技能状态
+			for (const FArcaneHeroSpecialAbilitySet& SpecialAbility : WeaponData.SpecialWeaponAbilities)
+			{
+				InHeroUIComponent->OnAbilityIconSlotUpdated.Broadcast(SpecialAbility.InputTag, SpecialAbility.SoftAbilityIconTexture2D);
+
+				// 广播当前技能冷却时间
+				float TotalCooldownTime = 0.f;
+				float RemainingCooldownTime = 0.f;
+				if (GetAbilityRemainingCooldownTimeByTag(ArcaneASC, SpecialAbility.AbilityCooldownTag, TotalCooldownTime, RemainingCooldownTime))
+				{
+					InHeroUIComponent->OnAbilityCooldownBegin.Broadcast(
+						SpecialAbility.InputTag,
+						TotalCooldownTime,
+						RemainingCooldownTime
+					);
+				}
+			}
+		}
+		else
+		{
+			InHeroUIComponent->OnEquippedWeaponChanged.Broadcast(
+				nullptr
+			);
+		}
+	}
+}
 
 void UHeroCombatComponent::StartEnergyRegenTimer()
 {
@@ -178,4 +221,25 @@ void UHeroCombatComponent::OnWeaponPulledFromTargetActor(AActor* InHitActor, int
 		ArcaneGameplayTags::Player_Event_HitPause,
 		FGameplayEventData()
 	);
+}
+
+bool UHeroCombatComponent::GetAbilityRemainingCooldownTimeByTag(const UArcaneAbilitySystemComponent* ASC, const FGameplayTag& InCooldownTag, float& TotalCooldownTime, float& OutRemainingCooldown) const
+{
+	FGameplayEffectQuery CooldownQuery = FGameplayEffectQuery::MakeQuery_MatchAnyOwningTags(InCooldownTag.GetSingleTagContainer());
+
+	TArray<TPair<float, float>> CooldownList = ASC->GetActiveEffectsTimeRemainingAndDuration(CooldownQuery);
+
+	if (CooldownList.Num() > 0)
+	{
+		TotalCooldownTime = CooldownList[0].Value;
+		OutRemainingCooldown = CooldownList[0].Key;
+		
+	}
+	else
+	{
+		TotalCooldownTime = 0;
+		OutRemainingCooldown = 0;
+	}
+	
+	return OutRemainingCooldown > 0.f;
 }

@@ -8,6 +8,8 @@
 #include "HeroCombatComponent.generated.h"
 
 
+class UArcaneAbilitySystemComponent;
+class UHeroUIComponent;
 class AArcaneHeroCharacter;
 class AArcaneHeroWeapon;
 
@@ -17,6 +19,8 @@ class ARCANEGLYPH_API UHeroCombatComponent : public UPawnCombatComponent
 	GENERATED_BODY()
 
 public:
+	void BroadcastCurrentCombatState(const UHeroUIComponent* InHeroUIComponent) const;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")
 	FScalableFloat RageGainBase;	// 愤怒增益基础值
 
@@ -59,5 +63,8 @@ public:
 	
 	virtual void OnHitTargetActor(AActor* InHitActor, int32 InCollisionBoxIndex, FVector InHitLocation) override;
 	virtual void OnWeaponPulledFromTargetActor(AActor* InHitActor, int32 InCollisionBoxIndex) override;
+
+private:
+	bool GetAbilityRemainingCooldownTimeByTag(const UArcaneAbilitySystemComponent* ASC, const FGameplayTag& InCooldownTag, float& TotalCooldownTime, float& OutRemainingCooldown) const;
 	
 };

@@ -13,6 +13,7 @@ GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
+class UHeroUIComponent;
 class IPawnCombatInterface;
 class IPawnUIInterface;
 /**
@@ -25,6 +26,8 @@ class ARCANEGLYPH_API UArcaneAttributeSet : public UAttributeSet
 
 public:
 	UArcaneAttributeSet();
+
+	void BroadcastCharacterAttributeInfo(const UHeroUIComponent* InHeroUIComponent) const;	// 广播角色属性信息
 
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 

@@ -38,6 +38,17 @@ UArcaneAttributeSet::UArcaneAttributeSet()
 	InitMaxEnergy(0.f);
 }
 
+void UArcaneAttributeSet::BroadcastCharacterAttributeInfo(const UHeroUIComponent* InHeroUIComponent) const
+{
+	if (InHeroUIComponent)
+	{
+		InHeroUIComponent->OnCurrentHealthChanged.Broadcast(GetCurrentHealth() / GetMaxHealth());
+		InHeroUIComponent->OnCurrentRageChanged.Broadcast(GetCurrentSegmentRagePercent(), GetCurrentSpark(), GetMaxSpark());
+		InHeroUIComponent->OnCurrentEnergyChanged.Broadcast(UKismetMathLibrary::SafeDivide(GetCurrentEnergy(), GetMaxEnergy()));
+		InHeroUIComponent->OnCurrentSparkNumChanged.Broadcast(GetCurrentSpark(), GetMaxSpark());
+	}
+}
+
 void UArcaneAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
