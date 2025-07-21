@@ -57,5 +57,16 @@ public:
 
 	UPROPERTY(BlueprintAssignable, BlueprintCallable)
 	FOnEnegyChangedDelegate OnCurrentEnergyChanged;				// 气力变化
+
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnEnegyChangedDelegate OnCurrentManaChanged;				// 法力值变化
+
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnPotionNumberChangedDelegate OnCurrentManaPotionChanged;	// 当前法力药水数量变化
+
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnPotionNumberChangedDelegate OnCurrenExtraDamagePotionChanged;	// 当前额外伤害药水数量变化
+
+	
 	
 };

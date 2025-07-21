@@ -48,6 +48,13 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_PickUp_RageSoul, "InputTag.PickUp.RageSoul", "拾取愤怒灵魂");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_UseItem_HealPotion, "InputTag.UseItem.HealPotion", "使用药水");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_UseItem_RagePotion, "InputTag.UseItem.RagePotion", "使用愤怒药水");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_UseItem_ManaPotion, "InputTag.UseItem.ManaPotion", "使用法力药水");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_UseItem_ExtraDamagePotion, "InputTag.UseItem.ExtraDamagePotion", "使用额外伤害药水");
+
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_UseItem_CurrentItem, "InputTag.UseItem.CurrentItem", "使用当前药水");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_SwitchItem_Left, "InputTag.SwitchItem.Left", "切换物品:向左切换");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_SwitchItem_Right, "InputTag.SwitchItem.Right", "切换物品:向右切换");
+	
 	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_SpecialWeaponAbility_Light, "InputTag.SpecialWeaponAbility.Light", "特殊武器技能:轻攻击");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_SpecialWeaponAbility_Heavy, "InputTag.SpecialWeaponAbility.Heavy", "特殊武器技能:重攻击");

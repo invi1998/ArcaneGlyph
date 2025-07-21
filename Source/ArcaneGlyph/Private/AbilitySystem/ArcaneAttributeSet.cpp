@@ -36,6 +36,13 @@ UArcaneAttributeSet::UArcaneAttributeSet()
 	InitExtraRageIncrement(10.f);
 	InitCurrentEnergy(0.f);
 	InitMaxEnergy(0.f);
+	InitCurrentMana(0.f);
+	InitMaxMana(0.f);
+	InitManaPotion(0.f);
+	InitMaxManaPotion(0.f);
+	InitExtraDamage(0.f);
+	InitDamagePotion(0.f);
+	InitMaxDamagePotion(0.f);
 }
 
 void UArcaneAttributeSet::BroadcastCharacterAttributeInfo(const UHeroUIComponent* InHeroUIComponent) const
@@ -46,6 +53,11 @@ void UArcaneAttributeSet::BroadcastCharacterAttributeInfo(const UHeroUIComponent
 		InHeroUIComponent->OnCurrentRageChanged.Broadcast(GetCurrentSegmentRagePercent(), GetCurrentSpark(), GetMaxSpark());
 		InHeroUIComponent->OnCurrentEnergyChanged.Broadcast(UKismetMathLibrary::SafeDivide(GetCurrentEnergy(), GetMaxEnergy()));
 		InHeroUIComponent->OnCurrentSparkNumChanged.Broadcast(GetCurrentSpark(), GetMaxSpark());
+		InHeroUIComponent->OnCurrentHealthPotionChanged.Broadcast(GetHealthPotion(), GetMaxHealthPotion());
+		InHeroUIComponent->OnCurrentRagePotionChanged.Broadcast(GetRagePotion(), GetMaxRagePotion());
+		InHeroUIComponent->OnCurrentManaChanged.Broadcast(UKismetMathLibrary::SafeDivide(GetCurrentMana(), GetMaxMana()));
+		InHeroUIComponent->OnCurrentManaPotionChanged.Broadcast(GetManaPotion(), GetMaxManaPotion());
+		InHeroUIComponent->OnCurrenExtraDamagePotionChanged.Broadcast(GetDamagePotion(), GetMaxDamagePotion());
 	}
 }
 
@@ -89,6 +101,17 @@ void UArcaneAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 		{
 			float TempCurrentEnergyPercent = UKismetMathLibrary::SafeDivide(GetCurrentEnergy(), GetMaxEnergy());
 			HeroUIComponent->OnCurrentEnergyChanged.Broadcast(TempCurrentEnergyPercent);
+		}
+	}
+
+	// 法力值变化
+	if (Data.EvaluatedData.Attribute == GetCurrentManaAttribute())
+	{
+		SetCurrentMana(FMath::Clamp(GetCurrentMana(), 0.f, GetMaxMana()));
+		if (UHeroUIComponent* HeroUIComponent = CachedPawnUIInterface->GetHeroUIComponent())
+		{
+			float TempCurrentManaPercent = UKismetMathLibrary::SafeDivide(GetCurrentMana(), GetMaxMana());
+			HeroUIComponent->OnCurrentManaChanged.Broadcast(TempCurrentManaPercent);
 		}
 	}
 	
@@ -160,6 +183,28 @@ void UArcaneAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 		{
 			SetRagePotion(FMath::Clamp(GetRagePotion(), 0.f, GetMaxRagePotion()));
 			HeroUIComponent->OnCurrentRagePotionChanged.Broadcast(GetRagePotion(), GetMaxRagePotion());
+		}
+		
+	}
+
+	// 获取当前法力药水和最大法力药水
+	if (Data.EvaluatedData.Attribute == GetManaPotionAttribute())
+	{
+		if (UHeroUIComponent* HeroUIComponent = CachedPawnUIInterface->GetHeroUIComponent())
+		{
+			SetManaPotion(FMath::Clamp(GetManaPotion(), 0.f, GetMaxManaPotion()));
+			HeroUIComponent->OnCurrentManaPotionChanged.Broadcast(GetManaPotion(), GetMaxManaPotion());
+		}
+		
+	}
+
+	// 获取当前额外伤害药水和最大额外伤害药水
+	if (Data.EvaluatedData.Attribute == GetDamagePotionAttribute())
+	{
+		if (UHeroUIComponent* HeroUIComponent = CachedPawnUIInterface->GetHeroUIComponent())
+		{
+			SetDamagePotion(FMath::Clamp(GetDamagePotion(), 0.f, GetMaxDamagePotion()));
+			HeroUIComponent->OnCurrenExtraDamagePotionChanged.Broadcast(GetDamagePotion(), GetMaxDamagePotion());
 		}
 		
 	}

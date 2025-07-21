@@ -104,6 +104,40 @@ public:
 	FGameplayAttributeData MaxEnergy;
 	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, MaxEnergy);
 
+	// 法力
+	UPROPERTY(BlueprintReadOnly, Category = "Mana")
+	FGameplayAttributeData CurrentMana;
+	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, CurrentMana);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Mana")
+	FGameplayAttributeData MaxMana;
+	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, MaxMana);
+
+	// 法力药水
+	UPROPERTY(BlueprintReadOnly, Category = "ManaPotion")
+	FGameplayAttributeData ManaPotion;		// 法力药水
+	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, ManaPotion);
+
+	// 最大法力药水容量
+	UPROPERTY(BlueprintReadOnly, Category = "ManaPotion")
+	FGameplayAttributeData MaxManaPotion;		// 最大法力药水容量
+	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, MaxManaPotion);
+
+	// 额外增伤
+	UPROPERTY(BlueprintReadOnly, Category = "Damage")
+	FGameplayAttributeData ExtraDamage;
+	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, ExtraDamage);
+
+	// 增伤药
+	UPROPERTY(BlueprintReadOnly, Category = "Damage")
+	FGameplayAttributeData DamagePotion;		// 增伤药
+	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, DamagePotion);
+
+	// 最大增伤药容量
+	UPROPERTY(BlueprintReadOnly, Category = "Damage")
+	FGameplayAttributeData MaxDamagePotion;		// 最大增伤药容量
+	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, MaxDamagePotion);
+
 private:
 	TWeakInterfacePtr<IPawnUIInterface> CachedPawnUIInterface;
 	TWeakInterfacePtr<IPawnCombatInterface> CachedPawnCombatInterface;
