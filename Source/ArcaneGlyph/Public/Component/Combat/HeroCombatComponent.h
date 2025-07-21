@@ -26,6 +26,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components", meta=(GameplayTagFilter="Player.ComboType"))
 	FGameplayTag CurrentComboTypeTag;	// 当前连击组合类型标签（当前攻击模组）
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components", meta=(GameplayTagFilter="InputTag.UseItem"))
+	FGameplayTag CurrentUsedItemTag;	// 当前使用的物品标签
 	
 	FTimerHandle EnergyRegenTimerHandle;	// 气力回复计时器句柄
 
@@ -48,6 +51,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Components")
 	void ChangeCurrentComboTypeTag(AArcaneHeroCharacter* InHeroCharacter, const FGameplayTag& InComboTypeTag);
+
+	UFUNCTION(BlueprintCallable, Category="Components")
+	void SetCurrentUsedItemTag(AArcaneHeroCharacter* InHeroCharacter, const FGameplayTag& InItemTag);
 	
 	UFUNCTION(BlueprintCallable, Category="Arcane|Combat")
 	AArcaneHeroWeapon* GetHeroCarriedWeaponByTag(const FGameplayTag& InWeaponTag) const;

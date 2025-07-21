@@ -19,6 +19,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnPercentChangedWithSparkDelegat
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnComboTypeChangedDelegate, FGameplayTag, InComboTypeTag, TSoftObjectPtr<UTexture2D>, InComboTypeIcon);	// 连击类型变化委托
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCurrentUsedItemTagChangedDelegate, FGameplayTag, InCurrentUsedItemTag);	// 当前使用物品标签变化委托
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEnegyChangedDelegate, float, InCurrentEnergyPercent);			// 气力变化委托
 
 
@@ -67,6 +69,6 @@ public:
 	UPROPERTY(BlueprintAssignable, BlueprintCallable)
 	FOnPotionNumberChangedDelegate OnCurrenExtraDamagePotionChanged;	// 当前额外伤害药水数量变化
 
-	
-	
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnCurrentUsedItemTagChangedDelegate OnCurrentUsedItemTagChanged;	// 当前使用物品标签变化
 };

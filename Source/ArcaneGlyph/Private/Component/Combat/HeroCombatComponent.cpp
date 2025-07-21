@@ -51,6 +51,8 @@ void UHeroCombatComponent::BroadcastCurrentCombatState(const UHeroUIComponent* I
 				CurrentComboTypeTag,
 				TextureStaffIcon
 			);
+
+			InHeroUIComponent->OnCurrentUsedItemTagChanged.Broadcast(CurrentUsedItemTag);
 		}
 		else
 		{
@@ -125,6 +127,15 @@ void UHeroCombatComponent::ChangeCurrentComboTypeTag(AArcaneHeroCharacter* InHer
 			HeroUI->OnComboTypeChanged.Broadcast(InComboTypeTag, IconTexture2D);
 		}
 		
+	}
+}
+
+void UHeroCombatComponent::SetCurrentUsedItemTag(AArcaneHeroCharacter* InHeroCharacter, const FGameplayTag& InItemTag)
+{
+	CurrentUsedItemTag = InItemTag;
+	if (UHeroUIComponent* HeroUI = InHeroCharacter->GetHeroUIComponent())
+	{
+		HeroUI->OnCurrentUsedItemTagChanged.Broadcast(InItemTag);
 	}
 }
 
