@@ -139,6 +139,54 @@ void UHeroCombatComponent::SetCurrentUsedItemTag(AArcaneHeroCharacter* InHeroCha
 	}
 }
 
+void UHeroCombatComponent::SwitchCurrentUseItem_Left(AArcaneHeroCharacter* InHeroCharacter)
+{
+	if (CurrentUsedItemTag == ArcaneGameplayTags::InputTag_UseItem_HealPotion)
+	{
+		SetCurrentUsedItemTag(InHeroCharacter, ArcaneGameplayTags::InputTag_UseItem_ExtraDamagePotion);
+	}
+	else if (CurrentUsedItemTag == ArcaneGameplayTags::InputTag_UseItem_ExtraDamagePotion)
+	{
+		SetCurrentUsedItemTag(InHeroCharacter, ArcaneGameplayTags::InputTag_UseItem_ManaPotion);
+	}
+	else if (CurrentUsedItemTag == ArcaneGameplayTags::InputTag_UseItem_ManaPotion)
+	{
+		SetCurrentUsedItemTag(InHeroCharacter, ArcaneGameplayTags::InputTag_UseItem_RagePotion);
+	}
+	else if (CurrentUsedItemTag == ArcaneGameplayTags::InputTag_UseItem_RagePotion)
+	{
+		SetCurrentUsedItemTag(InHeroCharacter, ArcaneGameplayTags::InputTag_UseItem_HealPotion);
+	}
+	else
+	{
+		SetCurrentUsedItemTag(InHeroCharacter, ArcaneGameplayTags::InputTag_UseItem_HealPotion);
+	}
+}
+
+void UHeroCombatComponent::SwitchCurrentUseItem_Right(AArcaneHeroCharacter* InHeroCharacter)
+{
+	if (CurrentUsedItemTag == ArcaneGameplayTags::InputTag_UseItem_HealPotion)
+	{
+		SetCurrentUsedItemTag(InHeroCharacter, ArcaneGameplayTags::InputTag_UseItem_RagePotion);
+	}
+	else if (CurrentUsedItemTag == ArcaneGameplayTags::InputTag_UseItem_RagePotion)
+	{
+		SetCurrentUsedItemTag(InHeroCharacter, ArcaneGameplayTags::InputTag_UseItem_ManaPotion);
+	}
+	else if (CurrentUsedItemTag == ArcaneGameplayTags::InputTag_UseItem_ManaPotion)
+	{
+		SetCurrentUsedItemTag(InHeroCharacter, ArcaneGameplayTags::InputTag_UseItem_ExtraDamagePotion);
+	}
+	else if (CurrentUsedItemTag == ArcaneGameplayTags::InputTag_UseItem_ExtraDamagePotion)
+	{
+		SetCurrentUsedItemTag(InHeroCharacter, ArcaneGameplayTags::InputTag_UseItem_HealPotion);
+	}
+	else
+	{
+		SetCurrentUsedItemTag(InHeroCharacter, ArcaneGameplayTags::InputTag_UseItem_HealPotion);
+	}
+}
+
 AArcaneHeroWeapon* UHeroCombatComponent::GetHeroCarriedWeaponByTag(const FGameplayTag& InWeaponTag) const
 {
 	return Cast<AArcaneHeroWeapon>(GetCharacterCarriedWeapon(InWeaponTag));

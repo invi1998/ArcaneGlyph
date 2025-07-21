@@ -113,6 +113,8 @@ private:
 	void Input_Jump();
 	void Input_SwitchTargetTriggered(const FInputActionValue& InputActionValue);
 	void Input_SwitchTargetCompleted(const FInputActionValue& InputActionValue);
+	void Input_SwitchCurrentUseItem_Left(const FInputActionValue& InputActionValue);
+	void Input_SwitchCurrentUseItem_Right(const FInputActionValue& InputActionValue);
 
 	FVector2d SwitchDirection = FVector2d::ZeroVector;
 

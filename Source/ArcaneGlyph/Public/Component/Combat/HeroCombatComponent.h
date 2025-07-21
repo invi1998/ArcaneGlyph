@@ -54,6 +54,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Components")
 	void SetCurrentUsedItemTag(AArcaneHeroCharacter* InHeroCharacter, const FGameplayTag& InItemTag);
+
+	void SwitchCurrentUseItem_Left(AArcaneHeroCharacter* InHeroCharacter);
+	void SwitchCurrentUseItem_Right(AArcaneHeroCharacter* InHeroCharacter);
 	
 	UFUNCTION(BlueprintCallable, Category="Arcane|Combat")
 	AArcaneHeroWeapon* GetHeroCarriedWeaponByTag(const FGameplayTag& InWeaponTag) const;

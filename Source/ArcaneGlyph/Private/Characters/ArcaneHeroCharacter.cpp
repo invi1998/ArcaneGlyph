@@ -377,6 +377,23 @@ void AArcaneHeroCharacter::Input_SwitchTargetCompleted(const FInputActionValue& 
 	);
 }
 
+// 切换当前使用的物品
+void AArcaneHeroCharacter::Input_SwitchCurrentUseItem_Left(const FInputActionValue& InputActionValue)
+{
+	if (HeroCombatComponent)
+	{
+		HeroCombatComponent->SwitchCurrentUseItem_Left(this);
+	}
+}
+
+void AArcaneHeroCharacter::Input_SwitchCurrentUseItem_Right(const FInputActionValue& InputActionValue)
+{
+	if (HeroCombatComponent)
+	{
+		HeroCombatComponent->SwitchCurrentUseItem_Right(this);
+	}
+}
+
 void AArcaneHeroCharacter::Input_AbilityPressed(FGameplayTag InInputTag)
 {
 	ArcaneAbilitySystemComponent->OnAbilityInputPressed(InInputTag);
