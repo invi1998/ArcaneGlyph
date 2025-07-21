@@ -69,6 +69,9 @@ void AArcaneHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 		EnhancedInputComponent->BindNativeInputAction(InputConfigDataAsset, ArcaneGameplayTags::InputTag_SwitchTarget, ETriggerEvent::Triggered, this, &AArcaneHeroCharacter::Input_SwitchTargetTriggered);
 		EnhancedInputComponent->BindNativeInputAction(InputConfigDataAsset, ArcaneGameplayTags::InputTag_SwitchTarget, ETriggerEvent::Completed, this, &AArcaneHeroCharacter::Input_SwitchTargetCompleted);
+
+		EnhancedInputComponent->BindNativeInputAction(InputConfigDataAsset, ArcaneGameplayTags::InputTag_SwitchItem_Left, ETriggerEvent::Completed, this, &AArcaneHeroCharacter::Input_SwitchCurrentUseItem_Left);
+		EnhancedInputComponent->BindNativeInputAction(InputConfigDataAsset, ArcaneGameplayTags::InputTag_SwitchItem_Right, ETriggerEvent::Completed, this, &AArcaneHeroCharacter::Input_SwitchCurrentUseItem_Right);
 		
 		EnhancedInputComponent->BindAbilityInputAction(InputConfigDataAsset,this, &AArcaneHeroCharacter::Input_AbilityPressed, &AArcaneHeroCharacter::Input_AbilityReleased);
 	}
