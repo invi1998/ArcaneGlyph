@@ -129,6 +129,10 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Pickup_Soul_Rage, "Player.Ability.PickupSoul.Rage", "玩家技能：拾取愤怒灵魂");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_UseItem_HealPotion, "Player.Ability.UseItem.HealPotion", "玩家技能：使用药水");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_UseItem_RagePotion, "Player.Ability.UseItem.RagePotion", "玩家技能：使用愤怒药水");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_UseItem_ManaPotion, "Player.Ability.UseItem.ManaPotion", "玩家技能：使用法力药水");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_UseItem_DamagePotion, "Player.Ability.UseItem.DamagePotion", "玩家技能：使用额外伤害药水");
+
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_UseItem_CurrentItem, "Player.Ability.UseItem.CurrentItem", "玩家技能：使用当前物品");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Combo_Light_1, "Player.Ability.Combo.Light.1", "玩家技能：连招：轻攻击-1");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Combo_Light_2, "Player.Ability.Combo.Light.2", "玩家技能：连招：轻攻击-2");
