@@ -57,7 +57,7 @@ void UArcaneAttributeSet::BroadcastCharacterAttributeInfo(const UHeroUIComponent
 		InHeroUIComponent->OnCurrentRagePotionChanged.Broadcast(GetRagePotion(), GetMaxRagePotion());
 		InHeroUIComponent->OnCurrentManaChanged.Broadcast(UKismetMathLibrary::SafeDivide(GetCurrentMana(), GetMaxMana()));
 		InHeroUIComponent->OnCurrentManaPotionChanged.Broadcast(GetManaPotion(), GetMaxManaPotion());
-		InHeroUIComponent->OnCurrenExtraDamagePotionChanged.Broadcast(GetDamagePotion(), GetMaxDamagePotion());
+		InHeroUIComponent->OnCurrentExtraDamagePotionChanged.Broadcast(GetDamagePotion(), GetMaxDamagePotion());
 	}
 }
 
@@ -204,7 +204,7 @@ void UArcaneAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 		if (UHeroUIComponent* HeroUIComponent = CachedPawnUIInterface->GetHeroUIComponent())
 		{
 			SetDamagePotion(FMath::Clamp(GetDamagePotion(), 0.f, GetMaxDamagePotion()));
-			HeroUIComponent->OnCurrenExtraDamagePotionChanged.Broadcast(GetDamagePotion(), GetMaxDamagePotion());
+			HeroUIComponent->OnCurrentExtraDamagePotionChanged.Broadcast(GetDamagePotion(), GetMaxDamagePotion());
 		}
 		
 	}

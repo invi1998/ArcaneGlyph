@@ -67,7 +67,7 @@ public:
 	FOnPotionNumberChangedDelegate OnCurrentManaPotionChanged;	// 当前法力药水数量变化
 
 	UPROPERTY(BlueprintAssignable, BlueprintCallable)
-	FOnPotionNumberChangedDelegate OnCurrenExtraDamagePotionChanged;	// 当前额外伤害药水数量变化
+	FOnPotionNumberChangedDelegate OnCurrentExtraDamagePotionChanged;	// 当前额外伤害药水数量变化
 
 	UPROPERTY(BlueprintAssignable, BlueprintCallable)
 	FOnCurrentUsedItemTagChangedDelegate OnCurrentUsedItemTagChanged;	// 当前使用物品标签变化
