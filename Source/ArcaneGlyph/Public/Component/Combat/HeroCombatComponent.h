@@ -8,6 +8,7 @@
 #include "HeroCombatComponent.generated.h"
 
 
+class UEnhancedInputLocalPlayerSubsystem;
 class UArcaneAbilitySystemComponent;
 class UHeroUIComponent;
 class AArcaneHeroCharacter;
@@ -20,7 +21,8 @@ class ARCANEGLYPH_API UHeroCombatComponent : public UPawnCombatComponent
 
 public:
 	void BroadcastCurrentCombatState(const UHeroUIComponent* InHeroUIComponent) const;
-	
+	void ReloadWeaponMappingContext(UEnhancedInputLocalPlayerSubsystem* InEnhancedInputSubsystem);
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Components")
 	FScalableFloat RageGainBase;	// 愤怒增益基础值
 

@@ -3,7 +3,11 @@
 
 #include "ArcaneGlyph/Public/Controllers/ArcaneHeroController.h"
 
+#include "CommonInputSubsystem.h"
+#include "EnhancedInputSubsystems.h"
 #include "Camera/CameraActor.h"
+#include "Characters/ArcaneHeroCharacter.h"
+#include "Component/Combat/HeroCombatComponent.h"
 #include "FrontendSettings/FrontendGameUserSettings.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -49,6 +53,37 @@ void AArcaneHeroController::OnPossess(APawn* InPawn)
 		// 开始性能测试等
 		GameUserSettings->RunHardwareBenchmark();	// 运行硬件性能测试
 		GameUserSettings->ApplyHardwareBenchmarkResults();	// 应用硬件性能测试结果
+	}
+
+}
+
+void AArcaneHeroController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+
+	if (ULocalPlayer* LocalPlayer = GetLocalPlayer())
+	{
+		InputSubsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+
+		// 监听设备切换事件
+		if (UCommonInputSubsystem* CommonInputSubsystem = UCommonInputSubsystem::Get(LocalPlayer))
+		{
+			CommonInputSubsystem->OnInputMethodChangedNative.AddUObject(this, &ThisClass::HandleInputDeviceChanged);
+		}
+	}
+}
+
+void AArcaneHeroController::HandleInputDeviceChanged(ECommonInputType NewInputType)
+{
+	if (!InputSubsystem) return;
+
+	if (AArcaneHeroCharacter* Hero = Cast<AArcaneHeroCharacter>(GetPawn()))
+	{
+		// 处理输入设备切换事件
+		if (UHeroCombatComponent* HeroCombatComponent = Hero->GetHeroCombatComponent())
+		{
+			HeroCombatComponent->ReloadWeaponMappingContext(InputSubsystem);
+		}
 	}
 
 }

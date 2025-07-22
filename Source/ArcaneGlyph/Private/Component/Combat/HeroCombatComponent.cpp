@@ -7,6 +7,7 @@
 #include "ArcaneBlueprintFunctionLibrary.h"
 #include "ArcaneDebugHelper.h"
 #include "ArcaneGameplayTags.h"
+#include "EnhancedInputSubsystems.h"
 #include "GameplayEffect.h"
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
 #include "Characters/ArcaneHeroCharacter.h"
@@ -59,6 +60,26 @@ void UHeroCombatComponent::BroadcastCurrentCombatState(const UHeroUIComponent* I
 			InHeroUIComponent->OnEquippedWeaponChanged.Broadcast(
 				nullptr
 			);
+		}
+	}
+}
+
+void UHeroCombatComponent::ReloadWeaponMappingContext(UEnhancedInputLocalPlayerSubsystem* InEnhancedInputSubsystem)
+{
+	if (!InEnhancedInputSubsystem) return;
+	if (const AArcaneHeroWeapon* CurrentEquippedWeapon = GetHeroCurrentEquippedWeapon())
+	{
+		const FArcaneHeroWeaponData& WeaponData = CurrentEquippedWeapon->HeroWeaponData;
+		if (WeaponData.WeaponInputMappingContext)
+		{
+			InEnhancedInputSubsystem->AddMappingContext(WeaponData.WeaponInputMappingContext, 1);
+
+			AArcaneHeroCharacter* HeroCharacter = Cast<AArcaneHeroCharacter>(GetOwningPawn());
+			if (HeroCharacter && HeroCharacter->GetHeroUIComponent())
+			{
+				// 广播当前武器图标
+				BroadcastCurrentCombatState(HeroCharacter->GetHeroUIComponent());
+			}
 		}
 	}
 }
