@@ -19,6 +19,9 @@ public:
 	DECLARE_DELEGATE_TwoParams(FOnInputKeyPressedOrReleaseDelegate, const FKey& , ECommonInputType );
 	FOnInputKeyPressedOrReleaseDelegate OnAnyKeyPressed;	// 任何按键按下的委托
 
+	DECLARE_DELEGATE_OneParam(FOnInputTypeChangedDelegate, ECommonInputType);
+	FOnInputTypeChangedDelegate OnInputTypeChanged;	// 输入类型改变的委托
+
 	FOnInputKeyPressedOrReleaseDelegate OnTriggerKeyPressed;	// 触发按键按下的委托
 	FOnInputKeyPressedOrReleaseDelegate OnTriggerKeyReleased;	// 触发按键释放的委托
 
@@ -38,6 +41,12 @@ protected:
 		return false;
 	}
 
+	virtual bool HandleMouseMoveEvent(FSlateApplication& SlateApp, const FPointerEvent& MouseEvent) override
+	{
+		ProcessPressedKey(MouseEvent.GetEffectingButton());
+		return false;
+	}
+
 	virtual bool HandleKeyUpEvent(FSlateApplication& SlateApp, const FKeyEvent& InKeyEvent) override
 	{
 		// 处理按键释放事件
@@ -51,12 +60,18 @@ protected:
 		return false;
 	}
 
-	void ProcessPressedKey(const FKey& PressedKey) const
+	void ProcessPressedKey(const FKey& PressedKey)
 	{
 		UCommonInputSubsystem* CommonInputSubsystem = UCommonInputSubsystem::Get(CachedWeakLocalPlayer.Get());
 		check(CommonInputSubsystem);
-
+		
 		ECommonInputType CurrentInputType = CommonInputSubsystem->GetCurrentInputType();
+		if (LastInputType != CurrentInputType)
+		{
+			OnInputTypeChanged.ExecuteIfBound(CurrentInputType); // 执行输入类型改变的委托
+		}
+		
+		LastInputType = CurrentInputType; // 更新最后输入类型
 
 		OnAnyKeyPressed.ExecuteIfBound(PressedKey, CurrentInputType);	// 执行任何按键按下的委托
 
@@ -75,6 +90,7 @@ protected:
 
 private:
 	TWeakObjectPtr<ULocalPlayer> CachedWeakLocalPlayer; // 缓存本地玩家对象，用于处理输入事件
+	ECommonInputType LastInputType;
 };
 
 
@@ -93,7 +109,7 @@ void UWidget_ActivatableBase::OnRightMouseButtonPressed(const FKey& Key)
 	DeactivateWidget();
 }
 
-void UWidget_ActivatableBase::HandleInputKeyPressed(const FKey& Key, ECommonInputType InputType)
+void UWidget_ActivatableBase::HandleInputKeyPressed(ECommonInputType InputType)
 {
 	if (bUseDifferentPageForDifferentInputType)
 	{
@@ -144,12 +160,12 @@ void UWidget_ActivatableBase::NativeOnActivated()
 	{
 		if (CachedMouseInputPreprocessor)
 		{
-			CachedMouseInputPreprocessor->OnAnyKeyPressed.BindUObject(this, &ThisClass::HandleInputKeyPressed);
+			CachedMouseInputPreprocessor->OnInputTypeChanged.BindUObject(this, &ThisClass::HandleInputKeyPressed);
 		}
 		else
 		{
 			CachedMouseInputPreprocessor = MakeShared<FCommonUIGameInputProcessor>(GetOwningLocalPlayer());
-			CachedMouseInputPreprocessor->OnAnyKeyPressed.BindUObject(this, &ThisClass::HandleInputKeyPressed);
+			CachedMouseInputPreprocessor->OnInputTypeChanged.BindUObject(this, &ThisClass::HandleInputKeyPressed);
 		}
 	}
 

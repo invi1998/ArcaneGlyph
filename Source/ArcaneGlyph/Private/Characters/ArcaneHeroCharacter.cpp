@@ -58,6 +58,8 @@ void AArcaneHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 	if (UEnhancedInputLocalPlayerSubsystem* EnhancedInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer))
 	{
+		EnhancedInputSubsystem->AddMappingContext(InputConfigDataAsset->GamepadEquipSpearMappingContext, 1);
+		EnhancedInputSubsystem->AddMappingContext(InputConfigDataAsset->GamepadUseItemMappingContext, 1);
 		EnhancedInputSubsystem->AddMappingContext(InputConfigDataAsset->DefaultMappingContext, 0);
 	}
 

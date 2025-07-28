@@ -40,7 +40,7 @@ protected:
 	AArcaneHeroController* GetOwningHeroController();
 
 	void OnRightMouseButtonPressed(const FKey& Key);
-	void HandleInputKeyPressed(const FKey& Key, ECommonInputType InputType);
+	void HandleInputKeyPressed(ECommonInputType InputType);
 	void HandleTriggerInputKeyPressed(const FKey& Key, ECommonInputType InputType);
 	void HandleTriggerInputKeyReleased(const FKey& Key, ECommonInputType InputType);
 	
