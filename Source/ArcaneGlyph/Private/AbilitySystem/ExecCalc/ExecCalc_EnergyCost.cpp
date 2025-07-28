@@ -28,7 +28,7 @@ void UExecCalc_EnergyCost::Execute_Implementation(const FGameplayEffectCustomExe
 	float EnergyCost = 0.f;
 	for (const TPair<FGameplayTag, float>& Pair : Spec.SetByCallerTagMagnitudes)
 	{
-		// 如果当前的 SetByCallerTagMagnitudes 中有以 Player.Ability 开头的标签，就取其value值作为Enegey的消耗
+		// 如果当前的 SetByCallerTagMagnitudes 中有以 Player.Ability 开头的标签，就取其value值作为Energy的消耗
 		FGameplayTagContainer ParentTags;
 		ParentTags.AddTag(FGameplayTag::RequestGameplayTag("Player.Ability"));
 		if (Pair.Key.MatchesAny(ParentTags))

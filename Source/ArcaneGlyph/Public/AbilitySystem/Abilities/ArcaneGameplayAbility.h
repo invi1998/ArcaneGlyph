@@ -60,5 +60,9 @@ protected:
 	// 传入技能Tag，传入气力消耗值，创建气力消耗的GESpecHandle
 	UFUNCTION(BlueprintPure, Category = "Arcane | Ability")
 	FGameplayEffectSpecHandle MakeEnergyCostEffectSpecHandle(TSubclassOf<UGameplayEffect> InGameplayEffectClass, FGameplayTag InAbilityTag, float InEnergyCostValue = 0.0f) const;
+
+	// 传入技能Tag，传入蓝量消耗值，创建蓝量消耗的GESpecHandle
+	UFUNCTION(BlueprintPure, Category = "Arcane | Ability")
+	FGameplayEffectSpecHandle MakeManaCostEffectSpecHandle(TSubclassOf<UGameplayEffect> InGameplayEffectClass, FGameplayTag InAbilityTag, float InManaCostValue = 0.0f) const;
 	
 };
