@@ -221,10 +221,12 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Event_AOE);				// 共享事件：群体伤害
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Event_FellDown);			// 共享事件：倒地
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Event_ShipoSuccess);		// 共享事件：识破招式成功
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Event_Freeze);			// 共享事件：冻结（定身）
 
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Ability_HitReact);		// 共享技能：受击反应
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Ability_Death);			// 共享技能：死亡
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Ability_FellDown);		// 共享技能：倒地
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Ability_Freeze);			// 共享技能：被冻结（定身）
 
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_SetByCaller_BaseDamage);		// 共享：基础伤害
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_SetByCaller_HealPercentage);	// 共享：治疗百分比
