@@ -58,6 +58,7 @@ namespace ArcaneGameplayTags
 	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_SpecialWeaponAbility_Light, "InputTag.SpecialWeaponAbility.Light", "特殊武器技能:轻攻击");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_SpecialWeaponAbility_Heavy, "InputTag.SpecialWeaponAbility.Heavy", "特殊武器技能:重攻击");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_SpecialWeaponAbility_Freeze, "InputTag.SpecialWeaponAbility.Freeze", "特殊武器技能:定身");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_MustBeHeld, "InputTag.MustBeHeld", "必须被持续按住");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_MustBeHeld_Block, "InputTag.MustBeHeld.Block", "必须被持续格挡");
@@ -125,6 +126,7 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Rage, "Player.Ability.Rage", "玩家技能：愤怒");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_SpecialWeaponAbility_Light, "Player.Ability.SpecialWeaponAbility.Light", "玩家技能：特殊武器技能：轻攻击");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_SpecialWeaponAbility_Heavy, "Player.Ability.SpecialWeaponAbility.Heavy", "玩家技能：特殊武器技能：重攻击");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_SpecialWeaponAbility_Freeze, "Player.Ability.SpecialWeaponAbility.Freeze", "玩家技能：特殊武器技能：定身");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Pickup_Soul_Heal, "Player.Ability.PickupSoul.Heal", "玩家技能：拾取疗伤灵魂");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_Pickup_Soul_Rage, "Player.Ability.PickupSoul.Rage", "玩家技能：拾取愤怒灵魂");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Ability_UseItem_HealPotion, "Player.Ability.UseItem.HealPotion", "玩家技能：使用药水");
@@ -162,7 +164,8 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Cooldown_Ability_Rage, "Player.Cooldown.Ability.Rage", "玩家冷却：技能：愤怒");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Cooldown_SpecialWeaponAbility_Light, "Player.Cooldown.SpecialWeaponAbility.Light", "玩家冷却：特殊武器技能：轻攻击");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Cooldown_SpecialWeaponAbility_Heavy, "Player.Cooldown.SpecialWeaponAbility.Heavy", "玩家冷却：特殊武器技能：重攻击");
-
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Cooldown_SpecialWeaponAbility_Freeze, "Player.Cooldown.SpecialWeaponAbility.Freeze", "玩家冷却：特殊武器技能：定身");
+	
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_JumpAttack_Activating, "Player.Status.JumpAttack.Activating", "玩家状态：跳跃攻击激活中");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_Jumping, "Player.Status.Jumping", "玩家状态：跳跃中");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Status_JumpAttacking, "Player.Status.JumpAttacking", "玩家状态：跳跃攻击中");

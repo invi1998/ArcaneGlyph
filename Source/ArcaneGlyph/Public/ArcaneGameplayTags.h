@@ -58,7 +58,8 @@ namespace ArcaneGameplayTags
 
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_SpecialWeaponAbility_Light);		// 输入标签：特殊武器技能：轻攻击
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_SpecialWeaponAbility_Heavy);		// 输入标签：特殊武器技能：重攻击
-  
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_SpecialWeaponAbility_Freeze);		// 输入标签：特殊武器技能：定身
+	
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_MustBeHeld);		// 输入标签：必须被持续按住
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_MustBeHeld_Block);		// 输入标签：必须被持续格挡
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_MustBeHeld_Shift);		// 输入标签：必须被持续冲刺
@@ -124,6 +125,7 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_Rage);				// 玩家技能：愤怒
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_SpecialWeaponAbility_Light);	// 玩家技能：特殊武器技能：轻攻击
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_SpecialWeaponAbility_Heavy);	// 玩家技能：特殊武器技能：重攻击
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_SpecialWeaponAbility_Freeze);	// 玩家技能：特殊武器技能：定身
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_Pickup_Soul_Heal);		// 玩家技能：拾取疗伤灵魂
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_Pickup_Soul_Rage);		// 玩家技能：拾取愤怒灵魂
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_UseItem_HealPotion);	// 玩家技能：使用物品：疗伤药水
@@ -162,6 +164,7 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Cooldown_Ability_Rage);	// 玩家冷却：技能：愤怒
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Cooldown_SpecialWeaponAbility_Light);	// 玩家冷却：特殊武器技能：轻攻击
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Cooldown_SpecialWeaponAbility_Heavy);	// 玩家冷却：特殊武器技能：重攻击
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Cooldown_SpecialWeaponAbility_Freeze);	// 玩家冷却：特殊武器技能：定身
 	
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_JumpAttack_Activating);	// 玩家状态：跳跃攻击激活中
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_Jumping);			// 玩家状态：跳跃中
