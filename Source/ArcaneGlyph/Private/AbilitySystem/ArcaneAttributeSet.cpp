@@ -43,6 +43,8 @@ UArcaneAttributeSet::UArcaneAttributeSet()
 	InitExtraDamage(0.f);
 	InitDamagePotion(0.f);
 	InitMaxDamagePotion(0.f);
+	InitRageBaseIncrement(0.f);
+	InitFreezeDuration(0.f);
 }
 
 void UArcaneAttributeSet::BroadcastCharacterAttributeInfo(const UHeroUIComponent* InHeroUIComponent) const

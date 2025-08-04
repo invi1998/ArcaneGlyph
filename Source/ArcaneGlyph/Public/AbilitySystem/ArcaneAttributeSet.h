@@ -138,6 +138,16 @@ public:
 	FGameplayAttributeData MaxDamagePotion;		// 最大增伤药容量
 	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, MaxDamagePotion);
 
+	// 韧性
+	UPROPERTY(BlueprintReadOnly, Category = "Resilience")
+	FGameplayAttributeData Resilience;
+	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, Resilience);
+
+	// 定身持续时长
+	UPROPERTY(BlueprintReadOnly, Category = "Freeze")
+	FGameplayAttributeData FreezeDuration;
+	ATTRIBUTE_ACCESSORS(UArcaneAttributeSet, FreezeDuration);
+
 private:
 	TWeakInterfacePtr<IPawnUIInterface> CachedPawnUIInterface;
 	TWeakInterfacePtr<IPawnCombatInterface> CachedPawnCombatInterface;
