@@ -36,8 +36,11 @@ protected:
 	void ApplyFreezeEffect(AActor* TargetActor);
 
 	void OnDamageReceived(FGameplayTag DamageTag, const FGameplayEventData* Payload);
-	
+
 	void EndFreezeEffect();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Arcane | Ability", meta = (DisplayName = "On Freeze Effect Ended"))
+	void BP_OnFreezeEffectEnded();
     
 private:
 	FTimerHandle FreezeTimerHandle;

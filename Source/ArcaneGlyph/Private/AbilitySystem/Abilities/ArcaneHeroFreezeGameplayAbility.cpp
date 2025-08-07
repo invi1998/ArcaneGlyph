@@ -4,6 +4,7 @@
 #include "AbilitySystem/Abilities/ArcaneHeroFreezeGameplayAbility.h"
 
 #include "ArcaneBlueprintFunctionLibrary.h"
+#include "ArcaneDebugHelper.h"
 #include "ArcaneGameplayTags.h"
 #include "AbilitySystem/ArcaneAttributeSet.h"
 
@@ -59,13 +60,19 @@ void UArcaneHeroFreezeGameplayAbility::ApplyFreezeEffect(AActor* TargetActor)
 void UArcaneHeroFreezeGameplayAbility::OnDamageReceived(FGameplayTag DamageTag, const FGameplayEventData* Payload)
 {
 	// 确保是当前目标受到伤害
-	if (Payload->Target != GetAvatarActorFromActorInfo()) return;
+	if (Payload->Instigator != GetAvatarActorFromActorInfo()) return;
 
 	// 获取当前剩余定身时间
 	float RemainingTime = GetWorld()->GetTimerManager().GetTimerRemaining(FreezeTimerHandle);
 
 	// 减少定身时间（至少保留 0.1秒）
 	float NewRemainingTime = FMath::Max(0.1f, RemainingTime - DamageReductionPerHit);
+
+	// 如果是重击，那么将直接减少定身时间到0.1s，即立即打破定身状态
+	if (Payload->EventMagnitude > 0.f) // 0是重击的阈值
+	{
+		NewRemainingTime = 0.1f;
+	}
 
 	// 更新定身效果的持续时间
 	GetWorld()->GetTimerManager().SetTimer(
@@ -79,8 +86,15 @@ void UArcaneHeroFreezeGameplayAbility::OnDamageReceived(FGameplayTag DamageTag, 
 
 void UArcaneHeroFreezeGameplayAbility::EndFreezeEffect()
 {
+
+	BP_OnFreezeEffectEnded();
+	
 	UArcaneAbilitySystemComponent* ASC = UArcaneBlueprintFunctionLibrary::NativeGetArcaneASCFromActor(FreezeTargetActor);
-	if (!ASC) return;
+	if (!ASC)
+	{
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		return;
+	}
 	
 	// 移除定身效果
 	if (ActiveFreezeEffectHandle.IsValid())
@@ -98,4 +112,6 @@ void UArcaneHeroFreezeGameplayAbility::EndFreezeEffect()
 			DamageEventHandle
 		);
 	}
+
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
