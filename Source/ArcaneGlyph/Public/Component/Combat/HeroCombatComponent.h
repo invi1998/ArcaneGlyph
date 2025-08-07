@@ -35,7 +35,7 @@ public:
 	FTimerHandle EnergyRegenTimerHandle;	// 气力回复计时器句柄
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Components")
-	float EnergyRegenDelay = 0.75f;		// 气力回复延迟时间
+	float EnergyRegenDelay = 1.25f;		// 气力回复延迟时间
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Components")
 	FName DamageSocketName = "HitLocation";		// 伤害插槽名称
