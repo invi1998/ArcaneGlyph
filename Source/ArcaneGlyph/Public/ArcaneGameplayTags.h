@@ -246,6 +246,7 @@ namespace ArcaneGameplayTags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Status_FellDown);				// 共享状态：受击反应-倒地
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Status_Hegemony);				// 共享状态：霸体状态
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Status_ShipoWindow);			// 共享状态：识破招式窗口
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Status_Freezing);			// 共享状态：冻结（定身）
 
 	// Gameplay Tags for GameData
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameData_Level_SurvivalGameModeMap);	// 游戏数据标签：生存游戏模式地图

@@ -246,6 +246,7 @@ namespace ArcaneGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Status_FellDown, "Shared.Status.FellDown", "共享状态：倒地");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Status_Hegemony, "Shared.Status.Hegemony", "共享状态：霸体");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Status_ShipoWindow, "Shared.Status.ShipoWindow", "共享状态：识破窗口");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Shared_Status_Freezing, "Shared.Status.Freezing", "共享状态：冻结中");
 
 	// Gameplay Tags for GameData
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameData_Level_SurvivalGameModeMap, "GameData.Level.SurvivalGameModeMap", "游戏数据：关卡-生存模式地图");

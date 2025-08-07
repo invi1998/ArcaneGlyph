@@ -4,6 +4,9 @@
 #include "AI/BTService_OrientToTargetActor.h"
 
 #include "AIController.h"
+#include "ArcaneBlueprintFunctionLibrary.h"
+#include "ArcaneGameplayTags.h"
+#include "AbilitySystem/ArcaneAbilitySystemComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BlackboardData.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -44,6 +47,15 @@ FString UBTService_OrientToTargetActor::GetStaticDescription() const
 void UBTService_OrientToTargetActor::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
+
+	// 判断AI角色当前是否被定身（Shared_Status_Freezing）
+	if (OwnerComp.GetAIOwner()->GetPawn())
+	{
+		if (UArcaneBlueprintFunctionLibrary::NativeDoesActorHasGameplayTag(OwnerComp.GetAIOwner()->GetPawn(), ArcaneGameplayTags::Shared_Status_Freezing))
+		{
+			return;		// 如果被定身，则不进行旋转
+		}
+	}
 
 	// 差值旋转
 	if (AActor* TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(InTargetActorKey.SelectedKeyName)))
