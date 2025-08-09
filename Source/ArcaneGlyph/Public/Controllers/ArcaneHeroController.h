@@ -23,6 +23,8 @@ public:
 	// IGenericTeamAgentInterface Begin
 	// 获取团队 ID
 	virtual FGenericTeamId GetGenericTeamId() const override;
+	// 设置团队 ID
+	virtual void SetGenericTeamId(const FGenericTeamId& TeamID) override { HeroTeamID = TeamID; }
 	// ~IGenericTeamAgentInterface End
 
 protected:

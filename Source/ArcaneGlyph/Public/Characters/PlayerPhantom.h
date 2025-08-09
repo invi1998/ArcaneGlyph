@@ -14,6 +14,8 @@ class ARCANEGLYPH_API APlayerPhantom : public AActor, public IGenericTeamAgentIn
 {
 	GENERATED_BODY()
 
+	friend class UArcaneHeroStealthAbility; // 允许 UArcaneHeroStealthAbility 访问私有成员
+
 public:
 	APlayerPhantom();
 
@@ -55,7 +57,7 @@ private:
 	bool bIsFading = false;
     
 	// 材质实例用于淡出效果
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly)
 	UMaterialInstanceDynamic* PhantomMaterial;
     
 	// 淡出曲线
