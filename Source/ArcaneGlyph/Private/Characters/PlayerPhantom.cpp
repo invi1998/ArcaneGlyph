@@ -3,12 +3,9 @@
 
 #include "Characters/PlayerPhantom.h"
 
-#include "K2Node_AddComponent.h"
+#include "AbilitySystem/Abilities/ArcaneHeroStealthAbility.h"
 #include "Characters/ArcaneHeroCharacter.h"
 #include "Components/PoseableMeshComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
-
-FPhantomDestroyedDelegate APlayerPhantom::OnPhantomDestroyed;
 
 // Sets default values
 APlayerPhantom::APlayerPhantom()
@@ -29,6 +26,13 @@ APlayerPhantom::APlayerPhantom()
 void APlayerPhantom::DestroyPhantom()
 {
 	OnPhantomDestroyed.Broadcast();
+	// 清理定时器
+	if (GetWorld() && GetWorld()->GetTimerManager().IsTimerActive(DestroyTimer))
+	{
+		GetWorld()->GetTimerManager().ClearTimer(DestroyTimer);
+	}
+	UArcaneHeroStealthAbility::OnMeleeAttack.RemoveDynamic(this, &APlayerPhantom::DestroyPhantom);
+	
 	Destroy();
 }
 
@@ -65,6 +69,9 @@ void APlayerPhantom::InitializePhantom(AArcaneHeroCharacter* OriginalCharacter, 
 		TotalLifetime,
 		false // 不循环
 	);
+
+	// 同时幻影需要监听 UArcaneHeroStealthAbility::OnMeleeAttack
+	UArcaneHeroStealthAbility::OnMeleeAttack.AddDynamic(this, &APlayerPhantom::DestroyPhantom);
 	
 }
 

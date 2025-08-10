@@ -111,6 +111,8 @@ void UArcaneHeroFreezeGameplayAbility::EndFreezeEffect()
 			DamageEventTags,
 			DamageEventHandle
 		);
+
+		DamageEventHandle.Reset();
 	}
 
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);

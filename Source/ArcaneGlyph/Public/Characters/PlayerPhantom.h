@@ -31,14 +31,16 @@ public:
 		TeamID = InTeamID;
 	}
 
+	UFUNCTION()
 	void DestroyPhantom();
+	
 	// 初始化玩家幻影
 
 	// OriginalCharacter: 原始角色，Duration: 幻影持续时间
 	UFUNCTION(BlueprintCallable, Category = "Phantom")
 	void InitializePhantom(AArcaneHeroCharacter* OriginalCharacter, float Duration);
 
-	static FPhantomDestroyedDelegate OnPhantomDestroyed; // 幻影销毁委托
+	FPhantomDestroyedDelegate OnPhantomDestroyed; // 幻影销毁委托
 
 protected:
 	virtual void BeginPlay() override;

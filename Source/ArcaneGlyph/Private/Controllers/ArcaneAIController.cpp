@@ -48,9 +48,17 @@ ETeamAttitude::Type AArcaneAIController::GetTeamAttitudeTowards(const AActor& Ot
 			// return Super::GetTeamAttitudeTowards(*PawnToCheck->GetController());
 
 			// 如果 PawnToCheck 的团队 ID 小于当前控制器的团队 ID, 则返回敌对态度(因为只有玩家的团队 ID 为 0，而敌人的团队 ID 为 1，而其他未被设置团队 ID 的 Actor 的团队 ID 为 255)
-			if (TeamAgent->GetGenericTeamId() < GetGenericTeamId())
+			if (TeamAgent->GetGenericTeamId() == 0)
 			{
 				return ETeamAttitude::Hostile;
+			}
+			else if (TeamAgent->GetGenericTeamId() == 1)
+			{
+				return ETeamAttitude::Friendly;
+			}
+			else
+			{
+				return ETeamAttitude::Neutral;
 			}
 		}
 	}
@@ -59,9 +67,17 @@ ETeamAttitude::Type AArcaneAIController::GetTeamAttitudeTowards(const AActor& Ot
 		// 针对Other是AActor的情况
 		if (const IGenericTeamAgentInterface* TeamAgent = Cast<IGenericTeamAgentInterface>(&Other))
 		{
-			if (TeamAgent->GetGenericTeamId() < GetGenericTeamId())
+			if (TeamAgent->GetGenericTeamId() == 0)
 			{
 				return ETeamAttitude::Hostile;
+			}
+			else if (TeamAgent->GetGenericTeamId() == 1)
+			{
+				return ETeamAttitude::Friendly;
+			}
+			else
+			{
+				return ETeamAttitude::Neutral;
 			}
 			
 		}
@@ -78,7 +94,7 @@ void AArcaneAIController::UpdateEnemyAIPerceptionComponent(APlayerPhantom* Phant
 	}
 
 	// 监听 APlayerPhantom 的 OnPhantomDestroyed 事件
-	APlayerPhantom::OnPhantomDestroyed.AddDynamic(this, &AArcaneAIController::UpdateEnemyAIPerceptionComponentOnDestroy);
+	Phantom->OnPhantomDestroyed.AddDynamic(this, &AArcaneAIController::UpdateEnemyAIPerceptionComponentOnDestroy);
 
 	// 更新敌人 AI 感知组件的感知
 	if (UBlackboardComponent* BlackboardComp = GetBlackboardComponent())
@@ -107,6 +123,7 @@ void AArcaneAIController::UpdateEnemyAIPerceptionComponent(APlayerPhantom* Phant
 
 void AArcaneAIController::UpdateEnemyAIPerceptionComponentOnDestroy()
 {
+
 	// 重新评估目标
 	if (UAIPerceptionSystem* PerceptionSystem = UAIPerceptionSystem::GetCurrent(GetWorld()))
 	{
