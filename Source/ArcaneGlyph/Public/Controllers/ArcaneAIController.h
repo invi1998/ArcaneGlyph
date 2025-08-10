@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Perception/AIPerceptionTypes.h"
 #include "Runtime/AIModule/Classes/AIController.h"
 #include "ArcaneAIController.generated.h"
 
+class APlayerPhantom;
 class UAIPerceptionComponent;
 class UAISenseConfig_Sight;
 
@@ -22,6 +24,13 @@ public:
 	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
 
 	// ~IGenericTeamAgentInterface End
+
+	// 更新敌人 AI 感知组件的感知
+	UFUNCTION()
+	void UpdateEnemyAIPerceptionComponent(APlayerPhantom* Phantom);
+
+	UFUNCTION()
+	void UpdateEnemyAIPerceptionComponentOnDestroy();
 
 protected:
 	virtual void BeginPlay() override;

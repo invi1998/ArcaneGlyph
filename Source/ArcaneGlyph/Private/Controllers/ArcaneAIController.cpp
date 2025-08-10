@@ -4,7 +4,10 @@
 #include "Controllers/ArcaneAIController.h"
 
 #include "ArcaneDebugHelper.h"
+#include "AbilitySystem/AbilityTasks/AbilityTask_WaitSpawnPhantom.h"
+#include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Characters/PlayerPhantom.h"
 #include "Navigation/CrowdFollowingComponent.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
@@ -17,8 +20,8 @@ AArcaneAIController::AArcaneAIController(const FObjectInitializer& ObjectInitial
 {
 	AISenseConfig_Sight = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("AISenseConfig_Sight"));
 	AISenseConfig_Sight->DetectionByAffiliation.bDetectEnemies = true;		// 是否检测敌人：开启
-	AISenseConfig_Sight->DetectionByAffiliation.bDetectNeutrals = true;		// 检测中立单位：关闭
-	AISenseConfig_Sight->DetectionByAffiliation.bDetectFriendlies = false;		// 检测友军：关闭
+	AISenseConfig_Sight->DetectionByAffiliation.bDetectNeutrals = false;		// 检测中立单位：开启
+	AISenseConfig_Sight->DetectionByAffiliation.bDetectFriendlies = false;		// 检测友军：开启
 	AISenseConfig_Sight->SightRadius = 5000.0f;		// 视野半径
 	AISenseConfig_Sight->LoseSightRadius = 0.0f;		// 失去视野半径，设置为0表示永远不会失去视野
 	AISenseConfig_Sight->PeripheralVisionAngleDegrees = 360.0f;		// 外围视野角度, 360度表示全方位视野
@@ -67,6 +70,57 @@ ETeamAttitude::Type AArcaneAIController::GetTeamAttitudeTowards(const AActor& Ot
 	return ETeamAttitude::Friendly;
 }
 
+void AArcaneAIController::UpdateEnemyAIPerceptionComponent(APlayerPhantom* Phantom)
+{
+	if (!Phantom || !EnemyAIPerceptionComponent)
+	{
+		return;
+	}
+
+	// 监听 APlayerPhantom 的 OnPhantomDestroyed 事件
+	APlayerPhantom::OnPhantomDestroyed.AddDynamic(this, &AArcaneAIController::UpdateEnemyAIPerceptionComponentOnDestroy);
+
+	// 更新敌人 AI 感知组件的感知
+	if (UBlackboardComponent* BlackboardComp = GetBlackboardComponent())
+	{
+		// 设置黑板上的目标 Actor
+		BlackboardComp->SetValueAsObject(FName("TargetActor"), Phantom);
+		
+		// 更新感知组件的感知
+		EnemyAIPerceptionComponent->RequestStimuliListenerUpdate();
+
+		if (UAIPerceptionSystem* PerceptionSystem = UAIPerceptionSystem::GetCurrent(GetWorld()))
+		{
+			PerceptionSystem->UpdateListener(*EnemyAIPerceptionComponent);
+		}
+
+		// 立即重新评估行为树
+		if (UBehaviorTreeComponent* BehaviorComp = Cast<UBehaviorTreeComponent>(GetBrainComponent()))
+		{
+			BehaviorComp->RestartLogic();
+			// 强制更新服务
+			BehaviorComp->TickComponent(0.0f, ELevelTick::LEVELTICK_All, nullptr);
+		}
+		
+	}
+}
+
+void AArcaneAIController::UpdateEnemyAIPerceptionComponentOnDestroy()
+{
+	// 重新评估目标
+	if (UAIPerceptionSystem* PerceptionSystem = UAIPerceptionSystem::GetCurrent(GetWorld()))
+	{
+		PerceptionSystem->UpdateListener(*EnemyAIPerceptionComponent);
+		// 立即重新评估行为树
+		if (UBehaviorTreeComponent* BehaviorComp = Cast<UBehaviorTreeComponent>(GetBrainComponent()))
+		{
+			BehaviorComp->RestartLogic();
+			// 强制更新服务
+			BehaviorComp->TickComponent(0.0f, ELevelTick::LEVELTICK_All, nullptr);
+		}
+	}
+}
+
 void AArcaneAIController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -102,6 +156,11 @@ void AArcaneAIController::BeginPlay()
 		CrowdFollowingComp->SetCrowdCollisionQueryRange(CollisionQueryRange);
 		
 	}
+
+	// 监听AbilityTask_WaitSpawnPhantom::OnForceUpdateAITeamIDDelegate委托
+	UAbilityTask_WaitSpawnPhantom::OnPhantomSpawned.AddDynamic(this, &AArcaneAIController::UpdateEnemyAIPerceptionComponent);
+	
+	
 }
 
 void AArcaneAIController::OnEnemyPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)

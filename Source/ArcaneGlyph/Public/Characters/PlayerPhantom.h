@@ -9,6 +9,8 @@
 class UPoseableMeshComponent;
 class AArcaneHeroCharacter;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPhantomDestroyedDelegate);
+
 UCLASS()
 class ARCANEGLYPH_API APlayerPhantom : public AActor, public IGenericTeamAgentInterface
 {
@@ -35,6 +37,8 @@ public:
 	// OriginalCharacter: 原始角色，Duration: 幻影持续时间
 	UFUNCTION(BlueprintCallable, Category = "Phantom")
 	void InitializePhantom(AArcaneHeroCharacter* OriginalCharacter, float Duration);
+
+	static FPhantomDestroyedDelegate OnPhantomDestroyed; // 幻影销毁委托
 
 protected:
 	virtual void BeginPlay() override;

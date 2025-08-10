@@ -8,6 +8,7 @@
 #include "Components/PoseableMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
+FPhantomDestroyedDelegate APlayerPhantom::OnPhantomDestroyed;
 
 // Sets default values
 APlayerPhantom::APlayerPhantom()
@@ -27,6 +28,7 @@ APlayerPhantom::APlayerPhantom()
 
 void APlayerPhantom::DestroyPhantom()
 {
+	OnPhantomDestroyed.Broadcast();
 	Destroy();
 }
 
