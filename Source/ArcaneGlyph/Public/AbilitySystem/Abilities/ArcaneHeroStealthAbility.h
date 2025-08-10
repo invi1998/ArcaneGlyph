@@ -12,26 +12,30 @@ class APlayerPhantom;
  * 
  */
 UCLASS()
-class ARCANEGLYPH_API UArcaneHeroStealthAbility : public UArcaneHeroFreezeGameplayAbility
+class ARCANEGLYPH_API UArcaneHeroStealthAbility : public UArcaneHeroGameplayAbility
 {
 	GENERATED_BODY()
 
 public:
-	UArcaneHeroStealthAbility();
-
 	UPROPERTY(EditDefaultsOnly, Category = "Stealth Ability")
 	TSubclassOf<APlayerPhantom> PhantomClass;
-
-	UFUNCTION(BlueprintCallable, Category = "Stealth Ability")
-	void SpawnStealthPhantom();
-
-private:
-	UPROPERTY()
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Stealth Ability")
 	APlayerPhantom* SpawnedPhantom = nullptr;
+	
+	UPROPERTY(BlueprintReadWrite, Category = "Stealth Ability")
+	FTimerHandle PhantomDestroyTimer;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Stealth Ability")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stealth Ability")
 	float PhantomLifetime = 15.0f;
 
+	UPROPERTY(BlueprintReadWrite, Category = "Stealth Ability")
 	FGenericTeamId OriginalTeamID;
+	
+	UFUNCTION(BlueprintCallable, Category = "Stealth Ability")
+	void RecoverCharacterTeamID();
+
+	UFUNCTION(BlueprintCallable, Category = "Stealth Ability")
+	void SetOriginalTeamID();
 	
 };
