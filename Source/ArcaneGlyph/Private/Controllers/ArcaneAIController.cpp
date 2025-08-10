@@ -17,7 +17,7 @@ AArcaneAIController::AArcaneAIController(const FObjectInitializer& ObjectInitial
 {
 	AISenseConfig_Sight = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("AISenseConfig_Sight"));
 	AISenseConfig_Sight->DetectionByAffiliation.bDetectEnemies = true;		// 是否检测敌人：开启
-	AISenseConfig_Sight->DetectionByAffiliation.bDetectNeutrals = false;		// 检测中立单位：关闭
+	AISenseConfig_Sight->DetectionByAffiliation.bDetectNeutrals = true;		// 检测中立单位：关闭
 	AISenseConfig_Sight->DetectionByAffiliation.bDetectFriendlies = false;		// 检测友军：关闭
 	AISenseConfig_Sight->SightRadius = 5000.0f;		// 视野半径
 	AISenseConfig_Sight->LoseSightRadius = 0.0f;		// 失去视野半径，设置为0表示永远不会失去视野
@@ -49,6 +49,18 @@ ETeamAttitude::Type AArcaneAIController::GetTeamAttitudeTowards(const AActor& Ot
 			{
 				return ETeamAttitude::Hostile;
 			}
+		}
+	}
+	else
+	{
+		// 针对Other是AActor的情况
+		if (const IGenericTeamAgentInterface* TeamAgent = Cast<IGenericTeamAgentInterface>(&Other))
+		{
+			if (TeamAgent->GetGenericTeamId() < GetGenericTeamId())
+			{
+				return ETeamAttitude::Hostile;
+			}
+			
 		}
 	}
 

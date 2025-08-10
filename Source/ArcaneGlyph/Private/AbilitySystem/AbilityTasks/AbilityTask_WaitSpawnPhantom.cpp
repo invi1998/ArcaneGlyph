@@ -55,7 +55,7 @@ void UAbilityTask_WaitSpawnPhantom::OnPhantomClassLoaded()
 		if (APlayerPhantom* SpawnedPhantom = World->SpawnActor<APlayerPhantom>(PhantomClass, SpawnLocation, SpawnRotation, SpawnParams))
 		{
 			SpawnedPhantom->InitializePhantom(OriginalCharacter, SpawnDuration);
-			SpawnedPhantom->SetGenericTeamId(HeroController->GetGenericTeamId()); // 设置幻影的团队 ID
+			SpawnedPhantom->SetGenericTeamId(FGenericTeamId(0)); // 设置幻影的团队 ID
 			HeroController->SetGenericTeamId(TargetTeamID); // 设置玩家控制器的团队 ID
 			OnPhantomSpawnedSuccess.Broadcast(SpawnedPhantom);
 		}
