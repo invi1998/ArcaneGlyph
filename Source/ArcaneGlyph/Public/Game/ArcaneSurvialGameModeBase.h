@@ -11,6 +11,7 @@ class AArcaneEnemyCharacter;
 UENUM(BlueprintType)
 enum class EArcaneSurvialGameModeState : uint8
 {
+	WaitGameStart UMETA(DisplayName = "等待游戏开始"),
 	WaitSpawnNewWave UMETA(DisplayName = "等待生成新波次"),
 	SpawningNewWave UMETA(DisplayName = "生成新波次中"),
 	WaveInProgress UMETA(DisplayName = "波次进行中"),
@@ -70,7 +71,9 @@ protected:
 
 
 private:
+	UFUNCTION(BlueprintCallable)
 	void SetCurrentSurvialState(EArcaneSurvialGameModeState InState);
+	
 	bool HasFinishedAllWaves() const;
 	void PreLoadNextWaveEnemy();
 	FArcaneEnemyWaveSpawnerTableRow* GetCurrentWaveEnemySpawnerTableRow() const;

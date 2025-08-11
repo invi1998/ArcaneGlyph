@@ -28,7 +28,7 @@ void AArcaneSurvialGameModeBase::BeginPlay()
 
 	checkf(EnemyWaveSpawnerDataTable, TEXT("AArcaneSurvialGameModeBase::BeginPlay - EnemyWaveSpawnerDataTable is not set! Please set it in the editor or in the constructor."));
 
-	SetCurrentSurvialState(EArcaneSurvialGameModeState::WaitSpawnNewWave);
+	SetCurrentSurvialState(EArcaneSurvialGameModeState::WaitGameStart);
 
 	TotalWavesToSpawn = EnemyWaveSpawnerDataTable->GetRowNames().Num();
 
