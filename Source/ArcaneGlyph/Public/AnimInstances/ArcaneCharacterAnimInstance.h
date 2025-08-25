@@ -22,6 +22,7 @@ class ARCANEGLYPH_API UArcaneCharacterAnimInstance : public UArcaneBaseAnimInsta
 
 public:
 	virtual void NativeInitializeAnimation() override;
+	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 	void UpdateHipFacingByCurve();
 	void UpdateRootYawOffsetData(float DeltaSeconds);
 	void SetRootYawOffset(float InRootYawOffset);
@@ -35,6 +36,30 @@ public:
 
 	FORCEINLINE float GetLocomotionDirection() const { return LocomotionDirectionAngle; }
 	FORCEINLINE EArcaneGaits GetCurrentGait() const { return CurrentGait; }
+
+	UFUNCTION(BlueprintCallable, meta=(BlueprintThreadSafe))
+	FORCEINLINE bool IsMoving() const { return Speed != 0.0f; }
+
+	UFUNCTION(BlueprintCallable, meta=(BlueprintThreadSafe))
+	FORCEINLINE bool IsNotMoving() const { return Speed == 0.0f; }
+
+	UFUNCTION(BlueprintCallable, meta=(BlueprintThreadSafe))
+	FORCEINLINE float GetYawSpeed() const { return YawSpeed; }
+
+	UFUNCTION(BlueprintCallable, meta=(BlueprintThreadSafe))
+	FORCEINLINE float GetSmoothedYawSpeed() const { return SmoothedYawSpeed; }
+
+	UFUNCTION(BlueprintCallable, meta=(BlueprintThreadSafe))
+	FORCEINLINE bool IsJumping() const { return bIsJumping; }
+
+	UFUNCTION(BlueprintCallable, meta=(BlueprintThreadSafe))
+	FORCEINLINE bool IsOnGround() const { return !bIsJumping; }
+
+	UFUNCTION(BlueprintCallable, meta=(BlueprintThreadSafe))
+	FORCEINLINE float GetLookYawOffset() const { return LookRotOffset.Yaw; }
+
+	UFUNCTION(BlueprintCallable, meta=(BlueprintThreadSafe))
+	FORCEINLINE float GetLookPitchOffset() const { return LookRotOffset.Pitch; }
 
 protected:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "AnimData|ReferenceData")
@@ -191,6 +216,16 @@ protected:
 
 	// 核心臀部朝向更新逻辑
 	void UpdateHipFacingDirection(EArcaneMoveDirection PreviousDir, EArcaneMoveDirection NewDir);
+
+	float Speed;
+	float YawSpeed;
+	float SmoothedYawSpeed;		// 平滑的身体旋转角速度
+
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	float YawSpeedSmoothLerpSpeed = 1.f;	// 平滑的身体旋转角速度的插值速度
+	
+	FRotator BodyPrevRot;	// 角色身体的上一个旋转角度
+	FRotator LookRotOffset;	// 角色头部的旋转偏移
 
 	
 };
