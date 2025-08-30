@@ -2300,3 +2300,145 @@ bool UBTTask_RotateToFaceTarget::HasReachedAnglePrecision(...) const {
 ![image-20250306131227097](.\image-20250306131227097.png)
 
 这样，碰撞查询范围就匹配了我们的移速范围，就不会出现因为避让范围太小而卡住AI的情况了。
+
+
+
+# 使用 AI 刺激源来控制 AI 感知
+
+```c++
+class UAISense : public UObject
+{
+	GENERATED_UCLASS_BODY()
+
+	static AIMODULE_API const float SuspendNextUpdate;
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI Perception", config)
+	EAISenseNotifyType NotifyType;
+
+	/** whether this sense is interested in getting notified about new Pawns being spawned 
+	 *	this can be used for example for automated sense sources registration */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI Perception", config)
+	uint32 bWantsNewPawnNotification : 1;
+
+	/** If true all newly spawned pawns will get auto registered as source for this sense. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI Perception", config)
+	uint32 bAutoRegisterAllPawnsAsSources : 1;
+
+	/** this sense has some internal logic that requires it to be notified when 
+	 *	a listener wants to forget an actor*/
+	uint32 bNeedsForgettingNotification : 1;
+	
+```
+
+
+
+ `UAISense` 中 `bAutoRegisterAllPawnsAsSources` 这个配置项的作用。
+
+### 核心概念
+
+首先，理解这个配置的关键在于明白 AI感知系统（AI Perception） 的两个核心角色：
+
+1.  **感知者 (Perceiver)**：拥有 `AIPerceptionComponent` 的 Actor，通常是 AI 控制器（AIController）或 AI 控制的 Pawn。它负责“主动”去感知世界。
+2.  **感知源 (Source)**：被感知的 Actor。它“被动”地发出刺激（Stimuli），比如一个角色是视觉刺激源，一把开火的枪是听觉刺激源。
+
+`UAISense`（如 `UAISense_Sight`-视觉, `UAISense_Hearing`-听觉）定义了感知的规则。`bAutoRegisterAllPawnsAsSources` 这个配置项就是用来管理 **哪些 Actor 会自动成为这个特定感知类型的“感知源”**。
+
+---
+
+### `bAutoRegisterAllPawnsAsSources` 的作用
+
+**简单来说：这个布尔值决定了游戏中所有新生成的 Pawn 是否会自动注册为这种特定感知（Sense）的刺激源。**
+
+*   **当设置为 `True` (默认值常见于 `UAISense_Sight`)**
+    *   任何新生成（Spawn）到世界中的 Pawn（包括玩家控制的角色和AI敌人），都会**自动地**被添加到感知系统中，作为该感知的刺激源。
+    *   **这意味着**：你不需要写任何额外的代码。你的 AI 敌人一出生，就能“看到”所有已存在的和未来出现的玩家和友军角色。同样，玩家角色也能自动被其他AI“看到”。
+
+*   **当设置为 `False` (默认值常见于 `UAISense_Hearing`, `UAISense_Damage`)**
+    *   新生成的 Pawn **不会**自动成为该感知的源。
+    *   **这意味着**：如果你希望一个Pawn（比如一个会发出脚步声的角色）能被AI“听到”，或者一个Pawn（比如一个能开枪的武器）产生伤害事件能被AI“感知到”，你必须**手动调用** `UAISense_Hearing::ReportNoiseEvent` 或 `UAISense_Damage::ReportDamageEvent` 等函数来报告刺激事件。系统不会自动为这些Pawn做这件事。
+
+---
+
+### 为什么需要这个配置？（设计意图）
+
+1.  **便利性与默认行为 (对于视觉)**
+    *   对于**视觉**而言，在大多数游戏类型（如FPS、RPG）中，你几乎总是希望所有的“角色”（Pawn）都能被彼此看见。将其设为 `True` 极大地简化了开发流程，你无需为每个角色手动注册为视觉源。
+
+2.  **性能与控制 (对于听觉、伤害等)**
+    *   对于**听觉**和**伤害**等感知，刺激的产生是**间歇性**和**事件驱动**的。并非所有Pawn每时每刻都在制造噪音或承受伤害。
+    *   如果将它们也设为自动注册所有Pawn，可能会产生不必要的开销，因为系统需要为所有这些Pawn维护一份感知源列表，即使它们当前是静默的。
+    *   更重要的是，**控制权交给了设计师和程序员**。你可以在**确切的时刻**（如开枪、爆炸、脚步声动画通知处）报告一个刺激事件，并精确地设置刺激的**位置**、**强度**和**半径**。这比一个Pawn简单地“存在”就自动发出恒定噪音要灵活和强大得多。
+
+3.  **处理特殊情况**
+    *   有些Pawn可能你**不希望**被感知。例如：
+        *   一个隐身的角色。
+        *   一个中立的、不希望被AI攻击的NPC。
+        *   一个已经死亡的尸体。
+    *   如果全局自动注册了，你就需要额外的逻辑（例如在感知过滤器中）来忽略这些源。
+    *   而如果某种感知没有自动注册，你就可以更精细地控制哪些Actor能成为其源。
+
+---
+
+### 如何实践和应用？
+
+| 感知类型           | 常见默认值 | 你应该怎么做？                                               |
+| :----------------- | :--------- | :----------------------------------------------------------- |
+| **Sight (视觉)**   | `True`     | **通常保持默认。** 你的角色和敌人生成后即可互相看见。如果需要让某个Paunk对AI“隐身”，可以在其生成后通过 `AIPerceptionSystem::UnregisterSource` 将其从视觉源中移除。 |
+| **Hearing (听觉)** | `False`    | **在你的游戏逻辑中手动报告事件。** 例如：<br>1. 在武器的`Fire`函数中。<br>2. 在角色动画蓝图的脚步通知里。<br>3. 在爆炸物的`OnExplode`事件中。<br>调用 `UAISense_Hearing::ReportNoiseEvent` 来告诉所有附近的AI：“这里发出了一个声音！”。 |
+| **Damage (伤害)**  | `False`    | **在你的伤害处理逻辑中手动报告事件。** 例如，在应用伤害（ApplyDamage）的地方，调用 `UAISense_Damage::ReportDamageEvent`。这会让AI感知到“队友受到了攻击”或“攻击打中了某个目标”，从而实现“援护”或“寻仇”等高级AI行为。 |
+
+### 代码示例：手动报告一个噪音事件
+
+```cpp
+// 假设在一个角色类中，当它开枪时
+void AMyCharacter::FireWeapon()
+{
+    // ... 武器发射逻辑 (生成粒子效果、播放声音等) ...
+
+    // 报告一个听觉事件
+    if (HasAuthority()) // 通常只在服务器端报告
+    {
+        // 获取噪音位置，比如枪口组件的位置
+        FVector NoiseLocation = GetMesh()->GetSocketLocation("MuzzleSocket");
+        
+        // 报告事件
+        UAISense_Hearing::ReportNoiseEvent(
+            GetWorld(),    // World上下文
+            NoiseLocation, // 噪音发出的位置
+            1.0f,         // 噪音强度 (Loudness)，会影响感知半径
+            this,         // 噪音的制造者 (Instigator)
+            0.0f,         // 噪音的最大范围 (MaxRange)，0表示使用感知系统配置的默认值
+            TAG_Gunshot   // 一个可选的噪音标签，可用于在感知配置中进一步过滤
+        );
+    }
+}
+```
+
+### 总结
+
+*   `bAutoRegisterAllPawnsAsSources: True`：**“存在即被感知”**。适用于像视觉这样，源的存在本身就是一个持续刺激的情况。
+*   `bAutoRegisterAllPawnsAsSources: False`：**“事件触发感知”**。适用于像听觉和伤害这样，刺激是短暂且由特定动作触发的情况。这给了开发者更大的控制权和灵活性。
+
+这个配置是UE AI感知系统强大且灵活的一个体现，它允许你根据不同感知类型的特性，来优化工作流程和运行时性能。
+
+但是现在有个问题，因为我们如果需要修改这个感知配置，但是我们无法直接通过UAISense对象去修改，因为我们看到该配置项是一个Protected属性，外部无法直接修改，该类也没有暴露修改函数。
+
+有两种方法，第一，继承该类，然后在子类中修改。
+
+第二，我们注意到该成员的UPROPERTY属性里有一个config项，表明该属性可以通过游戏配置文件进行配置修改。
+
+```c++
+UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI Perception", config)
+uint32 bAutoRegisterAllPawnsAsSources : 1;
+```
+
+所以，我们可以在`DefaultGame.ini`配置文件里修改改感知属性
+
+```c++
+[/Script/AIModule.AISense_Sight]
+bAutoRegisterAllPawnsAsSources=false
+```
+
+
+
