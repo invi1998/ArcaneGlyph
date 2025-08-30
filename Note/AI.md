@@ -411,6 +411,14 @@ FGenericTeamId AArcaneHeroController::GetGenericTeamId() const
 
 
 
+# 实现 AI 忘记更新黑板目标
+
+如果想让AI忘记目标，需要在项目编辑器中开启AI遗忘
+
+![image-20250223193214859](.\QQ20250830-235201.png)
+
+
+
 # 行为树（BehaviorTree）和黑板（BlackBoard）
 
 好的！在Unreal Engine 5（UE5）中，**Behavior Tree（行为树）**和**Blackboard（黑板）**是构建复杂AI逻辑的核心工具。它们共同协作，实现AI的决策制定和数据管理。以下是它们的详细解析：
