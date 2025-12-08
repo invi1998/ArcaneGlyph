@@ -103,7 +103,11 @@ void AArcaneSurvialGameModeBase::PreLoadNextWaveEnemy()
 
 	for (const FArcaneEnemyWaveSpawnerInfo& SpawnerInfo : GetCurrentWaveEnemySpawnerTableRow()->EnemyWaveSpawnerDefinitions)
 	{
-		if (SpawnerInfo.SoftEnemyClassToSpawn.IsNull()) continue;
+		if (SpawnerInfo.SoftEnemyClassToSpawn.IsNull())
+		{
+			Debug::Print(FString::Printf(TEXT("AArcaneSurvialGameModeBase::PreLoadNextWaveEnemy - Skipping null enemy class for wave %d."), CurrentWave));
+			continue;	
+		}
 
 		// 预加载敌人类
 		UAssetManager::GetStreamableManager().RequestAsyncLoad(
@@ -113,6 +117,11 @@ void AArcaneSurvialGameModeBase::PreLoadNextWaveEnemy()
 				if (UClass* EnemyClass = SpawnerInfo.SoftEnemyClassToSpawn.Get())
 				{
 					PreLoadedEnemyClasses.Emplace(SpawnerInfo.SoftEnemyClassToSpawn, EnemyClass);
+					Debug::Print(FString::Printf(TEXT("AArcaneSurvialGameModeBase::PreLoadNextWaveEnemy - Successfully loaded enemy class for wave %d."), CurrentWave));
+				}
+				else
+				{
+					Debug::Print(FString::Printf(TEXT("AArcaneSurvialGameModeBase::PreLoadNextWaveEnemy - Failed to load enemy class for wave %d!"), CurrentWave));
 				}
 			})
 		);
@@ -148,6 +157,8 @@ int32 AArcaneSurvialGameModeBase::TrySpawnEnemy()
 		if (SpawnerInfo.SoftEnemyClassToSpawn.IsNull()) continue;
 
 		const int32 NumToSpawn = FMath::RandRange(SpawnerInfo.MinPerSpawnCount, SpawnerInfo.MaxPerSpawnCount);
+		
+		Debug::Print(FString::Printf(TEXT("AArcaneSurvialGameModeBase::TrySpawnEnemy - Spawning %d enemies of class %s, PreLoadedEnemyClasses.length %d."), NumToSpawn, *SpawnerInfo.SoftEnemyClassToSpawn.ToString(), PreLoadedEnemyClasses.Num()));
 
 		UClass* LoadedEnemyClass = PreLoadedEnemyClasses.FindChecked(SpawnerInfo.SoftEnemyClassToSpawn);
 
