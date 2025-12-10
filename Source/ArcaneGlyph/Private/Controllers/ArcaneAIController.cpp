@@ -173,10 +173,6 @@ void AArcaneAIController::BeginPlay()
 		CrowdFollowingComp->SetCrowdCollisionQueryRange(CollisionQueryRange);
 		
 	}
-
-	// 监听AbilityTask_WaitSpawnPhantom::OnForceUpdateAITeamIDDelegate委托
-	UAbilityTask_WaitSpawnPhantom::OnPhantomSpawned.AddDynamic(this, &AArcaneAIController::UpdateEnemyAIPerceptionComponent);
-	
 	
 }
 

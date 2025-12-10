@@ -12,7 +12,6 @@ class AArcaneHeroCharacter;
 class APlayerPhantom;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWaitSpawnPhantomDelegate, APlayerPhantom*, Phantom);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPhantomSpawnedSignature, APlayerPhantom*, Phantom);
 
 /**
  * 等待生成幻象
@@ -43,8 +42,6 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FWaitSpawnPhantomDelegate OnPhantomSpawnedFailed;		// 幻象生成失败委托
-
-	static FPhantomSpawnedSignature OnPhantomSpawned;			// 幻象生成委托
 
 protected:
 

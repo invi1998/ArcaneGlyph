@@ -3,7 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "GenericTeamAgentInterface.h"
+#include "Abilities/GameplayAbilityTypes.h"
 #include "PlayerPhantom.generated.h"
 
 class UPoseableMeshComponent;
@@ -35,16 +37,24 @@ public:
 	void DestroyPhantom();
 	
 	// 初始化玩家幻影
-
 	// OriginalCharacter: 原始角色，Duration: 幻影持续时间
 	UFUNCTION(BlueprintCallable, Category = "Phantom")
 	void InitializePhantom(AArcaneHeroCharacter* OriginalCharacter, float Duration);
 
 	FPhantomDestroyedDelegate OnPhantomDestroyed; // 幻影销毁委托
+	
+	// 被感知的组件
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
+	class UAIPerceptionStimuliSourceComponent* StimulusSource;
+	
 
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
+	
+	void NotifyNearbyAI();
+	void OnReceiveMeleeAttackEvent(FGameplayTag GameplayTag, const FGameplayEventData* GameplayEventData);
+	FDelegateHandle OnMeleeAttackEventDelegateHandle;
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
@@ -61,6 +71,9 @@ private:
 	float CurrentLifetime = 0.0f;
 	float TotalLifetime = 10.0f;
 	bool bIsFading = false;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Stealth|Effects")
+	float NotificationRadius = 1000.0f; // 感知通知半径
     
 	// 材质实例用于淡出效果
 	UPROPERTY(EditDefaultsOnly)
@@ -69,5 +82,8 @@ private:
 	// 淡出曲线
 	UPROPERTY(EditDefaultsOnly, Category = "Stealth|Effects")
 	UCurveFloat* FadeCurve;
+	
+	UPROPERTY()
+	AArcaneHeroCharacter* CachedOriginalCharacter = nullptr;
 	
 };

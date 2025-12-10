@@ -9,8 +9,6 @@
 #include "Controllers/ArcaneHeroController.h"
 #include "Engine/AssetManager.h"
 
-FPhantomSpawnedSignature UAbilityTask_WaitSpawnPhantom::OnPhantomSpawned;
-
 UAbilityTask_WaitSpawnPhantom* UAbilityTask_WaitSpawnPhantom::WaitSpawnPhantom(
 		UGameplayAbility* OwningAbility, FGameplayTag EventTag,
 		AArcaneHeroCharacter* InOriginalCharacter,AArcaneHeroController* InHeroController,
@@ -49,7 +47,7 @@ void UAbilityTask_WaitSpawnPhantom::OnPhantomClassLoaded()
 	if (World && PhantomClass && OriginalCharacter)
 	{
 		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn; // 如果有碰撞，就调整位置，但是总是生成
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn; // 如果有碰撞，就调整位置，但是总是生成
 		
 		FVector SpawnLocation = OriginalCharacter->GetActorLocation();
 		FRotator SpawnRotation = OriginalCharacter->GetActorRotation();
@@ -59,9 +57,6 @@ void UAbilityTask_WaitSpawnPhantom::OnPhantomClassLoaded()
 			SpawnedPhantom->InitializePhantom(OriginalCharacter, SpawnDuration);
 			SpawnedPhantom->SetGenericTeamId(FGenericTeamId(0)); // 设置幻影的团队 ID
 			HeroController->SetGenericTeamId(TargetTeamID); // 设置玩家控制器的团队 ID
-
-			// 通知AI系统感知团队变化
-			OnPhantomSpawned.Broadcast(SpawnedPhantom);
 			
 			OnPhantomSpawnedSuccess.Broadcast(SpawnedPhantom);
 		}

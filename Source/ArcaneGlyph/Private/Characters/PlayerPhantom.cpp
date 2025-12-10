@@ -3,9 +3,18 @@
 
 #include "Characters/PlayerPhantom.h"
 
+#include "ArcaneBlueprintFunctionLibrary.h"
+#include "ArcaneGameplayTags.h"
+#include "AbilitySystem/ArcaneAbilitySystemComponent.h"
 #include "AbilitySystem/Abilities/ArcaneHeroStealthAbility.h"
 #include "Characters/ArcaneHeroCharacter.h"
 #include "Components/PoseableMeshComponent.h"
+#include "Controllers/ArcaneAIController.h"
+#include "Controllers/ArcaneHeroController.h"
+#include "Engine/OverlapResult.h"
+#include "Perception/AIPerceptionStimuliSourceComponent.h"
+#include "Perception/AISense_Hearing.h"
+#include "Perception/AISense_Sight.h"
 
 // Sets default values
 APlayerPhantom::APlayerPhantom()
@@ -21,17 +30,43 @@ APlayerPhantom::APlayerPhantom()
 	PoseableMesh->SetGenerateOverlapEvents(false);	// 不生成重叠事件
 	PoseableMesh->SetCastShadow(false);				// 不投射阴影
 	
+	// 创建刺激源组件
+	StimulusSource = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("StimulusSource"));
+	StimulusSource->RegisterForSense(UAISense_Sight::StaticClass());
+	StimulusSource->RegisterForSense(UAISense_Hearing::StaticClass());
+	StimulusSource->RegisterWithPerceptionSystem();
+	
 }
 
 void APlayerPhantom::DestroyPhantom()
 {
+	if (AArcaneHeroController* HeroController = CachedOriginalCharacter ? Cast<AArcaneHeroController>(CachedOriginalCharacter->GetController()) : nullptr)
+	{
+		HeroController->SetGenericTeamId(FGenericTeamId(0)); // 恢复玩家的团队 ID 为 0
+	}
+	
+	// 恢复玩家材质
+	if (CachedOriginalCharacter)
+	{
+		if (USkeletalMeshComponent* OriginalMesh = CachedOriginalCharacter->GetMesh())
+		{
+			OriginalMesh->SetColorParameterValueOnMaterials(FName("Light1"), FLinearColor::Black);
+			OriginalMesh->SetColorParameterValueOnMaterials(FName("Light2"), FLinearColor::Black);
+			
+		}
+		// 移除Player.Status.StealthPhantom标签
+		UArcaneBlueprintFunctionLibrary::RemoveGameplayTagFromActorIfHas(
+			CachedOriginalCharacter,
+			ArcaneGameplayTags::Player_Status_StenlthPhantom
+		);
+	}
+	
 	OnPhantomDestroyed.Broadcast();
 	// 清理定时器
 	if (GetWorld() && GetWorld()->GetTimerManager().IsTimerActive(DestroyTimer))
 	{
 		GetWorld()->GetTimerManager().ClearTimer(DestroyTimer);
 	}
-	UArcaneHeroStealthAbility::OnMeleeAttack.RemoveDynamic(this, &APlayerPhantom::DestroyPhantom);
 	
 	Destroy();
 }
@@ -42,19 +77,23 @@ void APlayerPhantom::InitializePhantom(AArcaneHeroCharacter* OriginalCharacter, 
 	{
 		return;
 	}
+	
+	CachedOriginalCharacter = OriginalCharacter;
 
 	USkeletalMeshComponent* OriginalMesh = OriginalCharacter->GetMesh();
 	if (!OriginalMesh || !OriginalMesh->GetSkeletalMeshAsset()) return;
 
 	// 设置位置和旋转
-	SetActorLocation(OriginalCharacter->GetActorLocation());
-	SetActorRotation(OriginalCharacter->GetActorRotation());
+	SetActorTransform(OriginalCharacter->GetActorTransform());
 
 	// 复制网格和材质
 	PoseableMesh->SetSkinnedAssetAndUpdate(OriginalMesh->GetSkeletalMeshAsset());
 
 	// 复制骨骼姿势
 	PoseableMesh->CopyPoseFromSkeletalComponent(OriginalMesh);
+	
+	// 同时，以防玩家角色本身存在缩放，幻影也需要复制该缩放
+	SetActorScale3D(OriginalCharacter->GetActorScale3D());
 
 	// 设置生命周期
 	TotalLifetime = Duration;
@@ -71,7 +110,18 @@ void APlayerPhantom::InitializePhantom(AArcaneHeroCharacter* OriginalCharacter, 
 	);
 
 	// 同时幻影需要监听 UArcaneHeroStealthAbility::OnMeleeAttack
-	UArcaneHeroStealthAbility::OnMeleeAttack.AddDynamic(this, &APlayerPhantom::DestroyPhantom);
+	if (UArcaneAbilitySystemComponent* AbilitySystemComponent = OriginalCharacter->GetArcaneAbilitySystemComponent())
+	{
+		// 监听 Shared_Event_MeleeAttack_1 事件，即当玩家在隐身状态时，如果发动攻击并且攻击命中AI，则结束当前隐身状态
+		FGameplayTagContainer MeleeAttackEventTags;
+		MeleeAttackEventTags.AddTag(ArcaneGameplayTags::Shared_Event_MeleeAttack_1);
+		OnMeleeAttackEventDelegateHandle = AbilitySystemComponent->AddGameplayEventTagContainerDelegate(
+			MeleeAttackEventTags,
+			FGameplayEventTagMulticastDelegate::FDelegate::CreateUObject(this, &APlayerPhantom::OnReceiveMeleeAttackEvent)
+		);
+	}
+	
+	NotifyNearbyAI();
 	
 }
 
@@ -111,6 +161,56 @@ void APlayerPhantom::Tick(float DeltaTime)
 		float FadeValue = FadeCurve ? FadeCurve->GetFloatValue(FadeProgress) : 1.0f - FadeProgress;
 		PhantomMaterial->SetScalarParameterValue("Opacity", FadeValue);
 	}
+}
+
+void APlayerPhantom::NotifyNearbyAI()
+{
+	// 使用球体检测附近的AI控制器
+	TArray<FOverlapResult> OverlapResults;
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+    
+	bool bHit = GetWorld()->OverlapMultiByChannel(
+		OverlapResults,
+		GetActorLocation(),
+		FQuat::Identity,
+		ECC_WorldStatic, // 或自定义通道
+		FCollisionShape::MakeSphere(NotificationRadius),
+		QueryParams
+	);
+    
+	if (bHit)
+	{
+		for (const FOverlapResult& Result : OverlapResults)
+		{
+			if (AArcaneCharacterBase* EnemyCharacter = Cast<AArcaneCharacterBase>(Result.GetActor()))
+			{
+				if (AArcaneAIController* AIController = Cast<AArcaneAIController>(EnemyCharacter->GetController()))
+				{
+					// 直接调用AI控制器的方法
+					AIController->UpdateEnemyAIPerceptionComponent(this);
+				}
+				
+			}
+			
+		}
+	}
+}
+
+void APlayerPhantom::OnReceiveMeleeAttackEvent(FGameplayTag GameplayTag, const FGameplayEventData* GameplayEventData)
+{
+	if (OnMeleeAttackEventDelegateHandle.IsValid())
+	{
+		// 清理监听
+		FGameplayTagContainer MeleeAttackEventTags;
+		MeleeAttackEventTags.AddTag(ArcaneGameplayTags::Shared_Event_MeleeAttack_1);
+		if (UArcaneAbilitySystemComponent* AbilitySystemComponent = CachedOriginalCharacter ? CachedOriginalCharacter->GetArcaneAbilitySystemComponent() : nullptr)
+		{
+			AbilitySystemComponent->RemoveGameplayEventTagContainerDelegate(MeleeAttackEventTags, OnMeleeAttackEventDelegateHandle);
+		}
+		OnMeleeAttackEventDelegateHandle.Reset();
+	}
+	DestroyPhantom();
 }
 
 
