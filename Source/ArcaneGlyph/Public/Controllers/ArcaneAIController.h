@@ -31,6 +31,8 @@ public:
 
 	UFUNCTION()
 	void UpdateEnemyAIPerceptionComponentOnDestroy();
+	
+	void SetFreezeState(bool bFreeze);
 
 protected:
 	virtual void BeginPlay() override;

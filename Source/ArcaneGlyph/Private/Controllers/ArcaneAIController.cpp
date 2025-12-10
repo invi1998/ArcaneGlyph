@@ -138,6 +138,14 @@ void AArcaneAIController::UpdateEnemyAIPerceptionComponentOnDestroy()
 	}
 }
 
+void AArcaneAIController::SetFreezeState(bool bFreeze)
+{
+	if (UBlackboardComponent* BlackboardComp = GetBlackboardComponent())
+	{
+		BlackboardComp->SetValueAsBool(FName("IsFreeze"), bFreeze);
+	}
+}
+
 void AArcaneAIController::BeginPlay()
 {
 	Super::BeginPlay();

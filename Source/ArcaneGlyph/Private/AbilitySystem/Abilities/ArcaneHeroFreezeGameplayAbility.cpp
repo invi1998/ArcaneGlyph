@@ -7,6 +7,7 @@
 #include "ArcaneDebugHelper.h"
 #include "ArcaneGameplayTags.h"
 #include "AbilitySystem/ArcaneAttributeSet.h"
+#include "Controllers/ArcaneAIController.h"
 
 void UArcaneHeroFreezeGameplayAbility::ApplyFreezeEffect(AActor* TargetActor)
 {
@@ -15,6 +16,12 @@ void UArcaneHeroFreezeGameplayAbility::ApplyFreezeEffect(AActor* TargetActor)
 	if (!TargetASC)
 	{
 		return;
+	}
+	
+	// 设置定身目标的行为树的黑板值
+	if (AArcaneAIController* AIController = Cast<AArcaneAIController>(FreezeTargetActor))
+	{
+		AIController->SetFreezeState(true);
 	}
 
 	// 获取目标韧性值
@@ -88,6 +95,11 @@ void UArcaneHeroFreezeGameplayAbility::EndFreezeEffect()
 {
 
 	BP_OnFreezeEffectEnded();
+	
+	if (AArcaneAIController* AIController = Cast<AArcaneAIController>(FreezeTargetActor))
+	{
+		AIController->SetFreezeState(false);
+	}
 	
 	UArcaneAbilitySystemComponent* ASC = UArcaneBlueprintFunctionLibrary::NativeGetArcaneASCFromActor(FreezeTargetActor);
 	if (!ASC)
