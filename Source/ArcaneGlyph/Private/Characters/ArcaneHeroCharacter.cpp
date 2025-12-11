@@ -19,6 +19,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Interfaces/ArcaneGaitDataInterface.h"
+#include "Kismet/GameplayStatics.h"
 
 
 AArcaneHeroCharacter::AArcaneHeroCharacter()
@@ -271,6 +272,16 @@ void AArcaneHeroCharacter::BeginPlay()
 
 	UpdateGait(EArcaneGaits::Jogging);
 	
+}
+
+void AArcaneHeroCharacter::OnDeath()
+{
+	Super::OnDeath();
+	
+	if (APlayerController* PC = GetController<APlayerController>())
+	{
+		DisableInput(PC);
+	}
 }
 
 void AArcaneHeroCharacter::ProcessLockedMovement(float InputAxisValue)

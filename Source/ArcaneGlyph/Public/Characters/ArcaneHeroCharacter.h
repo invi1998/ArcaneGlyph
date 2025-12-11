@@ -83,6 +83,8 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	
+	virtual void OnDeath() override;
 
 private:
 #pragma region Components

@@ -4,12 +4,18 @@
 #include "AbilitySystem/Abilities/ArcaneHeroGameplayAbility.h"
 
 #include "ArcaneBlueprintFunctionLibrary.h"
-#include "ArcaneDebugHelper.h"
 #include "ArcaneGameplayTags.h"
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
 #include "Characters/ArcaneHeroCharacter.h"
 #include "ArcaneGlyph/Public/Controllers/ArcaneHeroController.h"
 
+
+void UArcaneHeroGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
+	const FGameplayEventData* TriggerEventData)
+{
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+}
 
 AArcaneHeroCharacter* UArcaneHeroGameplayAbility::GetHeroCharacterFromActorInfo()
 {

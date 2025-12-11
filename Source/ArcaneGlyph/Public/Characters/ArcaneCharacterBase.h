@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
+#include "GameplayTagContainer.h"
 #include "Interfaces/PawnCombatInterface.h"
 #include "Interfaces/PawnUIInterface.h"
 #include "ArcaneCharacterBase.generated.h"
@@ -46,12 +47,31 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Arcane | Character")
 	bool IsCharacterAlive() const;
+	
+	bool IsAlive();
 
 protected:
 	// ~ Begin APawn Interface
 	virtual void PossessedBy(AController* NewController) override;	// 当角色被控制器控制时调用
 
 	// ~ End APawn Interface
+
+	void StartDeathSequence();
+	void PlayDeathAnimation();
+	virtual void OnDeath();	// 角色死亡时调用的虚函数
+	void OnDeadTagChanged(FGameplayTag InGameplayTag, int Count);
+	void BindGASChangedDelegate();
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Death and Respawn")
+	float DeathMontageFinishTimeOffset = -0.8f; // 死亡动画播放完成后，延迟或者提前多少秒后触发布娃娃物理
+
+	UPROPERTY(EditDefaultsOnly, Category = "Death and Respawn")
+	UAnimMontage* DeathMontage;
+
+	FTimerHandle DeathMontageTimerHandle;
+
+	virtual void DeathMontageFinished();
+	void SetRagdollPhysics(bool bEnabled);
 
 #if WITH_EDITOR
 	// Begin UObject Interface

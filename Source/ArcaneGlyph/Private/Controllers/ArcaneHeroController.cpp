@@ -4,11 +4,13 @@
 #include "ArcaneGlyph/Public/Controllers/ArcaneHeroController.h"
 
 #include "CommonInputSubsystem.h"
+#include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraActor.h"
 #include "Characters/ArcaneHeroCharacter.h"
 #include "Component/Combat/HeroCombatComponent.h"
 #include "FrontendSettings/FrontendGameUserSettings.h"
+#include "Game/ArcaneGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -24,6 +26,11 @@ AArcaneHeroController::AArcaneHeroController()
 FGenericTeamId AArcaneHeroController::GetGenericTeamId() const
 {
 	return HeroTeamID;
+}
+
+void AArcaneHeroController::SetGameMenuOpen(bool bIsOpen)
+{
+	bGameMenuOpen = bIsOpen;
 }
 
 void AArcaneHeroController::OnPossess(APawn* InPawn)
@@ -57,6 +64,30 @@ void AArcaneHeroController::OnPossess(APawn* InPawn)
 
 }
 
+void AArcaneHeroController::ToggleGameMenu(const FInputActionValue& InputActionValue)
+{
+	if (bGameMenuOpen)
+	{
+		return;
+	}
+	
+	// 获取当前游戏模式，只有在非主菜单模式（FrontMenuMode）下才能打开游戏菜单
+	UWorld* World = GetWorld();
+	if (!World) return;
+	
+	AGameModeBase* GameMode = UGameplayStatics::GetGameMode(World);
+	if (!GameMode)
+	{
+		return;
+	};
+	
+	if (AArcaneGameModeBase* ArcaneGameMode = Cast<AArcaneGameModeBase>(GameMode))
+	{
+		OpenGameMenu();
+	}
+	
+}
+
 void AArcaneHeroController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
@@ -70,6 +101,23 @@ void AArcaneHeroController::SetupInputComponent()
 		{
 			CommonInputSubsystem->OnInputMethodChangedNative.AddUObject(this, &ThisClass::HandleInputDeviceChanged);
 		}
+		
+		if (InputSubsystem)
+		{
+			InputSubsystem->AddMappingContext(GameMenuMappingContext, 0);
+			
+		}
+		
+		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
+		{
+			EnhancedInputComponent->BindAction(
+				OpenGameMenuAction,
+				ETriggerEvent::Started,
+				this,
+				&AArcaneHeroController::ToggleGameMenu
+			);
+		}
+		
 	}
 }
 

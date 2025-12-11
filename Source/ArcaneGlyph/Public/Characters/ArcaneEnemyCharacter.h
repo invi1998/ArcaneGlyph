@@ -6,6 +6,7 @@
 #include "ArcaneCharacterBase.h"
 #include "ArcaneEnemyCharacter.generated.h"
 
+class UNiagaraSystem;
 class UWidgetComponent;
 class UEnemyUIComponent;
 class UEnemyCombatComponent;
@@ -28,10 +29,15 @@ public:
 	// ~ IPawnUIInterface
 
 	FORCEINLINE UEnemyCombatComponent* GetEnemyCombatComponent() const { return EnemyCombatComponent; }
+	
+	UFUNCTION(BlueprintImplementableEvent, Category = "Arcane | Death")
+	void BP_OnEnemyDeath();
 
 protected:
 	virtual void BeginPlay() override;
 	virtual void PossessedBy(AController* NewController) override;
+	
+	virtual void DeathMontageFinished() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
 	TObjectPtr<UEnemyCombatComponent> EnemyCombatComponent;
@@ -41,6 +47,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
 	TObjectPtr<UWidgetComponent> EnemyHealthWidgetComponent;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
+	TSoftObjectPtr<UNiagaraSystem> DissolveNiagaraSystem;
 
 private:
 	void InitEnemyStartupData();

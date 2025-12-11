@@ -9,6 +9,8 @@ namespace ArcaneGameplayTags
 	// Input Tags
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_DrawCommonUIHUD);		// 输入标签：绘制通用UI HUD
 		
+	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_PauseGame);		// 输入标签：暂停游戏
+	
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_Move);		// 输入标签：移动
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_Look);		// 输入标签：观察
 	ARCANEGLYPH_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_Jump);		// 输入标签：跳跃

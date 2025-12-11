@@ -3,10 +3,14 @@
 
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
 
-#include "ArcaneDebugHelper.h"
 #include "ArcaneGameplayTags.h"
 #include "AbilitySystem/Abilities/ArcaneHeroGameplayAbility.h"
 #include "Items/Weapons/ArcaneHeroWeapon.h"
+
+UArcaneAbilitySystemComponent::UArcaneAbilitySystemComponent()
+{
+	// GetGameplayAttributeValueChangeDelegate(UArcaneAttributeSet::GetCurrentHealthAttribute()).AddUObject(this, &UArcaneAbilitySystemComponent::OnCurrentHealthChanged);
+}
 
 void UArcaneAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& InInputTag)
 {
@@ -186,4 +190,6 @@ bool UArcaneAbilitySystemComponent::TryActivateAbilityByTag(FGameplayTag InAbili
 
 	return false;
 }
+
+
 

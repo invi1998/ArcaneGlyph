@@ -74,6 +74,14 @@ void AArcaneEnemyCharacter::PossessedBy(AController* NewController)
 	InitEnemyStartupData();
 }
 
+void AArcaneEnemyCharacter::DeathMontageFinished()
+{
+	Super::DeathMontageFinished();
+	
+	BP_OnEnemyDeath();
+
+}
+
 void AArcaneEnemyCharacter::InitEnemyStartupData()
 {
 	int32 AbilityApplyLevel = 1;

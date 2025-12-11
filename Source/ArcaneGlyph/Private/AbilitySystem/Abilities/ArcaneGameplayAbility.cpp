@@ -8,11 +8,21 @@
 #include "ArcaneBlueprintFunctionLibrary.h"
 #include "ArcaneGameplayTags.h"
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
+#include "Characters/ArcaneCharacterBase.h"
 #include "Component/Combat/PawnCombatComponent.h"
 
 void UArcaneGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+	
+	if (AArcaneCharacterBase* ArcaneCharacterBase = Cast<AArcaneCharacterBase>(GetAvatarActorFromActorInfo()))
+	{
+		if (!ArcaneCharacterBase->IsAlive())
+		{
+			K2_EndAbility();
+			return;
+		}
+	}
 }
 
 void UArcaneGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)

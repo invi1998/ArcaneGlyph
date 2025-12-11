@@ -18,6 +18,7 @@ class ARCANEGLYPH_API UArcaneHeroGameplayAbility : public UArcaneGameplayAbility
 	GENERATED_BODY()
 
 public:
+	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	
 	UFUNCTION(BlueprintPure, Category = "Arcane | Ability")
 	AArcaneHeroCharacter* GetHeroCharacterFromActorInfo();

@@ -4,11 +4,15 @@
 #include "Characters/ArcaneCharacterBase.h"
 
 #include "ArcaneBlueprintFunctionLibrary.h"
+#include "ArcaneDebugHelper.h"
+#include "ArcaneGameplayTags.h"
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
 #include "AbilitySystem/ArcaneAttributeSet.h"
 #include "MotionWarpingComponent.h"
 #include "Component/Combat/PawnCombatComponent.h"
 #include "Components/BoxComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AArcaneCharacterBase::AArcaneCharacterBase()
 {
@@ -53,6 +57,8 @@ AArcaneCharacterBase::AArcaneCharacterBase()
 	RightFootCollisionBox->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	RightFootCollisionBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &AArcaneCharacterBase::OnBodyCollisionBoxBeginOverlap);
 
+	BindGASChangedDelegate();
+	
 }
 
 UAbilitySystemComponent* AArcaneCharacterBase::GetAbilitySystemComponent() const
@@ -80,6 +86,11 @@ bool AArcaneCharacterBase::IsCharacterAlive() const
 	return false;
 }
 
+bool AArcaneCharacterBase::IsAlive()
+{
+	return UArcaneBlueprintFunctionLibrary::DoseActorHasGameplayTag(this, ArcaneGameplayTags::Shared_Status_Dead) == false;
+}
+
 void AArcaneCharacterBase::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
@@ -92,6 +103,91 @@ void AArcaneCharacterBase::PossessedBy(AController* NewController)
 		// ensure(!CharacterStartupData.IsNull());
 		ensureMsgf(!CharacterStartupData.IsNull(), TEXT("%s CharacterStartupData is null!"), *GetName());
 	}
+}
+
+void AArcaneCharacterBase::StartDeathSequence()
+{
+	OnDeath();
+		
+	// 取消所有能力
+	if (ArcaneAbilitySystemComponent)
+	{
+		ArcaneAbilitySystemComponent->CancelAllAbilities();
+	}
+	
+	PlayDeathAnimation();
+		
+	GetCharacterMovement()->SetMovementMode(MOVE_None);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void AArcaneCharacterBase::PlayDeathAnimation()
+{
+	if (DeathMontage && GetMesh())
+	{
+		if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+		{
+			// 2. 停止所有蒙太奇（可选）
+			AnimInstance->StopAllMontages(0.0f);
+			
+			// 5. 禁用动画蓝图的状态机更新
+			AnimInstance->SetRootMotionMode(ERootMotionMode::IgnoreRootMotion);
+			
+			float MontageDuration = GetMesh()->GetAnimInstance()->Montage_Play(
+				DeathMontage,   // 蒙太奇资源
+				1.0f,           // 播放速率
+				EMontagePlayReturnType::MontageLength, // 返回类型
+				0.0f,           // 开始时间
+				true           // 停止所有其他蒙太奇
+			);
+		
+			// 如果蒙太奇播放失败，可能需要强制更新姿势
+			if (MontageDuration <= 0.0f)
+			{
+				// 强制刷新动画
+				GetMesh()->RefreshBoneTransforms();
+				GetMesh()->TickAnimation(0.0f, false);
+				GetMesh()->RefreshBoneTransforms();
+			}
+		
+			GetWorld()->GetTimerManager().ClearTimer(DeathMontageTimerHandle);
+			GetWorld()->GetTimerManager().SetTimer(DeathMontageTimerHandle, this, &AArcaneCharacterBase::DeathMontageFinished, MontageDuration + DeathMontageFinishTimeOffset, false);
+	
+		}
+	}
+}
+
+void AArcaneCharacterBase::OnDeath()
+{
+}
+
+void AArcaneCharacterBase::OnDeadTagChanged(FGameplayTag InGameplayTag, int Count)
+{
+	if (Count != 0)
+	{
+		StartDeathSequence();
+	}
+	else
+	{
+		// Respawn();
+	}
+}
+
+void AArcaneCharacterBase::BindGASChangedDelegate()
+{
+	if (ArcaneAbilitySystemComponent)
+	{
+		ArcaneAbilitySystemComponent->RegisterGameplayTagEvent(ArcaneGameplayTags::Shared_Status_Dead, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AArcaneCharacterBase::OnDeadTagChanged);
+	}
+}
+
+void AArcaneCharacterBase::DeathMontageFinished()
+{
+	
+}
+
+void AArcaneCharacterBase::SetRagdollPhysics(bool bEnabled)
+{
 }
 
 #if WITH_EDITOR

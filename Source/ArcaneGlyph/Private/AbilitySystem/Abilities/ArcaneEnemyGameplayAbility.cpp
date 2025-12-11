@@ -7,6 +7,13 @@
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
 #include "Characters/ArcaneEnemyCharacter.h"
 
+void UArcaneEnemyGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
+	const FGameplayEventData* TriggerEventData)
+{
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+}
+
 AArcaneEnemyCharacter* UArcaneEnemyGameplayAbility::GetEnemyCharacterFromActorInfo()
 {
 	if (!CachedArcaneEnemyCharacter.IsValid())
