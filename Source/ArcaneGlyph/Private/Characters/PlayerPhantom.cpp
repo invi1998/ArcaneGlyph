@@ -8,6 +8,7 @@
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
 #include "AbilitySystem/Abilities/ArcaneHeroStealthAbility.h"
 #include "Characters/ArcaneHeroCharacter.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/PoseableMeshComponent.h"
 #include "Controllers/ArcaneAIController.h"
 #include "Controllers/ArcaneHeroController.h"
@@ -28,7 +29,7 @@ APlayerPhantom::APlayerPhantom()
 	PoseableMesh->SetupAttachment(RootComponent);
 	PoseableMesh->SetCollisionProfileName(TEXT("NoCollision"));
 	PoseableMesh->SetGenerateOverlapEvents(false);	// 不生成重叠事件
-	PoseableMesh->SetCastShadow(false);				// 不投射阴影
+	PoseableMesh->SetCastShadow(true);				// 不投射阴影
 	
 	// 创建刺激源组件
 	StimulusSource = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("StimulusSource"));
@@ -85,6 +86,46 @@ void APlayerPhantom::InitializePhantom(AArcaneHeroCharacter* OriginalCharacter, 
 
 	// 设置位置和旋转
 	SetActorTransform(OriginalCharacter->GetActorTransform());
+	
+	// 同时，因为角色骨骼旋转初始时yaw做了-90度旋转补偿，所以幻影也需要做相同的补偿
+	FRotator AdjustedRotation = GetActorRotation();
+	AdjustedRotation.Yaw -= 90.0f;
+	SetActorRotation(AdjustedRotation);
+	
+	// 1. 首先获取角色的胶囊体组件
+	UCapsuleComponent* CharacterCapsule = OriginalCharacter->FindComponentByClass<UCapsuleComponent>();
+	USkeletalMeshComponent* CharacterMesh = OriginalCharacter->GetMesh();
+    
+	if (!CharacterMesh) return;
+    
+	// 2. 计算正确的位置
+	FVector TargetLocation = OriginalCharacter->GetActorLocation();
+    
+	// 如果有胶囊体，使用胶囊体底部
+	if (CharacterCapsule)
+	{
+		float CapsuleHalfHeight = CharacterCapsule->GetScaledCapsuleHalfHeight();
+		TargetLocation.Z -= CapsuleHalfHeight; // 移动到胶囊体底部
+	}
+    
+	// 3. 检查地面位置
+	FHitResult GroundHit;
+	FVector TraceStart = OriginalCharacter->GetActorLocation();
+	FVector TraceEnd = TraceStart - FVector(0, 0, 200.0f); // 向下检测200单位
+    
+	if (GetWorld()->LineTraceSingleByChannel(
+		GroundHit,
+		TraceStart,
+		TraceEnd,
+		ECC_WorldStatic,
+		FCollisionQueryParams(SCENE_QUERY_STAT(PhantomGroundTrace), false, OriginalCharacter)))
+	{
+		// 使用检测到的地面位置
+		TargetLocation.Z = GroundHit.Location.Z;
+	}
+    
+	// 4. 设置位置
+	SetActorLocation(TargetLocation);
 
 	// 复制网格和材质
 	PoseableMesh->SetSkinnedAssetAndUpdate(OriginalMesh->GetSkeletalMeshAsset());
