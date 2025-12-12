@@ -69,6 +69,12 @@ public:
 	
 	UFUNCTION(BlueprintCallable, meta=(BlueprintThreadSafe))
 	bool ShouldDoFullBody() const;
+	
+	UFUNCTION(BlueprintCallable, meta=(BlueprintThreadSafe))
+	bool IsRunning() const { return CurrentGait == EArcaneGaits::Running; }
+	
+	UFUNCTION(BlueprintCallable, meta=(BlueprintThreadSafe))
+	bool IsWalking() const { return CurrentGait == EArcaneGaits::Walking; }
 
 protected:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "AnimData|ReferenceData")
