@@ -182,29 +182,18 @@ void UArcaneCharacterAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSe
 
 	UpdateRootYawOffsetData(DeltaSeconds);
 
-	bIsOnGround = OwnerCharacterMovementComponent->IsMovingOnGround();
-	bIsJumping = false;
-	bIsFalling = false;
-	if (OwnerCharacterMovementComponent->MovementMode == EMovementMode::MOVE_Falling)
-	{
-		if (WorldVelocity.Z > 0.f)
-		{
-			bIsJumping = true;
-		}
-		else
-		{
-			bIsFalling = true;
-		}
-	}
 	
-	UpdateJumpFallData();
-	UpdateGroundDistance();
 	
 }
 
 void UArcaneCharacterAnimInstance::ReceiveGaitData_Implementation(const EArcaneGaits InGait)
 {
 	InComingGait = InGait;
+}
+
+bool UArcaneCharacterAnimInstance::ShouldDoFullBody() const
+{
+	return (GetSpeed() <= 0) && !bIsJumping;
 }
 
 EArcaneMoveDirection UArcaneCharacterAnimInstance::CalculateLocomotionDirection(float Angle, EArcaneMoveDirection Direction, const FArcaneLocomotionDirectionSettings& InSettings)
