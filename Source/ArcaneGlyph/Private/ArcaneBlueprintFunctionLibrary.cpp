@@ -441,7 +441,7 @@ AActor* UArcaneBlueprintFunctionLibrary::GetNearestEnemyInFrontOfCharacter(AActo
 	if (HeroCharacter && IsValid(HeroCharacter->SoftLockedTargetActor))
 	{
 		AArcaneCharacterBase* Character = Cast<AArcaneCharacterBase>(HeroCharacter->SoftLockedTargetActor);
-		if (Character && Character->IsCharacterAlive())
+		if (Character && Character->IsAlive())
 		{
 			// 如果软锁定角色存活，查看软锁定角色是否还在范围内（距离是否在MaxDistance)
 			const FVector TargetLocation = Character->GetActorLocation();
@@ -489,7 +489,7 @@ AActor* UArcaneBlueprintFunctionLibrary::GetNearestEnemyInFrontOfCharacter(AActo
 			if (AArcaneCharacterBase* ArcaneCharacter = Cast<AArcaneCharacterBase>(HitActor))
 			{
 				// 检查是是否存活
-				if (!ArcaneCharacter->IsCharacterAlive())
+				if (!ArcaneCharacter->IsAlive())
 				{
 					continue;	// 如果角色不存活，则跳过
 				}

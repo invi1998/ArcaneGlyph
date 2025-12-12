@@ -130,6 +130,8 @@ void UArcaneCharacterAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSe
 	{
 		return;
 	}
+	
+	bIsAlive = OwnerCharacter->IsAlive();
 
 	WorldVelocity = OwnerCharacterMovementComponent->Velocity;
 	GroundSpeed = OwnerCharacterMovementComponent->Velocity.Size2D();

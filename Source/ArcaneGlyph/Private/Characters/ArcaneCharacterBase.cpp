@@ -135,7 +135,7 @@ void AArcaneCharacterBase::PlayDeathAnimation()
 				1.0f,           // 播放速率
 				EMontagePlayReturnType::MontageLength, // 返回类型
 				0.0f,           // 开始时间
-				true           // 停止所有其他蒙太奇
+				false           // 停止所有其他蒙太奇
 			);
 			
 			GetWorld()->GetTimerManager().ClearTimer(DeathMontageTimerHandle);

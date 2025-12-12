@@ -60,6 +60,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, meta=(BlueprintThreadSafe))
 	FORCEINLINE float GetLookPitchOffset() const { return LookRotOffset.Pitch; }
+	
+	UFUNCTION(BlueprintCallable, meta=(BlueprintThreadSafe))
+	FORCEINLINE bool GetIsAlive() const { return bIsAlive; }
 
 protected:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "AnimData|ReferenceData")
@@ -67,6 +70,9 @@ protected:
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "AnimData|ReferenceData")
 	TObjectPtr<UCharacterMovementComponent> OwnerCharacterMovementComponent;
+	
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "AnimData|ReferenceData")
+	bool bIsAlive;	// 角色是否存活
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
 	FVector WorldVelocity;	// 角色在世界坐标系中的速度
