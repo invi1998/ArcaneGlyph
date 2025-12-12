@@ -130,9 +130,6 @@ void AArcaneCharacterBase::PlayDeathAnimation()
 			// 2. 停止所有蒙太奇（可选）
 			AnimInstance->StopAllMontages(0.0f);
 			
-			// 5. 禁用动画蓝图的状态机更新
-			AnimInstance->SetRootMotionMode(ERootMotionMode::IgnoreRootMotion);
-			
 			float MontageDuration = GetMesh()->GetAnimInstance()->Montage_Play(
 				DeathMontage,   // 蒙太奇资源
 				1.0f,           // 播放速率
@@ -140,16 +137,7 @@ void AArcaneCharacterBase::PlayDeathAnimation()
 				0.0f,           // 开始时间
 				true           // 停止所有其他蒙太奇
 			);
-		
-			// 如果蒙太奇播放失败，可能需要强制更新姿势
-			if (MontageDuration <= 0.0f)
-			{
-				// 强制刷新动画
-				GetMesh()->RefreshBoneTransforms();
-				GetMesh()->TickAnimation(0.0f, false);
-				GetMesh()->RefreshBoneTransforms();
-			}
-		
+			
 			GetWorld()->GetTimerManager().ClearTimer(DeathMontageTimerHandle);
 			GetWorld()->GetTimerManager().SetTimer(DeathMontageTimerHandle, this, &AArcaneCharacterBase::DeathMontageFinished, MontageDuration + DeathMontageFinishTimeOffset, false);
 	
