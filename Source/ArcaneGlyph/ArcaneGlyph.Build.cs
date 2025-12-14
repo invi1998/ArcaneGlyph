@@ -28,6 +28,7 @@ public class ArcaneGlyph : ModuleRules
 			"CommonInput",
 			"PropertyPath",
 			"PreLoadScreen",
+			"MoviePlayer"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

@@ -36,12 +36,15 @@ class ARCANEGLYPH_API UArcaneGameInstance : public UGameInstance
 public:
 	UFUNCTION(BlueprintPure, meta=(GameplayTagFilter ="GameData.Level"))
 	TSoftObjectPtr<UWorld> GetLevelWorldByTag(FGameplayTag LevelTag) const;
+	
+	virtual void Init() override;
 
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TArray<FArcaneGameLevelSet> GameLevelSets;
 
-	
+	virtual void OnPreLoadMap(const FString& InMapName);
+	virtual void OnPostLoadMap(UWorld* World);
 	
 };
