@@ -68,7 +68,9 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
-
+	
+	// InitGame - 在游戏开始时初始化游戏模式（它将在场景里所有Actor生成之前调用）
+	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 
 private:
 	UFUNCTION(BlueprintCallable)

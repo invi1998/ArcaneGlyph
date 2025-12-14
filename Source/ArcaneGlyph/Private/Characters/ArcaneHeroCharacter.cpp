@@ -109,6 +109,9 @@ void AArcaneHeroCharacter::PossessedBy(AController* NewController)
 				case EArcaneGameDifficulty::Insane:
 					AbilityApplyLevel = 4;
 					break;
+				case EArcaneGameDifficulty::None:
+					AbilityApplyLevel = 1;
+					break;
 				}
 			}
 			// 这里可以使用加载到的数据进行初始化

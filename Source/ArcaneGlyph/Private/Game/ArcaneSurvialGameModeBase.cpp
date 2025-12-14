@@ -3,6 +3,7 @@
 
 #include "Game/ArcaneSurvialGameModeBase.h"
 
+#include "ArcaneBlueprintFunctionLibrary.h"
 #include "ArcaneDebugHelper.h"
 #include "NavigationSystem.h"
 #include "Characters/ArcaneEnemyCharacter.h"
@@ -81,6 +82,17 @@ void AArcaneSurvialGameModeBase::Tick(float DeltaSeconds)
 			}
 		}
 	}
+}
+
+void AArcaneSurvialGameModeBase::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
+{
+	Super::InitGame(MapName, Options, ErrorMessage);
+	
+	EArcaneGameDifficulty SelectedDifficulty = EArcaneGameDifficulty::Easy;
+	UArcaneBlueprintFunctionLibrary::TryLoadSavedGameDifficulty(SelectedDifficulty);
+	
+	GameDifficulty = SelectedDifficulty;
+	
 }
 
 void AArcaneSurvialGameModeBase::SetCurrentSurvialState(EArcaneSurvialGameModeState InState)
