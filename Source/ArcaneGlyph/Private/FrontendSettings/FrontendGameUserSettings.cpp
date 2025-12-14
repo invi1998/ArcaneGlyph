@@ -52,37 +52,37 @@ void UFrontendGameUserSettings::SetCurrentGameplayAutoAttackTargetLock(bool InAu
 void UFrontendGameUserSettings::SetMasterVolume(float InMasterVolume)
 {
     const UFrontendDeveloperSettings* FrontendSettings = GetDefault<UFrontendDeveloperSettings>();
-    SetVolume(InMasterVolume, FrontendSettings->MasterSoundClassPath, MasterVolume);
+    SetVolume(InMasterVolume, FrontendSettings->MasterSoundClassPath, FrontendSettings->MasterSoundMixPath, MasterVolume);
 }
 
 void UFrontendGameUserSettings::SetMusicVolume(float InMusicVolume)
 {
     const UFrontendDeveloperSettings* FrontendSettings = GetDefault<UFrontendDeveloperSettings>();
-    SetVolume(InMusicVolume, FrontendSettings->MusicSoundClassPath, MusicVolume);
+    SetVolume(InMusicVolume, FrontendSettings->MusicSoundClassPath, FrontendSettings->MusicSoundMixPath, MusicVolume);
 }
 
 void UFrontendGameUserSettings::SetSFXVolume(float InSFXVolume)
 {
     const UFrontendDeveloperSettings* FrontendSettings = GetDefault<UFrontendDeveloperSettings>();
-    SetVolume(InSFXVolume, FrontendSettings->SFXSoundClassPath, SFXVolume);
+    SetVolume(InSFXVolume, FrontendSettings->SFXSoundClassPath, FrontendSettings->VFXSoundMixPath, SFXVolume);
 }
 
 void UFrontendGameUserSettings::SetUserInterfaceVolume(float InUserInterfaceVolume)
 {
     const UFrontendDeveloperSettings* FrontendSettings = GetDefault<UFrontendDeveloperSettings>();
-    SetVolume(InUserInterfaceVolume, FrontendSettings->UserInterfaceSoundClassPath, UserInterfaceVolume);
+    SetVolume(InUserInterfaceVolume, FrontendSettings->UserInterfaceSoundClassPath, FrontendSettings->UISoundMixPath, UserInterfaceVolume);
 }
 
 void UFrontendGameUserSettings::SetInGameMusicVolume(float InInGameMusicVolume)
 {
     const UFrontendDeveloperSettings* FrontendSettings = GetDefault<UFrontendDeveloperSettings>();
-    SetVolume(InInGameMusicVolume, FrontendSettings->InGameMusicSoundClassPath, InGameMusicVolume);
+    SetVolume(InInGameMusicVolume, FrontendSettings->InGameMusicSoundClassPath, FrontendSettings->InGameMusicSoundMixPath, InGameMusicVolume);
 }
 
 void UFrontendGameUserSettings::SetMenuMusicVolume(float InMenuMusicVolume)
 {
     const UFrontendDeveloperSettings* FrontendSettings = GetDefault<UFrontendDeveloperSettings>();
-    SetVolume(InMenuMusicVolume, FrontendSettings->MenuMusicSoundClassPath, MenuMusicVolume);
+    SetVolume(InMenuMusicVolume, FrontendSettings->MenuMusicSoundClassPath, FrontendSettings->MenuMusicSoundMixPath, MenuMusicVolume);
 }
 
 void UFrontendGameUserSettings::SetAllowBackgroundAudio(bool bInAllowBackgroundAudio)
@@ -114,7 +114,7 @@ void UFrontendGameUserSettings::SetDisplayGama(float InDisplayGama)
 }
 
 // 添加一个通用的私有函数
-void UFrontendGameUserSettings::SetVolume(float InVolume, const FSoftObjectPath& SoundClassPath, float& VolumeVariable)
+void UFrontendGameUserSettings::SetVolume(float InVolume, const FSoftObjectPath& SoundClassPath, const FSoftObjectPath& SoundMixPath, float& VolumeVariable)
 {
 	UWorld* InAudioWorld = nullptr;
 	const UFrontendDeveloperSettings* FrontendSettings = GetDefault<UFrontendDeveloperSettings>();
@@ -136,13 +136,20 @@ void UFrontendGameUserSettings::SetVolume(float InVolume, const FSoftObjectPath&
 	}
 
 	USoundMix* SoundMix = nullptr;
-	if (UObject* SoundMixObject = FrontendSettings->DefaultSoundMixPath.TryLoad())
+	if (UObject* SoundMixObject = SoundMixPath.TryLoad())
 	{
 		SoundMix = Cast<USoundMix>(SoundMixObject);
 	}
 
+	if (!SoundClass || !SoundMix)
+	{
+		return; // 确保 SoundClass 和 SoundMix 都已加载
+	}
+
+	// 1. 更新成员变量
 	VolumeVariable = InVolume;
 
+	// 2. 设置 Sound Mix 覆盖
 	UGameplayStatics::SetSoundMixClassOverride(
 		InAudioWorld,
 		SoundMix,
@@ -152,6 +159,9 @@ void UFrontendGameUserSettings::SetVolume(float InVolume, const FSoftObjectPath&
 		0.2f  // 混响衰减
 	);
 
-	UGameplayStatics::PushSoundMixModifier(InAudioWorld, SoundMix);
+	// 3. 移除重复推送 Sound Mix 的代码
+	// 每次设置音量时，不应该重复推送 Sound Mix。
+	// 只需要确保 Sound Mix 在游戏开始时被推送一次即可。
+	// UGameplayStatics::PushSoundMixModifier(InAudioWorld, SoundMix); // <-- 移除或注释掉这
 }
 

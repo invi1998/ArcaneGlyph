@@ -99,7 +99,7 @@ public:
 	void SetDisplayGama(float InDisplayGama);
 
 private:
-	void SetVolume(float InVolume, const FSoftObjectPath& SoundClassPath, float& VolumeVariable);
+	void SetVolume(float InVolume, const FSoftObjectPath& SoundClassPath, const FSoftObjectPath& SoundMixPath, float& VolumeVariable);
 
 	//***** GamePlay Settings *****//
 	UPROPERTY(Config)

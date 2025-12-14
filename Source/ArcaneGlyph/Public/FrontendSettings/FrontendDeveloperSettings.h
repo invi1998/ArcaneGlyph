@@ -43,8 +43,22 @@ public:
 	FSoftObjectPath MenuMusicSoundClassPath;	// 菜单音乐音效类路径，用于设置菜单音乐音量
 
 	UPROPERTY(Config, EditAnywhere, Category="Audio Settings", meta=(AllowedClasses = "/Script/Engine.SoundMix", ForceInlineRow))
-	FSoftObjectPath DefaultSoundMixPath;	// 默认音效混合路径，用于设置默认音效混合
+	FSoftObjectPath MasterSoundMixPath;	// 默认音效混合路径，用于设置默认音效混合
 
+	UPROPERTY(Config, EditAnywhere, Category="Audio Settings", meta=(AllowedClasses = "/Script/Engine.SoundMix", ForceInlineRow))
+	FSoftObjectPath VFXSoundMixPath;	// 视觉特效音效混合路径，用于设置视觉特效音效混合
+	
+	UPROPERTY(Config, EditAnywhere, Category="Audio Settings", meta=(AllowedClasses = "/Script/Engine.SoundMix", ForceInlineRow))
+	FSoftObjectPath UISoundMixPath;	// 用户界面音效混合路径，用于设置用户界面音效混合
+	
+	UPROPERTY(Config, EditAnywhere, Category="Audio Settings", meta=(AllowedClasses = "/Script/Engine.SoundMix", ForceInlineRow))
+	FSoftObjectPath MusicSoundMixPath;	// 音乐音效混合路径，用于设置音乐音效混合
+	
+	UPROPERTY(Config, EditAnywhere, Category="Audio Settings", meta=(AllowedClasses = "/Script/Engine.SoundMix", ForceInlineRow))
+	FSoftObjectPath InGameMusicSoundMixPath;	// 游戏内音乐音效混合路径，用于设置游戏内音乐音效混合
+	
+	UPROPERTY(Config, EditAnywhere, Category="Audio Settings", meta=(AllowedClasses = "/Script/Engine.SoundMix", ForceInlineRow))
+	FSoftObjectPath MenuMusicSoundMixPath;	// 菜单音乐音效混合路径，用于设置菜单音乐音效混合
 
 
 };
