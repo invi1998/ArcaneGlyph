@@ -26,6 +26,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "SaveGame/ArcaneSaveGame.h"
 
 
 UArcaneAbilitySystemComponent* UArcaneBlueprintFunctionLibrary::NativeGetArcaneASCFromActor(AActor* InActor)
@@ -544,6 +545,68 @@ void UArcaneBlueprintFunctionLibrary::ArcaneCloseGame(const UObject* WorldContex
 		UKismetSystemLibrary::QuitGame(World, nullptr, EQuitPreference::Quit, true);
 		
 	}
+}
+
+void UArcaneBlueprintFunctionLibrary::SaveCurrentGameDifficulty(EArcaneGameDifficulty InDifficulty)
+{
+	USaveGame* SaveGameObj = UGameplayStatics::CreateSaveGameObject(UArcaneSaveGame::StaticClass());
+	if (UArcaneSaveGame* ArcaneSaveGame = Cast<UArcaneSaveGame>(SaveGameObj))
+	{
+		ArcaneSaveGame->LastSelectedGameDifficulty = InDifficulty;
+		const bool bWasSaved = UGameplayStatics::SaveGameToSlot(ArcaneSaveGame, ArcaneGameplayTags::GameData_SaveGame_Slot_1.GetTag().ToString(), 0);
+		
+		Debug::Print(bWasSaved ? TEXT("Game Difficulty Saved Successfully.") : TEXT("Failed to Save Game Difficulty."));
+	
+	}
+}
+
+void UArcaneBlueprintFunctionLibrary::SaveUnlockedGameDifficulties(EArcaneGameDifficulty InUnlockedDifficulty)
+{
+	USaveGame* SaveGameObj = UGameplayStatics::CreateSaveGameObject(UArcaneSaveGame::StaticClass());
+	if (UArcaneSaveGame* ArcaneSaveGame = Cast<UArcaneSaveGame>(SaveGameObj))
+	{
+		// 需要进行比较，如果传入的难度低于等于已经解锁的难度，则不进行保存
+		if (!ArcaneSaveGame->UnlockedGameDifficulties.Contains(InUnlockedDifficulty))
+		{
+			ArcaneSaveGame->UnlockedGameDifficulties.AddUnique(InUnlockedDifficulty);
+			if (ArcaneSaveGame->UnlockedGameDifficulty < InUnlockedDifficulty)
+			{
+				ArcaneSaveGame->UnlockedGameDifficulty = InUnlockedDifficulty;
+			}
+			const bool bWasSaved = UGameplayStatics::SaveGameToSlot(ArcaneSaveGame, ArcaneGameplayTags::GameData_SaveGame_Slot_1.GetTag().ToString(), 0);
+		
+			Debug::Print(bWasSaved ? TEXT("Unlocked Game Difficulties Saved Successfully.") : TEXT("Failed to Save Unlocked Game Difficulties."));
+		}
+	}
+}
+
+bool UArcaneBlueprintFunctionLibrary::TryLoadSavedGameDifficulty(EArcaneGameDifficulty& OutLoadedDifficulty)
+{
+	if (UGameplayStatics::DoesSaveGameExist(ArcaneGameplayTags::GameData_SaveGame_Slot_1.GetTag().ToString(), 0))
+	{
+		USaveGame* SaveGameObj = UGameplayStatics::LoadGameFromSlot(ArcaneGameplayTags::GameData_SaveGame_Slot_1.GetTag().ToString(), 0);
+		if (UArcaneSaveGame* ArcaneSaveGame = Cast<UArcaneSaveGame>(SaveGameObj))
+		{
+			OutLoadedDifficulty = ArcaneSaveGame->LastSelectedGameDifficulty;
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+bool UArcaneBlueprintFunctionLibrary::TryLoadSavedUnlockedGameDifficulty(EArcaneGameDifficulty& OutLoadedUnlockedDifficulty)
+{
+	if (UGameplayStatics::DoesSaveGameExist(ArcaneGameplayTags::GameData_SaveGame_Slot_1.GetTag().ToString(), 0))
+	{
+		USaveGame* SaveGameObj = UGameplayStatics::LoadGameFromSlot(ArcaneGameplayTags::GameData_SaveGame_Slot_1.GetTag().ToString(), 0);
+		if (UArcaneSaveGame* ArcaneSaveGame = Cast<UArcaneSaveGame>(SaveGameObj))
+		{
+			OutLoadedUnlockedDifficulty = ArcaneSaveGame->UnlockedGameDifficulty;
+			return true;
+		}
+	}
+	return false;
 }
 
 void UArcaneBlueprintFunctionLibrary::ToggleInputMode(const UObject* WorldContextObject, EArcaneInputMode InputMode)

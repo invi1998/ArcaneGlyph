@@ -130,6 +130,18 @@ public:
 	// 关闭游戏（添加关于游戏手柄的处理）
 	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary", meta = (WorldContext = "WorldContextObject"))
 	static void ArcaneCloseGame(const UObject* WorldContextObject);
+	
+	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary")
+	static void SaveCurrentGameDifficulty(EArcaneGameDifficulty InDifficulty);
+	
+	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary")
+	static void SaveUnlockedGameDifficulties(EArcaneGameDifficulty InUnlockedDifficulty);
+	
+	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary")
+	static bool TryLoadSavedGameDifficulty(EArcaneGameDifficulty& OutLoadedDifficulty);
+	
+	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary")
+	static bool TryLoadSavedUnlockedGameDifficulty(EArcaneGameDifficulty& OutLoadedUnlockedDifficulty);
 
 	// 该函数用于传统的UI切换游戏输入模式，在接入CommonUI后，就不需要调用该函数了（调用该函数会扰乱CommonUI的工作）
 	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary", meta = (WorldContext = "WorldContextObject"))
@@ -141,6 +153,9 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "FrontendUI | FunctionLibrary")
 	static TSoftObjectPtr<UTexture2D> GetOptionsSoftImageByTag(UPARAM(meta = (Categories = "Frontend.Image")) FGameplayTag ImageTag);
+
+
+
 };
 
 
