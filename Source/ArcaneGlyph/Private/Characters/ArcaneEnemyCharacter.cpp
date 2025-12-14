@@ -9,6 +9,7 @@
 #include "Component/UI/EnemyUIComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Controllers/ArcaneAIController.h"
 #include "DataAssets/StartupData/DataAsset_EnemyStartupDada.h"
 #include "Engine/AssetManager.h"
 #include "Game/ArcaneGameModeBase.h"
@@ -56,6 +57,16 @@ UEnemyUIComponent* AArcaneEnemyCharacter::GetEnemyUIComponent() const
 	return EnemyUIComponent.Get();
 }
 
+AActor* AArcaneEnemyCharacter::GetCurrentTargetActor()
+{
+	if (AArcaneAIController* AIController = Cast<AArcaneAIController>(GetController()))
+	{
+		return AIController->GetCurrentTargetActor();
+	}
+	
+	return nullptr;
+}
+
 void AArcaneEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -100,6 +111,9 @@ void AArcaneEnemyCharacter::InitEnemyStartupData()
 			break;
 		case EArcaneGameDifficulty::Insane:
 			AbilityApplyLevel = 4;
+			break;
+		case EArcaneGameDifficulty::None:
+			AbilityApplyLevel = 1;
 			break;
 		}
 	}

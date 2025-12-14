@@ -32,6 +32,8 @@ public:
 	
 	UFUNCTION(BlueprintImplementableEvent, Category = "Arcane | Death")
 	void BP_OnEnemyDeath();
+	
+	AActor* GetCurrentTargetActor();
 
 protected:
 	virtual void BeginPlay() override;

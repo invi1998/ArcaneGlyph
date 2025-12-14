@@ -33,6 +33,8 @@ public:
 	void UpdateEnemyAIPerceptionComponentOnDestroy();
 	
 	void SetFreezeState(bool bFreeze);
+	
+	AActor* GetCurrentTargetActor();
 
 protected:
 	virtual void BeginPlay() override;

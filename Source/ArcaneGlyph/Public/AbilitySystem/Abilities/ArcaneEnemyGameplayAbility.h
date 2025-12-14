@@ -28,6 +28,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Arcane | Ability")
 	FGameplayEffectSpecHandle MakeEnemyDamageEffectSpecHandle(TSubclassOf<UGameplayEffect> InGameplayEffectClass, const FScalableFloat& InBaseDamageValue);
 
+	UFUNCTION(BlueprintPure, Category = "Arcane | Ability")
+	AActor* GetCurrentTargetActorFromAI();
+	
 private:
 	TWeakObjectPtr<AArcaneEnemyCharacter> CachedArcaneEnemyCharacter;
 	

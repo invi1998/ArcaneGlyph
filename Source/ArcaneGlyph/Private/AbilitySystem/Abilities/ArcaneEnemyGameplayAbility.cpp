@@ -60,3 +60,13 @@ FGameplayEffectSpecHandle UArcaneEnemyGameplayAbility::MakeEnemyDamageEffectSpec
 	
 	return DamageEffectSpecHandle;
 }
+
+AActor* UArcaneEnemyGameplayAbility::GetCurrentTargetActorFromAI()
+{
+	if (AArcaneEnemyCharacter* EnemyCharacter = GetEnemyCharacterFromActorInfo())
+	{
+		return EnemyCharacter->GetCurrentTargetActor();
+	}
+	
+	return nullptr;
+}

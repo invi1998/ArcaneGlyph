@@ -146,6 +146,16 @@ void AArcaneAIController::SetFreezeState(bool bFreeze)
 	}
 }
 
+AActor* AArcaneAIController::GetCurrentTargetActor()
+{
+	if (UBlackboardComponent* BlackboardComp = GetBlackboardComponent())
+	{
+		return Cast<AActor>(BlackboardComp->GetValueAsObject(FName("TargetActor")));
+	}
+	
+	return nullptr;
+}
+
 void AArcaneAIController::BeginPlay()
 {
 	Super::BeginPlay();
