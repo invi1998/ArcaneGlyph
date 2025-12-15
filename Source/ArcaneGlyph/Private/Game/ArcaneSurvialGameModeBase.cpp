@@ -11,6 +11,7 @@
 #include "Engine/AssetManager.h"
 #include "Engine/TargetPoint.h"
 #include "Kismet/GameplayStatics.h"
+#include "Widget/Wave/WaveProgressBarWidget.h"
 
 void AArcaneSurvialGameModeBase::RegisterSpawnedEnemies(const TArray<AArcaneEnemyCharacter*> InEnemiesToRegister)
 {
@@ -46,6 +47,8 @@ void AArcaneSurvialGameModeBase::BeginPlay()
 	TotalWavesToSpawn = SelectedEnemyWaveSpawnerDataTable->GetRowNames().Num();
 
 	PreLoadNextWaveEnemy();
+	
+	CreateWaveProgressBarWidget();
 }
 
 void AArcaneSurvialGameModeBase::Tick(float DeltaSeconds)
@@ -105,6 +108,107 @@ void AArcaneSurvialGameModeBase::InitGame(const FString& MapName, const FString&
 	
 	GameDifficulty = SelectedDifficulty;
 	
+}
+
+void AArcaneSurvialGameModeBase::CreateWaveProgressBarWidget()
+{
+	TArray<FWaveData> WaveData;
+	if (!ConvertDataTableToWaveData(
+		EnemyWaveSpawnerDataTable.FindRef(GameDifficulty),
+		WaveData,
+		FText::FromString(UEnum::GetValueAsString(GameDifficulty))
+	))
+	{
+		UE_LOG(LogTemp, Error, TEXT("AArcaneSurvialGameModeBase::CreateWaveProgressBarWidget - Failed to convert DataTable to WaveData."));
+		return;
+	}
+	
+	if (WaveProgressBarWidgetClass)
+	{
+		WaveProgressBarWidget = CreateWidget<UWaveProgressBarWidget>(GetWorld(), WaveProgressBarWidgetClass);
+		if (WaveProgressBarWidget)
+		{
+			WaveProgressBarWidget->AddToViewport();
+			WaveProgressBarWidget->GenerateWavesUI(WaveData);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("AArcaneSurvialGameModeBase::CreateWaveProgressBarWidget - Failed to create WaveProgressBarWidget instance."));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("AArcaneSurvialGameModeBase::CreateWaveProgressBarWidget - WaveProgressBarWidgetClass is not set."));
+	}
+	
+}
+
+bool AArcaneSurvialGameModeBase::ConvertDataTableToWaveData(UDataTable* DataTable, TArray<FWaveData>& OutWaveData, const FText& DifficultyName)
+{
+	if (!DataTable)
+	{
+		UE_LOG(LogTemp, Error, TEXT("ConvertDataTableToWaveData: Input DataTable is null."));
+		return false;
+	}
+
+	// 检查 DataTable 的行结构是否匹配
+	if (DataTable->RowStruct != FArcaneEnemyWaveSpawnerTableRow::StaticStruct())
+	{
+		UE_LOG(LogTemp, Error, TEXT("ConvertDataTableToWaveData: DataTable RowStruct mismatch. Expected FArcaneEnemyWaveSpawnerTableRow."));
+		return false;
+	}
+
+	OutWaveData.Empty();
+	
+	// 获取所有行名和行数据
+	TArray<FArcaneEnemyWaveSpawnerTableRow*> RowDataArray;
+	DataTable->GetAllRows<FArcaneEnemyWaveSpawnerTableRow>(TEXT("ConvertDataTableToWaveData"), RowDataArray);
+
+	if (RowDataArray.Num() == 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ConvertDataTableToWaveData: DataTable contains no rows."));
+		return true; // 成功，但结果为空
+	}
+
+	// 遍历所有行并转换
+	for (int32 i = 0; i < RowDataArray.Num(); ++i)
+	{
+		const FArcaneEnemyWaveSpawnerTableRow* Row = RowDataArray[i];
+		if (Row)
+		{
+			FWaveData NewWave = ConvertRowToWaveData(*Row, i);
+			OutWaveData.Add(NewWave);
+		}
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("ConvertDataTableToWaveData: Successfully converted %d rows."), OutWaveData.Num());
+	return true;
+}
+
+FWaveData AArcaneSurvialGameModeBase::ConvertRowToWaveData(const FArcaneEnemyWaveSpawnerTableRow& RowData, int32 WaveIndex)
+{
+	FWaveData NewWaveData;
+
+	// 1. 确定波次类型和敌人数量
+	NewWaveData.EnemyCount = RowData.TotalEnemyToSpawnThisWave;
+	
+	// 区分 Boss 波次：如果总共需要生成的敌人数量为 1，则认为是 Boss 波次
+	if (NewWaveData.EnemyCount == 1)
+	{
+		NewWaveData.WaveType = EWaveType::Boss;
+		NewWaveData.DisplayName = FText::FromString(FString::Printf(TEXT("最终首领")));
+	}
+	else
+	{
+		NewWaveData.WaveType = EWaveType::Normal;
+		NewWaveData.DisplayName = FText::FromString(FString::Printf(TEXT("第 %d 波"), WaveIndex + 1));
+	}
+
+	// 2. 确定图标 (可选，这里留空，用户可以在蓝图中配置)
+	// 如果需要根据 RowData.EnemyWaveSpawnerDefinitions 来确定图标，需要更复杂的逻辑。
+	// 暂时保持 WaveIcon 为空，让蓝图子类或 DataAsset 默认配置。
+	
+	return NewWaveData;
 }
 
 bool AArcaneSurvialGameModeBase::HasFinishedAllWaves() const

@@ -4,8 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "ArcaneGameModeBase.h"
+#include "ArcaneTypes/WaveDataTypes.h"
 #include "ArcaneSurvialGameModeBase.generated.h"
 
+class UWaveProgressBarWidget;
+class UWaveDifficultyAsset;
 class AArcaneEnemyCharacter;
 
 UENUM(BlueprintType)
@@ -74,6 +77,29 @@ protected:
 	
 	// InitGame - 在游戏开始时初始化游戏模式（它将在场景里所有Actor生成之前调用）
 	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
+	
+	/** 要创建的主进度条UI蓝图类 */
+	UPROPERTY(EditDefaultsOnly, Category = "Wave Test")
+	TSubclassOf<UWaveProgressBarWidget> WaveProgressBarWidgetClass;
+	
+	UPROPERTY()
+	UWaveProgressBarWidget* WaveProgressBarWidget;
+	
+	void CreateWaveProgressBarWidget();
+	
+	static bool ConvertDataTableToWaveData(
+		UDataTable* DataTable, 
+		TArray<FWaveData>& OutWaveData, 
+		const FText& DifficultyName = FText::GetEmpty()
+	);
+	
+	/**
+	 * 辅助函数：将单行数据转换为 FWaveData。
+	 * @param RowData 要转换的表格行数据。
+	 * @param WaveIndex 波次索引（用于生成 DisplayName）。
+	 * @return 转换后的 FWaveData 结构。
+	 */
+	static FWaveData ConvertRowToWaveData(const FArcaneEnemyWaveSpawnerTableRow& RowData, int32 WaveIndex);
 
 private:
 	bool HasFinishedAllWaves() const;
