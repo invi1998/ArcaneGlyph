@@ -35,12 +35,15 @@ void AArcaneSurvialGameModeBase::SetCurrentSurvialState(EArcaneSurvialGameModeSt
 void AArcaneSurvialGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	// 根据游戏难度选择对应的数据表
+	UDataTable* SelectedEnemyWaveSpawnerDataTable = EnemyWaveSpawnerDataTable.FindRef(GameDifficulty);
 
-	checkf(EnemyWaveSpawnerDataTable, TEXT("AArcaneSurvialGameModeBase::BeginPlay - EnemyWaveSpawnerDataTable is not set! Please set it in the editor or in the constructor."));
+	checkf(SelectedEnemyWaveSpawnerDataTable, TEXT("AArcaneSurvialGameModeBase::BeginPlay - EnemyWaveSpawnerDataTable is not set! Please set it in the editor or in the constructor."));
 
 	SetCurrentSurvialState(EArcaneSurvialGameModeState::WaitGameStart);
 
-	TotalWavesToSpawn = EnemyWaveSpawnerDataTable->GetRowNames().Num();
+	TotalWavesToSpawn = SelectedEnemyWaveSpawnerDataTable->GetRowNames().Num();
 
 	PreLoadNextWaveEnemy();
 }
@@ -140,7 +143,8 @@ void AArcaneSurvialGameModeBase::PreLoadNextWaveEnemy()
 FArcaneEnemyWaveSpawnerTableRow* AArcaneSurvialGameModeBase::GetCurrentWaveEnemySpawnerTableRow() const
 {
 	const FName RowName = FName(*FString::Printf(TEXT("Wave%d"), CurrentWave));
-	FArcaneEnemyWaveSpawnerTableRow* FoundRow = EnemyWaveSpawnerDataTable->FindRow<FArcaneEnemyWaveSpawnerTableRow>(RowName, TEXT("AArcaneSurvialGameModeBase::GetCurrentWaveEnemySpawnerTableRow - Failed to find row in EnemyWaveSpawnerDataTable!"));
+	UDataTable* SelectedEnemyWaveSpawnerDataTable = EnemyWaveSpawnerDataTable.FindRef(GameDifficulty);
+	FArcaneEnemyWaveSpawnerTableRow* FoundRow = SelectedEnemyWaveSpawnerDataTable->FindRow<FArcaneEnemyWaveSpawnerTableRow>(RowName, TEXT("AArcaneSurvialGameModeBase::GetCurrentWaveEnemySpawnerTableRow - Failed to find row in EnemyWaveSpawnerDataTable!"));
 
 	checkf(FoundRow, TEXT("AArcaneSurvialGameModeBase::GetCurrentWaveEnemySpawnerTableRow - FoundRow is null! Please check the data table and the row name(%s)."), *RowName.ToString());
 	return FoundRow;

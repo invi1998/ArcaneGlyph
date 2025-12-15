@@ -91,7 +91,7 @@ private:
 	FOnSurvialGameModeStateChangedDelegate OnSurvialGameModeStateChanged;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WaveDefinition", meta=(AllowPrivateAccess = "true"))
-	UDataTable* EnemyWaveSpawnerDataTable;	// 敌人波次生成器数据表
+	TMap<EArcaneGameDifficulty, UDataTable*> EnemyWaveSpawnerDataTable;	// 敌人波次生成器数据表(基于游戏难度)
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "WaveDefinition", meta=(AllowPrivateAccess = "true"))
 	int32 TotalWavesToSpawn = 0;	// 总共需要生成的波次数量
