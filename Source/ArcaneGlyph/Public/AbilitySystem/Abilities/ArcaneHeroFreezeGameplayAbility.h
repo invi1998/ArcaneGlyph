@@ -31,7 +31,7 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	AActor* FreezeTargetActor;
-
+	
 	UFUNCTION(BlueprintCallable)
 	void ApplyFreezeEffect(AActor* TargetActor);
 
@@ -41,6 +41,8 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Arcane | Ability", meta = (DisplayName = "On Freeze Effect Ended"))
 	void BP_OnFreezeEffectEnded();
+	
+	void OnFreezeTargetDeath(AActor* Actor);
     
 private:
 	FTimerHandle FreezeTimerHandle;

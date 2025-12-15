@@ -53,7 +53,7 @@ void UArcaneHeroFreezeGameplayAbility::ApplyFreezeEffect(AActor* TargetActor)
 		false // 不循环
 	);
 
-	// 监听伤害事件
+	// 监听伤害事件和死亡状态
 	FGameplayTagContainer DamageEventTags;
 	DamageEventTags.AddTag(ArcaneGameplayTags::Shared_Event_HitReact);
 
@@ -61,6 +61,9 @@ void UArcaneHeroFreezeGameplayAbility::ApplyFreezeEffect(AActor* TargetActor)
 		DamageEventTags,
 		FGameplayEventTagMulticastDelegate::FDelegate::CreateUObject(this, &UArcaneHeroFreezeGameplayAbility::OnDamageReceived)
 	);
+	
+	// 监听死亡状态
+	TargetASC->OnActorDeathDelegate.AddUObject(this, &UArcaneHeroFreezeGameplayAbility::OnFreezeTargetDeath);
 	
 }
 
@@ -119,6 +122,7 @@ void UArcaneHeroFreezeGameplayAbility::EndFreezeEffect()
 	{
 		FGameplayTagContainer DamageEventTags;
 		DamageEventTags.AddTag(ArcaneGameplayTags::Shared_Event_HitReact);
+		DamageEventTags.AddTag(ArcaneGameplayTags::Shared_Status_Dead);
 		ASC->RemoveGameplayEventTagContainerDelegate(
 			DamageEventTags,
 			DamageEventHandle
@@ -126,6 +130,16 @@ void UArcaneHeroFreezeGameplayAbility::EndFreezeEffect()
 
 		DamageEventHandle.Reset();
 	}
+	
+	ASC->OnActorDeathDelegate.RemoveAll(this);
 
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+}
+
+void UArcaneHeroFreezeGameplayAbility::OnFreezeTargetDeath(AActor* Actor)
+{
+	if (Actor == FreezeTargetActor)
+	{
+		EndFreezeEffect();
+	}
 }
