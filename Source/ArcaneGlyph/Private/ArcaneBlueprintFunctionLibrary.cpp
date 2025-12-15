@@ -547,23 +547,45 @@ void UArcaneBlueprintFunctionLibrary::ArcaneCloseGame(const UObject* WorldContex
 	}
 }
 
+UArcaneSaveGame* UArcaneBlueprintFunctionLibrary::GetOrCreateArcaneSaveGame()
+{
+	const FString SlotName = ArcaneGameplayTags::GameData_SaveGame_Slot_1.GetTag().ToString();
+	const int32 UserIndex = 0;
+
+	// 1. 尝试加载现有存档
+	if (UGameplayStatics::DoesSaveGameExist(SlotName, UserIndex))
+	{
+		if (USaveGame* LoadedSaveGame = UGameplayStatics::LoadGameFromSlot(SlotName, UserIndex))
+		{
+			if (UArcaneSaveGame* ArcaneSaveGame = Cast<UArcaneSaveGame>(LoadedSaveGame))
+			{
+				return ArcaneSaveGame;
+			}
+		}
+	}
+
+	// 2. 如果加载失败或存档不存在，则创建新存档
+	if (USaveGame* NewSaveGame = UGameplayStatics::CreateSaveGameObject(UArcaneSaveGame::StaticClass()))
+	{
+		return Cast<UArcaneSaveGame>(NewSaveGame);
+	}
+
+	return nullptr;
+}
+
 void UArcaneBlueprintFunctionLibrary::SaveCurrentGameDifficulty(EArcaneGameDifficulty InDifficulty)
 {
-	USaveGame* SaveGameObj = UGameplayStatics::CreateSaveGameObject(UArcaneSaveGame::StaticClass());
-	if (UArcaneSaveGame* ArcaneSaveGame = Cast<UArcaneSaveGame>(SaveGameObj))
+	if (UArcaneSaveGame* ArcaneSaveGame = GetOrCreateArcaneSaveGame())
 	{
 		ArcaneSaveGame->LastSelectedGameDifficulty = InDifficulty;
 		const bool bWasSaved = UGameplayStatics::SaveGameToSlot(ArcaneSaveGame, ArcaneGameplayTags::GameData_SaveGame_Slot_1.GetTag().ToString(), 0);
 		
-		Debug::Print(bWasSaved ? TEXT("Game Difficulty Saved Successfully.") : TEXT("Failed to Save Game Difficulty."));
-	
 	}
 }
 
 void UArcaneBlueprintFunctionLibrary::SaveUnlockedGameDifficulties(EArcaneGameDifficulty InUnlockedDifficulty)
 {
-	USaveGame* SaveGameObj = UGameplayStatics::CreateSaveGameObject(UArcaneSaveGame::StaticClass());
-	if (UArcaneSaveGame* ArcaneSaveGame = Cast<UArcaneSaveGame>(SaveGameObj))
+	if (UArcaneSaveGame* ArcaneSaveGame = GetOrCreateArcaneSaveGame())
 	{
 		// 需要进行比较，如果传入的难度低于等于已经解锁的难度，则不进行保存
 		if (!ArcaneSaveGame->UnlockedGameDifficulties.Contains(InUnlockedDifficulty))
@@ -575,7 +597,6 @@ void UArcaneBlueprintFunctionLibrary::SaveUnlockedGameDifficulties(EArcaneGameDi
 			}
 			const bool bWasSaved = UGameplayStatics::SaveGameToSlot(ArcaneSaveGame, ArcaneGameplayTags::GameData_SaveGame_Slot_1.GetTag().ToString(), 0);
 		
-			Debug::Print(bWasSaved ? TEXT("Unlocked Game Difficulties Saved Successfully.") : TEXT("Failed to Save Unlocked Game Difficulties."));
 		}
 	}
 }

@@ -9,6 +9,7 @@
 #include "Widget/Widget_ActivatableBase.h"
 #include "ArcaneBlueprintFunctionLibrary.generated.h"
 
+class UArcaneSaveGame;
 class UArcaneGameInstance;
 struct FGameplayEffectSpecHandle;
 class AArcaneHeroCharacter;
@@ -130,6 +131,8 @@ public:
 	// 关闭游戏（添加关于游戏手柄的处理）
 	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary", meta = (WorldContext = "WorldContextObject"))
 	static void ArcaneCloseGame(const UObject* WorldContextObject);
+	
+	static UArcaneSaveGame* GetOrCreateArcaneSaveGame();
 	
 	UFUNCTION(BlueprintCallable, Category = "Arcane | FunctionLibrary")
 	static void SaveCurrentGameDifficulty(EArcaneGameDifficulty InDifficulty);
