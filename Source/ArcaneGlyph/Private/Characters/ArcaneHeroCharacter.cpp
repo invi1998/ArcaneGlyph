@@ -92,30 +92,30 @@ void AArcaneHeroCharacter::PossessedBy(AController* NewController)
 		// 对于角色的初始化数据，我们需要在角色被控制器控制时加载数据，我希望这个过程是同步的，因此使用LoadSynchronous()函数
 		if (UDataAsset_StartupDadaBase* LoadedData = CharacterStartupData.LoadSynchronous())
 		{
-			int32 AbilityApplyLevel = 1;
+			// int32 AbilityApplyLevel = 1;
 			if (AArcaneGameModeBase* ArcaneGameMode = GetWorld()->GetAuthGameMode<AArcaneGameModeBase>())
 			{
 				switch (ArcaneGameMode->GetGameDifficulty())
 				{
 				case EArcaneGameDifficulty::Easy:
-					AbilityApplyLevel = 1;
+					CharacterLevel = 1;
 					break;
 				case EArcaneGameDifficulty::Normal:
-					AbilityApplyLevel = 2;
+					CharacterLevel = 2;
 					break;
 				case EArcaneGameDifficulty::Hard:
-					AbilityApplyLevel = 3;
+					CharacterLevel = 3;
 					break;
 				case EArcaneGameDifficulty::Insane:
-					AbilityApplyLevel = 4;
+					CharacterLevel = 4;
 					break;
 				case EArcaneGameDifficulty::None:
-					AbilityApplyLevel = 1;
+					CharacterLevel = 1;
 					break;
 				}
 			}
 			// 这里可以使用加载到的数据进行初始化
-			LoadedData->GiveToAbilitySystemComponent(ArcaneAbilitySystemComponent.Get(), AbilityApplyLevel);
+			LoadedData->GiveToAbilitySystemComponent(ArcaneAbilitySystemComponent.Get(), CharacterLevel);
 		}
 	}
 	

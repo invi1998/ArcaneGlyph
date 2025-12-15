@@ -8,6 +8,9 @@
 #include "ArcaneAbilitySystemComponent.generated.h"
 
 class AArcaneHeroWeapon;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnActorDeathDelegate, AActor*);
+
 /**
  * 
  */
@@ -18,6 +21,8 @@ class ARCANEGLYPH_API UArcaneAbilitySystemComponent : public UAbilitySystemCompo
 
 public:
 	UArcaneAbilitySystemComponent();
+	
+	FOnActorDeathDelegate OnActorDeathDelegate;
 	
 	void OnAbilityInputPressed(const FGameplayTag& InInputTag);
 	void SendChargeComplete();
@@ -40,6 +45,6 @@ public:
 	bool TryActivateAbilityByTag(FGameplayTag InAbilityTag);
 	
 private:
-	// void OnCurrentHealthChanged(const FOnAttributeChangeData& OnAttributeChangeData);
+	void OnCurrentHealthChanged(const FOnAttributeChangeData& OnAttributeChangeData);
 	
 };

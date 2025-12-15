@@ -4,12 +4,13 @@
 #include "AbilitySystem/ArcaneAbilitySystemComponent.h"
 
 #include "ArcaneGameplayTags.h"
+#include "AbilitySystem/ArcaneAttributeSet.h"
 #include "AbilitySystem/Abilities/ArcaneHeroGameplayAbility.h"
 #include "Items/Weapons/ArcaneHeroWeapon.h"
 
 UArcaneAbilitySystemComponent::UArcaneAbilitySystemComponent()
 {
-	// GetGameplayAttributeValueChangeDelegate(UArcaneAttributeSet::GetCurrentHealthAttribute()).AddUObject(this, &UArcaneAbilitySystemComponent::OnCurrentHealthChanged);
+	GetGameplayAttributeValueChangeDelegate(UArcaneAttributeSet::GetCurrentHealthAttribute()).AddUObject(this, &UArcaneAbilitySystemComponent::OnCurrentHealthChanged);
 }
 
 void UArcaneAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& InInputTag)
@@ -189,6 +190,26 @@ bool UArcaneAbilitySystemComponent::TryActivateAbilityByTag(FGameplayTag InAbili
 	}
 
 	return false;
+}
+
+void UArcaneAbilitySystemComponent::OnCurrentHealthChanged(const FOnAttributeChangeData& OnAttributeChangeData)
+{
+	if (!GetOwner()) return;
+	
+	if (HasMatchingGameplayTag(ArcaneGameplayTags::Shared_Status_Dead))
+	{
+		OnActorDeathDelegate.Broadcast(GetOwner());
+		return;
+	}
+	
+	if (OnAttributeChangeData.NewValue <= 0.f)
+	{
+		// 当前Health值小于等于0，触发死亡逻辑
+		// AddLooseGameplayTag(ArcaneGameplayTags::Shared_Status_Dead);
+
+		OnActorDeathDelegate.Broadcast(GetOwner());
+	}
+	
 }
 
 

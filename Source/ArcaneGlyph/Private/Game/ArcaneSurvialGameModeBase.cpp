@@ -6,6 +6,7 @@
 #include "ArcaneBlueprintFunctionLibrary.h"
 #include "ArcaneDebugHelper.h"
 #include "NavigationSystem.h"
+#include "AbilitySystem/ArcaneAbilitySystemComponent.h"
 #include "Characters/ArcaneEnemyCharacter.h"
 #include "Engine/AssetManager.h"
 #include "Engine/TargetPoint.h"
@@ -187,8 +188,12 @@ int32 AArcaneSurvialGameModeBase::TrySpawnEnemy()
 
 			if (AArcaneEnemyCharacter* SpawnArcaneEnemy = GetWorld()->SpawnActor<AArcaneEnemyCharacter>(LoadedEnemyClass, RandomLocation, SpawnRotation, SpawnParameters))
 			{
-				SpawnArcaneEnemy->OnDestroyed.AddUniqueDynamic(this, &AArcaneSurvialGameModeBase::OnEnemyDestroyed);
-
+				// SpawnArcaneEnemy->OnDestroyed.AddUniqueDynamic(this, &AArcaneSurvialGameModeBase::OnEnemyDestroyed);
+				if (UArcaneAbilitySystemComponent* EnemyASC = SpawnArcaneEnemy->GetArcaneAbilitySystemComponent())
+				{
+					EnemyASC->OnActorDeathDelegate.AddUObject(this, &AArcaneSurvialGameModeBase::OnEnemyDestroyed);
+				}
+				
 				EnemySpawnedThisTime++;
 				TotalSpawnedEnemyThisWaveCounter++;
 			}
@@ -210,6 +215,11 @@ bool AArcaneSurvialGameModeBase::ShouldKeepSpawningEnemies() const
 
 void AArcaneSurvialGameModeBase::OnEnemyDestroyed(AActor* DestroyedActor)
 {
+	if (UArcaneAbilitySystemComponent* EnemyASC = UArcaneBlueprintFunctionLibrary::NativeGetArcaneASCFromActor(DestroyedActor))
+	{
+		EnemyASC->OnActorDeathDelegate.RemoveAll(this);
+	}
+	
 	// 当前角色死亡，继续生成
 	CurrentSpawnedEnemyCounter--;
 	if (ShouldKeepSpawningEnemies())

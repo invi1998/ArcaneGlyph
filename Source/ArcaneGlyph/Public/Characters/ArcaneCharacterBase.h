@@ -72,6 +72,9 @@ protected:
 
 	virtual void DeathMontageFinished();
 	void SetRagdollPhysics(bool bEnabled);
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Combat")
+	int32 CharacterLevel = 1;	// 角色等级
 
 #if WITH_EDITOR
 	// Begin UObject Interface

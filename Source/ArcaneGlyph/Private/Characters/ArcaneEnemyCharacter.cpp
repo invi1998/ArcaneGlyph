@@ -95,25 +95,25 @@ void AArcaneEnemyCharacter::DeathMontageFinished()
 
 void AArcaneEnemyCharacter::InitEnemyStartupData()
 {
-	int32 AbilityApplyLevel = 1;
+	// int32 AbilityApplyLevel = 1;
 	if (AArcaneGameModeBase* ArcaneGameMode = GetWorld()->GetAuthGameMode<AArcaneGameModeBase>())
 	{
 		switch (ArcaneGameMode->GetGameDifficulty())
 		{
 		case EArcaneGameDifficulty::Easy:
-			AbilityApplyLevel = 1;
+			CharacterLevel = 1;
 			break;
 		case EArcaneGameDifficulty::Normal:
-			AbilityApplyLevel = 2;
+			CharacterLevel = 2;
 			break;
 		case EArcaneGameDifficulty::Hard:
-			AbilityApplyLevel = 3;
+			CharacterLevel = 3;
 			break;
 		case EArcaneGameDifficulty::Insane:
-			AbilityApplyLevel = 4;
+			CharacterLevel = 4;
 			break;
 		case EArcaneGameDifficulty::None:
-			AbilityApplyLevel = 1;
+			CharacterLevel = 1;
 			break;
 		}
 	}
@@ -122,11 +122,11 @@ void AArcaneEnemyCharacter::InitEnemyStartupData()
 	// Enemy角色的生成，我们希望他是异步生成的
 	UAssetManager::GetStreamableManager().RequestAsyncLoad(
 		CharacterStartupData.ToSoftObjectPath(),
-		FStreamableDelegate::CreateLambda([this, AbilityApplyLevel]()
+		FStreamableDelegate::CreateLambda([this]()
 		{
 			if (UDataAsset_StartupDadaBase* LoadedData = CharacterStartupData.Get())
 			{
-				LoadedData->GiveToAbilitySystemComponent(ArcaneAbilitySystemComponent.Get(), AbilityApplyLevel);
+				LoadedData->GiveToAbilitySystemComponent(ArcaneAbilitySystemComponent.Get(), CharacterLevel);
 			}
 		})
 	);
