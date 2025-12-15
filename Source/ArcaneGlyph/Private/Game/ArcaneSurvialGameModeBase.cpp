@@ -16,9 +16,10 @@ void AArcaneSurvialGameModeBase::RegisterSpawnedEnemies(const TArray<AArcaneEnem
 {
 	for (AArcaneEnemyCharacter* Enemy : InEnemiesToRegister)
 	{
-		if (Enemy)
+		if (UArcaneAbilitySystemComponent* EnemyASC = Enemy->GetArcaneAbilitySystemComponent())
 		{
-			Enemy->OnDestroyed.AddUniqueDynamic(this, &AArcaneSurvialGameModeBase::OnEnemyDestroyed);
+			// Enemy->OnDestroyed.AddUniqueDynamic(this, &AArcaneSurvialGameModeBase::OnEnemyDestroyed);
+			EnemyASC->OnActorDeathDelegate.AddUObject(this, &AArcaneSurvialGameModeBase::OnEnemyDestroyed);
 			CurrentSpawnedEnemyCounter++;
 		}
 	}
@@ -205,7 +206,7 @@ int32 AArcaneSurvialGameModeBase::TrySpawnEnemy()
 		
 	}
 	
-	return 0;
+	return EnemySpawnedThisTime;
 }
 
 bool AArcaneSurvialGameModeBase::ShouldKeepSpawningEnemies() const
@@ -215,6 +216,8 @@ bool AArcaneSurvialGameModeBase::ShouldKeepSpawningEnemies() const
 
 void AArcaneSurvialGameModeBase::OnEnemyDestroyed(AActor* DestroyedActor)
 {
+	Debug::Print(FString::Printf(TEXT("AArcaneSurvialGameModeBase::OnEnemyDestroyed - Enemy %s destroyed."), *DestroyedActor->GetName()));
+	
 	if (UArcaneAbilitySystemComponent* EnemyASC = UArcaneBlueprintFunctionLibrary::NativeGetArcaneASCFromActor(DestroyedActor))
 	{
 		EnemyASC->OnActorDeathDelegate.RemoveAll(this);
@@ -226,7 +229,7 @@ void AArcaneSurvialGameModeBase::OnEnemyDestroyed(AActor* DestroyedActor)
 	{
 		CurrentSpawnedEnemyCounter += TrySpawnEnemy();
 	}
-	else if (CurrentSpawnedEnemyCounter == 0)
+	else if (CurrentSpawnedEnemyCounter <= 0)
 	{
 		// 当前波次的敌人全部死亡，进入下一个状态
 		TotalSpawnedEnemyThisWaveCounter = 0;

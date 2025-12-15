@@ -229,11 +229,13 @@ void UArcaneAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 		
 		PawnUIComponent->OnCurrentHealthChanged.Broadcast(GetCurrentHealth() / GetMaxHealth());
 		
+		/*
 		if (GetCurrentHealth() <= 0.f)
 		{
 			// 如果当前生命值小于等于0，则添加死亡标签
 			UArcaneBlueprintFunctionLibrary::AddGameplayTagToActorIfNotHas(Data.Target.GetAvatarActor(), ArcaneGameplayTags::Shared_Status_Dead);
 		}
+		*/
 	}
 	
 }

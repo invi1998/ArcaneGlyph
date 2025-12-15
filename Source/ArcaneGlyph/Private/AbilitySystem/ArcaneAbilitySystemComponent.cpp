@@ -204,10 +204,11 @@ void UArcaneAbilitySystemComponent::OnCurrentHealthChanged(const FOnAttributeCha
 	
 	if (OnAttributeChangeData.NewValue <= 0.f)
 	{
-		// 当前Health值小于等于0，触发死亡逻辑
-		// AddLooseGameplayTag(ArcaneGameplayTags::Shared_Status_Dead);
-
 		OnActorDeathDelegate.Broadcast(GetOwner());
+		
+		// 当前Health值小于等于0，触发死亡逻辑
+		AddLooseGameplayTag(ArcaneGameplayTags::Shared_Status_Dead);
+		
 	}
 	
 }
