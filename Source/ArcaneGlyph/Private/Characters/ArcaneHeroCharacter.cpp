@@ -16,6 +16,7 @@
 #include "Components/CapsuleComponent.h"
 #include "DataAssets/StartupData/DataAsset_HeroStartupDada.h"
 #include "Game/ArcaneGameModeBase.h"
+#include "Game/ArcaneSurvialGameModeBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Interfaces/ArcaneGaitDataInterface.h"
@@ -84,7 +85,7 @@ void AArcaneHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 void AArcaneHeroCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
-
+	
 	// 对于TSoftObjectPtr类型的数据，需要先加载数据，然后再使用
 	// IsValid()函数用于判断TSoftObjectPtr是否有效, IsNull()函数用于判断TSoftObjectPtr是否为空
 	if (!CharacterStartupData.IsNull())
@@ -284,6 +285,12 @@ void AArcaneHeroCharacter::OnDeath()
 	if (APlayerController* PC = GetController<APlayerController>())
 	{
 		DisableInput(PC);
+	}
+	
+	// 获取当前游戏模式，如果是ArcaneSurvialGameModeBase，就告知游戏模式角色已死亡
+	if (AArcaneSurvialGameModeBase* ArcaneSurvialGameMode = GetWorld()->GetAuthGameMode<AArcaneSurvialGameModeBase>())
+	{
+		ArcaneSurvialGameMode->SetCurrentSurvialState(EArcaneSurvialGameModeState::PlayerDied);
 	}
 }
 

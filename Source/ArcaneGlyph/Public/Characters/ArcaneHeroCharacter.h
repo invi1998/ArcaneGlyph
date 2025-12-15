@@ -24,7 +24,7 @@ class ARCANEGLYPH_API AArcaneHeroCharacter : public AArcaneCharacterBase
 public:
 	AArcaneHeroCharacter();
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	
 	// ~ Begin APawn Interface
 	virtual void PossessedBy(AController* NewController) override;
 	// ~ End APawn Interface

@@ -64,6 +64,9 @@ class ARCANEGLYPH_API AArcaneSurvialGameModeBase : public AArcaneGameModeBase
 public:
 	UFUNCTION(BlueprintCallable)
 	void RegisterSpawnedEnemies(const TArray<AArcaneEnemyCharacter*> InEnemiesToRegister);
+	
+	UFUNCTION(BlueprintCallable)
+	void SetCurrentSurvialState(EArcaneSurvialGameModeState InState);
 
 protected:
 	virtual void BeginPlay() override;
@@ -73,9 +76,6 @@ protected:
 	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 
 private:
-	UFUNCTION(BlueprintCallable)
-	void SetCurrentSurvialState(EArcaneSurvialGameModeState InState);
-	
 	bool HasFinishedAllWaves() const;
 	void PreLoadNextWaveEnemy();
 	FArcaneEnemyWaveSpawnerTableRow* GetCurrentWaveEnemySpawnerTableRow() const;

@@ -155,10 +155,13 @@ void AArcaneCharacterBase::OnDeadTagChanged(FGameplayTag InGameplayTag, int Coun
 	{
 		StartDeathSequence();
 	}
+	
+	/*
 	else
 	{
 		// Respawn();
 	}
+	*/
 }
 
 void AArcaneCharacterBase::BindGASChangedDelegate()

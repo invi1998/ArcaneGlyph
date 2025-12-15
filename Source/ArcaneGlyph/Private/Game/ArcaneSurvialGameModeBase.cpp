@@ -25,6 +25,13 @@ void AArcaneSurvialGameModeBase::RegisterSpawnedEnemies(const TArray<AArcaneEnem
 	}
 }
 
+void AArcaneSurvialGameModeBase::SetCurrentSurvialState(EArcaneSurvialGameModeState InState)
+{
+	CurrentSurvialGameModeState = InState;
+
+	OnSurvialGameModeStateChanged.Broadcast(CurrentSurvialGameModeState);
+}
+
 void AArcaneSurvialGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
@@ -95,13 +102,6 @@ void AArcaneSurvialGameModeBase::InitGame(const FString& MapName, const FString&
 	
 	GameDifficulty = SelectedDifficulty;
 	
-}
-
-void AArcaneSurvialGameModeBase::SetCurrentSurvialState(EArcaneSurvialGameModeState InState)
-{
-	CurrentSurvialGameModeState = InState;
-
-	OnSurvialGameModeStateChanged.Broadcast(CurrentSurvialGameModeState);
 }
 
 bool AArcaneSurvialGameModeBase::HasFinishedAllWaves() const
