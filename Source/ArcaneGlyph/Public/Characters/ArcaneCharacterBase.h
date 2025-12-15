@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 #include "GameplayTagContainer.h"
+#include "ArcaneTypes/ArcaneEnumTypes.h"
 #include "Interfaces/PawnCombatInterface.h"
 #include "Interfaces/PawnUIInterface.h"
 #include "ArcaneCharacterBase.generated.h"
@@ -49,6 +50,10 @@ public:
 	bool IsCharacterAlive() const;
 	
 	bool IsAlive();
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ArcaneMovement")
+	EArcaneGaits CurrentGait = EArcaneGaits::Walking;		// 当前步态
+
 
 protected:
 	// ~ Begin APawn Interface

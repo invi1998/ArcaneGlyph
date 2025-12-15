@@ -54,9 +54,6 @@ public:
 	float CentripetalFactor = 10000.f;		// 向心力因子
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ArcaneMovement")
-	EArcaneGaits CurrentGait = EArcaneGaits::Walking;		// 当前步态
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ArcaneMovement")
 	EArcaneGaits PreviousGait = EArcaneGaits::Walking;		// 上一个步态
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ArcaneMovement")

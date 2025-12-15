@@ -177,18 +177,11 @@ void UArcaneCharacterAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSe
 	// LocomotionDirection = CalculateLocomotionDirection4D(LocomotionDirectionAngle, LocomotionDirection, FArcaneLocomotionDirectionSettings_4D());
 
 	PreviousGait = CurrentGait;
-	CurrentGait = InComingGait;
+	CurrentGait = OwnerCharacter->CurrentGait;
 	bGaitChanged = InComingGait != PreviousGait;
 
 	UpdateRootYawOffsetData(DeltaSeconds);
-
 	
-	
-}
-
-void UArcaneCharacterAnimInstance::ReceiveGaitData_Implementation(const EArcaneGaits InGait)
-{
-	InComingGait = InGait;
 }
 
 bool UArcaneCharacterAnimInstance::ShouldDoFullBody() const

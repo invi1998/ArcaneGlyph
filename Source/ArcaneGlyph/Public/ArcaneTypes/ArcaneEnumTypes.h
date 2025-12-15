@@ -88,6 +88,7 @@ enum class EArcaneCountDownActionOutput : uint8
 UENUM(BlueprintType)
 enum class EArcaneGaits : uint8
 {
+	// Idle UMETA(DisplayName = "静止"),
 	Jogging UMETA(DisplayName = "慢跑"),
 	Walking UMETA(DisplayName = "行走"),
 	Running UMETA(DisplayName = "奔跑"),

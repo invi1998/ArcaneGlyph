@@ -6,7 +6,6 @@
 #include "ArcaneBaseAnimInstance.h"
 #include "ArcaneTypes/ArcaneEnumTypes.h"
 #include "ArcaneTypes/ArcaneStructTypes.h"
-#include "Interfaces/ArcaneGaitDataInterface.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "ArcaneCharacterAnimInstance.generated.h"
 
@@ -16,7 +15,7 @@ class AArcaneCharacterBase;
  * 
  */
 UCLASS()
-class ARCANEGLYPH_API UArcaneCharacterAnimInstance : public UArcaneBaseAnimInstance, public IArcaneGaitDataInterface
+class ARCANEGLYPH_API UArcaneCharacterAnimInstance : public UArcaneBaseAnimInstance
 {
 	GENERATED_BODY()
 
@@ -31,8 +30,6 @@ public:
 	// 这意味着使用这个函数可以提高动画的性能，使用该函数来计算我们需要的动画数据是一个很大的优化项
 	// 但是需要注意的是，该函数中不能访问任何非线程安全的数据，比如 Actor 的成员变量等
 	virtual void NativeThreadSafeUpdateAnimation(float DeltaSeconds) override;
-
-	virtual void ReceiveGaitData_Implementation(const EArcaneGaits InGait) override;
 
 	FORCEINLINE float GetLocomotionDirection() const { return LocomotionDirectionAngle; }
 	FORCEINLINE EArcaneGaits GetCurrentGait() const { return CurrentGait; }
