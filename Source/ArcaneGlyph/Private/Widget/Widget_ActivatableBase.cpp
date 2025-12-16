@@ -98,6 +98,25 @@ private:
 };
 
 
+void UWidget_ActivatableBase::RemoveWeaponMappingContext()
+{
+	// 获取拥有的英雄控制器
+	if (AArcaneHeroController* ArcaneHeroController = GetOwningHeroController())
+	{
+		// 从控制器中移除武器映射上下文
+		ArcaneHeroController->RemoveWeaponMappingContext();
+	}
+}
+
+void UWidget_ActivatableBase::AddWeaponMappingContext()
+{
+	if (AArcaneHeroController* ArcaneHeroController = GetOwningHeroController())
+	{
+		// 向控制器中添加武器映射上下文
+		ArcaneHeroController->AddWeaponMappingContext();
+	}
+}
+
 AArcaneHeroController* UWidget_ActivatableBase::GetOwningHeroController()
 {
 	if (!CachedOwningPC.IsValid())

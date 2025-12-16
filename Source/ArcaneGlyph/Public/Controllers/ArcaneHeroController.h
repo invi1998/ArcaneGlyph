@@ -31,6 +31,9 @@ public:
 	virtual void SetGenericTeamId(const FGenericTeamId& TeamID) override { HeroTeamID = TeamID; }
 	// ~IGenericTeamAgentInterface End
 	
+	void RemoveWeaponMappingContext();
+	void AddWeaponMappingContext();
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UInputMappingContext* GameMenuMappingContext;
 	

@@ -310,6 +310,16 @@ void UHeroCombatComponent::OnWeaponPulledFromTargetActor(AActor* InHitActor, int
 	);
 }
 
+UInputMappingContext* UHeroCombatComponent::GetCurrentEquippedWeaponInputMappingContext() const
+{
+	if (const AArcaneHeroWeapon* CurrentEquippedWeapon = GetHeroCurrentEquippedWeapon())
+	{
+		const FArcaneHeroWeaponData& WeaponData = CurrentEquippedWeapon->HeroWeaponData;
+		return WeaponData.WeaponInputMappingContext;
+	}
+	return nullptr;
+}
+
 bool UHeroCombatComponent::GetAbilityRemainingCooldownTimeByTag(const UArcaneAbilitySystemComponent* ASC, const FGameplayTag& InCooldownTag, float& TotalCooldownTime, float& OutRemainingCooldown) const
 {
 	FGameplayEffectQuery CooldownQuery = FGameplayEffectQuery::MakeQuery_MatchAnyOwningTags(InCooldownTag.GetSingleTagContainer());

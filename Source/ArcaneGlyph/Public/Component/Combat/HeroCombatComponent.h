@@ -8,6 +8,7 @@
 #include "HeroCombatComponent.generated.h"
 
 
+class UInputMappingContext;
 class UEnhancedInputLocalPlayerSubsystem;
 class UArcaneAbilitySystemComponent;
 class UHeroUIComponent;
@@ -74,6 +75,8 @@ public:
 	
 	virtual void OnHitTargetActor(AActor* InHitActor, int32 InCollisionBoxIndex, FVector InHitLocation) override;
 	virtual void OnWeaponPulledFromTargetActor(AActor* InHitActor, int32 InCollisionBoxIndex) override;
+
+	UInputMappingContext* GetCurrentEquippedWeaponInputMappingContext() const;
 
 private:
 	bool GetAbilityRemainingCooldownTimeByTag(const UArcaneAbilitySystemComponent* ASC, const FGameplayTag& InCooldownTag, float& TotalCooldownTime, float& OutRemainingCooldown) const;

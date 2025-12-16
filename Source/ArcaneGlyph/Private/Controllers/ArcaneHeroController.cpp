@@ -6,6 +6,7 @@
 #include "CommonInputSubsystem.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "InputMappingContext.h"
 #include "Camera/CameraActor.h"
 #include "Characters/ArcaneHeroCharacter.h"
 #include "Component/Combat/HeroCombatComponent.h"
@@ -26,6 +27,44 @@ AArcaneHeroController::AArcaneHeroController()
 FGenericTeamId AArcaneHeroController::GetGenericTeamId() const
 {
 	return HeroTeamID;
+}
+
+void AArcaneHeroController::RemoveWeaponMappingContext()
+{
+	// 判端玩家是否装备了武器
+	if (AArcaneHeroCharacter* Hero = Cast<AArcaneHeroCharacter>(GetPawn()))
+	{
+		if (UHeroCombatComponent* HeroCombatComponent = Hero->GetHeroCombatComponent())
+		{
+			if (UInputMappingContext* WeaponMappingContext = HeroCombatComponent->GetCurrentEquippedWeaponInputMappingContext())
+			{
+				// 移除武器输入映射上下文，通过EnhancedInputLocalPlayerSubsystem
+				if (InputSubsystem)
+				{
+					InputSubsystem->RemoveMappingContext(WeaponMappingContext);
+				}
+			}
+		}
+	}
+}
+
+void AArcaneHeroController::AddWeaponMappingContext()
+{
+	// 判端玩家是否装备了武器
+	if (AArcaneHeroCharacter* Hero = Cast<AArcaneHeroCharacter>(GetPawn()))
+	{
+		if (UHeroCombatComponent* HeroCombatComponent = Hero->GetHeroCombatComponent())
+		{
+			if (UInputMappingContext* WeaponMappingContext = HeroCombatComponent->GetCurrentEquippedWeaponInputMappingContext())
+			{
+				// 移除武器输入映射上下文，通过EnhancedInputLocalPlayerSubsystem
+				if (InputSubsystem)
+				{
+					InputSubsystem->AddMappingContext(WeaponMappingContext, 1);
+				}
+			}
+		}
+	}
 }
 
 void AArcaneHeroController::SetGameMenuOpen(bool bIsOpen)

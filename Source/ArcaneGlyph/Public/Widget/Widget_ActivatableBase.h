@@ -37,6 +37,13 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnTriggerInputKeyPressedOrReleaseDelegate OnTriggerInputKeyReleased;	// 触发输入键释放事件委托
 
+	// 移除武器的MappingContext，以防止与UI交互时发生冲突，如果玩家装备了武器的话
+	UFUNCTION(BlueprintCallable)
+	void RemoveWeaponMappingContext();
+	
+	UFUNCTION(BlueprintCallable)
+	void AddWeaponMappingContext();
+	
 protected:
 	UFUNCTION(BlueprintPure)
 	AArcaneHeroController* GetOwningHeroController();
