@@ -7,6 +7,8 @@
 #include "CommonInputTypeEnum.h"
 #include "Widget_ActivatableBase.generated.h"
 
+class UWaveProgressBarWidget;
+class UCanvasPanel;
 class UEnemyUIComponent;
 class UHeroUIComponent;
 class FCommonUIGameInputProcessor;
@@ -62,6 +64,18 @@ private:
 	ECommonInputType CurrentPageInputType = ECommonInputType::MouseAndKeyboard;	// 当前页面输入类型（键盘鼠标或手柄）
 
 	bool bTriggering = false;	// 是否正在触发输入键
+	
+	UPROPERTY(meta=(BindWidgetOptional))
+	UCanvasPanel* WaveRootPanel;
+	
+	/** 要创建的主进度条UI蓝图类 */
+	UPROPERTY(EditDefaultsOnly, Category = "Wave Test")
+	TSubclassOf<UWaveProgressBarWidget> WaveProgressBarWidgetClass;
+	
+	UPROPERTY()
+	UWaveProgressBarWidget* WaveProgressBarWidget;
+	
+	void CreateWaveProgressBarWidget();
 	
 };
 

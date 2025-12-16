@@ -19,6 +19,9 @@ class ARCANEGLYPH_API UArcaneWidgetBase : public UUserWidget
 public:
 	UFUNCTION(BlueprintCallable)
 	void InitEnemyCreatedWidget(AActor* InEnemyActor);
+	
+	UFUNCTION(BlueprintImplementableEvent, Category="Arcane | ProgressBar")
+	void BP_UpdateProgressBar(float InPercentage);
 
 protected:
 	virtual void NativeOnInitialized() override;

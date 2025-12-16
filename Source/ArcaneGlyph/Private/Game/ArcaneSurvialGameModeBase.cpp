@@ -22,6 +22,7 @@ void AArcaneSurvialGameModeBase::RegisterSpawnedEnemies(const TArray<AArcaneEnem
 			// Enemy->OnDestroyed.AddUniqueDynamic(this, &AArcaneSurvialGameModeBase::OnEnemyDestroyed);
 			EnemyASC->OnActorDeathDelegate.AddUObject(this, &AArcaneSurvialGameModeBase::OnEnemyDestroyed);
 			CurrentSpawnedEnemyCounter++;
+			ThisWaveBossSpawnEnemyCounter++;
 		}
 	}
 }
@@ -31,6 +32,22 @@ void AArcaneSurvialGameModeBase::SetCurrentSurvialState(EArcaneSurvialGameModeSt
 	CurrentSurvialGameModeState = InState;
 
 	OnSurvialGameModeStateChanged.Broadcast(CurrentSurvialGameModeState);
+}
+
+TArray<FWaveData> AArcaneSurvialGameModeBase::GetCurrentWaveData() const
+{
+	TArray<FWaveData> WaveData;
+	
+	if (const UDataTable* DataTable = EnemyWaveSpawnerDataTable.FindRef(GameDifficulty))
+	{
+		// 调用转换函数进行转换
+		ConvertDataTableToWaveData(
+			const_cast<UDataTable*>(DataTable), 
+			WaveData
+		);
+	}
+
+	return WaveData;
 }
 
 void AArcaneSurvialGameModeBase::BeginPlay()
@@ -48,7 +65,6 @@ void AArcaneSurvialGameModeBase::BeginPlay()
 
 	PreLoadNextWaveEnemy();
 	
-	CreateWaveProgressBarWidget();
 }
 
 void AArcaneSurvialGameModeBase::Tick(float DeltaSeconds)
@@ -107,39 +123,6 @@ void AArcaneSurvialGameModeBase::InitGame(const FString& MapName, const FString&
 	UArcaneBlueprintFunctionLibrary::TryLoadSavedGameDifficulty(SelectedDifficulty);
 	
 	GameDifficulty = SelectedDifficulty;
-	
-}
-
-void AArcaneSurvialGameModeBase::CreateWaveProgressBarWidget()
-{
-	TArray<FWaveData> WaveData;
-	if (!ConvertDataTableToWaveData(
-		EnemyWaveSpawnerDataTable.FindRef(GameDifficulty),
-		WaveData,
-		FText::FromString(UEnum::GetValueAsString(GameDifficulty))
-	))
-	{
-		UE_LOG(LogTemp, Error, TEXT("AArcaneSurvialGameModeBase::CreateWaveProgressBarWidget - Failed to convert DataTable to WaveData."));
-		return;
-	}
-	
-	if (WaveProgressBarWidgetClass)
-	{
-		WaveProgressBarWidget = CreateWidget<UWaveProgressBarWidget>(GetWorld(), WaveProgressBarWidgetClass);
-		if (WaveProgressBarWidget)
-		{
-			WaveProgressBarWidget->AddToViewport();
-			WaveProgressBarWidget->GenerateWavesUI(WaveData);
-		}
-		else
-		{
-			UE_LOG(LogTemp, Error, TEXT("AArcaneSurvialGameModeBase::CreateWaveProgressBarWidget - Failed to create WaveProgressBarWidget instance."));
-		}
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("AArcaneSurvialGameModeBase::CreateWaveProgressBarWidget - WaveProgressBarWidgetClass is not set."));
-	}
 	
 }
 
@@ -204,9 +187,8 @@ FWaveData AArcaneSurvialGameModeBase::ConvertRowToWaveData(const FArcaneEnemyWav
 		NewWaveData.DisplayName = FText::FromString(FString::Printf(TEXT("第 %d 波"), WaveIndex + 1));
 	}
 
-	// 2. 确定图标 (可选，这里留空，用户可以在蓝图中配置)
-	// 如果需要根据 RowData.EnemyWaveSpawnerDefinitions 来确定图标，需要更复杂的逻辑。
-	// 暂时保持 WaveIcon 为空，让蓝图子类或 DataAsset 默认配置。
+	// 2. 确定图标
+	NewWaveData.WaveIcon = RowData.WaveIcon;
 	
 	return NewWaveData;
 }
@@ -323,6 +305,9 @@ void AArcaneSurvialGameModeBase::OnEnemyDestroyed(AActor* DestroyedActor)
 	
 	// 当前角色死亡，继续生成
 	CurrentSpawnedEnemyCounter--;
+	CurrentThisWaveKilledEnemyCounter++;
+	float CurrentWaveProgress = static_cast<float>(CurrentThisWaveKilledEnemyCounter) / (static_cast<float>(GetCurrentWaveEnemySpawnerTableRow()->TotalEnemyToSpawnThisWave + ThisWaveBossSpawnEnemyCounter));
+	OnSurvialEnemyDeath.Broadcast(CurrentWave - 1, CurrentWaveProgress);
 	if (ShouldKeepSpawningEnemies())
 	{
 		CurrentSpawnedEnemyCounter += TrySpawnEnemy();
@@ -331,7 +316,9 @@ void AArcaneSurvialGameModeBase::OnEnemyDestroyed(AActor* DestroyedActor)
 	{
 		// 当前波次的敌人全部死亡，进入下一个状态
 		TotalSpawnedEnemyThisWaveCounter = 0;
+		CurrentThisWaveKilledEnemyCounter = 0;
 		CurrentSpawnedEnemyCounter = 0;
+		ThisWaveBossSpawnEnemyCounter = 0;
 		SetCurrentSurvialState(EArcaneSurvialGameModeState::WaveCompleted);
 	}
 }

@@ -49,12 +49,16 @@ struct FArcaneEnemyWaveSpawnerTableRow : public FTableRowBase
 	
 	UPROPERTY(EditAnywhere)
 	TArray<FArcaneEnemyWaveSpawnerInfo> EnemyWaveSpawnerDefinitions;	// 敌人波次生成器定义
+	
+	UPROPERTY(EditAnywhere)
+	TSoftObjectPtr<UTexture2D> WaveIcon;	// 这个波次在UI上显示的图标
 
 	UPROPERTY(EditAnywhere)
 	int32 TotalEnemyToSpawnThisWave = 1;	// 这个波次总共需要生成的敌人数量
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSurvialGameModeStateChangedDelegate, EArcaneSurvialGameModeState, state);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnSurvialEnemyDeathDelegate, int32 /* InCurrentWaveIndex */, float /* InCurrentWaveKillProgress */);
 
 /**
  * 
@@ -70,6 +74,11 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void SetCurrentSurvialState(EArcaneSurvialGameModeState InState);
+	
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Wave Flow")
+	TArray<FWaveData> GetCurrentWaveData() const;
+	
+	FOnSurvialEnemyDeathDelegate OnSurvialEnemyDeath;
 
 protected:
 	virtual void BeginPlay() override;
@@ -77,15 +86,6 @@ protected:
 	
 	// InitGame - 在游戏开始时初始化游戏模式（它将在场景里所有Actor生成之前调用）
 	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
-	
-	/** 要创建的主进度条UI蓝图类 */
-	UPROPERTY(EditDefaultsOnly, Category = "Wave Test")
-	TSubclassOf<UWaveProgressBarWidget> WaveProgressBarWidgetClass;
-	
-	UPROPERTY()
-	UWaveProgressBarWidget* WaveProgressBarWidget;
-	
-	void CreateWaveProgressBarWidget();
 	
 	static bool ConvertDataTableToWaveData(
 		UDataTable* DataTable, 
@@ -127,9 +127,15 @@ private:
 
 	UPROPERTY()
 	int32 CurrentSpawnedEnemyCounter = 0;	// 当前已生成的敌人数量
+	
+	UPROPERTY()
+	int32 CurrentThisWaveKilledEnemyCounter = 0;	// 当前波次已击杀的敌人数量
 
 	UPROPERTY()
 	int32 TotalSpawnedEnemyThisWaveCounter = 0;	// 当前波次总共生成的敌人数量
+	
+	UPROPERTY()
+	int32 ThisWaveBossSpawnEnemyCounter = 0;	// 当前波次Boss已生成的敌人数量
 
 	UPROPERTY()
 	TArray<AActor*> TargetPointsArray;	// 目标点数组，用于存储敌人生成的目标点

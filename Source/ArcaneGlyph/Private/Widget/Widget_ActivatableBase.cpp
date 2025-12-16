@@ -4,8 +4,12 @@
 #include "Widget/Widget_ActivatableBase.h"
 
 #include "CommonInputSubsystem.h"
+#include "Components/CanvasPanel.h"
+#include "Components/CanvasPanelSlot.h"
 #include "Controllers/ArcaneHeroController.h"
 #include "Framework/Application/IInputProcessor.h"
+#include "Game/ArcaneSurvialGameModeBase.h"
+#include "Widget/Wave/WaveProgressBarWidget.h"
 #include "Interfaces/PawnUIInterface.h"
 
 class FCommonUIGameInputProcessor : public IInputProcessor
@@ -147,44 +151,51 @@ void UWidget_ActivatableBase::HandleTriggerInputKeyReleased(const FKey& Key, ECo
 void UWidget_ActivatableBase::NativeOnActivated()
 {
 	Super::NativeOnActivated();
+	
+	CreateWaveProgressBarWidget();
 
 	// 如果当前页面是可回退页面，则注册鼠标输入处理器
 	if (bIsBackHandler)
 	{
-		CachedMouseInputPreprocessor = MakeShared<FCommonUIGameInputProcessor>(GetOwningLocalPlayer());
-		CachedMouseInputPreprocessor->OnRightMouseButtonPressed.BindUObject(this, &ThisClass::OnRightMouseButtonPressed);
-		
+		if (!CachedMouseInputPreprocessor.IsValid())
+		{
+			CachedMouseInputPreprocessor = MakeShared<FCommonUIGameInputProcessor>(GetOwningLocalPlayer());
+		}
+		if (CachedMouseInputPreprocessor.IsValid() && !CachedMouseInputPreprocessor->OnRightMouseButtonPressed.IsBound())
+		{
+			CachedMouseInputPreprocessor->OnRightMouseButtonPressed.BindUObject(this, &ThisClass::OnRightMouseButtonPressed);
+		}
 	}
 
 	if (bUseDifferentPageForDifferentInputType)
 	{
-		if (CachedMouseInputPreprocessor)
-		{
-			CachedMouseInputPreprocessor->OnInputTypeChanged.BindUObject(this, &ThisClass::HandleInputKeyPressed);
-		}
-		else
+		if (!CachedMouseInputPreprocessor.IsValid())
 		{
 			CachedMouseInputPreprocessor = MakeShared<FCommonUIGameInputProcessor>(GetOwningLocalPlayer());
+		}
+		if (CachedMouseInputPreprocessor.IsValid() && !CachedMouseInputPreprocessor->OnInputTypeChanged.IsBound())
+		{
 			CachedMouseInputPreprocessor->OnInputTypeChanged.BindUObject(this, &ThisClass::HandleInputKeyPressed);
 		}
 	}
 
 	if (bListenTriggerKey)
 	{
-		if (CachedMouseInputPreprocessor)
-		{
-			CachedMouseInputPreprocessor->OnTriggerKeyPressed.BindUObject(this, &ThisClass::HandleTriggerInputKeyPressed);
-			CachedMouseInputPreprocessor->OnTriggerKeyReleased.BindUObject(this, &ThisClass::HandleTriggerInputKeyReleased);
-		}
-		else
+		if (!CachedMouseInputPreprocessor.IsValid())
 		{
 			CachedMouseInputPreprocessor = MakeShared<FCommonUIGameInputProcessor>(GetOwningLocalPlayer());
+		}
+		if (CachedMouseInputPreprocessor.IsValid() && !CachedMouseInputPreprocessor->OnTriggerKeyPressed.IsBound())
+		{
 			CachedMouseInputPreprocessor->OnTriggerKeyPressed.BindUObject(this, &ThisClass::HandleTriggerInputKeyPressed);
+		}
+		if (CachedMouseInputPreprocessor.IsValid() && !CachedMouseInputPreprocessor->OnTriggerKeyReleased.IsBound())
+		{
 			CachedMouseInputPreprocessor->OnTriggerKeyReleased.BindUObject(this, &ThisClass::HandleTriggerInputKeyReleased);
 		}
 	}
 
-	if (CachedMouseInputPreprocessor)
+	if (CachedMouseInputPreprocessor.IsValid())
 	{
 		FSlateApplication::Get().RegisterInputPreProcessor(CachedMouseInputPreprocessor, -1);
 	}
@@ -199,6 +210,37 @@ void UWidget_ActivatableBase::NativeOnDeactivated()
 	{
 		FSlateApplication::Get().UnregisterInputPreProcessor(CachedMouseInputPreprocessor);	//	注销鼠标输入处理器
 		CachedMouseInputPreprocessor.Reset();	// 重置鼠标输入处理器
+	}
+}
+
+void UWidget_ActivatableBase::CreateWaveProgressBarWidget()
+{
+	if (!WaveRootPanel) return;
+	if (IsValid(WaveProgressBarWidget)) return;		// 已经存在则不创建
+	
+	WaveRootPanel->ClearChildren();
+	
+	// 获取当前游戏模式
+	if (AArcaneSurvialGameModeBase* ArcaneSurvialGameMode = GetWorld()->GetAuthGameMode<AArcaneSurvialGameModeBase>())
+	{
+		if (WaveProgressBarWidgetClass)
+		{
+			TArray<FWaveData> CurrentDifficultyWaveData = ArcaneSurvialGameMode->GetCurrentWaveData();
+			
+			WaveProgressBarWidget = CreateWidget<UWaveProgressBarWidget>(GetWorld(), WaveProgressBarWidgetClass);
+			if (WaveProgressBarWidget)
+			{
+				WaveProgressBarWidget->GenerateWavesUI(CurrentDifficultyWaveData);
+				UCanvasPanelSlot* WaveSlot = WaveRootPanel->AddChildToCanvas(WaveProgressBarWidget);
+				// 设置锚点为画布中心，
+				WaveSlot->SetAnchors(FAnchors(0.5f, 0.5f)); // 设置锚点为中心
+				WaveSlot->SetAlignment(FVector2D(0.5f, 0.5f));	// 设置对齐方式为中心
+				WaveSlot->SetPosition(FVector2D(0.f, 0.f));
+				WaveSlot->SetSize(FVector2D(350.f, 25.f)); // 设置大小，可以根据需要调整
+				
+				ArcaneSurvialGameMode->OnSurvialEnemyDeath.AddUObject(WaveProgressBarWidget, &UWaveProgressBarWidget::UpdateProgress);
+			}
+		}
 	}
 }
 
